@@ -1,0 +1,15 @@
+ <mat-toolbar color="primary" class="mat-elevation-z8">
+    <span><mat-icon>home</mat-icon>&nbsp; Portal Gersal&atilde;o</span>
+    <div class="spacer"></div>  
+    <button mat-button>Home</button>
+    <mat-menu #appMenu="matMenu" color="primary">        
+        <button mat-menu-item [routerLink]="['cliente']">Cliente</button>
+        <button mat-menu-item>Profissional</button>
+        <button mat-menu-item [matMenuTriggerFor]="subMenuUsuario">Usuario</button>        
+    </mat-menu> 
+    <mat-menu #subMenuUsuario ="matMenu">
+        <button mat-menu-item>Usu&aacute;rio</button>
+        <button mat-menu-item>Perfil</button>
+    </mat-menu>
+    <button mat-button [matMenuTriggerFor]="appMenu">Cadastro</button>
+</mat-toolbar> 
