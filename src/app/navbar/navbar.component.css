@@ -1,3 +1,13 @@
 .spacer{
     flex: 1 1 auto;
 }
+mat-sidenav-container, mat-sidenav-content{
+    height: 100%;
+
+}
+mat-sidenav{
+    width:250;
+}
+main{
+    padding: 10px;
+}

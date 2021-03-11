@@ -1,0 +1,27 @@
+<mat-nav-list>
+    <a mat-list-item routerLink="/home" (click)="onSidenavClose()">
+        <mat-icon>home</mat-icon><span class="nav-caption">Home</span>
+    </a>
+    <a mat-list-item routerLink="/cliente" (click)="onSidenavClose()">
+        <mat-icon>face</mat-icon><span class="nav-caption">Cliente</span>
+    </a>    
+    <!--<a mat-list-item routerLink="/usuario" (click)="onSidenavClose()">
+        <mat-icon>user</mat-icon><span class="nav-caption">Usu&aacute;rio</span>
+    </a>-->
+    <mat-list-item [matMenuTriggerFor]="SubmenuUser">
+        
+        <mat-icon>account_circle</mat-icon>
+        <a matline>Usu&aacute;rio</a>  
+
+    </mat-list-item>   
+
+    <mat-menu #SubmenuUser="matMenu">
+       
+        
+        <button mat-menu-item (click)="onSidenavClose()">Usu&aacute;rio</button>
+        <button mat-menu-item (click)="onSidenavClose()">Perfil</button> 
+    </mat-menu>
+
+    
+</mat-nav-list>
+

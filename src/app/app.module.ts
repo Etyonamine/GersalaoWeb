@@ -13,6 +13,8 @@ import { HomeComponent } from './home/home.component';
 import { ClienteComponent } from './cliente/cliente.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { NavbarComponent } from './navbar/navbar.component';
+import { HeaderComponent } from './navigation/header/header.component';
+import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { NavbarComponent } from './navbar/navbar.component';
     HomeComponent,
     ClienteComponent,
     PageNotFoundComponent,
-    NavbarComponent
+    NavbarComponent,
+    HeaderComponent,
+    SidenavListComponent
   ],
   imports: [
     BrowserModule,

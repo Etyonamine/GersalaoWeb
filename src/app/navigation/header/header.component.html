@@ -1,0 +1,56 @@
+
+<mat-toolbar color="primary" >
+    <div fxHide.gt-xs>
+        <button mat-icon-button (click)="onToggleSidenav()">
+            <mat-icon>menu</mat-icon>
+        </button>
+    </div>
+    <div class="Aligner-item">
+        
+        <a routerLink="/home"><img [src]="pathImage" class="bg-image"/></a>Portal Gersal&atilde;o
+        <!--<a routerLink="/home">Portal Gersal&atilde;o</a>-->
+        
+        
+    </div>
+    
+    <div fxFlex fxLayout fxLayoutAlign="end" fxHide.xs >
+        
+        <button mat-button routerLink='home'>Home</button>  
+         <button mat-button>Agenda</button>  
+        
+         <button mat-button [matMenuTriggerFor]="afterMenu">Cadastro</button>
+         <mat-menu #afterMenu="matMenu" xPosition="after">
+           <button mat-menu-item routerLink='cliente'>Cliente</button>
+           <button mat-menu-item>Profissional</button>
+           <button mat-menu-item [matMenuTriggerFor]="Usuarios">Usu&aacute;rio</button>
+           
+         </mat-menu>
+         
+         <mat-menu #Usuarios="matMenu">
+            <button mat-menu-item routerLink='usuario'>Usu&aacute;rio</button>
+            <button mat-menu-item [matMenuTriggerFor]="Perfil">Perfil</button>            
+          </mat-menu>
+          <mat-menu #Perfil="matMenu">
+            <button mat-menu-item>Perfil</button>
+            <button mat-menu-item>Perfil x Tela</button>
+          </mat-menu>
+          
+        <!--
+        <ul fxLayout fxLayoutGap="15px" class="navigation-items">
+            <li>                
+                <a routerLink = "/home">Home</a>            
+            </li>
+            <li>
+                <a routerLink = "/agenda">Agenda</a>
+            </li>
+            <li>
+                <a routerLink = "#">Cadastro</a>
+                <ul>
+                    <li>Cliente</li>
+                </ul>
+            </li>
+
+        </ul>-->
+
+    </div>
+</mat-toolbar>

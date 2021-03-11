@@ -8,7 +8,8 @@ import { ClienteComponent } from './cliente/cliente.component';
 
 
 const routes: Routes=[
-    { path:'',component: HomeComponent, pathMatch: 'full' },
+    { path:'',redirectTo:'/home', pathMatch:'full'},
+    { path:'home',component: HomeComponent},    
     { path:'cliente',component:ClienteComponent},
     { path:'**', component:PageNotFoundComponent}
 ];
