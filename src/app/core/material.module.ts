@@ -7,7 +7,8 @@ import { MatToolbarModule }from '@angular/material/toolbar';
 import { MatIconModule} from '@angular/material/icon';
 import { MatButtonModule} from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-
+import { MatTableModule,MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule} from '@angular/material/paginator';
 @NgModule({
     imports:[
         CommonModule,
@@ -18,7 +19,9 @@ import { MatListModule } from '@angular/material/list';
         MatButtonModule,
         MatToolbarModule,
         MatMenuModule,
-        MatListModule
+        MatListModule,
+        MatTableModule,
+        MatPaginatorModule
         
     ],
     exports:[
@@ -29,7 +32,10 @@ import { MatListModule } from '@angular/material/list';
         MatButtonModule,
         MatToolbarModule,
         MatMenuModule,
-        MatListModule
+        MatListModule,
+        MatTableModule,
+        MatPaginatorModule
+        
         
     ]
 })

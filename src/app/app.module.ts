@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -15,6 +16,7 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
 import { NavbarComponent } from './navbar/navbar.component';
 import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
+import { SituacaoTipoComponent } from './situacao-tipo/situacao-tipo.component';
 
 
 @NgModule({
@@ -25,7 +27,10 @@ import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.com
     PageNotFoundComponent,
     NavbarComponent,
     HeaderComponent,
-    SidenavListComponent
+    SidenavListComponent,
+    SituacaoTipoComponent 
+  
+    
   ],
   imports: [
     BrowserModule,
@@ -35,7 +40,9 @@ import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.com
     ReactiveFormsModule,
     MaterialModule,
     CommonModule,
-    AppRoutingModule    
+    AppRoutingModule    ,
+    HttpClientModule
+  
   ],
   providers: [],
   bootstrap: [AppComponent]

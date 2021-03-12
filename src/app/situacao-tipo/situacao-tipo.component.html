@@ -1,0 +1,41 @@
+<div fxLayoutAlign='center'>
+    <h1>Lista de tipos de situações</h1>
+</div>
+<div>
+    <p *ngIf="!situacaoTipos"><em>Carregando...</em></p>
+    <mat-table [dataSource]="situacaoTipos" class="mat-elevation-z8"  [hidden]="!situacaoTipos"  >    
+        
+        <!-- Id Column -->
+        <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-cell *matCellDef="let situacaoTipos"> {{situacaoTipos.codigo}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="descricao">
+            <mat-header-cell *matHeaderCellDef>Descri&ccedil;&atilde;o</mat-header-cell>
+            <mat-cell *matCellDef="let situacaoTipos">{{situacaoTipos.descricao}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="datacadastro">
+            <mat-header-cell *matHeaderCellDef>Data Cadastro</mat-header-cell>
+            <mat-cell *matCellDef="let situacaoTipos">{{situacaoTipos.datacadastro|date:'dd/MM/yyyy' }}</mat-cell>
+            
+        </ng-container>
+ 
+        <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: colunas;"></mat-row>
+    </mat-table> 
+    <br />
+    <p *ngFor="let tipo of situacaoTipos">
+        {{tipo.codigo}} &nbsp;
+        {{tipo.descricao}}&nbsp;
+        {{tipo.datacadastro}}
+    </p>
+    <!--
+    <mat-paginator 
+        [hidden]="!situacaoTipos" 
+        [pageSize]="10"        
+        (page)="getData($event)"
+        [pageSizeOptions]="[3,5,20,50]"
+        showFirstLastButtons>
+    </mat-paginator>-->
+    
+</div>

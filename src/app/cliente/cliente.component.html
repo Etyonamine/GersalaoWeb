@@ -1,1 +1,33 @@
-<p>cliente works!</p>
+<div fxLayoutAlign='center'>
+    <h1>Lista de Clientes</h1>
+</div>
+<div>
+    <p *ngIf="!clientes"><em>Carregando...</em></p>
+    <mat-table [dataSource]="clientes" class="mat-elevation-z8"  [hidden]="!clientes">    
+        
+        <!-- Id Column -->
+        <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-cell *matCellDef="let cliente"> {{cliente.codigo}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="nome">
+            <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+            <mat-cell *matCellDef="let cliente">{{cliente.nome}}</mat-cell>
+        </ng-container>
+ 
+        <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: colunas;"></mat-row>
+    </mat-table> 
+
+    
+    <mat-paginator 
+        [hidden]="!clientes" 
+        [pageSize]="10"        
+        (page)="getData($event)"
+        [pageSizeOptions]="[3,5,20,50]"
+        showFirstLastButtons>
+    </mat-paginator>
+    
+</div>
+ 
+
