@@ -1,3 +1,13 @@
 table{
     width:100%;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    border : 1px solid black;
+  }
+.mat-form-field{
+    font-size: 14px;
+    width: 100%;
 }

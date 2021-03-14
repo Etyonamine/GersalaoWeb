@@ -3,31 +3,50 @@
 </div>
 <div>
     <p *ngIf="!clientes"><em>Carregando...</em></p>
-    <mat-table [dataSource]="clientes" class="mat-elevation-z8"  [hidden]="!clientes">    
+    <mat-form-field [hidden]="!clientes">
+        <input matInput (keyup) ="loadData($event.target.value)"
+                placeholder="Pesquisar por nome (ou parte dele)...">
+    </mat-form-field>
+      
+    <table mat-table [dataSource]="clientes" 
+               class="mat-elevation-z8"  
+               [hidden]="!clientes"
+               matSort (matSortChange)="loadData()"
+               matSortActive="{{defaultSortColumn}}" matSortDirection="{{defaultSortOrder}}"
+               >    
         
-        <!-- Id Column -->
+         
         <ng-container matColumnDef="codigo">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef  mat-sort-header >C&oacute;digo</mat-header-cell>
             <mat-cell *matCellDef="let cliente"> {{cliente.codigo}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="nome">
-            <mat-header-cell *matHeaderCellDef>Nome</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef  mat-sort-header>Nome</mat-header-cell>
             <mat-cell *matCellDef="let cliente">{{cliente.nome}}</mat-cell>
         </ng-container>
- 
+        <ng-container matColumnDef="aniversario">
+            <mat-header-cell *matHeaderCellDef  mat-sort-header>Aniversario</mat-header-cell>
+            <mat-cell *matCellDef="let cliente">{{cliente.aniversario |date:'dd/MM/yyyy' }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="dataCadastro">
+            <mat-header-cell *matHeaderCellDef  mat-sort-header>Cadastro</mat-header-cell>
+            <mat-cell *matCellDef="let cliente">{{cliente.dataCadastro |date:'dd/MM/yyyy HH:mm:ss'}}</mat-cell>
+        </ng-container>
         <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
         <mat-row *matRowDef="let row; columns: colunas;"></mat-row>
-    </mat-table> 
 
+    </table> 
+ 
     
     <mat-paginator 
         [hidden]="!clientes" 
-        [pageSize]="10"        
-        (page)="getData($event)"
-        [pageSizeOptions]="[3,5,20,50]"
+        (page) = "getData($event)"
+        [pageSize]="10"               
+        [pageSizeOptions]="[5,10,20,50]"
         showFirstLastButtons>
     </mat-paginator>
-    
+     
+
 </div>
  
 

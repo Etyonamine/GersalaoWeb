@@ -9,6 +9,9 @@ import { MatButtonModule} from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule,MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule} from '@angular/material/paginator';
+import { MatSortModule} from '@angular/material/sort';
+import { MatInputModule } from '@angular/material/input';
+
 @NgModule({
     imports:[
         CommonModule,
@@ -21,8 +24,9 @@ import { MatPaginatorModule} from '@angular/material/paginator';
         MatMenuModule,
         MatListModule,
         MatTableModule,
-        MatPaginatorModule
-        
+        MatPaginatorModule,
+        MatSortModule,
+        MatInputModule        
     ],
     exports:[
         MatTabsModule,
@@ -34,11 +38,9 @@ import { MatPaginatorModule} from '@angular/material/paginator';
         MatMenuModule,
         MatListModule,
         MatTableModule,
-        MatPaginatorModule
-        
-        
+        MatPaginatorModule,
+        MatSortModule,
+        MatInputModule
     ]
 })
-
-
 export class MaterialModule{}

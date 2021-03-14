@@ -7,16 +7,16 @@
         
         <!-- Id Column -->
         <ng-container matColumnDef="codigo">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef >C&oacute;digo</mat-header-cell>
             <mat-cell *matCellDef="let situacaoTipos"> {{situacaoTipos.codigo}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="descricao">
             <mat-header-cell *matHeaderCellDef>Descri&ccedil;&atilde;o</mat-header-cell>
             <mat-cell *matCellDef="let situacaoTipos">{{situacaoTipos.descricao}}</mat-cell>
         </ng-container>
-        <ng-container matColumnDef="datacadastro">
+        <ng-container matColumnDef="dataCadastro">
             <mat-header-cell *matHeaderCellDef>Data Cadastro</mat-header-cell>
-            <mat-cell *matCellDef="let situacaoTipos">{{situacaoTipos.datacadastro|date:'dd/MM/yyyy' }}</mat-cell>
+            <mat-cell *matCellDef="let situacaoTipos">{{situacaoTipos.dataCadastro | date:('dd/MM/yyyy HH:mm:ss') }}</mat-cell>
             
         </ng-container>
  
@@ -24,18 +24,7 @@
         <mat-row *matRowDef="let row; columns: colunas;"></mat-row>
     </mat-table> 
     <br />
-    <p *ngFor="let tipo of situacaoTipos">
-        {{tipo.codigo}} &nbsp;
-        {{tipo.descricao}}&nbsp;
-        {{tipo.datacadastro}}
-    </p>
-    <!--
-    <mat-paginator 
-        [hidden]="!situacaoTipos" 
-        [pageSize]="10"        
-        (page)="getData($event)"
-        [pageSizeOptions]="[3,5,20,50]"
-        showFirstLastButtons>
-    </mat-paginator>-->
     
+    
+  
 </div>
