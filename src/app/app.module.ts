@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule} from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MaterialModule } from './core/material.module';
+
 import { HomeComponent } from './home/home.component';
 import { ClienteComponent } from './cliente/cliente.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
@@ -17,6 +18,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { SituacaoTipoComponent } from './situacao-tipo/situacao-tipo.component';
+import { ClienteEditComponent } from './cliente/cliente-edit/cliente-edit.component';
 
 
 @NgModule({
@@ -28,7 +30,8 @@ import { SituacaoTipoComponent } from './situacao-tipo/situacao-tipo.component';
     NavbarComponent,
     HeaderComponent,
     SidenavListComponent,
-    SituacaoTipoComponent 
+    SituacaoTipoComponent,
+    ClienteEditComponent 
   
     
   ],
@@ -41,7 +44,8 @@ import { SituacaoTipoComponent } from './situacao-tipo/situacao-tipo.component';
     MaterialModule,
     CommonModule,
     AppRoutingModule    ,
-    HttpClientModule
+    HttpClientModule,
+    ReactiveFormsModule
   
   ],
   providers: [],

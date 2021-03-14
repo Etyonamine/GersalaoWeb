@@ -22,7 +22,7 @@
         </ng-container>
         <ng-container matColumnDef="nome">
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Nome</mat-header-cell>
-            <mat-cell *matCellDef="let cliente">{{cliente.nome}}</mat-cell>
+            <mat-cell *matCellDef="let cliente"><a [routerLink]="['/cliente',cliente.codigo]">{{cliente.nome}}</a></mat-cell>
         </ng-container>
         <ng-container matColumnDef="aniversario">
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Aniversario</mat-header-cell>
@@ -30,7 +30,12 @@
         </ng-container>
         <ng-container matColumnDef="dataCadastro">
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Cadastro</mat-header-cell>
-            <mat-cell *matCellDef="let cliente">{{cliente.dataCadastro |date:'dd/MM/yyyy HH:mm:ss'}}</mat-cell>
+            <mat-cell *matCellDef="let cliente">{{cliente.datacadastro |date:'dd/MM/yyyy HH:mm:ss'}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="dataalteracao">
+            <mat-header-cell *matHeaderCellDef  mat-sort-header>Alterado</mat-header-cell>
+            <mat-cell *matCellDef="let cliente">{{cliente.dataalteracao |date:'dd/MM/yyyy HH:mm:ss'}}</mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
         <mat-row *matRowDef="let row; columns: colunas;"></mat-row>

@@ -11,7 +11,7 @@ import { MatSort} from '@angular/material/sort';
   styleUrls: ['./cliente.component.css']
 })
 export class ClienteComponent implements OnInit {  
-  public colunas: string[]=['codigo','nome','aniversario', 'dataCadastro' ];
+  public colunas: string[]=['codigo','nome','aniversario', 'dataCadastro','dataalteracao' ];
 
   public clientes: MatTableDataSource<Cliente>;
 

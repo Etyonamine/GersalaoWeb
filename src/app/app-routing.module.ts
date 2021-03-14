@@ -1,3 +1,4 @@
+import { ClienteEditComponent } from './cliente/cliente-edit/cliente-edit.component';
 
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
@@ -14,6 +15,7 @@ const routes: Routes=[
     { path:'home',component: HomeComponent},    
     { path:'cliente',component:ClienteComponent},
     { path:'situacao-tipo',component:SituacaoTipoComponent},
+    { path:'cliente/:codigo', component:ClienteEditComponent},
     { path:'**', component:PageNotFoundComponent}
 ];
 
