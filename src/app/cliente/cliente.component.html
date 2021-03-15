@@ -3,6 +3,15 @@
 </div>
 <div>
     <p *ngIf="!clientes"><em>Carregando...</em></p>
+
+    <div class="commands text-left" *ngIf="clientes">
+        <button type="button"
+                [routerLink]="['/cliente-novo']"
+                class="btn btn-success">
+                Novo Registro
+            </button>
+
+    </div>
     <mat-form-field [hidden]="!clientes">
         <input matInput (keyup) ="loadData($event.target.value)"
                 placeholder="Pesquisar por nome (ou parte dele)...">

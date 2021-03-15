@@ -5,6 +5,8 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule} from './app-routing.module';
 
 import { AppComponent } from './app.component';
+import { BaseFormComponent } from './base.form.component';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FlexLayoutModule} from '@angular/flex-layout';
@@ -19,11 +21,12 @@ import { HeaderComponent } from './navigation/header/header.component';
 import { SidenavListComponent } from './navigation/sidenav-list/sidenav-list.component';
 import { SituacaoTipoComponent } from './situacao-tipo/situacao-tipo.component';
 import { ClienteEditComponent } from './cliente/cliente-edit/cliente-edit.component';
-
+import { ClienteService} from './cliente/cliente.service';
 
 @NgModule({
   declarations: [
     AppComponent,
+    BaseFormComponent,
     HomeComponent,
     ClienteComponent,
     PageNotFoundComponent,
@@ -31,9 +34,7 @@ import { ClienteEditComponent } from './cliente/cliente-edit/cliente-edit.compon
     HeaderComponent,
     SidenavListComponent,
     SituacaoTipoComponent,
-    ClienteEditComponent 
-  
-    
+    ClienteEditComponent     
   ],
   imports: [
     BrowserModule,
@@ -48,7 +49,9 @@ import { ClienteEditComponent } from './cliente/cliente-edit/cliente-edit.compon
     ReactiveFormsModule
   
   ],
-  providers: [],
+  providers: [ClienteService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+
+ }

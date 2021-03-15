@@ -15,7 +15,8 @@ const routes: Routes=[
     { path:'home',component: HomeComponent},    
     { path:'cliente',component:ClienteComponent},
     { path:'situacao-tipo',component:SituacaoTipoComponent},
-    { path:'cliente/:codigo', component:ClienteEditComponent},
+    { path:'cliente/:codigo', component:ClienteEditComponent},   
+    { path:'cliente-novo',component:ClienteEditComponent},
     { path:'**', component:PageNotFoundComponent}
 ];
 

@@ -1,7 +1,7 @@
 <div class = "cliente-edit">
     <h1>{{title}}</h1>
 
-    <p *ngIf= "!cliente"><em>Carregando...</em></p>
+    <p *ngIf= "this.codigo && !cliente"><em>Carregando...</em></p>
 
     <div class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
     
@@ -17,15 +17,12 @@
                     placeholder="Nome do cliente....."
                     class="form-control"/>
             
-            <!--
-                <span *ngIf = "hasError('nome')"
-                class ="glyphicon-remove form-control-feedback"
-                aria-hidden="true"></span>
-                <div *ngIf="hasError('nome')" class="help-block">
-                Nome é obrigatório!Por favor informar um nome valido.
-                </div>
-            -->
+                <div *ngIf="form.get('nome').invalid && (form.get('nome').dirty||form.get('nome').touched)"
+                     class="invalid-feedback">
+                    
+                </div>            
         </div>
+
         <div class="form-group">
             <!--
                 <div class="form-group"[ngClass]="{'has-error has-feedback':hasError('name')}">
@@ -42,9 +39,11 @@
         <div class="form-group commands">
             <button type="submit"
                 (click)="onSubmit()"
-                class="btn btn-success">
+                class="btn btn-success"
+                [disabled]="form.invalid">
                 Salvar
-            </button>
+            </button>            
+           
             &nbsp;
             <button type="submit"
                 [routerLink]="['/cliente']"
