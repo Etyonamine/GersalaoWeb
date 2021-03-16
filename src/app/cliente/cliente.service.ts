@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 
 
 export class ClienteService extends BaseService{
+   
     constructor(
         http: HttpClient
         ) 
@@ -67,4 +68,8 @@ export class ClienteService extends BaseService{
         return this.http.post<Cliente>(this.url, item);
     }
 
+    delete<Cliente>(codigo:number):Observable<Cliente>{
+        this.url=this.urlWebApi + codigo;
+        return this.http.delete<Cliente>(this.url);
+    }
 }

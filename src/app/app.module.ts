@@ -1,3 +1,4 @@
+
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
@@ -34,7 +35,8 @@ import { ClienteService} from './cliente/cliente.service';
     HeaderComponent,
     SidenavListComponent,
     SituacaoTipoComponent,
-    ClienteEditComponent     
+    ClienteEditComponent   ,
+    
   ],
   imports: [
     BrowserModule,

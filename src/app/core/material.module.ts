@@ -1,3 +1,7 @@
+
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
+
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
@@ -12,6 +16,7 @@ import { MatPaginatorModule} from '@angular/material/paginator';
 import { MatSortModule} from '@angular/material/sort';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+
 
 @NgModule({
     imports:[
@@ -28,7 +33,9 @@ import { MatSelectModule } from '@angular/material/select';
         MatPaginatorModule,
         MatSortModule,
         MatInputModule   ,
-        MatSelectModule     
+        MatSelectModule ,
+        MatSnackBarModule
+        
     ],
     exports:[
         MatTabsModule,
@@ -43,7 +50,10 @@ import { MatSelectModule } from '@angular/material/select';
         MatPaginatorModule,
         MatSortModule,
         MatInputModule,
-        MatSelectModule
+        MatSelectModule ,
+        MatSnackBarModule
+        
+         
     ]
 })
 export class MaterialModule{}
