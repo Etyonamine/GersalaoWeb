@@ -11,8 +11,7 @@ input.ng-valid ~ .valid-feedback,
 input.ng-invalid ~ .invalid-feedback{
     display:block;
 }
-.notif-success{
-    background-color:#ffff00;
-    color:#000000;
-    
-}
+
+ table{
+     width: 100%;
+ }

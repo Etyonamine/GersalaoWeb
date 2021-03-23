@@ -1,41 +1,148 @@
 <div class = "cliente-edit">
-    <h1>{{title}}</h1>
+    <div class="mat-elevation-z8">
+        <label style ="background-color:skyblue; color:#000000; text-align: left;font-size: 20px;" class= "form-control"><b>Cadastro de Cliente - {{title}}</b></label>    
+    </div>
+    
 
     <p *ngIf= "this.codigo && !cliente"><em>Carregando...</em></p>
 
     <div class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-         
-        <div class="form-group">
-            <!--
-                <div class="form-group" [ngClass] ="{'has-error has-feedback':hasError('nome')}">
-            -->
+        <div *ngIf="form.invalid && form.errors?.isDupeCliente" class="alert alert-danger">
+            <strong>ERROR</strong>:
+            O cliente com o mesmo <b><i>NOME</i></b>&nbsp; já existe!
+        </div>
 
-            <label for = "nome">Nome:</label>
-            <br />
-            <input type="text" id="nome"
-                    formControlName="nome" required
-                    placeholder="Nome do cliente....."
-                    class="form-control"/>
-            
-                <div *ngIf="form.get('nome').invalid && (form.get('nome').dirty||form.get('nome').touched)"
-                     class="invalid-feedback">
+        <div  class="form-group">
+            <table class="table">
+                <tr>                    
+                    <td>
+                        <label>C&oacute;digo</label>
+                        <label class="form-control" id="codigoV" name="codigoV">{{codigo}}</label>
+                    </td>
+                    <td style="width:80%;">
+                        <label  for = "nome">Nome:</label>                        
+                        <input type="text" id="nome"
+                                formControlName="nome" 
+                                required
+                                placeholder="Nome do cliente....."
+                                class="form-control"/>
+                        
+                        <div *ngIf="form.get('nome').invalid && (form.get('nome').dirty||form.get('nome').touched)"
+                                class="invalid-feedback">
+                            <div *ngIf="form.get('nome').errors?.required">
+                                Por favor, informar o nome
+                            </div>                
+                        </div>            
+                    </td>
                     
-                </div>            
-        </div>
+                    <td style="width:10%;">
 
-        <div class="form-group">
-            <!--
-                <div class="form-group"[ngClass]="{'has-error has-feedback':hasError('name')}">
-            -->
-            <label for= "aniversario">Anivers&agrave;rio:</label>
-            <br />
-            <input type="text" id="aniversario"                    
-                    formControlName="aniversario"                     
-                    class="form-control"                    
-                    value = "{{aniversarioformatado|date:'dd/MM/yyyy'}}"
-                    placeholder="Digite no formato dia/mes/ano.Exemplo: 01/01/{{anoCorrente.toString()}}" />       
-
+                        <label for= "aniversario">Anivers&agrave;rio</label>                       
+                        <input type="text" id="aniversario"                    
+                                formControlName="aniversario"                     
+                                class="form-control"                    
+                                value = "{{aniversarioformatado|date:'dd/MM/yyyy'}}"
+                                placeholder="Digite no formato dia/mes/ano.Exemplo: 01/01/{{anoCorrente.toString()}}" />       
+                    </td>
+                    
+                    <td style="width:10%;" >    
+                        <label for= "optionSituacao">Status</label>          
+                        <mat-form-field *ngIf="optionSituacao" >                            
+                            <mat-label>Selecione da lista</mat-label>                            
+                            <mat-select id="statusId" formControlName="statusId">
+                                <mat-option *ngFor="let option of optionSituacao"
+                                  [value] = "option.value" >
+                                  {{option.name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div *ngIf ="form.get('statusId').invalid && (form.get('statusId').dirty || form.get('statusId').touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="form.get('statusId').errors?.required">
+                                Por favor, selecione um status.
+                            </div>
+                        </div>           
+                    </td>
+                </tr>   
+                   
+            </table>
         </div>
+        <div  class="form-group">
+            <table class="table">
+                <tr>
+                    <td style="width: 30%;">
+                        <label  for = "endereco">Endereço:</label>                        
+                        <input 
+                                 type="text" id="endereco"
+                                formControlName="endereco"                                 
+                                placeholder="Rua,Avenida etc do cliente....."
+                                class="form-control"/>
+                    </td>
+                    <td style="width: 5%;">
+                        <label  for = "numero">Número:</label>                        
+                        <input type="text" id="numero"
+                                formControlName="numero"                                                                 
+                                class="form-control"/>
+                    </td>
+                    <td style="width: 20%;">
+                        <label  for = "bairro">Bairro:</label>                        
+                        <input type="text" id="bairro"
+                                formControlName="bairro"                                                                 
+                                class="form-control"/>
+                    </td>
+                    <td style="width: 15%;">
+                        <label  for = "complemento">Complemento:</label>                        
+                        <input type="text" id="complemento"
+                                formControlName="complemento"                                                                 
+                                class="form-control"/>
+                    </td>
+                    <td style="width: 10%;">                    
+                        <label  for = "cep">Cep:</label>                        
+                        <input type="text" id="cep"
+                                formControlName="cep"                                                                 
+                                class="form-control"/>
+                    </td>
+                    <td>                        
+                        <label for= "codigoUF">Estado</label> 
+                        <br />
+                        <mat-form-field *ngIf="unidadeFederativas" >                            
+                           <mat-label>Selecione um Estado</mat-label>   
+                                                    
+                    
+                        <mat-select formControlName="codigoUF"  [(ngModel)]="cod_unida_fed"  (ngModelChange)='onSelected_UF($event)' >
+                                <mat-option *ngFor="let estado of unidadeFederativas"
+                                  [value] = "estado.codigo" >
+                                  {{estado.sigla}} - {{estado.descricao}}
+                                </mat-option>
+                            </mat-select>
+                            <br />
+                           
+                        </mat-form-field>
+                        <br />
+                                          
+                    </td>
+
+                    <td>
+                        <label for= "codigoUF">Municipio</label> 
+                        <br />
+                        <mat-form-field [hidden]="!municipios">
+                            <mat-label>Selecione um municipio</mat-label>   
+                            <mat-select formControlName="codigoMunicipio"  [(ngModel)]="cod_munic"  (ngModelChange)='onSelected_UF($event)' >
+                                <mat-option *ngFor="let municipio of municipios"
+                                  [value] = "municipio.codigo" >
+                                   {{municipio.descricao}}
+                                </mat-option>
+                            </mat-select>
+                            <br />
+                           
+                        </mat-form-field>
+                        <br />
+                        
+                    </td>
+                </tr>          
+            </table>
+        </div>
+          
         <div  class="form-group commands">
             <button type="submit"
                 (click)="onSubmit()"
@@ -60,4 +167,5 @@
             </button>
         </div>
     </div>
+   
 </div>

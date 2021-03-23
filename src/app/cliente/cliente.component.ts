@@ -20,7 +20,7 @@ export class ClienteComponent  {
    
    }
 
-  public colunas: string[]=['codigo','nome','aniversario', 'dataCadastro','dataalteracao' ];
+  public colunas: string[]=['codigo','nome','aniversario', 'datacadastro','dataalteracao' ];
 
   public clientes: MatTableDataSource<Cliente>;
 

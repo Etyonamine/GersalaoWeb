@@ -1,6 +1,4 @@
-
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
 
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -34,8 +32,7 @@ import { MatSelectModule } from '@angular/material/select';
         MatSortModule,
         MatInputModule   ,
         MatSelectModule ,
-        MatSnackBarModule
-        
+        MatSnackBarModule ,       
     ],
     exports:[
         MatTabsModule,
@@ -52,8 +49,6 @@ import { MatSelectModule } from '@angular/material/select';
         MatInputModule,
         MatSelectModule ,
         MatSnackBarModule
-        
-         
     ]
 })
 export class MaterialModule{}

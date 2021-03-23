@@ -1,16 +1,22 @@
+import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
+import { Cliente } from './cliente';
 
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BaseService,ApiResult } from '../base.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operator/map';
+
 
 @Injectable({
     providedIn:'root',
 })
 
 
+
 export class ClienteService extends BaseService{
-   
+    
+    
     constructor(
         http: HttpClient
         ) 
@@ -19,8 +25,10 @@ export class ClienteService extends BaseService{
         }
      
 
-    private urlWebApi:string='https://localhost:44314/api/clientes/';
+    //private urlWebApi:string='https://localhost:44314/api/clientes/';
+    private urlWebApi:string='https://localhost:5001/api/clientes/';
     private url:string;
+   
 
     getData<ApiResult>(pageIndex: number,
         pageSize: number,
@@ -72,4 +80,10 @@ export class ClienteService extends BaseService{
         this.url=this.urlWebApi + codigo;
         return this.http.delete<Cliente>(this.url);
     }
+    
+    isDupeCliente(item): Observable<boolean> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        var url = this.urlWebApi + "IsDupeCliente";
+        return this.http.post<boolean>(url,item,{headers:headers});
+    }   
 }

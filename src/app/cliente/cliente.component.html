@@ -1,10 +1,10 @@
-<div fxLayoutAlign='center'>
-    <h1>Lista de Clientes</h1>
+<div fxLayoutAlign='center'class="mat-elevation-z8" style ="background-color:skyblue; ">   
+    <label  class= "form-control" style="background-color:transparent;color:white;font-size:30px;text-align: center;">Lista de Clientes</label>      
 </div>
 <div>
     <p *ngIf="!clientes"><em>Carregando...</em></p>
 
-    <div class="commands text-left" *ngIf="clientes">
+    <div class="commands text-right" *ngIf="clientes">
         <button type="button"
                 [routerLink]="['/cliente-novo']"
                 class="btn btn-success">
@@ -37,7 +37,7 @@
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Aniversario</mat-header-cell>
             <mat-cell *matCellDef="let cliente">{{cliente.aniversario |date:'dd/MM/yyyy' }}</mat-cell>
         </ng-container>
-        <ng-container matColumnDef="dataCadastro">
+        <ng-container matColumnDef="datacadastro">
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Cadastro</mat-header-cell>
             <mat-cell *matCellDef="let cliente">{{cliente.datacadastro |date:'dd/MM/yyyy HH:mm:ss'}}</mat-cell>
         </ng-container>
