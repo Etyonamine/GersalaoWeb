@@ -50,7 +50,9 @@ export class ClienteEditComponent extends BaseFormComponent {
   
   form:FormGroup;
   cliente:Cliente;
-  clienteEndereco: ClienteEndereco[];
+  clienteEnderecos: ClienteEndereco[];
+  clienteEndereco:ClienteEndereco;
+
   oEndereco:Endereco;
   
   unidadeFederativas : UnidadeFederativa[];
@@ -75,6 +77,7 @@ export class ClienteEditComponent extends BaseFormComponent {
 
   ngOnInit(): void {
     this.oEndereco = <Endereco>{};
+    this.clienteEndereco = <ClienteEndereco>{}
 
     // **** elementos do formulario
     this.form = new FormGroup({
@@ -159,14 +162,14 @@ export class ClienteEditComponent extends BaseFormComponent {
     // *** PREENCHENO O ENDERECO ************ 
     //residencial
     this.oEndereco.codigoTipoEndereco = 1;
-    this.oEndereco.codigoSituacao=1;
+    this.oEndereco.codigoSituacao = 1;
     this.oEndereco.codigoUsuarioCadastrado = 1;
-    this.oEndereco.dataCadastro = new Date();
+    
 
     this.oEndereco.descricao = this.form.get("endereco").value;
     this.oEndereco.numero =this.form.get('numero').value;
     this.oEndereco.complemento = this.form.get('complemento').value;
-    this.oEndereco.cep = this.form.get('cep').value;
+    this.oEndereco.cep = (this.form.get('cep').value)?this.form.get('cep').value:"0";
     this.oEndereco.bairro = this.form.get('bairro').value;
     this.oEndereco.codigoMunicipio =  (this.cod_munic > 0)?this.cod_munic:null;
     
@@ -204,6 +207,7 @@ export class ClienteEditComponent extends BaseFormComponent {
     else{
       this.message ="Cliente cadastrado com sucesso!";
       this.oEndereco.codigo=0;
+      this.oEndereco.dataCadastro = new Date();
 
       cliente.codigousuariocadastro = 1;
 
@@ -213,6 +217,8 @@ export class ClienteEditComponent extends BaseFormComponent {
         .post<Cliente>(cliente)
         .subscribe(result=>
         {  
+          this.codigo  = result.codigo;
+          this.gravarEndereco(this.oEndereco);
           
         },error=>
         {
@@ -220,36 +226,82 @@ export class ClienteEditComponent extends BaseFormComponent {
           this.exibirMensagem(error,this.message);
         });
 
-        //endereco
-        this.enderecoService
-            .post<Endereco>(this.oEndereco)
-            .subscribe(result=>{},error=>{
-              this.message="Ocorreu um erro na tentativa de cadastrar um novo Cliente.";
-              this.exibirMensagem(error,this.message);
-            });
-
+       
+        
         this.exibirMensagem(this.message,this.message);
         this.router.navigate(['/cliente']);
     }   
   }
-  
+
+  gravarEndereco(endereco:Endereco){
+      //endereco
+      this.enderecoService
+      .post<Endereco>(endereco)
+      .subscribe(result=>{
+          this.clienteEndereco.codigoCliente = this.codigo;
+          this.clienteEndereco.codigoEndereco = result.codigo;
+
+          this.gravarClienteEndereco(this.clienteEndereco);
+      },error=>{
+        this.message="Ocorreu um erro na tentativa de cadastrar um novo Cliente.";
+        this.exibirMensagem(error,this.message);
+      });
+  }
+
+  gravarClienteEndereco(clienteEndereco:ClienteEndereco){
+    this.clienteEnderecoService.post<ClienteEndereco>(clienteEndereco).subscribe(result=>{
+
+    },error=>{
+      this.message="Ocorreu um erro na tentativa de cadastrar o cliente endereco do  novo Cliente.";
+      this.exibirMensagem(error,this.message);
+    })
+  }
   //**** função de exclusao */
   onDelete(){
     if (confirm('Tem certeza que deseja apagar este registro?')){
-      this.message ="Cliente com o código: " + this.cliente.codigo + " apagado com sucesso!";
-       this.clienteService.delete<Cliente>(this.cliente.codigo)
-           .subscribe(result=>
-            {
-              this.exibirMensagem(this.message,this.message);              
-              this.router.navigate(['/cliente']);
-
-            },error=>{
-              this.message="Atenção!Ocorreu um erro na tentativa de apagar o registro!";              
-              this.exibirMensagem(error, this.message);
-            });
+      this.apagarClienteEndereco();        
     }    
   }
+  apagarCliente(){
+    this.clienteService.delete<Cliente>(this.cliente.codigo)
+    .subscribe(result=>
+     {
+      this.mensagemExclusaoSucesso();     
 
+     },error=>{
+       this.message="Atenção!Ocorreu um erro na tentativa de apagar o registro!";              
+       this.exibirMensagem(error, this.message);
+     });
+  }
+  apagarClienteEndereco()
+  {
+    this.clienteEnderecoService.Apagar<ClienteEndereco>(this.clienteEndereco.codigoCliente,this.clienteEndereco.codigoEndereco)
+                                .subscribe(result=>
+                                  {
+                                    this.apagarEndereco();
+
+                                  },error=>{
+                                    this.message="Atenção!Ocorreu um erro na tentativa de apagar o cliente-endereco!";              
+                                    this.exibirMensagem(error, this.message);
+                                  });
+  }
+
+  apagarEndereco(){
+                                    
+    this.enderecoService.delete<Endereco>(this.oEndereco.codigo)
+        .subscribe(result=>{
+          this.apagarCliente();
+         
+        },error=>{          
+                                    this.message="Atenção!Ocorreu um erro na tentativa de apagar o endereço endereco!";              
+                                    this.exibirMensagem(error, this.message);
+                                  });
+  }
+  mensagemExclusaoSucesso(){
+    this.message ="Cliente com o código: " + this.cliente.codigo + " apagado com sucesso!";
+           this.exibirMensagem(this.message,this.message);              
+           this.router.navigate(['/cliente']);
+  }
   exibirMensagem(error:any, mensagem:string){        
     console.log(error);
     this.snackBar.open(this.message,'',{duration:3000,verticalPosition:'top',horizontalPosition:'center'});
@@ -313,7 +365,7 @@ export class ClienteEditComponent extends BaseFormComponent {
     this.clienteEnderecoService.get(this.codigo)    
         .subscribe(result=>
                     {        
-                        
+                        this.clienteEndereco = result[0];
                         this.dadosEndereco(result[0].codigoEndereco );
                     },error=>console.error(error));           
                         ;

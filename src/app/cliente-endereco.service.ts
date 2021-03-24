@@ -1,5 +1,5 @@
 import { ApiResult } from 'src/app/base.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ClienteEndereco } from './cliente-endereco/cliente-endereco';
 import { Injectable } from '@angular/core';
 import { BaseService } from './base.service';
@@ -10,6 +10,9 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ClienteEnderecoService extends BaseService {
+  delete<T>(id: number): Observable<T> {
+    throw new Error('Method not implemented.');
+  }
   constructor(http:HttpClient)
   {
         super(http);
@@ -32,11 +35,20 @@ export class ClienteEnderecoService extends BaseService {
   put<T>(item: T): Observable<T> {
     throw new Error('Method not implemented.');
   }
-  post<T>(item: T): Observable<T> {
-    throw new Error('Method not implemented.');
+  post<ClienteEndereco>(item): Observable<ClienteEndereco> {
+    this.url =this.urlWebApi;
+    return this.http.post<ClienteEndereco>(this.url,item);
+
   }
-  delete<T>(id: number): Observable<T> {
-    throw new Error('Method not implemented.');
+
+  Apagar<ClienteEndereco>(codigoCliente: number, codigoEndereco:number): Observable<ClienteEndereco> {
+    var params = new HttpParams()
+                 .set("codigoCliente",codigoCliente.toString())
+                 .set("codigoEndereco",codigoEndereco.toString());
+
+    this.url=this.urlWebApi;   
+    return this.http.delete<ClienteEndereco>(this.url,{params});
+
   }
 
   

@@ -1,6 +1,6 @@
 import { EnderecoComponent } from './endereco.component';
 import { Endereco } from './endereco';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BaseService } from '../base.service';
@@ -34,8 +34,10 @@ export class EnderecoServiceService extends BaseService
     this.url = this.urlWebApi;
     return this.http.post<Endereco>(this.url, item);
   }
-  delete<T>(id: number): Observable<T> {
-    throw new Error('Method not implemented.');
+  delete<Endereco>(id: number): Observable<Endereco> {
+    this.url = this.urlWebApi;
+    var params = new HttpParams().set("codigo",id.toString());
+    return this.http.delete<Endereco>(this.url,{params});
   }
 
   
