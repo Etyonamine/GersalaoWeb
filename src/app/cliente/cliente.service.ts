@@ -82,8 +82,10 @@ export class ClienteService extends BaseService{
     }
     
     isDupeCliente(item): Observable<boolean> {
-        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        const headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json; charset=utf-8");
+        
         var url = this.urlWebApi + "IsDupeCliente";
-        return this.http.post<boolean>(url,item,{headers:headers});
+        return this.http.post<boolean>(url,item,{headers});
     }   
 }

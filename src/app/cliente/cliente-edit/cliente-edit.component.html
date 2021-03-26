@@ -2,22 +2,20 @@
     <div class="mat-elevation-z8">
         <label style ="background-color:skyblue; color:#000000; text-align: left;font-size: 20px;" class= "form-control"><b>Cadastro de Cliente - {{title}}</b></label>    
     </div>
-    
-
     <p *ngIf= "this.codigo && !cliente"><em>Carregando...</em></p>
-
     <div class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div *ngIf="form.invalid && form.errors?.isDupeCliente" class="alert alert-danger">
-            <strong>ERROR</strong>:
-            O cliente com o mesmo <b><i>NOME</i></b>&nbsp; já existe!
-        </div>
+        
 
         <div  class="form-group">
+            <div *ngIf="form.invalid && form.errors?.isDupeCliente" class="alert alert-danger">
+                <strong>ERROR</strong>:
+                O cliente com o mesmo <b><i>NOME</i></b>&nbsp; já existe!
+            </div>
             <table class="table">
                 <tr>                    
                     <td>
                         <label>C&oacute;digo</label>
-                        <label class="form-control" id="codigoV" name="codigoV">{{codigo}}</label>
+                        <label class="form-control" id="codigo" name="codigo" formcontrol="codigo">{{codigo}}</label>
                     </td>
                     <td style="width:80%;">
                         <label  for = "nome">Nome:</label>                        
@@ -27,12 +25,14 @@
                                 placeholder="Nome do cliente....."
                                 class="form-control"/>
                         
-                        <div *ngIf="form.get('nome').invalid && (form.get('nome').dirty||form.get('nome').touched)"
-                                class="invalid-feedback">
-                            <div *ngIf="form.get('nome').errors?.required">
+                        
+                        <div *ngIf="hasError('nome')"
+                             class="invalid-feedback">
+                             <div *ngIf="form.get('nome').errors?.required">
                                 Por favor, informar o nome
-                            </div>                
-                        </div>            
+                             </div>
+                        </div>
+                             
                     </td>
                     
                     <td style="width:10%;">
@@ -46,22 +46,25 @@
                     </td>
                     
                     <td style="width:10%;" >    
-                        <label for= "optionSituacao">Status</label>          
-                        <mat-form-field *ngIf="optionSituacao" >                            
-                            <mat-label>Selecione da lista</mat-label>                            
-                            <mat-select id="statusId" formControlName="statusId">
-                                <mat-option *ngFor="let option of optionSituacao"
-                                  [value] = "option.value" >
-                                  {{option.name}}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <div *ngIf ="form.get('statusId').invalid && (form.get('statusId').dirty || form.get('statusId').touched)"
-                            class="invalid-feedback">
-                            <div *ngIf="form.get('statusId').errors?.required">
+                        <div>
+                            <label for= "optionSituacao">Status</label>          
+                            <mat-form-field *ngIf="optionSituacao" >                            
+                                <mat-label>Selecione da lista</mat-label>                            
+                                <mat-select id="codigosituacao" formControlName="codigosituacao" >
+                                    <mat-option *ngFor="let option of optionSituacao"
+                                      [value] = "option.value" >
+                                      {{option.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>                        
+                         
+                       <div *ngIf="hasError('statusId')"
+                             class="invalid-feedback" >
+                             <div *ngIf="form.get('statusId').errors?.required">
                                 Por favor, selecione um status.
-                            </div>
-                        </div>           
+                             </div>
+                        </div>
                     </td>
                 </tr>   
                    
@@ -73,10 +76,11 @@
                     <td style="width: 30%;">
                         <label  for = "endereco">Endereço:</label>                        
                         <input 
-                                 type="text" id="endereco"
-                                formControlName="endereco"                                 
+                                 type="text" id="descricao"
+                                formControlName="descricao"                                 
                                 placeholder="Rua,Avenida etc do cliente....."
                                 class="form-control"/>
+                         
                     </td>
                     <td style="width: 5%;">
                         <label  for = "numero">Número:</label>                        
@@ -103,13 +107,11 @@
                                 class="form-control"/>
                     </td>
                     <td>                        
-                        <label for= "codigoUF">Estado</label> 
+                        <label for= "codigoUnidadeFederativa">Estado</label> 
                         <br />
                         <mat-form-field *ngIf="unidadeFederativas" >                            
-                           <mat-label>Selecione um Estado</mat-label>   
-                                                    
-                    
-                        <mat-select formControlName="codigoUF"  [(ngModel)]="cod_unida_fed"  (ngModelChange)='onSelected_UF($event)' >
+                            <mat-label>Selecione um Estado</mat-label>                       
+                             <mat-select formControlName="codigoUnidadeFederativa" [(ngModel)]="cod_unida_fed" (ngModelChange)="onSelected_UF()" >
                                 <mat-option *ngFor="let estado of unidadeFederativas"
                                   [value] = "estado.codigo" >
                                   {{estado.sigla}} - {{estado.descricao}}
@@ -119,15 +121,16 @@
                            
                         </mat-form-field>
                         <br />
-                                          
+                         <label>{{codigoEstadoSelecionado}}</label>                 
                     </td>
 
                     <td>
                         <label for= "codigoUF">Municipio</label> 
                         <br />
-                        <mat-form-field [hidden]="!municipios">
+                        <mat-form-field >
                             <mat-label>Selecione um municipio</mat-label>   
-                            <mat-select formControlName="codigoMunicipio"  [(ngModel)]="cod_munic"  (ngModelChange)='onSelected_UF($event)' >
+                            <mat-select id = "codigoMunicipio" 
+                                        formControlName="codigoMunicipio">
                                 <mat-option *ngFor="let municipio of municipios"
                                   [value] = "municipio.codigo" >
                                    {{municipio.descricao}}
@@ -141,8 +144,58 @@
                     </td>
                 </tr>          
             </table>
+            
         </div>
-          
+        <div class="form-group">
+           
+            <table class ="table">
+                <tr>
+                    <td>
+                        <label for= "enderecoEmail">E-mail</label>                       
+                        <input type="text" id="email"                    
+                                formControlName="email"                     
+                                class="form-control"   
+                                placeholder="Digite um e-mail válido" />   
+                            
+                        <div *ngIf="hasError('email')"
+                             class="invalid-feedback">
+                             <div *ngIf="form.get('email').errors?.email">
+                                Por favor, informar um e-mail valido
+                             </div>
+                        </div>
+                    </td>
+                    <td>
+                        <label for= "telefoneFixo">Telefone-Fixo</label>                       
+                        <input type="text" id="telefoneFixo"                    
+                                formControlName="telefoneFixo"                     
+                                class="form-control"   
+                                placeholder="Digite o numero de telefone fixo no formato DDD + Número exemplo: 11 2222-3333" />   
+                    </td>
+                    <td>
+                        <label for= "celular">Celular</label>                       
+                        <input type="text" id="celular"                    
+                                formControlName="celular"                     
+                                class="form-control"   
+                                placeholder="Digite o numero de telefone fixo no formato DDD + Número exemplo: 11 92222-4444" />   
+                    </td>
+                    <td>
+                        <label for= "numeroRG">R.G.</label>                       
+                        <input type="text" id="numeroRG"                    
+                                formControlName="numeroRG"                     
+                                class="form-control"   
+                                placeholder="Digite o numero do R.G." />   
+                    </td>
+                    <td>
+                        <label for= "numeroCPF">C.P.F.</label>                       
+                        <input type="text" id="numeroCPF"                    
+                                formControlName="numeroCPF"                     
+                                class="form-control"   
+                                placeholder="Digite o numero do C.P.F." />   
+                    </td>
+                </tr>
+            </table>
+            
+        </div>
         <div  class="form-group commands">
             <button type="submit"
                 (click)="onSubmit()"
@@ -166,6 +219,5 @@
                 Cancelar
             </button>
         </div>
-    </div>
-   
+    </div>   
 </div>

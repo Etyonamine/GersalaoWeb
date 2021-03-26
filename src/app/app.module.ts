@@ -1,6 +1,9 @@
+import { ClienteContatoService } from './cliente-contato/cliente-contato.service';
+import { ContatoService } from './contato/contato.service';
 import { EnderecoServiceService } from './endereco/endereco-service.service';
 import { ClienteEnderecoService } from './cliente-endereco.service';
 import { ClienteEndereco } from './cliente-endereco/cliente-endereco';
+
 import { UnidadeFederativaService } from './unidade-federativa/unidade-federativa-service';
 
 import { HttpClientModule } from '@angular/common/http';
@@ -62,9 +65,12 @@ import { EnderecoComponent } from './endereco/endereco.component';
   
   ],
   providers: [ClienteService,
+    ClienteContatoService,    
     ClienteEnderecoService,
+    ContatoService,
     EnderecoServiceService,
-    UnidadeFederativaService],
+    UnidadeFederativaService,
+    ],    
   bootstrap: [AppComponent]
 })
 export class AppModule {
