@@ -33,10 +33,10 @@
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Nome</mat-header-cell>
             <mat-cell *matCellDef="let cliente"><a [routerLink]="['/cliente',cliente.codigo]">{{cliente.nome}}</a></mat-cell>
         </ng-container>
-        <ng-container matColumnDef="aniversario">
+        <!--<ng-container matColumnDef="dataaniversario">
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Aniversario</mat-header-cell>
-            <mat-cell *matCellDef="let cliente">{{cliente.aniversario |date:'dd/MM/yyyy' }}</mat-cell>
-        </ng-container>
+            <mat-cell *matCellDef="let cliente">{{cliente.dataaniversario |date:'dd/MM/yyyy' }}</mat-cell>
+        </ng-container>-->
         <ng-container matColumnDef="datacadastro">
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Cadastro</mat-header-cell>
             <mat-cell *matCellDef="let cliente">{{cliente.datacadastro |date:'dd/MM/yyyy HH:mm:ss'}}</mat-cell>
@@ -46,6 +46,8 @@
             <mat-header-cell *matHeaderCellDef  mat-sort-header>Alterado</mat-header-cell>
             <mat-cell *matCellDef="let cliente">{{cliente.dataalteracao |date:'dd/MM/yyyy HH:mm:ss'}}</mat-cell>
         </ng-container>
+
+       
         <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
         <mat-row *matRowDef="let row; columns: colunas;"></mat-row>
 
@@ -60,7 +62,16 @@
         showFirstLastButtons>
     </mat-paginator>
      
-
+    <!--<table class="table">
+        <tr *ngFor="let cliente of clientes">
+            <td>
+                {{cliente.codigo}}
+            </td>
+            <td>
+                {{cliente.nome}}
+            </td>
+        </tr>
+    </table>-->
 </div>
  
 

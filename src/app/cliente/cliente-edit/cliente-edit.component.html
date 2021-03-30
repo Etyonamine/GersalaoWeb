@@ -10,7 +10,7 @@
             <div *ngIf="form.invalid && form.errors?.isDupeCliente" class="alert alert-danger">
                 <strong>ERROR</strong>:
                 O cliente com o mesmo <b><i>NOME</i></b>&nbsp; já existe!
-            </div>
+            </div> 
             <table class="table">
                 <tr>                    
                     <td>
@@ -37,9 +37,9 @@
                     
                     <td style="width:10%;">
 
-                        <label for= "aniversario">Anivers&agrave;rio</label>                       
-                        <input type="text" id="aniversario"                    
-                                formControlName="aniversario"                     
+                        <label for= "dataaniversario">Anivers&agrave;rio</label>                       
+                        <input type="text" id="dataaniversario"                    
+                                formControlName="dataaniversario"                     
                                 class="form-control"                    
                                 value = "{{aniversarioformatado|date:'dd/MM/yyyy'}}"
                                 placeholder="Digite no formato dia/mes/ano.Exemplo: 01/01/{{anoCorrente.toString()}}" />       
@@ -50,7 +50,7 @@
                             <label for= "optionSituacao">Status</label>          
                             <mat-form-field *ngIf="optionSituacao" >                            
                                 <mat-label>Selecione da lista</mat-label>                            
-                                <mat-select id="codigosituacao" formControlName="codigosituacao" >
+                                <mat-select id="codigoSituacao" formControlName="codigoSituacao" >
                                     <mat-option *ngFor="let option of optionSituacao"
                                       [value] = "option.value" >
                                       {{option.name}}
@@ -74,7 +74,7 @@
             <table class="table">
                 <tr>
                     <td style="width: 30%;">
-                        <label  for = "endereco">Endereço:</label>                        
+                        <label  for = "descricao">Endereço:</label>                        
                         <input 
                                  type="text" id="descricao"
                                 formControlName="descricao"                                 
@@ -105,6 +105,17 @@
                         <input type="text" id="cep"
                                 formControlName="cep"                                                                 
                                 class="form-control"/>
+                       
+                        <div *ngIf="hasError('cep')"
+                            class="invalid-feedback" >
+                            <span *ngIf="form.get('cep').errors?.pattern">
+                               Por favor, informar somente números.
+                            </span>  
+                            <br />
+                            <span *ngIf="form.get('cep').errors?.max">
+                                Por favor, informar o máximo de 9 caracteres. 
+                            </span>                       
+                        </div>
                     </td>
                     <td>                        
                         <label for= "codigoUnidadeFederativa">Estado</label> 
@@ -164,19 +175,82 @@
                              </div>
                         </div>
                     </td>
-                    <td>
+                    <td style="width:5%;">
+                        <label for ="dddFixo">DDD</label>
+                        <input type="text"
+                               id="dddFixo"
+                               class="form-control"   
+                               formControlName="dddFixo"
+                               min="0" 
+                               max="99"
+                               />
+                                <!--validação do campo-->                                
+                                <div *ngIf="form.get('dddFixo').errors?.required" class="invalid-feedback" >
+                                    Por favor, digite o DDD do telefone fixo
+                                </div>
+                               
+                        
+                    </td>
+                    <td >
                         <label for= "telefoneFixo">Telefone-Fixo</label>                       
                         <input type="text" id="telefoneFixo"                    
                                 formControlName="telefoneFixo"                     
                                 class="form-control"   
-                                placeholder="Digite o numero de telefone fixo no formato DDD + Número exemplo: 11 2222-3333" />   
+                                placeholder="Digite o numero de telefone fixo"
+                                (ngModelChange)="validarDDDFixo()" />   
+
+                        <!--validação do campo-->
+                        <div *ngIf="hasError('telefoneFixo')"
+                                class="invalid-feedback" >
+                                
+                            <span *ngIf="form.get('telefoneFixo').errors?.pattern">
+                                Por favor, informar somente números.
+                            </span>  
+                            <br />
+                            <span *ngIf="form.get('telefoneFixo').errors?.max">
+                                Por favor, informar o máximo de 9 caracteres. 
+                            </span>                                                   
+                           
+                        
+                        </div>
+                    </td>
+                    <td style="width:5%;">
+                        <label for ="dddCel">DDD</label>
+                        <input type="text"
+                               id="dddCel"
+                               class="form-control"   
+                               formControlName="dddCel"
+                               />
+                                <!--validação do campo-->                                 
+                                <!--campo vazio-->                              
+                                <span *ngIf="form.get('dddCel').errors?.required" class="invalid-feedback" min="0" max="99" >
+                                    Por favor, digite o DDD do celular
+                                </span>
+                                <span *ngIf="form.get('dddCel').errors?.max" class="invalid-feedback" >
+                                    Por favor, informar o máximo de 2 caracteres. 
+                                </span>  
+                                
+                        
                     </td>
                     <td>
                         <label for= "celular">Celular</label>                       
                         <input type="text" id="celular"                    
                                 formControlName="celular"                     
                                 class="form-control"   
-                                placeholder="Digite o numero de telefone fixo no formato DDD + Número exemplo: 11 92222-4444" />   
+                                placeholder="Digite o numero do celular"
+                                (ngModelChange)="validarDDDCelular()" />  
+                                
+                        <!--validação do campo-->
+                        
+                        
+                            <span *ngIf="form.get('celular').errors?.pattern" class="invalid-feedback" >
+                                Por favor, informar somente números.
+                            </span>  
+                            <br />
+                            <span *ngIf="form.get('celular').errors?.max" class="invalid-feedback" >
+                                Por favor, informar o máximo de 10 caracteres. 
+                            </span>                       
+                            
                     </td>
                     <td>
                         <label for= "numeroRG">R.G.</label>                       

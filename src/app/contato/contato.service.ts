@@ -11,15 +11,15 @@ export class ContatoService extends BaseService
   constructor(http:HttpClient) {
     super(http);
    }
-   urlBase : string = "https://localhost:5001/api/Contatos/";
+   urlBase : string = "https://localhost:44368/api/Contatos/";
    url:string; 
 
   getData<ApiResult>(pageIndex: number, pageSize: number, sortColumn: string, sortOrder: string, filterColumn: string, filterQuery: string): Observable<ApiResult> {
     throw new Error('Method not implemented.');
   }
   get<T>(id: number): Observable<T> {
-    var url = this.urlBase + id.toString();   
-    return this.http.get<T>(url);
+    this.url = this.urlBase + id.toString();   
+    return this.http.get<T>(this.url);
   }
   
 
@@ -27,15 +27,13 @@ export class ContatoService extends BaseService
     this.url = this.urlBase + item.codigo;
     return this.http.put<Contato>(this.url,item);
   }
-  post<Contato>(item): Observable<Contato> {
+  post<T>(item:T): Observable<T> {
     var url = this.urlBase;   
-    return this.http.post<Contato>(url,item);
+    return this.http.post<T>(url,item);
   }
   
   delete<T>(id: number): Observable<T> {
-    throw new Error('Method not implemented.');
+    this.url = this.urlBase + id.toString();   
+    return this.http.delete<T>(this.url);
   }
-
- 
-
 }

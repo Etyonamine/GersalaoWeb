@@ -25,8 +25,8 @@ export class ClienteService extends BaseService{
         }
      
 
-    //private urlWebApi:string='https://localhost:44314/api/clientes/';
-    private urlWebApi:string='https://localhost:5001/api/clientes/';
+    private urlWebApi:string='https://localhost:44368/api/clientes/';
+    //private urlWebApi:string='https://localhost:5001/api/clientes/';
     private url:string;
    
 

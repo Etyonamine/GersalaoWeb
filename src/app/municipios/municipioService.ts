@@ -11,7 +11,8 @@ import { Observable } from 'rxjs';
 export class MunicipioService extends BaseService{
     
     //private urlWebApi:string='https://localhost:44314/api/municipios/';
-    private urlWebApi:string='https://localhost:5001/api/municipios/';
+    //private urlWebApi:string='https://localhost:5001/api/municipios/';
+    private urlWebApi:string='https://localhost:44368/api/municipios/';
     private url:string;
 
     getMunicipioPorUF<ApiResult>(codigoUF:number, pageIndex: number, pageSize: number, sortColumn: string, sortOrder: string, filterColumn: string, filterQuery: string): Observable<ApiResult> {

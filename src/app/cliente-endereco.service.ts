@@ -19,7 +19,8 @@ export class ClienteEnderecoService extends BaseService {
   }
 
   clienteEndereco:ClienteEndereco[];
-  private urlWebApi:string='https://localhost:5001/api/clientesEndereco/';
+  //private urlWebApi:string='https://localhost:5001/api/clientesEndereco/';
+  private urlWebApi:string='https://localhost:44368/api/clientesEndereco/';
   private url:string;
 
   getData<ApiResult>(pageIndex: number, pageSize: number, sortColumn: string, sortOrder: string, filterColumn: string, filterQuery: string): Observable<ApiResult> {
@@ -41,13 +42,13 @@ export class ClienteEnderecoService extends BaseService {
 
   }
 
-  Apagar<ClienteEndereco>(codigoCliente: number, codigoEndereco:number): Observable<ClienteEndereco> {
+  Apagar<T>(codigoCliente: number, codigoEndereco:number): Observable<T> {
     var params = new HttpParams()
                  .set("codigoCliente",codigoCliente.toString())
                  .set("codigoEndereco",codigoEndereco.toString());
 
     this.url=this.urlWebApi;   
-    return this.http.delete<ClienteEndereco>(this.url,{params});
+    return this.http.delete<T>(this.url,{params});
 
   }
 

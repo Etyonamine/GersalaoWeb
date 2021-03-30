@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 export class UnidadeFederativaService extends BaseService
 { 
     //private urlWebApi:string='https://localhost:44314/api/unidadefederativas/';
-    private urlWebApi:string='https://localhost:5001/api/unidadefederativas/';
+    //private urlWebApi:string='https://localhost:5001/api/unidadefederativas/';
+    private urlWebApi:string='https://localhost:44368/api/UnidadeFederativas/';
     private url:string;
 
     getData<ApiResult>(pageIndex: number,

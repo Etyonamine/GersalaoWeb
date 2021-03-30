@@ -15,7 +15,7 @@ export class EnderecoServiceService extends BaseService
     super(http);
    }
 
-   private urlWebApi:string='https://localhost:5001/api/Enderecos/';
+   private urlWebApi:string='https://localhost:44368/api/Enderecos/';
    private url:string;
 
   getData<ApiResult>(pageIndex: number, pageSize: number, sortColumn: string, sortOrder: string, filterColumn: string, filterQuery: string): Observable<ApiResult> {

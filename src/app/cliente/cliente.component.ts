@@ -20,7 +20,7 @@ export class ClienteComponent  {
    
    }
 
-  public colunas: string[]=['codigo','nome','aniversario', 'datacadastro','dataalteracao' ];
+  public colunas: string[]=["codigo","nome", "datacadastro","dataalteracao"];
 
   public clientes: MatTableDataSource<Cliente>;
 
@@ -64,7 +64,7 @@ export class ClienteComponent  {
     var filterColumn =(this.filterQuery)?this.defaultFilterColumn:null;
     var filterQuery=(this.filterQuery)?this.filterQuery:null;
     
-    this.clienteService.getData<ApiResult<Cliente>>(
+    this.clienteService.getData<ApiResult<any>>(
       event.pageIndex,
       event.pageSize,
       sortColumn,
@@ -72,10 +72,10 @@ export class ClienteComponent  {
       filterColumn,
       filterQuery
     ).subscribe(result=>{
+      this.clientes = new MatTableDataSource<Cliente>(result.data);
       this.paginator.length=result.totalCount;
       this.paginator.pageIndex=result.pageIndex;
-      this.paginator.pageSize=result.pageSize;
-      this.clientes = new MatTableDataSource<Cliente>(result.data);
+      this.paginator.pageSize=result.pageSize;      
     }, error=>console.error(error));
   }
  
