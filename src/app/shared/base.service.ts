@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -74,7 +74,14 @@ export class BaseService<T> {
   delete (codigo){
     return this.http.delete(`${ this.API_URL + '/' + codigo}`).pipe(take(1));
   }
-  
+
+  isDupe( item :T): Observable<boolean> {
+    const headers = new HttpHeaders();
+    headers.set("Content-Type", "application/json; charset=utf-8");
+
+    var url = this.API_URL + '/IsDupe';
+    return this.http.post<boolean>(url,item,{headers});
+  }
 }
 
 

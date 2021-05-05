@@ -1,8 +1,6 @@
 <div class="container">
   <mat-card>
-    <mat-card-title>
-      Cadastro de Clientes - {{ tituloPagina }}
-    </mat-card-title>
+    <mat-card-title> Cadastro de Clientes - {{ tituloPagina }} </mat-card-title>
   </mat-card>
 
   <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
@@ -65,6 +63,7 @@
       </mat-form-field>
     </div>
     <div>
+      
       <app-msg-error
         [mostrarErro]="
           formulario.get('nome').invalid &&
@@ -136,7 +135,7 @@
                   formControlName="estado"
                   matTooltip="Estado federativa do Brasil"
                 >
-                  <mat-option [value] = "0"></mat-option>
+                  <mat-option [value]="0"></mat-option>
                   <mat-option
                     *ngFor="let estado of estados"
                     [value]="estado.codigo"
@@ -151,7 +150,7 @@
                   formControlName="municipio"
                   matTooltip="Municípios do Brasil"
                 >
-                  <mat-option [value] = "0"></mat-option>
+                  <mat-option [value]="0"></mat-option>
                   <mat-option
                     *ngFor="let municipio of municipios"
                     [value]="municipio.codigo"
@@ -171,17 +170,18 @@
               mensagemErro="Por favor, digitar somente os números do CEP."
             ></app-msg-error>
             <app-msg-error
-              [mostrarErro]= "formulario.get('endereco.cep').hasError('minlength')"
-              mensagemErro = "Por favor, digitar o cep completo."
+              [mostrarErro]="
+                formulario.get('endereco.cep').hasError('minlength')
+              "
+              mensagemErro="Por favor, digitar o cep completo."
             >
-
             </app-msg-error>
           </div>
         </mat-tab>
         <!--PASTA: CONTATO ******************************************************************* -->
         <mat-tab label="Contatos">
           <div class="form-group mat-container" formGroupName="contato">
-            <mat-form-field   appearance="fill" style="width: 410px">
+            <mat-form-field appearance="fill" style="width: 410px">
               <mat-label>Digite o seu email</mat-label>
               <input
                 matInput
@@ -297,38 +297,36 @@
     </div>
 
     <!-- botoes *********************************************************************************************************-->
-    <div style="margin-top: 10px" >
+    <div style="margin-top: 10px">
       <mat-card>
         <mat-card-content>
           <div class="button-row">
             <button
-            type="submit"
-            mat-raised-button
-            color="primary"
-            [disabled]="!formulario.valid"
-          >
-            Salvar &nbsp;<i class="material-icons right">save</i>
-          </button>
-          <button type="button"
-                  mat-raised-button
-                  color="warn"
-                  [disabled]= "habilitaApagar"
-                  (click) = "openConfirmExclusao()"
-                  >
-            Apagar  &nbsp;<i class="material-icons right">delete_forever</i>
-          </button>
+              type="submit"
+              mat-raised-button
+              color="primary"
+              [disabled]="!formulario.valid"
+            >
+              Salvar &nbsp;<i class="material-icons right">save</i>
+            </button>
+            <button
+              type="button"
+              mat-raised-button
+              color="warn"
+              [disabled]="habilitaApagar"
+              (click)="openConfirmExclusao()"
+            >
+              Apagar &nbsp;<i class="material-icons right">delete_forever</i>
+            </button>
 
-          <button mat-raised-button
-                  color="primary"
-                  (click)="retornar()">
-            Retornar  &nbsp;<i class="material-icons right">reply</i>
-          </button>
+            <button mat-raised-button color="primary" (click)="retornar()">
+              Retornar &nbsp;<i class="material-icons right">reply</i>
+            </button>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
   </form>
-
 </div>
 
 <!-- <app-form-debug [form]="formulario"></app-form-debug> -->

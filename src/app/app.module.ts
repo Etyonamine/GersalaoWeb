@@ -1,3 +1,4 @@
+
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -14,6 +15,7 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { PaginaNaoEncontradaComponent } from './pagina-nao-encontrada/pagina-nao-encontrada.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TipoServicoModule } from './tipo-servico/tipo-servico.module';
 
 
 
@@ -35,7 +37,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     MaterialModule,
     ClienteModule,
-    SharedModule
+    SharedModule,
+    TipoServicoModule
   ],
   providers: [],
   bootstrap: [AppComponent]

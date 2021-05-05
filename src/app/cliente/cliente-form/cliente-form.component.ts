@@ -1,4 +1,3 @@
-import { element } from 'protractor';
 
 import { Contato } from 'src/app/contato/contato';
 import { ContatoService } from './../../contato/contato.service';
@@ -16,7 +15,7 @@ import { AlertService } from './../../shared/alert/alert.service';
 import { UnidadeFederativaService } from './../../shared/service/unidade-federativa.service';
 import { ClienteService } from './../cliente.service';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators, FormControl, NgControlStatus } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { EMPTY, Observable, of, Subscription } from 'rxjs';
 import { Cliente } from '../cliente';
 import { concatMap, map, switchMap, take } from 'rxjs/operators';
@@ -29,7 +28,6 @@ import { ClienteContato } from '../cliente-contato/cliente-contato';
 import { ClienteDocumento } from '../cliente-documento/cliente-documento';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { DocumentoService } from 'src/app/documento/documento.service';
-import { timeStamp } from 'node:console';
 
 
 
@@ -688,7 +686,7 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit {
   //** validar se existe*/
   isDupeCliente(): AsyncValidatorFn {
 
-    //return (control:AbstractControl):Observable<{[key:string]:any } | null> =>
+    
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
 
       //verificando se é um caso de ediçao ou novo registro

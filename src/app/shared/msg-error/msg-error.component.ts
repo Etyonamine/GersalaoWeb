@@ -1,5 +1,3 @@
-import { FormControl } from '@angular/forms';
-import { FormValidations } from './../service/form-validations';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
@@ -18,5 +16,5 @@ export class MsgErrorComponent implements OnInit {
 
   ngOnInit(): void {
   }
- 
+
 }

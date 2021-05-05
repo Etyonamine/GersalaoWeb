@@ -1,0 +1,75 @@
+
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+  <div class="form-group form-control container">
+    <mat-card>
+      <mat-card-header><h2>Cadastro de Tipos de Serviços</h2></mat-card-header>
+      <mat-card-content>
+        <mat-form-field appearance="fill" style="width: 150px">
+          <mat-label>Código</mat-label>
+          <input matInput formControlName="codigo" readonly />
+        </mat-form-field>
+        <mat-form-field class="" appearance="fill" style="width: 500px">
+          <mat-label>Nome</mat-label>
+          <input
+            matInput
+            placeholder="Digite o nome do tipo de servico"
+            id="descricao"
+            formControlName="descricao"
+            matTooltip="Informar o nome do tipo de serviço"
+            required
+          />
+        </mat-form-field>
+        &nbsp;
+        <mat-label>Situação:</mat-label>
+        &nbsp;
+        <mat-radio-group
+          aria-label="Situação"
+          aria-labelledby="example-radio-group-label"
+          [(ngModel)]="codigoStatus"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <mat-radio-button value="1">Ativo</mat-radio-button>
+          <mat-radio-button value="2">Inativo</mat-radio-button>
+        </mat-radio-group>
+
+        <app-msg-error
+        [mostrarErro]="
+          formulario.get('descricao').touched &&
+          formulario.get('descricao').hasError('required')"
+
+          mensagemErro="Por favor, digite o nome completo!"
+        ></app-msg-error>
+
+        <app-msg-error
+         [mostrarErro]="formulario.get('descricao').errors?.isDupe"
+          mensagemErro = "O tipo de serviço já existe!"
+        ></app-msg-error>
+
+      </mat-card-content>
+      <mat-card-actions>
+        <div class="button-row">
+          <button
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="!formulario.valid"
+          >
+            Salvar &nbsp;<i class="material-icons right">save</i>
+          </button>
+          <button
+            type="button"
+            mat-raised-button
+            color="warn"
+            [disabled]= "!HabilitarBotaoApagar"
+          >
+            Apagar &nbsp;<i class="material-icons right">delete_forever</i>
+          </button>
+
+          <button mat-raised-button color="primary" >
+            Retornar &nbsp;<i class="material-icons right">reply</i>
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</form>

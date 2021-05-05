@@ -23,6 +23,13 @@ const routes: Routes = [
     component: HomeComponent,
      canActivate:[AuthGuard]
   },
+  {
+    path:'tipo-servico',
+      loadChildren:()=> import('./tipo-servico/tipo-servico.module').then(mod=>mod.TipoServicoModule),
+      canActivate:[AuthGuard],
+      canLoad: [AuthGuard]
+
+  },
   { path:'', redirectTo:'/home', pathMatch: 'full'},
   { path:'**', component: PaginaNaoEncontradaComponent }
 ];

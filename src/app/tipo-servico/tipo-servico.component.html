@@ -1,0 +1,31 @@
+<div>
+  <mat-card>
+    <mat-card-header>Lista de tipos de serviço</mat-card-header>
+    <div>
+      <div class="commands text-right" style="margin-top: 5px;" >
+        <button mat-raised-button color="primary" [routerLink]="['tipo-servico-novo']">Novo</button>
+      </div>
+      <mat-card-content>
+
+        <table class="mat-elevation-z8" [hidden]="!tipoServicos">
+          <thead>
+            <tr>
+              <th>Codigo</th>
+              <th>Nome</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tipo of tipoServicos">
+              <td>
+                {{ tipo.codigo}}
+              </td>
+              <td>
+                {{ tipo.descricao}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card-content>
+    </div>
+  </mat-card>
+</div>
