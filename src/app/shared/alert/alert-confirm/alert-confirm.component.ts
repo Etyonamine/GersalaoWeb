@@ -22,12 +22,14 @@ export class ModalConfirmData {
   confirmButtonLabel: string;
   closeButtonLabel: string;
 
+
   constructor(data?) {
     if (data) {
       this.title = data.title;
       this.content = data.content;
       this.confirmButtonLabel = data.confirmButtonLabel;
       this.closeButtonLabel = data.closeButtonLabel;
+       
     }
   }
 }

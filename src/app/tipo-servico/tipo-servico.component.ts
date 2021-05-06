@@ -36,4 +36,37 @@ export class TipoServicoComponent implements OnInit, OnDestroy {
   mensagemError(msg : string){
     this.alertService.mensagemErro(msg);
   }
+
+  openConfirmExclusao(codigo : number) {
+    this.alertService.openConfirmModal('Tem certeza que deseja excluir?', 'Excluir - Cliente', (answer: boolean) => {
+      if (answer) {
+
+        this.exclusaoCliente(codigo);
+      }
+    }, "Sim", "Não"
+    );
+  }
+
+  exclusaoCliente(codigo : number){
+
+    var msgSucess : string = 'Registro excluído com sucesso!';
+    var msgErro : string  = 'Ocorreu um erro na tentativa de exclusão  do cliente.';
+
+    this.tipoServicoService.delete(codigo).subscribe(sucesso=>{
+      this.handlerSuccess(msgSucess);
+      setTimeout(() => { this.loadDatas(); }, 3000);
+    }, error=>
+    {
+      console.log(error);
+      this.handleError(msgErro);
+    });
+  }
+
+  handlerSuccess(msg: string) {
+    this.alertService.mensagemSucesso(msg);
+  }
+
+  handleError(msg: string) {
+    this.alertService.mensagemErro(msg);
+  }
 }

@@ -41,3 +41,15 @@ mat-card-content{
   width: 100px;
   text-align: left;
 }
+
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 120px;
+}

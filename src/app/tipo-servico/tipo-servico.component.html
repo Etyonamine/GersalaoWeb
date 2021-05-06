@@ -2,25 +2,51 @@
   <mat-card>
     <mat-card-header>Lista de tipos de serviço</mat-card-header>
     <div>
-      <div class="commands text-right" style="margin-top: 5px;" >
-        <button mat-raised-button color="primary" [routerLink]="['tipo-servico-novo']">Novo</button>
+      <div class="commands text-right" style="margin-top: 5px">
+        <button
+          mat-raised-button
+          color="primary"
+          [routerLink]="['tipo-servico-novo']"
+        >
+          Novo
+        </button>
       </div>
       <mat-card-content>
-
         <table class="mat-elevation-z8" [hidden]="!tipoServicos">
           <thead>
             <tr>
               <th>Codigo</th>
               <th>Nome</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let tipo of tipoServicos">
               <td>
-                {{ tipo.codigo}}
+                {{ tipo.codigo }}
               </td>
               <td>
-                {{ tipo.descricao}}
+                {{ tipo.descricao }}
+              </td>
+              <td>
+                <button
+                  mat-mini-fab
+                  color="primary"
+                  aria-label="Editar o tipo de serviço"
+                  [routerLink]="['/tipo-servico', tipo.codigo]"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <button
+                  mat-mini-fab
+                  aria-label="Example icon button with a home icon"
+                  value="{{tipo.codigo}}"
+                  (click)="openConfirmExclusao(tipo.codigo)"
+                  color="warn"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
               </td>
             </tr>
           </tbody>

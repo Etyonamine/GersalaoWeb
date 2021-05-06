@@ -1,3 +1,4 @@
+import { TipoServicoResolveGuard } from './guard/tipo-servico-resolver.guard';
 import { TipoServicoFormComponent } from './tipo-servico-form/tipo-servico-form.component';
 import { TipoServicoComponent } from './tipo-servico.component';
 import { CommonModule } from '@angular/common';
@@ -10,6 +11,13 @@ const routes: Routes = [
   },
   {
     path:'tipo-servico-novo',component:TipoServicoFormComponent
+  },
+  {
+    path:':codigo',
+    component:TipoServicoFormComponent,
+    resolve:{
+      tipoServico: TipoServicoResolveGuard
+    }
   }
 ];
 

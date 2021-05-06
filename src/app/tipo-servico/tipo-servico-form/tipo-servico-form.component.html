@@ -61,11 +61,15 @@
             mat-raised-button
             color="warn"
             [disabled]= "!HabilitarBotaoApagar"
+           
+            (click)="openConfirmExclusao()"
           >
             Apagar &nbsp;<i class="material-icons right">delete_forever</i>
           </button>
 
-          <button mat-raised-button color="primary" >
+          <button mat-raised-button
+                  color="primary"
+                  (click)="retornar()" >
             Retornar &nbsp;<i class="material-icons right">reply</i>
           </button>
         </div>
@@ -73,3 +77,4 @@
     </mat-card>
   </div>
 </form>
+
