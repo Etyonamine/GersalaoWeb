@@ -24,6 +24,12 @@ const routes: Routes = [
      canActivate:[AuthGuard]
   },
   {
+    path: 'servico',
+      loadChildren: ()=> import('./servico/servico.module').then(mod=>mod.ServicoModule),
+      canActivate : [AuthGuard],
+      canLoad : [AuthGuard]
+  },
+  {
     path:'tipo-servico',
       loadChildren:()=> import('./tipo-servico/tipo-servico.module').then(mod=>mod.TipoServicoModule),
       canActivate:[AuthGuard],

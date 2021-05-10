@@ -19,6 +19,7 @@
     <mat-menu #cadastro="matMenu">
       <button mat-menu-item [routerLink]="['cliente']" >Cliente</button>
       <button mat-menu-item >Profissional</button>
+      <button mat-menu-item [routerLink]="['servico']">Serviço</button>
       <button mat-menu-item [routerLink]="['tipo-servico']"> Tipo de Serviço</button>
     </mat-menu>
     <button mat-button (click)="logout()">Logout</button>

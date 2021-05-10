@@ -23,3 +23,46 @@ body {
   color:white;
 }
 
+
+.container .mat-form-field + .mat-form-field {
+  margin-left: 5px;
+  margin-top: 5px;
+
+}
+mat-card-header{
+  text-align: center;
+  font-size: large;
+  height: 30px;
+  background-color: lightsteelblue;
+  color: white;
+  vertical-align: middle;
+}
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+  padding-left: 16px;
+}
+
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
+.campo_medio{
+  width:350px;
+}
+
+.campo_curto{
+  width:150px;
+}
+.mat-tab-group {
+  margin-bottom: 48px;
+}
+
+.observacao{
+  width: 1020px;
+}
+
+.button-row button,
+.button-row a {
+  margin-right: 8px;
+}

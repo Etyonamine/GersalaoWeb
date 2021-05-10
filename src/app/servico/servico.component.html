@@ -1,0 +1,75 @@
+<div>
+  <p *ngIf="!servicos"><em>Carregando...</em></p>
+
+</div>
+<div [hidden]="!servicos">
+  <mat-card>
+    <div>
+      <mat-card-header>
+        <mat-label>Lista de servicos</mat-label>
+      </mat-card-header>
+    </div>
+    <div>
+     <mat-card-content>
+      <mat-form-field [hidden]="!servicos">
+        <input matInput (keyup)="listarServicos($event.target.value)" placeholder="Pesquisar por nome (ou parte dele)..." />
+      </mat-form-field>
+
+      <div class="commands text-right" style="margin-top: 5px;" *ngIf="servicos">
+        <button mat-raised-button color="primary" [routerLink]="['servico-novo']">
+          Novo Registro &nbsp;<i class="material-icons right">add</i>
+        </button>
+      </div>
+
+      <table mat-table [dataSource]="servicos" class="mat-elevation-z8" [hidden]="!servicos" matSort
+        (matSortChange)="listarServicos()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+        <ng-container matColumnDef="codigo">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+          <mat-cell *matCellDef="let servico"> {{ servico.codigo }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="descricao">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+          <mat-cell *matCellDef="let servico"><a [routerLink]="['/servico', servico.codigo]">{{
+              servico.descricao
+              }}</a></mat-cell>
+        </ng-container>
+        <!--<ng-container matColumnDef="dataaniversario">
+              <mat-header-cell *matHeaderCellDef  mat-sort-header>Aniversario</mat-header-cell>
+              <mat-cell *matCellDef="let servico">{{servico.dataaniversario |date:'dd/MM/yyyy' }}</mat-cell>
+          </ng-container>-->
+        <ng-container matColumnDef="valor">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Valor</mat-header-cell>
+         <mat-cell *matCellDef="let servico">{{ servico.valor |currency : 'R$'}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tipoServico.descricao">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</mat-header-cell>
+          <mat-cell *matCellDef="let servico">{{ servico.tipoServico.descricao }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="datacadastro">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Cadastro</mat-header-cell>
+          <mat-cell *matCellDef="let servico">{{
+            servico.dataCadastro | date: "dd/MM/yyyy HH:mm:ss"
+            }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="dataalteracao">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Alterado</mat-header-cell>
+          <mat-cell *matCellDef="let servico">{{
+            servico.dataalteracao | date: "dd/MM/yyyy HH:mm:ss"
+            }}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+      </table>
+
+      <mat-paginator [hidden]="!servicos" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons>
+      </mat-paginator>
+
+    </mat-card-content>
+    </div>
+
+  </mat-card>
+
+</div>
