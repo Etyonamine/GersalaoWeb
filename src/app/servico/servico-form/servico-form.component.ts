@@ -1,13 +1,14 @@
 import { TipoServicoService } from './../../tipo-servico/tipo-servico.service';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ServicosService } from './../servicos.service';
 import { Component, OnInit } from '@angular/core';
-import { Form, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, Form, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { Servico } from '../servico';
 import { TipoServico } from 'src/app/tipo-servico/tipo-servico';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-servico-form',
@@ -37,8 +38,8 @@ export class ServicoFormComponent extends BaseFormComponent
   ngOnInit(): void {
     this.formulario = this.formBuilder.group({
       codigo : [],
-      descricao : [null, [Validators.required]],
-      valor : [1,[Validators.required]],
+      descricao : [null, [Validators.required], this.isDupe()],
+      valor : [0,[Validators.required,Validators.min(1)]],
       codigoTipoServico:[null,[Validators.required]]
     });
       this.inscricaoTipo$ = this.tipoServicoService.list<TipoServico[]>()
@@ -75,10 +76,46 @@ export class ServicoFormComponent extends BaseFormComponent
   handlerErro(msg:string){
     this.alertService.mensagemErro(msg);
   }
-  openConfirmExclusao(){
+  excluirServico(){
 
+  }
+  openConfirmExclusao(){
+    this.alertService.openConfirmModal('Tem certeza que deseja excluir?', 'Excluir - Cliente', (answer: boolean) => {
+      if (answer) {
+        this.excluirServico();
+      }
+    }, "Sim", "Não"
+    );
   }
   retornar(){
     this.router.navigate(['/servico']);
   }
+  isDupe(): AsyncValidatorFn {
+
+
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+
+      var codigo: number = 0;
+      var codigoTipo : number  = 0 ;
+
+      if (this.formulario !== undefined) {
+        codigo = this.formulario.get('codigo').value != null ? this.formulario.get('codigo').value : 0;
+        codigoTipo = this.formulario.get('codigoTipoServico').value !== null? this.formulario.get('codigoTipoServico').value : 0  ;
+      }
+      //codigo tipo de servico
+
+        //verificando se é um caso de ediçao ou novo registro
+        var servicoValidar = (codigo) ? this.servico : <Servico>{};
+
+        servicoValidar.descricao = this.formulario !== undefined ? this.formulario.get('descricao').value : '';
+
+        servicoValidar.codigo = codigo;
+        servicoValidar.codigoTipoServico = codigoTipo;
+
+        return this.servicoService.isDupe(servicoValidar).pipe(map(result => {
+          return (result !== false ? { isDupe: true } : null);
+        }));
+    }
+  }
+
 }
