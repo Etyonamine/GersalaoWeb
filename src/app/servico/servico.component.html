@@ -43,7 +43,7 @@
         </ng-container>
         <ng-container matColumnDef="tipoServico.descricao">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</mat-header-cell>
-          <mat-cell *matCellDef="let servico">{{ servico.tipoServico.descricao }} </mat-cell>
+          <mat-cell *matCellDef="let servico">{{ servico.tipoServico !== null ? servico.tipoServico.descricao : '' }} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="datacadastro">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Cadastro</mat-header-cell>

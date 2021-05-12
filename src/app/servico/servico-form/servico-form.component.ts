@@ -20,9 +20,10 @@ export class ServicoFormComponent extends BaseFormComponent
   servico : Servico;
   tipoServicos : Array<TipoServico>=[];
   formulario : FormGroup;
-  codigoStatus : number =1;
+  codigoStatus : string = "1";
 
   inscricaoTipo$ : Subscription;
+  HabilitarBotaoApagar: boolean = false;
 
   constructor(private formBuilder: FormBuilder,
     private servicoService: ServicosService,
@@ -37,8 +38,25 @@ export class ServicoFormComponent extends BaseFormComponent
     this.formulario = this.formBuilder.group({
       codigo : [],
       descricao : [null, [Validators.required]],
-      valor : [0,[Validators.required]]
+      valor : [1,[Validators.required]],
+      codigoTipoServico:[null,[Validators.required]]
     });
+      this.inscricaoTipo$ = this.tipoServicoService.list<TipoServico[]>()
+                                                  .subscribe(result => this.tipoServicos = result,
+                                                  error => {
+                                                    console.error(error);
+                                                    this.handlerErro("Ocorreu um erro na tentativa de recuperar a lista de tipos de servico.");
+                                                  }
+                                                     );
+
+    }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    if (this.inscricaoTipo$){
+      this.inscricaoTipo$.unsubscribe;
+    }
   }
 
   submit() {
@@ -52,5 +70,15 @@ export class ServicoFormComponent extends BaseFormComponent
 
                                                  );
 
+  }
+
+  handlerErro(msg:string){
+    this.alertService.mensagemErro(msg);
+  }
+  openConfirmExclusao(){
+
+  }
+  retornar(){
+    this.router.navigate(['/servico']);
   }
 }

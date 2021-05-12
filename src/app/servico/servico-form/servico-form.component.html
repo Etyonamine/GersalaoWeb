@@ -14,9 +14,28 @@
             placeholder="Digite o nome do tipo de servico"
             id="descricao"
             formControlName="descricao"
-            matTooltip="Informar o nome do tipo de serviço"
+            matTooltip="Informar o nome do serviço"
             required
           />
+        </mat-form-field>
+
+
+        
+        <mat-form-field
+          *ngIf="tipoServicos"
+          appearance="fill"
+          style="width: 350px"
+        >
+          <mat-label>Selecione da lista</mat-label>
+          <mat-select
+            formControlName="codigoTipoServico"
+            matTooltip="Tipo de servico"
+            required
+          >
+            <mat-option *ngFor="let tipo of tipoServicos" [value]="tipo.codigo">
+              {{ tipo.descricao }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
         &nbsp;
         <mat-label>Situação:</mat-label>
@@ -24,11 +43,58 @@
         <mat-radio-group
           aria-label="Situação"
           aria-labelledby="example-radio-group-label"
+          [(ngModel)]="codigoStatus"
+          [ngModelOptions]="{ standalone: true }"
         >
           <mat-radio-button value="1">Ativo</mat-radio-button>
           <mat-radio-button value="2">Inativo</mat-radio-button>
         </mat-radio-group>
+        <div>
+          <app-msg-error
+            [mostrarErro]="
+              formulario.get('descricao').touched &&
+              formulario.get('descricao').hasError('required')
+            "
+            mensagemErro="Por favor, digite o nome serviço!"
+          ></app-msg-error>
+
+          <app-msg-error
+            [mostrarErro]="formulario.get('descricao').errors?.isDupe"
+            mensagemErro="O serviço já existe!"
+          ></app-msg-error>
+
+          <app-msg-error
+
+              [mostrarErro]="formulario.get('codigoTipoServico').touched && formulario.get('codigoTipoServico').hasError('required')"
+            mensagemErro="Por favor, selecione um tipo!"
+          ></app-msg-error>
+        </div>
       </mat-card-content>
+      <mat-card-actions>
+        <div class="button-row">
+          <button
+            type="submit"
+            mat-raised-button
+            color="primary"
+            [disabled]="!formulario.valid"
+          >
+            Salvar &nbsp;<i class="material-icons right">save</i>
+          </button>
+          <button
+            type="button"
+            mat-raised-button
+            color="warn"
+            [disabled]="!HabilitarBotaoApagar"
+            (click)="openConfirmExclusao()"
+          >
+            Apagar &nbsp;<i class="material-icons right">delete_forever</i>
+          </button>
+
+          <button mat-raised-button color="primary" (click)="retornar()">
+            Retornar &nbsp;<i class="material-icons right">reply</i>
+          </button>
+        </div>
+      </mat-card-actions>
     </mat-card>
   </div>
 </form>

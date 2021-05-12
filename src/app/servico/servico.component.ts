@@ -1,7 +1,4 @@
-
 import { TipoServicoService } from './../tipo-servico/tipo-servico.service';
-import { TipoServicoComponent } from './../tipo-servico/tipo-servico.component';
-import { switchMap } from 'rxjs/operators';
 
 import { AlertService } from './../shared/alert/alert.service';
 import { ServicosService } from './servicos.service';
@@ -90,13 +87,20 @@ export class ServicoComponent implements OnInit {
                       this.servicos = new MatTableDataSource<Servico>(result.data);
 
                       if(result.data.length>0){
-                        var codigoTipo = result.data[0].codigoTipoServico;
-                        this.tipoServicoService.get<TipoServico>(codigoTipo)
-                        .subscribe(tipoencontrado=>{
-                          this.tipoServico  = tipoencontrado;
-                          result.data[0].tipoServico = tipoencontrado;
-                          this.servicos = new MatTableDataSource<Servico>(result.data);
-                        });
+                        for(let i = 0 ; i<result.data.length;i++){
+
+                          var codigoTipo = result.data[0].codigoTipoServico;
+                          this.tipoServicoService.get<TipoServico>(codigoTipo)
+                          .subscribe(tipoencontrado=>{
+                             
+                            result.data[i].tipoServico = tipoencontrado;
+
+
+                          });
+                        }
+
+                        this.servicos = new MatTableDataSource<Servico>(result.data);
+
                       }
                       this.paginator.length=result.totalCount;
                       this.paginator.pageIndex=result.pageIndex;

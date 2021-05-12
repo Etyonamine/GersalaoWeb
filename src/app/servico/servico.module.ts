@@ -1,5 +1,5 @@
-import { ReactiveFormsModule } from '@angular/forms';
-
+import { SharedModule } from './../shared/shared.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ServicoComponent } from './servico.component';
@@ -13,8 +13,10 @@ import { ServicoFormComponent } from './../servico/servico-form/servico-form.com
   imports: [
     CommonModule,
     ServicoRoutingModule,
+    FormsModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    SharedModule
   ],
 
 })
