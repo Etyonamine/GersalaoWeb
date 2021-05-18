@@ -7,7 +7,7 @@ import { MatPaginator, PageEvent} from '@angular/material/paginator';
 import { MatTableDataSource} from '@angular/material/table';
 import { MatSort} from '@angular/material/sort';
 import { ClienteService } from "./cliente.service";
-import { EMPTY, Observable, Subscription } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cliente',

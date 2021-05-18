@@ -1,3 +1,4 @@
+import { SituacaoModule } from './situacao/situacao/situacao.module';
 
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
@@ -19,9 +20,6 @@ import { TipoServicoModule } from './tipo-servico/tipo-servico.module';
 import { ServicoModule } from './servico/servico.module';
 
 
-
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,7 +27,7 @@ import { ServicoModule } from './servico/servico.module';
     LoginComponent,
     HomeComponent,
     PaginaNaoEncontradaComponent
-  ],
+   ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -41,7 +39,8 @@ import { ServicoModule } from './servico/servico.module';
     ClienteModule,
     SharedModule,
     TipoServicoModule,
-    ServicoModule
+    ServicoModule,
+    SituacaoModule
   ],
   providers: [],
   bootstrap: [AppComponent]

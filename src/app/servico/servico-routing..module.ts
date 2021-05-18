@@ -1,3 +1,4 @@
+import { ServicoResolveGuard } from './guard/servico-resolver.guard';
 
 import { CommonModule } from "@angular/common";
 import { RouterModule, Routes } from "@angular/router";
@@ -9,13 +10,13 @@ const servicosRoutes: Routes = [
    {path:'', component: ServicoComponent},
    {path:'servico-novo',
      component:ServicoFormComponent},
-  // {
-  //     path:':codigo',
-  //     component:ClienteFormComponent,
-  //     resolve:{
-  //       cliente: ClienteResolveGuard
-  //     }
-  // }
+  {
+      path:':codigo',
+      component:ServicoFormComponent,
+      resolve:{
+        servico: ServicoResolveGuard
+      }
+  }
 ];
 
 @NgModule({

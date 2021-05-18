@@ -81,8 +81,10 @@
           >
           </app-msg-error>
           <app-msg-error
-            [mostrarErro]="formulario.get('valor').hasError('min')"
-            mensagemErro="O valor deve ser maior do que zero!"
+            [mostrarErro]="formulario.get('valor').hasError('min') &&
+            formulario.get('codigoTipoServico').touched
+            "
+            mensagemErro="O valor deve ser no minimo R$ 1,00!"
           >
           </app-msg-error>
           <app-msg-error
@@ -93,7 +95,7 @@
             mensagemErro="Por favor, selecione um tipo!"
           ></app-msg-error>
           <app-msg-error
-            [mostrarErro]="formulario.get('descricao').errors?.isDupe"
+            [mostrarErro]="registroExiste"
             mensagemErro="O serviço com o tipo de serviço já existe!"
           ></app-msg-error>
 

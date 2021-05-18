@@ -5,14 +5,8 @@ import { CommonModule } from '@angular/common';
 
 import { AlertComponent } from './alert/alert.component';
 import { MsgErrorComponent } from './msg-error/msg-error.component';
-import { BaseFormComponent } from './base-form/base-form.component';
 import { FormDebugComponent } from './form-debug/form-debug.component';
 import { AlertConfirmComponent } from './alert/alert-confirm/alert-confirm.component';
-
-
-
-
-
 
 @NgModule({
   declarations: [

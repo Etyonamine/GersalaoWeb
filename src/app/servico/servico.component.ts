@@ -1,3 +1,4 @@
+import { SituacaoService } from './../situacao/situacao.service';
 import { TipoServicoService } from './../tipo-servico/tipo-servico.service';
 
 import { AlertService } from './../shared/alert/alert.service';
@@ -20,7 +21,7 @@ export class ServicoComponent implements OnInit {
 
   servicos : MatTableDataSource<Servico>;
 
-  public colunas: string[]=["codigo","descricao", "valor", "tipoServico.descricao", "datacadastro","dataalteracao"];
+  public colunas: string[]=["codigo","descricao", "valor", "tipoServico.descricao", "datacadastro","dataalteracao","acao"];
 
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
@@ -36,7 +37,9 @@ export class ServicoComponent implements OnInit {
   tipoServico : TipoServico;
  constructor(private servicosService: ServicosService,
               private alertService: AlertService,
-              private tipoServicoService: TipoServicoService) { }
+              private tipoServicoService: TipoServicoService,
+              private situacaoService : SituacaoService
+              ) { }
 
   ngOnInit(): void {
     this.tipoServico = <TipoServico>{};
@@ -63,9 +66,13 @@ export class ServicoComponent implements OnInit {
     }
   }
 
-  handleError()
+  handleError(msg: string)
   {
-    this.alertService.mensagemErro('Erro ao carregar a lista de serviços. Tente novamente mais tarde.');
+    this.alertService.mensagemErro(msg);
+  }
+
+  handlerSuccess(msg: string) {
+    this.alertService.mensagemSucesso(msg);
   }
 
   getData(event:PageEvent)
@@ -89,14 +96,15 @@ export class ServicoComponent implements OnInit {
                       if(result.data.length>0){
                         for(let i = 0 ; i<result.data.length;i++){
 
-                          var codigoTipo = result.data[0].codigoTipoServico;
+                          var codigoTipo = result.data[i].codigoTipoServico;
                           this.tipoServicoService.get<TipoServico>(codigoTipo)
                           .subscribe(tipoencontrado=>{
-                             
+
                             result.data[i].tipoServico = tipoencontrado;
 
 
                           });
+
                         }
 
                         this.servicos = new MatTableDataSource<Servico>(result.data);
@@ -109,11 +117,38 @@ export class ServicoComponent implements OnInit {
                     }, error=>
                     {
                       console.error(error);
-                      this.handleError()
+                      this.handleError('Erro ao carregar a lista de serviços. Tente novamente mais tarde.');
                       {
                         return EMPTY;
                       };
                     });
 
   }
+
+  excluirRegistro(codigo : number){
+    var msgSucess: string = 'Registro excluído com sucesso!';
+    var msgErro: string = 'Ocorreu um erro na tentativa de exclusão  do cliente.'
+
+    this.servicosService.delete(codigo).subscribe(sucesso => {
+      this.handlerSuccess(msgSucess);
+      setTimeout(() => { this.listarServicos(); }, 3000);
+    }, error => {
+      console.log(error);
+      this.handleError(msgErro);
+    });
+  }
+  openConfirmExclusao(codigo : number, nome:string) {
+    var mensagem = `Tem certeza que deseja excluir o serviço: [ ${nome} ]?`;
+
+    this.alertService.openConfirmModal(mensagem, 'Excluir - Cliente', (answer: boolean) => {
+      if (answer) {
+
+        this.excluirRegistro(codigo);
+      }
+    }, "Sim", "Não"
+    );
+  }
+
+
+
 }

@@ -1,9 +1,9 @@
 import { TipoServico } from "../tipo-servico/tipo-servico";
-
+import { Situacao } from "../situacao/situacao";
 export class Servico{
   codigo : number;
   codigoTipoServico : number;
-  codigoSituaca : number;
+  codigoSituacao : number;
   descricao : string;
   valor : number ;
   dataCadastro : Date;
@@ -11,4 +11,5 @@ export class Servico{
   dataAlteracao : Date;
   codigoUsuarioAlteracao : number;
   tipoServico : TipoServico;
+  situacao : Situacao ;
 }
