@@ -18,6 +18,8 @@ import { PaginaNaoEncontradaComponent } from './pagina-nao-encontrada/pagina-nao
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TipoServicoModule } from './tipo-servico/tipo-servico.module';
 import { ServicoModule } from './servico/servico.module';
+import { ProfissionalModule } from './profissional/profissional.module';
+
 
 
 @NgModule({
@@ -27,6 +29,7 @@ import { ServicoModule } from './servico/servico.module';
     LoginComponent,
     HomeComponent,
     PaginaNaoEncontradaComponent
+
    ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import { ServicoModule } from './servico/servico.module';
     SharedModule,
     TipoServicoModule,
     ServicoModule,
-    SituacaoModule
+    SituacaoModule,
+    ProfissionalModule
   ],
   providers: [],
   bootstrap: [AppComponent]

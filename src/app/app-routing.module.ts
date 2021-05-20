@@ -1,3 +1,4 @@
+import { ProfissionalComponent } from './profissional/profissional.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, CanActivate } from '@angular/router';
 
@@ -22,6 +23,12 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent,
      canActivate:[AuthGuard]
+  },
+  {
+    path: 'profissional',
+    loadChildren:()=> import ('./profissional/profissional.module').then(mod=>mod.ProfissionalModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
   },
   {
     path: 'servico',
