@@ -1,12 +1,9 @@
+import { MaterialModule } from './material/material.module';
 import { SituacaoModule } from './situacao/situacao/situacao.module';
-
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { MaterialModule } from './material/material.module';
-
 import { ClienteModule } from './cliente/cliente.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TipoServicoModule } from './tipo-servico/tipo-servico.module';
 import { ServicoModule } from './servico/servico.module';
 import { ProfissionalModule } from './profissional/profissional.module';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -35,11 +33,12 @@ import { ProfissionalModule } from './profissional/profissional.module';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MaterialModule,
     ClienteModule,
+    MaterialModule,
     SharedModule,
     TipoServicoModule,
     ServicoModule,

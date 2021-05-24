@@ -3,7 +3,7 @@ import { TipoServicoService } from './../tipo-servico/tipo-servico.service';
 
 import { AlertService } from './../shared/alert/alert.service';
 import { ServicosService } from './servicos.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Servico } from './servico';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -17,7 +17,7 @@ import { TipoServico } from '../tipo-servico/tipo-servico';
   templateUrl: './servico.component.html',
   styleUrls: ['./servico.component.scss']
 })
-export class ServicoComponent implements OnInit {
+export class ServicoComponent implements OnInit, OnDestroy{
 
   servicos : MatTableDataSource<Servico>;
 

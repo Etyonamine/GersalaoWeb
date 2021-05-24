@@ -14,7 +14,7 @@ import { MunicipioService } from './../../shared/service/municipio.service';
 import { AlertService } from './../../shared/alert/alert.service';
 import { UnidadeFederativaService } from './../../shared/service/unidade-federativa.service';
 import { ClienteService } from './../cliente.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { EMPTY, Observable, of, Subscription } from 'rxjs';
 import { Cliente } from '../cliente';
@@ -38,7 +38,7 @@ import { DocumentoService } from 'src/app/documento/documento.service';
   styleUrls: ['./cliente-form.component.scss']
 })
 
-export class ClienteFormComponent extends BaseFormComponent implements OnInit {
+export class ClienteFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
   codigoLogin: number;
   login: Login;
   formulario: FormGroup;
@@ -686,7 +686,7 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit {
   //** validar se existe*/
   isDupeCliente(): AsyncValidatorFn {
 
-    
+
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
 
       //verificando se é um caso de ediçao ou novo registro

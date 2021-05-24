@@ -1,7 +1,7 @@
 import { TipoServicoService } from './../../tipo-servico/tipo-servico.service';
 import { Subscription } from 'rxjs';
 import { ServicosService } from './../servicos.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -16,7 +16,7 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./servico-form.component.scss']
 })
 export class ServicoFormComponent extends BaseFormComponent
-  implements OnInit {
+  implements OnInit, OnDestroy {
 
   servico: Servico;
   tipoServicos: Array<TipoServico> = [];
