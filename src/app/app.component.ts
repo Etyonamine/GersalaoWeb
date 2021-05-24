@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from './auth-guard/auth.service';
 
 @Component({
@@ -6,9 +6,10 @@ import { AuthService } from './auth-guard/auth.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent {
 
-  
+
   title = 'Portal Gersalão';
   ano: Date;
 
