@@ -303,12 +303,18 @@
 
         <!--PASTA: SERVICO-->
         <mat-tab label="Serviços">
-          <div class="form-group mat-container" formGroupName="servico">
-
-
-          </div>
+          
+             <section class="mat-check-section">
+              <div *ngFor = "let tipoServico of tipoServicos">
+                
+                <mat-checkbox formControlName = "tipoServico"  [value] = "tipoServico.codigo" class="mat-check-margin">{{tipoServico.descricao}}</mat-checkbox>
+              </div>
+              
+            </section>
+           
+           
+          
         </mat-tab>
-
       </mat-tab-group>
     </div>
 

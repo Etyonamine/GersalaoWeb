@@ -15,6 +15,9 @@ import { ValidaCpfService } from 'src/app/shared/service/valida-cpf.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
 import { UnidadeFederativaService } from 'src/app/shared/service/unidade-federativa.service';
+import { Router } from '@angular/router';
+import { TipoServico } from 'src/app/tipo-servico/tipo-servico';
+import { TipoServicoService } from 'src/app/tipo-servico/tipo-servico.service';
 
 @Component({
   selector: 'app-profissional-form',
@@ -34,20 +37,24 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   descricaoBotaoSalvarEndereco: string = 'Incluir';
   inscricaoEstado$: Subscription;
   inscricaoMunicipio$: Subscription;
+  inscricaoTipoServico$:Subscription;
 
   habilitaApagar: boolean = false;
 
   optionSituacao: Array<Object> = [{ value: 1, name: "Ativo" }, { value: 2, name: "Inativo" }];
   estados: Array<UnidadeFederativa> = [];
   municipios: Array<Municipio> = [];
-  router: any;
+  tipoServicos: Array<TipoServico> = [];
+
 
   constructor(private formBuilder: FormBuilder,
     private profissionalService: ProfissionalService,
     private unidadeFederativaService: UnidadeFederativaService,
     private municipioService: MunicipioService,
     private serviceAlert: AlertService,
-    private validarCpf: ValidaCpfService) {
+    private validarCpf: ValidaCpfService,
+    private router: Router,
+    private tipoServicoService: TipoServicoService) {
     super();
   }
 
@@ -58,6 +65,8 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.criarFormulario();
     this.carregarEstados();
     this.carregarMunicipios();
+    this.listaTipoServicos();
+
   }
 
   ngOnDestroy(): void {
@@ -68,6 +77,9 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     }
     if (this.inscricaoMunicipio$) {
       this.inscricaoMunicipio$.unsubscribe();
+    }
+    if(this.inscricaoTipoServico$){
+      this.inscricaoTipoServico$.unsubscribe();
     }
   }
 
@@ -104,7 +116,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
         cpf: [null, [Validators.minLength(11), this.validarCpf.isValidCpf()]]
       }),
       servico: this.formBuilder.group({
-
+        tipoServico:[null]
       })
     });
   }
@@ -129,6 +141,16 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
         console.error(error);
         this.handleError('Erro ao carregar a lista de estados. Tente novamente mais tarde.');
       });
+  }
+
+  listaTipoServicos(){
+    this.inscricaoTipoServico$ = this.tipoServicoService.list<TipoServico[]>()
+                                     .subscribe(result=>{this.tipoServicos = result}
+                                     , error => {
+      console.error(error);
+      this.handleError('Erro ao carregar a lista de estados. Tente novamente mais tarde.');
+    });
+
   }
 
   carregarMunicipios() {
