@@ -1,3 +1,4 @@
+import { TipoServico } from '../tipo-servico/tipo-servico';
 import { ProfissionalContato } from './profissional-contato/profissional-contato';
 import { ProfissionalDocumento } from './profissional-documento/profissional-documento';
 import { ProfissionalEndereco } from './profissional-endereco/profissional-endereco';
@@ -14,4 +15,5 @@ export interface Profissional{
   profissionalContato : ProfissionalContato;
   profissionalDocumento : ProfissionalDocumento;
   profissionalEndereco : ProfissionalEndereco;
+  tipoServico: Array<number>;
 }

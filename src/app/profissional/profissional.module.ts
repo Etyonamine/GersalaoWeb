@@ -17,7 +17,7 @@ import { RouterModule } from '@angular/router';
     RouterModule,
     ProfissionalRoutingModule,
     MaterialModule,
-    SharedModule
+    SharedModule 
   ]
 })
 export class ProfissionalModule { }

@@ -18,6 +18,11 @@ import { UnidadeFederativaService } from 'src/app/shared/service/unidade-federat
 import { Router } from '@angular/router';
 import { TipoServico } from 'src/app/tipo-servico/tipo-servico';
 import { TipoServicoService } from 'src/app/tipo-servico/tipo-servico.service';
+import { MatDialog } from '@angular/material/dialog';
+import { EnderecoComponent } from 'src/app/endereco/endereco.component';
+import { Endereco } from 'src/app/endereco/endereco';
+
+
 
 @Component({
   selector: 'app-profissional-form',
@@ -45,7 +50,10 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   estados: Array<UnidadeFederativa> = [];
   municipios: Array<Municipio> = [];
   tipoServicos: Array<TipoServico> = [];
+  servicoSelecionado : Array<number>=[];  
+  dadosEndereco : Endereco;  
 
+  salvarRegistro$: Subscription;
 
   constructor(private formBuilder: FormBuilder,
     private profissionalService: ProfissionalService,
@@ -54,9 +62,12 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     private serviceAlert: AlertService,
     private validarCpf: ValidaCpfService,
     private router: Router,
-    private tipoServicoService: TipoServicoService) {
-    super();
-  }
+    private tipoServicoService: TipoServicoService,
+    public dialog: MatDialog
+    ) 
+    {
+      super();
+    }
 
   ngOnInit(): void {
 
@@ -66,9 +77,9 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.carregarEstados();
     this.carregarMunicipios();
     this.listaTipoServicos();
+    this.dadosEndereco = <Endereco>{};
 
   }
-
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
@@ -81,12 +92,28 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     if(this.inscricaoTipoServico$){
       this.inscricaoTipoServico$.unsubscribe();
     }
+    if(this.salvarRegistro$){
+      this.salvarRegistro$.unsubscribe();
+    }
   }
-
   submit() {
-    this.atualizarObjetos();
-  }
 
+    let msgSucess = 'Profissional cadastrado com sucesso!';
+    let msgError = 'Erro ao cadastrar outro profissional!';
+
+    this.atualizarObjetos();
+    this.profissional.codigo = this.codigo!=null ?this.codigo:0;
+    
+     this.salvarRegistro$ = this.profissionalService.save(this.profissional)
+    .subscribe(sucesso => {
+      this.handlerSuccess(msgSucess);
+      setTimeout(() => { this.retornar(); }, 3000);
+    },
+      error => {
+        console.error(error);
+        this.handleError("Ocorreu um erro na tentativa de salvar o cadastro.");
+      }); 
+  }
   criarFormulario() {
     //criação dos formularios ************************************************
     //formulario Profissional
@@ -114,13 +141,10 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
       documento: this.formBuilder.group({
         rg: [null],
         cpf: [null, [Validators.minLength(11), this.validarCpf.isValidCpf()]]
-      }),
-      servico: this.formBuilder.group({
-        tipoServico:[null]
-      })
+      }),     
+      tipoServico:[null]      
     });
   }
-
   carregarEstados() {
     this.inscricaoEstado$ = this.unidadeFederativaService
       .getData<ApiResult<UnidadeFederativa>>(
@@ -142,7 +166,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
         this.handleError('Erro ao carregar a lista de estados. Tente novamente mais tarde.');
       });
   }
-
   listaTipoServicos(){
     this.inscricaoTipoServico$ = this.tipoServicoService.list<TipoServico[]>()
                                      .subscribe(result=>{this.tipoServicos = result}
@@ -152,7 +175,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     });
 
   }
-
   carregarMunicipios() {
     this.inscricaoMunicipio$ = this.formulario.get('endereco.estado')
       .valueChanges
@@ -195,11 +217,9 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
         )
       ).subscribe(result => { this.municipios = result.data; });
   }
-
   handleError(msg: string) {
     this.serviceAlert.mensagemErro(msg);
   }
-
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);
   }
@@ -224,7 +244,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   retornar() {
     this.router.navigate(['/profissional']);
   }
-
   atualizarObjetos() {
 
     let valueSubmit = Object.assign({}, this.formulario.value);
@@ -238,8 +257,39 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     }
 
     this.profissional = valueSubmit;
-    console.log(this.profissional);
-
-    //profissional-endereco
+    
+    
+    
   }
+  tipoServicoSelecionado(event, opt, codigoTipoServico) {
+
+    var rep = [];
+  
+    if (event.checked === true) {
+        //userResponse.push(opt);
+        this.servicoSelecionado.push(codigoTipoServico);
+    }
+
+    if (event.checked === false) {
+        var index: number = this.servicoSelecionado.indexOf(codigoTipoServico);
+        this.servicoSelecionado.splice(index, 1);
+        
+    }
+   
+
+  }
+  openDialogEndereco():void{
+    const dialogRef = this.dialog.open(EnderecoComponent,        
+      {data : { origemChamada:2, codigo:this.codigo} }
+    );
+    
+    dialogRef.afterClosed().subscribe(result => {
+      if (result!=''){
+        this.dadosEndereco = result;
+        console.log (result);
+      }      
+    });
+  }
+   
+
 }
