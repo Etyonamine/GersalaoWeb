@@ -15,7 +15,7 @@ import { ValidaCpfService } from 'src/app/shared/service/valida-cpf.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
 import { UnidadeFederativaService } from 'src/app/shared/service/unidade-federativa.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TipoServico } from 'src/app/tipo-servico/tipo-servico';
 import { TipoServicoService } from 'src/app/tipo-servico/tipo-servico.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -62,6 +62,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     private serviceAlert: AlertService,
     private validarCpf: ValidaCpfService,
     private router: Router,
+    private route: ActivatedRoute,
     private tipoServicoService: TipoServicoService,
     public dialog: MatDialog
     ) 
@@ -70,12 +71,12 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     }
 
   ngOnInit(): void {
-
+    this.profissional = this.route.snapshot.data['profissional'] ? this.route.snapshot.data['profissional']:<Profissional>{};
+    this.codigo = (this.profissional.codigo !== null && this.profissional.codigo !== undefined) ? this.profissional.codigo : 0;
     this.tituloPagina = this.codigo == 0 ? 'Novo Registro' : 'Alterar o registro';
     this.habilitaApagar = this.codigo == 0 ? true : false;
     this.criarFormulario();
-    this.carregarEstados();
-    this.carregarMunicipios();
+     
     this.listaTipoServicos();
     this.dadosEndereco = <Endereco>{};
 
@@ -118,54 +119,15 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     //criação dos formularios ************************************************
     //formulario Profissional
     this.formulario = this.formBuilder.group({
-      codigo: [null],
-      nome: [null, [Validators.required, this.isDupeProfissional]],
+      codigo: [this.codigo],
+      nome: [this.profissional.nome === undefined ? null : this.profissional.nome, [Validators.required, this.isDupeProfissional]],
       //dataaniversario: [null, [Validators.pattern('^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4}|[0-9]{2})$')]],
-      dataaniversario: [null, [Validators.pattern('^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$')]],
-      codigoSituacao: [1, [Validators.required]],
-      observacao: [null],
-      endereco: this.formBuilder.group({
-        rua: [null],
-        cep: [null, [Validators.minLength(8), Validators.pattern(/^-?(0|[0-9]\d*)?$/)]],
-        numero: [null],
-        complemento: [null],
-        bairro: [null],
-        municipio: [null],
-        estado: [null]
-      }),
-      contato: this.formBuilder.group({
-        telefoneFixo: [null, [Validators.minLength(10), Validators.pattern(/^-?(0|[0-9]\d*)?$/)]],
-        celular: [null, [Validators.minLength(11), Validators.pattern(/^-?(0|[0-9]\d*)?$/)]],
-        email: [null, [Validators.email]]
-      }),
-      documento: this.formBuilder.group({
-        rg: [null],
-        cpf: [null, [Validators.minLength(11), this.validarCpf.isValidCpf()]]
-      }),     
-      tipoServico:[null]      
+      dataaniversario: [this.profissional.dataaniversario === undefined ? null : this.profissional.dataaniversario, [Validators.pattern('^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$')]],
+      codigoSituacao: [this.profissional.codigoSituacao === undefined ? 1 : this.profissional.codigoSituacao, [Validators.required]],
+      observacao: [this.profissional.observacao === undefined ? null : this.profissional.observacao]       
     });
   }
-  carregarEstados() {
-    this.inscricaoEstado$ = this.unidadeFederativaService
-      .getData<ApiResult<UnidadeFederativa>>(
-        0,
-        30,
-        "descricao",
-        "ASC",
-        null,
-        null,
-      )
-      .subscribe(result => {
-        if (result.data !== null) {
-
-          this.estados = result.data;
-        }
-
-      }, error => {
-        console.error(error);
-        this.handleError('Erro ao carregar a lista de estados. Tente novamente mais tarde.');
-      });
-  }
+   
   listaTipoServicos(){
     this.inscricaoTipoServico$ = this.tipoServicoService.list<TipoServico[]>()
                                      .subscribe(result=>{this.tipoServicos = result}
@@ -175,48 +137,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     });
 
   }
-  carregarMunicipios() {
-    this.inscricaoMunicipio$ = this.formulario.get('endereco.estado')
-      .valueChanges
-      .pipe(
-        map(estado => this.estados.filter(e => e.codigo === estado)),
-        map(estados => estados && estados.length > 0 ? estados[0].codigo : EMPTY),
-        switchMap(
-          (estadoId: number) => {
-            this.municipios = [];
-            this.formulario.get('endereco.municipio').setValue(0);
-
-            if (estadoId && estadoId !== undefined && estadoId > 0) {
-
-              return this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(
-                estadoId,
-                0,
-                1000,
-                "descricao",
-                "ASC",
-                null,
-                null,
-              );
-            } else {
-              return EMPTY;
-            }
-
-            // if estadoId && estadoId !== undefined ?
-
-            // this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(
-            //   estadoId,
-            //   0,
-            //   1000,
-            //   "descricao",
-            //   "ASC",
-            //   null,
-            //   null,
-            // );
-            // : EMPTY
-          }
-        )
-      ).subscribe(result => { this.municipios = result.data; });
-  }
+  
   handleError(msg: string) {
     this.serviceAlert.mensagemErro(msg);
   }

@@ -9,8 +9,8 @@ export interface Profissional{
   codigoSituacao: number;
   nome: string;
   dataaniversario: Date;
-  dataalteracao: Date;
-  datacadastro: Date;
+  dataAlteracao: Date;
+  dataCadastro: Date;
   observacao: string;
   profissionalContato : ProfissionalContato;
   profissionalDocumento : ProfissionalDocumento;

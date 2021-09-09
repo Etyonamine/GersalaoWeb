@@ -17,11 +17,12 @@ import { ApiResult } from '../shared/base.service';
 export class ProfissionalComponent implements OnInit, OnDestroy {
 
   profissionais : MatTableDataSource<Profissional>;
+  lista : Array<Profissional> ;
 
   inscricao$  : Subscription;
 
 
-  public colunas: string[]=["codigo","nome", "datacadastro","dataalteracao"];
+  public colunas: string[]=["codigo","nome", "datacadastro","dataalteracao", "acao"];
 
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
@@ -78,6 +79,7 @@ export class ProfissionalComponent implements OnInit, OnDestroy {
                       filterQuery
                     ).subscribe(result=>{
                       this.profissionais = new MatTableDataSource<Profissional>(result.data);
+                      this.lista = result.data;
                       this.paginator.length=result.totalCount;
                       this.paginator.pageIndex=result.pageIndex;
                       this.paginator.pageSize=result.pageSize;
@@ -86,7 +88,6 @@ export class ProfissionalComponent implements OnInit, OnDestroy {
                         {
                           return EMPTY;
                         };
-
                       }
                     }, error=>
                     {

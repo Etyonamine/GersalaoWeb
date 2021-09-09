@@ -57,8 +57,8 @@
          <!--    <button type="button" mat-raised-button color="primary" [disabled]="formulario.get('codigo').value!==''"
               (click)="openDialogEndereco()">Endereço </button> -->
               <button type="button" mat-raised-button color="primary"  
-              (click)="openDialogEndereco()">Endereço </button>
-            <button type="button" mat-raised-button color="primary" [disabled]="formulario.get('codigo').value!==''"
+              (click)="openDialogEndereco()" [disabled]=" codigo == 0 ">Endereço </button>
+            <button type="button" mat-raised-button color="primary" [disabled]="codigo == 0"
               (click)="openDialogEndereco()">Contato </button>
 
           </mat-card-content>
