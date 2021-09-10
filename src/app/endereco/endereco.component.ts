@@ -4,6 +4,7 @@ import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { ProfissionalEndereco } from '../profissional/profissional-endereco/profissional-endereco';
 import { ProfissionalEnderecoService } from '../profissional/profissional-endereco/profissional-endereco.service';
+import { ProfissionalService } from '../profissional/profissional.service';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
 import { Municipio } from '../shared/municipios/municipio';
@@ -36,43 +37,14 @@ export class EnderecoComponent  implements OnInit {
     
   )
   {}
+
+
   codigoEndereco: number ;
 
   endereco:Endereco;
   profissionalEndereco: ProfissionalEndereco;
 
-  submit() {
-    var enderecoVazio :Boolean ;
-    enderecoVazio = ValidaEndereco.propriedadesNulas(this.endereco);
-
-    if (!enderecoVazio){
-      //gravar o endereco 
-    /* this.inscricaoEndereco$ = this.enderecoService.save(this.endereco).pipe(
-      concatMap((result: end) => {
-        if (this.codigo == 0) {
-          this.cliente = result;
-        }
-
-        if (this.gravarDadosEnderecos) {
-          this.enderecoService.save(this.endereco).subscribe(sucesso => {
-            if (sucesso !== undefined && sucesso !== null) {
-              this.clienteEnderecos[0].codigoCliente = this.cliente.codigo;
-              this.clienteEnderecos[0].codigoEndereco = sucesso.codigo;
-              this.clienteEnderecos[0].endereco = null;
-              this.clienteEnderecoService.save(this.clienteEnderecos[0]).subscribe();
-            }
-
-          });
-        }
-        return of(true);
-      })).subscribe(result=>{
-
-    }) */
-    }
-
-    
-  }
-
+  
   inscricaoProfissionalEndereco$:Subscription;
   inscricaoEndereco$: Subscription;
   inscricaoEstado$:Subscription;
@@ -80,11 +52,13 @@ export class EnderecoComponent  implements OnInit {
   estados: Array<UnidadeFederativa> = [];
   municipios: Array<Municipio> = [];
 
-  ngOnInit(): void {    
-    this.recuperarDados();
+  ngOnInit(): void {   
+     
+    this.recuperarDados();    
     this.carregarEstados();
     this.carregarMunicipios();
     
+
   }
 
   ngOnDestroy():void{
@@ -101,28 +75,119 @@ export class EnderecoComponent  implements OnInit {
       this.inscricaoProfissionalEndereco$.unsubscribe;
     }
   }
- 
+
+  submit() {
+    var enderecoVazio :Boolean ;
+    enderecoVazio = ValidaEndereco.propriedadesNulas(this.endereco);
+
+    if (!enderecoVazio){
+      //mensagens
+      let msgSucess = 'O endereço foi cadastrado com sucesso!';
+      let msgError = 'Erro ao cadastrar outro Endereço!';
+
+      if (this.endereco.codigo > 0 ){
+        
+        //gravar o endereco 
+        this.enderecoService.save(this.endereco).subscribe(result=>{
+          msgSucess = 'O endereço foi atualizado com sucesso!';
+          this.handlerSuccess(msgSucess);   
+        },
+        error=>{
+          msgError = 'Erro ao atualizar o Endereço!';
+          console.log(error);
+          this.handleError(msgError);
+        });
+      }
+      else
+      {
+          
+          this.endereco.codigoSituacao = 1;          
+          this.endereco.codigoTipoEndereco = 1;
+
+          //gravar o endereco 
+            this.enderecoService.save(this.endereco)
+                                            .pipe(
+                                                    concatMap((result: Endereco) => 
+                                                    {
+                                                       this.codigoEndereco = result.codigo;
+                                                       this.profissionalEndereco.CodigoEndereco = this.codigoEndereco;
+                                                       this.profissionalEndereco.CodigoProfissional = this.data.codigo;
+                                                       
+                                                       this.profissionalEnderecoService.save(this.profissionalEndereco)
+                                                                                                      .subscribe(result=>{
+                                                                                                        
+                                                                                                        this.profissionalEndereco = result;
+                                                                                                      });
+                                                        return of(true);
+                                                    })).subscribe(result=>{                                                  
+                                                      this.handlerSuccess(msgSucess);                                                  
+                                            },error=>{
+                                              console.log(error);
+                                              this.handleError(msgError)
+                                            });
+      }  
+    }else{
+      if (this.endereco.codigo > 0 )
+      {
+           this.apagar();  
+      }
+    }
+  }
+
+  apagar()
+  {
+    if (this.profissionalEndereco != undefined && this.profissionalEndereco !== null){
+      this.profissionalEnderecoService.excluirTodos(this.profissionalEndereco[0].codigoProfissional, this.profissionalEndereco[0].codigoEndereco).subscribe(result=>{
+        this.enderecoService.delete(this.endereco.codigo).subscribe(result=>{
+          this.handlerSuccess("Endereço excluido com sucesso!");
+        });
+      },error=>{
+        console.log (error);
+        this.handleError("Ocorreu um erro na tentativa de excluir o endereço.");
+      });
+    }
+    else
+    {
+      this.enderecoService.delete(this.endereco.codigo).subscribe(result=>{
+        this.handlerSuccess("Endereço excluido com sucesso!");
+      }, error=>{
+        console.log (error);
+        this.handleError("Ocorreu um erro na tentativa de excluir o endereço.");
+      });
+    }  
+  }
+
   recuperarDados (){
+
+    this.endereco = <Endereco>{};
+    this.codigoEndereco = 0;
 
     if (this.data.origemChamada == 2)//profissional
     {
-      this.inscricaoProfissionalEndereco$ = this.profissionalEnderecoService.get<ProfissionalEndereco>(this.data.codigo).subscribe(result=>{
-        this.profissionalEndereco = result;
-      },
-      error=>{
-        console.error(error);
-        this.handleError('Erro ao carregar o endereço do profissional. Tente novamente mais tarde.');
-      })
+        this.inscricaoProfissionalEndereco$ = this.profissionalEnderecoService.get<ProfissionalEndereco>(this.data.codigo)
+                                                    .subscribe(result=>{                                                      
+                                                                        this.profissionalEndereco = result;
 
-      this.codigoEndereco = this.profissionalEndereco !== undefined && this.profissionalEndereco !== null ? this.profissionalEndereco.CodigoEndereco:0;
-    }
-     
-    if (this.codigoEndereco!== undefined && this.codigoEndereco!== 0){
-      this.inscricaoEndereco$ = this.enderecoService.get<Endereco>(this.codigoEndereco).subscribe(result=> this.endereco = result);     
-    }else{
-      this.endereco = <Endereco>{};
-    }
-    
+                                                                        if (this.profissionalEndereco[0]!==null && 
+                                                                            this.profissionalEndereco[0]!== undefined)
+                                                                        {            
+                                                                              this.endereco = this.profissionalEndereco[0].endereco;
+                                                                              this.codigoEndereco = this.endereco.codigo;
+
+                                                                              if (this.endereco!=null &&
+                                                                                  this.endereco!=undefined && 
+                                                                                  this.endereco.codigoMunicipio >0 
+                                                                                  && this.endereco.codigoUnidadeFederativa > 0 )
+                                                                              {
+                                                                                  this.carregarMunicipios();
+                                                                              }
+                                                                        }        
+                                                                      },
+                                                              error=>{
+                                                                console.error(error);
+                                                                this.handleError('Erro ao carregar o endereço do profissional. Tente novamente mais tarde.');
+                                                              });
+    }    
   }
 
   carregarEstados() {
@@ -148,8 +213,11 @@ export class EnderecoComponent  implements OnInit {
 
   }
 
-  carregarMunicipios() {   
-      if ((this.endereco.codigoUnidadeFederativa >=0 && this.estados!== undefined)&&(this.endereco.codigoUnidadeFederativa !=0)){
+  carregarMunicipios() { 
+    this.municipios = [];
+    if (this.endereco!== null && this.endereco !==undefined)      
+    {
+      if (this.endereco.codigoUnidadeFederativa >0){
         this.inscricaoMunicipio$ = this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(
           this.endereco.codigoUnidadeFederativa,
           0,
@@ -159,17 +227,14 @@ export class EnderecoComponent  implements OnInit {
           null,
           null,
         ).subscribe(result => { this.municipios = result.data; });  
-      }
-      else
-      {
-        this.municipios = [];
-      }   
-      
+      }      
+    } 
   }
   
   handleError(msg: string) {
     this.serviceAlert.mensagemErro(msg);
   }
+
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);
   }
