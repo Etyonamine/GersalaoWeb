@@ -1,7 +1,9 @@
+import { areAllEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
+import { Profissional } from '../profissional/professional';
 import { ProfissionalEndereco } from '../profissional/profissional-endereco/profissional-endereco';
 import { ProfissionalEnderecoService } from '../profissional/profissional-endereco/profissional-endereco.service';
 import { ProfissionalService } from '../profissional/profissional.service';
@@ -42,7 +44,7 @@ export class EnderecoComponent  implements OnInit {
   codigoEndereco: number ;
 
   endereco:Endereco;
-  profissionalEndereco: ProfissionalEndereco;
+  profissionalEndereco: Array<ProfissionalEndereco> =[];
 
   
   inscricaoProfissionalEndereco$:Subscription;
@@ -106,25 +108,29 @@ export class EnderecoComponent  implements OnInit {
 
           //gravar o endereco 
             this.enderecoService.save(this.endereco)
-                                            .pipe(
-                                                    concatMap((result: Endereco) => 
-                                                    {
-                                                       this.codigoEndereco = result.codigo;
-                                                       this.profissionalEndereco.CodigoEndereco = this.codigoEndereco;
-                                                       this.profissionalEndereco.CodigoProfissional = this.data.codigo;
-                                                       
-                                                       this.profissionalEnderecoService.save(this.profissionalEndereco)
-                                                                                                      .subscribe(result=>{
-                                                                                                        
-                                                                                                        this.profissionalEndereco = result;
-                                                                                                      });
-                                                        return of(true);
-                                                    })).subscribe(result=>{                                                  
-                                                      this.handlerSuccess(msgSucess);                                                  
-                                            },error=>{
-                                              console.log(error);
-                                              this.handleError(msgError)
-                                            });
+                                      .pipe(
+                                        concatMap(
+                                          (result:Endereco)=>
+                                          {
+                                          this.codigoEndereco = result.codigo;
+                                          this.profissionalEndereco = [{CodigoEndereco : this.codigoEndereco , CodigoProfissional : this.data.codigo, Endereco : null}];                                          
+                              
+                                          this.profissionalEnderecoService.save(this.profissionalEndereco[0])
+                                                                                        .subscribe();
+                                          
+                                          return of (true);
+
+                                        })
+                                      )                                     
+                                      .subscribe(result=>{                                                  
+                                        this.handlerSuccess(msgSucess)
+                                                            
+                                      },error=>{
+                                        console.log(error);
+                                        this.handleError(msgError)
+                                      });
+
+                                                                                     
       }  
     }else{
       if (this.endereco.codigo > 0 )
@@ -137,7 +143,7 @@ export class EnderecoComponent  implements OnInit {
   apagar()
   {
     if (this.profissionalEndereco != undefined && this.profissionalEndereco !== null){
-      this.profissionalEnderecoService.excluirTodos(this.profissionalEndereco[0].codigoProfissional, this.profissionalEndereco[0].codigoEndereco).subscribe(result=>{
+      this.profissionalEnderecoService.excluirTodos(this.profissionalEndereco[0].CodigoProfissional, this.profissionalEndereco[0].CodigoEndereco).subscribe(result=>{
         this.enderecoService.delete(this.endereco.codigo).subscribe(result=>{
           this.handlerSuccess("Endereço excluido com sucesso!");
         });
@@ -160,18 +166,20 @@ export class EnderecoComponent  implements OnInit {
   recuperarDados (){
 
     this.endereco = <Endereco>{};
+    
+
     this.codigoEndereco = 0;
 
     if (this.data.origemChamada == 2)//profissional
     {
-        this.inscricaoProfissionalEndereco$ = this.profissionalEnderecoService.get<ProfissionalEndereco>(this.data.codigo)
+        this.inscricaoProfissionalEndereco$ = this.profissionalEnderecoService.get<ProfissionalEndereco[]>(this.data.codigo)
                                                     .subscribe(result=>{                                                      
                                                                         this.profissionalEndereco = result;
 
                                                                         if (this.profissionalEndereco[0]!==null && 
                                                                             this.profissionalEndereco[0]!== undefined)
                                                                         {            
-                                                                              this.endereco = this.profissionalEndereco[0].endereco;
+                                                                              this.endereco = this.profissionalEndereco[0].Endereco;
                                                                               this.codigoEndereco = this.endereco.codigo;
 
                                                                               if (this.endereco!=null &&

@@ -18,6 +18,7 @@ import { ServicoModule } from './servico/servico.module';
 import { ProfissionalModule } from './profissional/profissional.module';
 import { RouterModule } from '@angular/router';
 import { EnderecoModule } from './endereco/endereco.module';
+import { UsuarioModule } from './usuario/usuario.module';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { EnderecoModule } from './endereco/endereco.module';
     NavegacaoComponent,
     LoginComponent,
     HomeComponent,
-   PaginaNaoEncontradaComponent    
+   PaginaNaoEncontradaComponent
+   
 
    ],
   imports: [
@@ -44,7 +46,8 @@ import { EnderecoModule } from './endereco/endereco.module';
     ServicoModule,
     SituacaoModule,
     ProfissionalModule,
-    EnderecoModule
+    EnderecoModule,
+    UsuarioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

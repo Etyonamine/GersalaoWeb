@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { Login } from '../login/login';
 
 @Component({
   selector: 'app-home',
@@ -7,10 +9,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  
+  codigo:number;
+  nome:string; 
+
+  constructor(
+    private route: ActivatedRoute
+  ) { }
 
   ngOnInit(): void {
+      
      
+     this.route.params.subscribe((params: Params) => {
+              this.codigo = params['codigo'];
+              this.nome = params['nome'];
+            });
   }
 
 }

@@ -25,6 +25,11 @@ const routes: Routes = [
      canActivate:[AuthGuard]
   },
   {
+    path:':home/:login',
+    component:HomeComponent,
+    canActivate:[AuthGuard]
+  },
+  {
     path: 'profissional',
     loadChildren:()=> import ('./profissional/profissional.module').then(mod=>mod.ProfissionalModule),
     canActivate:[AuthGuard],

@@ -28,7 +28,8 @@ export class AuthService {
           this.usuarioPesquisado = httpLogin;
           this.usuarioAutenticado = true;
           this.mostrarMenuEmitter.emit(true);
-          this.router.navigate(['/home']);
+          //this.router.navigate(['/home']);
+          this.router.navigate(['/home', httpLogin]);
         }else{
           this.alertService.mensagemErro('Usuário ou senha inválido!');
         }

@@ -13,7 +13,7 @@ export class ProfissionalEnderecoService extends BaseService<ProfissionalEnderec
 
   constructor(protected http : HttpClient) 
   { 
-    super(http, `${environment.API}profissionalEndereco` );
+    super(http, `${environment.API}profissionalendereco` );
   }
 
   excluirTodos(codigoProfissional :number , codigoEndereco : number){
