@@ -13,6 +13,9 @@
   <span>Portal Gersalão</span>
   <span class="example-spacer"></span>
   <div *ngIf="mostrarMenu">
+    <div>
+      Usuario : {{loginUsuario}}
+    </div>
     <button mat-button [routerLink]="['home']">Home</button>
 
     <button mat-button [matMenuTriggerFor]="cadastro" >Cadastro</button>

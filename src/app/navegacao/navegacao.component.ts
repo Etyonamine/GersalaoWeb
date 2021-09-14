@@ -7,21 +7,37 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./navegacao.component.scss']
 })
 export class NavegacaoComponent implements OnInit {
-  mostrarMenu: boolean = false;
-  @Input() codigoUsuario : number = 0;
+  mostrarMenu = false;
+  codigoUsuario = 0;
+  loginUsuario: string;
 
-  constructor(private authService : AuthService) { }
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
     this.authService.mostrarMenuEmitter
     .subscribe(
-          mostrar =>{ this.mostrarMenu = mostrar}
+          mostrar =>
+          {
+            this.mostrarMenu = mostrar;
+
+            if (this.mostrarMenu) {
+              this.getUserLogged();
+            }
+          }
       );
+
   }
-  logout(){
+  logout() {
     this.authService.fazerLogout();
 
   }
+  getUserLogged() {
 
+    this.authService.getUserData();
+    this.codigoUsuario = this.authService.usuarioLogado.Codigo;
+    this.loginUsuario = this.authService.usuarioLogado.Login;
+
+  }
 
 }
