@@ -11,21 +11,22 @@
     <mat-icon>share</mat-icon>
   </button> -->
   <span>Portal Gersalão</span>
+
   <span class="example-spacer"></span>
   <div *ngIf="mostrarMenu">
-    <div>
-      Usuario : {{loginUsuario}}
-    </div>
-    <button mat-button [routerLink]="['home']">Home</button>
 
-    <button mat-button [matMenuTriggerFor]="cadastro" >Cadastro</button>
+    <button mat-button [routerLink]="['home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>
+
+    <button mat-button [matMenuTriggerFor]="cadastro" > &nbsp; <i class ="material-icons right">app_registration</i>Cadastro</button>
     <mat-menu #cadastro="matMenu">
       <button mat-menu-item [routerLink]="['cliente']" >Cliente</button>
       <button mat-menu-item  [routerLink]="['profissional']">Profissional</button>
       <button mat-menu-item [routerLink]="['servico']">Serviço</button>
-      <button mat-menu-item [routerLink]="['tipo-servico']"> Tipo de Serviço</button>
+      <button mat-menu-item [routerLink]="['tipo-servico']">Tipo de Serviço</button>
     </mat-menu>
-    <button mat-button (click)="logout()">Logout</button>
+    <button mat-button >&nbsp;<i class="material-icons right">account_circle</i>{{loginUsuario}}</button>
+
+    <button mat-button (click)="logout()"> &nbsp;<i class="material-icons right">logout</i> Logout</button>
   </div>
 
 

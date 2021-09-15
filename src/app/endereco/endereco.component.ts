@@ -1,12 +1,9 @@
-import { areAllEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
-import { Profissional } from '../profissional/professional';
 import { ProfissionalEndereco } from '../profissional/profissional-endereco/profissional-endereco';
 import { ProfissionalEnderecoService } from '../profissional/profissional-endereco/profissional-endereco.service';
-import { ProfissionalService } from '../profissional/profissional.service';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
 import { Municipio } from '../shared/municipios/municipio';
@@ -20,6 +17,7 @@ import { EnderecoService } from './endereco.service';
 export interface DialogData {
   origemChamada: number;
   codigo: number;
+  codigoUsuario:number;
 }
 
 @Component({
@@ -28,15 +26,15 @@ export interface DialogData {
   styleUrls: ['./endereco.component.scss']
 })
 export class EnderecoComponent  implements OnInit {
-  constructor(     
+  constructor(
     private enderecoService: EnderecoService,
     private serviceAlert: AlertService,
     private unidadeFederativaService: UnidadeFederativaService,
     private municipioService: MunicipioService   ,
-    private profissionalEnderecoService : ProfissionalEnderecoService,     
+    private profissionalEnderecoService : ProfissionalEnderecoService,
     public dialogRef: MatDialogRef<EnderecoComponent>,
     @Inject(MAT_DIALOG_DATA) public data:DialogData,
-    
+
   )
   {}
 
@@ -46,7 +44,7 @@ export class EnderecoComponent  implements OnInit {
   endereco:Endereco;
   profissionalEndereco: Array<ProfissionalEndereco> =[];
 
-  
+
   inscricaoProfissionalEndereco$:Subscription;
   inscricaoEndereco$: Subscription;
   inscricaoEstado$:Subscription;
@@ -54,12 +52,12 @@ export class EnderecoComponent  implements OnInit {
   estados: Array<UnidadeFederativa> = [];
   municipios: Array<Municipio> = [];
 
-  ngOnInit(): void {   
-     
-    this.recuperarDados();    
+  ngOnInit(): void {
+
+    this.recuperarDados();
     this.carregarEstados();
     this.carregarMunicipios();
-    
+
 
   }
 
@@ -88,11 +86,11 @@ export class EnderecoComponent  implements OnInit {
       let msgError = 'Erro ao cadastrar outro Endereço!';
 
       if (this.endereco.codigo > 0 ){
-        
-        //gravar o endereco 
+
+        //gravar o endereco
         this.enderecoService.save(this.endereco).subscribe(result=>{
           msgSucess = 'O endereço foi atualizado com sucesso!';
-          this.handlerSuccess(msgSucess);   
+          this.handlerSuccess(msgSucess);
         },
         error=>{
           msgError = 'Erro ao atualizar o Endereço!';
@@ -102,40 +100,49 @@ export class EnderecoComponent  implements OnInit {
       }
       else
       {
-          
-          this.endereco.codigoSituacao = 1;          
+          if(this.endereco.codigo>0){
+            this.endereco.codigoUsuarioAlteracao = this.data.codigoUsuario;
+            this.endereco.dataAlteracao = new Date();
+          }else{
+            this.endereco.codigoUsuarioCadastrado = this.data.codigoUsuario;
+            this.endereco.dataCadastro = new Date();
+          }
+
+          this.endereco.codigoSituacao = 1;
           this.endereco.codigoTipoEndereco = 1;
 
-          //gravar o endereco 
+          //gravar o endereco
             this.enderecoService.save(this.endereco)
                                       .pipe(
                                         concatMap(
                                           (result:Endereco)=>
                                           {
                                           this.codigoEndereco = result.codigo;
-                                          this.profissionalEndereco = [{CodigoEndereco : this.codigoEndereco , CodigoProfissional : this.data.codigo, Endereco : null}];                                          
-                              
+                                          this.profissionalEndereco = [{CodigoEndereco : this.codigoEndereco ,
+                                                                        CodigoProfissional : this.data.codigo,
+                                                                        Endereco : null}];
+
                                           this.profissionalEnderecoService.save(this.profissionalEndereco[0])
                                                                                         .subscribe();
-                                          
+
                                           return of (true);
 
                                         })
-                                      )                                     
-                                      .subscribe(result=>{                                                  
+                                      )
+                                      .subscribe(result=>{
                                         this.handlerSuccess(msgSucess)
-                                                            
+
                                       },error=>{
                                         console.log(error);
                                         this.handleError(msgError)
                                       });
 
-                                                                                     
-      }  
+
+      }
     }else{
       if (this.endereco.codigo > 0 )
       {
-           this.apagar();  
+           this.apagar();
       }
     }
   }
@@ -160,42 +167,42 @@ export class EnderecoComponent  implements OnInit {
         console.log (error);
         this.handleError("Ocorreu um erro na tentativa de excluir o endereço.");
       });
-    }  
+    }
   }
 
   recuperarDados (){
 
     this.endereco = <Endereco>{};
-    
+
 
     this.codigoEndereco = 0;
 
     if (this.data.origemChamada == 2)//profissional
     {
         this.inscricaoProfissionalEndereco$ = this.profissionalEnderecoService.get<ProfissionalEndereco[]>(this.data.codigo)
-                                                    .subscribe(result=>{                                                      
+                                                    .subscribe(result=>{
                                                                         this.profissionalEndereco = result;
 
-                                                                        if (this.profissionalEndereco[0]!==null && 
+                                                                        if (this.profissionalEndereco[0]!==null &&
                                                                             this.profissionalEndereco[0]!== undefined)
-                                                                        {            
+                                                                        {
                                                                               this.endereco = this.profissionalEndereco[0].Endereco;
                                                                               this.codigoEndereco = this.endereco.codigo;
 
                                                                               if (this.endereco!=null &&
-                                                                                  this.endereco!=undefined && 
-                                                                                  this.endereco.codigoMunicipio >0 
+                                                                                  this.endereco!=undefined &&
+                                                                                  this.endereco.codigoMunicipio >0
                                                                                   && this.endereco.codigoUnidadeFederativa > 0 )
                                                                               {
                                                                                   this.carregarMunicipios();
                                                                               }
-                                                                        }        
+                                                                        }
                                                                       },
                                                               error=>{
                                                                 console.error(error);
                                                                 this.handleError('Erro ao carregar o endereço do profissional. Tente novamente mais tarde.');
                                                               });
-    }    
+    }
   }
 
   carregarEstados() {
@@ -221,9 +228,9 @@ export class EnderecoComponent  implements OnInit {
 
   }
 
-  carregarMunicipios() { 
+  carregarMunicipios() {
     this.municipios = [];
-    if (this.endereco!== null && this.endereco !==undefined)      
+    if (this.endereco!== null && this.endereco !==undefined)
     {
       if (this.endereco.codigoUnidadeFederativa >0){
         this.inscricaoMunicipio$ = this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(
@@ -234,11 +241,11 @@ export class EnderecoComponent  implements OnInit {
           "ASC",
           null,
           null,
-        ).subscribe(result => { this.municipios = result.data; });  
-      }      
-    } 
+        ).subscribe(result => { this.municipios = result.data; });
+      }
+    }
   }
-  
+
   handleError(msg: string) {
     this.serviceAlert.mensagemErro(msg);
   }
@@ -252,6 +259,6 @@ export class EnderecoComponent  implements OnInit {
 
   }
 
-    
-  
+
+
 }

@@ -12,5 +12,5 @@ export interface Endereco{
   dataCadastro :Date;
   codigoUsuarioCadastrado:number;
   dataAlteracao :Date;
-  codigoUsuarioAlteracao:Date;
+  codigoUsuarioAlteracao:number;
 }
