@@ -221,8 +221,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
     dialogRef.afterClosed().subscribe(result => {
       if (result!=''){
-        this.dadosEndereco = result;
-        console.log (result);
+        this.dadosEndereco = result;         
       }
     });
   }
