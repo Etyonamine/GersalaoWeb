@@ -62,9 +62,8 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     private router: Router,
     private route: ActivatedRoute,
     private tipoServicoService: TipoServicoService,
-    public dialog: MatDialog,
-    private authService: AuthService
-    )
+    private authService: AuthService,
+    public dialog: MatDialog    )
     {
       super();
     }

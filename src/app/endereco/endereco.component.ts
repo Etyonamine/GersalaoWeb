@@ -118,9 +118,11 @@ export class EnderecoComponent  implements OnInit {
                                           (result:Endereco)=>
                                           {
                                           this.codigoEndereco = result.codigo;
-                                          this.profissionalEndereco = [{CodigoEndereco : this.codigoEndereco ,
-                                                                        CodigoProfissional : this.data.codigo,
-                                                                        Endereco : null}];
+                                          this.profissionalEndereco = [{codigoEndereco : this.codigoEndereco ,
+                                                                        codigoProfissional : this.data.codigo,
+                                                                        endereco : null,
+                                                                        codigoUsuarioCadastro : this.data.codigoUsuario,
+                                                                        dataCadastro : new Date()}];
 
                                           this.profissionalEnderecoService.save(this.profissionalEndereco[0])
                                                                                         .subscribe();
@@ -150,7 +152,7 @@ export class EnderecoComponent  implements OnInit {
   apagar()
   {
     if (this.profissionalEndereco != undefined && this.profissionalEndereco !== null){
-      this.profissionalEnderecoService.excluirTodos(this.profissionalEndereco[0].CodigoProfissional, this.profissionalEndereco[0].CodigoEndereco).subscribe(result=>{
+      this.profissionalEnderecoService.excluirTodos(this.profissionalEndereco[0].codigoProfissional, this.profissionalEndereco[0].codigoEndereco).subscribe(result=>{
         this.enderecoService.delete(this.endereco.codigo).subscribe(result=>{
           this.handlerSuccess("Endereço excluido com sucesso!");
         });
@@ -173,8 +175,6 @@ export class EnderecoComponent  implements OnInit {
   recuperarDados (){
 
     this.endereco = <Endereco>{};
-
-
     this.codigoEndereco = 0;
 
     if (this.data.origemChamada == 2)//profissional
@@ -186,7 +186,7 @@ export class EnderecoComponent  implements OnInit {
                                                                         if (this.profissionalEndereco[0]!==null &&
                                                                             this.profissionalEndereco[0]!== undefined)
                                                                         {
-                                                                              this.endereco = this.profissionalEndereco[0].Endereco;
+                                                                              this.endereco = this.profissionalEndereco[0].endereco;
                                                                               this.codigoEndereco = this.endereco.codigo;
 
                                                                               if (this.endereco!=null &&

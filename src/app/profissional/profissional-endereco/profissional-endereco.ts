@@ -3,9 +3,10 @@ import { Profissional } from "../professional";
 
 export interface ProfissionalEndereco
 {
-  CodigoProfissional : number;
-  CodigoEndereco: number;  
-  Endereco:Endereco;
-   
+  codigoProfissional : number;
+  codigoEndereco: number;  
+  endereco:Endereco;
+  codigoUsuarioCadastro: number;
+  dataCadastro : Date; 
   
 }
