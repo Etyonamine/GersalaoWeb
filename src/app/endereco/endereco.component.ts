@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { of, Subscription } from 'rxjs';
+import { concat, of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { ProfissionalEndereco } from '../profissional/profissional-endereco/profissional-endereco';
 import { ProfissionalEnderecoService } from '../profissional/profissional-endereco/profissional-endereco.service';
@@ -17,7 +17,7 @@ import { EnderecoService } from './endereco.service';
 export interface DialogData {
   origemChamada: number;
   codigo: number;
-  codigoUsuario:number;
+  codigoUsuario: number;
 }
 
 @Component({
@@ -31,24 +31,24 @@ export class EnderecoComponent  implements OnInit {
     private serviceAlert: AlertService,
     private unidadeFederativaService: UnidadeFederativaService,
     private municipioService: MunicipioService   ,
-    private profissionalEnderecoService : ProfissionalEnderecoService,
+    private alertService: AlertService,
+    private profissionalEnderecoService: ProfissionalEnderecoService,
     public dialogRef: MatDialogRef<EnderecoComponent>,
-    @Inject(MAT_DIALOG_DATA) public data:DialogData,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
 
-  )
-  {}
+  ) {}
 
 
   codigoEndereco: number ;
 
-  endereco:Endereco;
-  profissionalEndereco: Array<ProfissionalEndereco> =[];
+  endereco: Endereco;
+  profissionalEndereco: Array<ProfissionalEndereco> = [];
 
 
-  inscricaoProfissionalEndereco$:Subscription;
+  inscricaoProfissionalEndereco$: Subscription;
   inscricaoEndereco$: Subscription;
-  inscricaoEstado$:Subscription;
-  inscricaoMunicipio$:Subscription;
+  inscricaoEstado$: Subscription;
+  inscricaoMunicipio$: Subscription;
   estados: Array<UnidadeFederativa> = [];
   municipios: Array<Municipio> = [];
 
@@ -61,8 +61,9 @@ export class EnderecoComponent  implements OnInit {
 
   }
 
-  ngOnDestroy():void{
-    if (this.inscricaoEndereco$){
+  // tslint:disable-next-line: use-lifecycle-interface
+  ngOnDestroy(): void {
+    if (this.inscricaoEndereco$) {
       this.inscricaoEndereco$.unsubscribe();
     }
     if (this.inscricaoEstado$) {
@@ -71,39 +72,38 @@ export class EnderecoComponent  implements OnInit {
     if (this.inscricaoMunicipio$) {
       this.inscricaoMunicipio$.unsubscribe();
     }
-    if (this.inscricaoProfissionalEndereco$){
+    if (this.inscricaoProfissionalEndereco$) {
       this.inscricaoProfissionalEndereco$.unsubscribe;
     }
   }
 
   submit() {
-    var enderecoVazio :Boolean ;
+    // tslint:disable-next-line: ban-types
+    let enderecoVazio: Boolean ;
     enderecoVazio = ValidaEndereco.propriedadesNulas(this.endereco);
 
-    if (!enderecoVazio){
-      //mensagens
+    if (!enderecoVazio) {
+      // mensagens
       let msgSucess = 'O endereço foi cadastrado com sucesso!';
       let msgError = 'Erro ao cadastrar outro Endereço!';
 
-      if (this.endereco.codigo > 0 ){
+      if (this.endereco.codigo > 0 ) {
 
-        //gravar o endereco
-        this.enderecoService.save(this.endereco).subscribe(result=>{
+        // gravar o endereco
+        this.enderecoService.save(this.endereco).subscribe(result => {
           msgSucess = 'O endereço foi atualizado com sucesso!';
           this.handlerSuccess(msgSucess);
         },
-        error=>{
+        error => {
           msgError = 'Erro ao atualizar o Endereço!';
           console.log(error);
           this.handleError(msgError);
         });
-      }
-      else
-      {
-          if(this.endereco.codigo>0){
+      } else {
+          if (this.endereco.codigo > 0) {
             this.endereco.codigoUsuarioAlteracao = this.data.codigoUsuario;
             this.endereco.dataAlteracao = new Date();
-          }else{
+          } else {
             this.endereco.codigoUsuarioCadastrado = this.data.codigoUsuario;
             this.endereco.dataCadastro = new Date();
           }
@@ -111,12 +111,11 @@ export class EnderecoComponent  implements OnInit {
           this.endereco.codigoSituacao = 1;
           this.endereco.codigoTipoEndereco = 1;
 
-          //gravar o endereco
-            this.enderecoService.save(this.endereco)
+          // gravar o endereco
+          this.enderecoService.save(this.endereco)
                                       .pipe(
                                         concatMap(
-                                          (result:Endereco)=>
-                                          {
+                                          (result: Endereco) => {
                                           this.codigoEndereco = result.codigo;
                                           this.profissionalEndereco = [{codigoEndereco : this.codigoEndereco ,
                                                                         codigoProfissional : this.data.codigo,
@@ -131,75 +130,86 @@ export class EnderecoComponent  implements OnInit {
 
                                         })
                                       )
-                                      .subscribe(result=>{
-                                        this.handlerSuccess(msgSucess)
+                                      .subscribe(result => {
+                                        this.handlerSuccess(msgSucess);
 
-                                      },error=>{
+                                      }, error => {
                                         console.log(error);
-                                        this.handleError(msgError)
+                                        this.handleError(msgError);
                                       });
 
 
       }
-    }else{
-      if (this.endereco.codigo > 0 )
-      {
+    } else {
+      if (this.endereco.codigo > 0 ) {
            this.apagar();
       }
     }
   }
 
-  apagar()
-  {
-    if (this.profissionalEndereco != undefined && this.profissionalEndereco !== null){
-      this.profissionalEnderecoService.excluirTodos(this.profissionalEndereco[0].codigoProfissional, this.profissionalEndereco[0].codigoEndereco).subscribe(result=>{
-        this.enderecoService.delete(this.endereco.codigo).subscribe(result=>{
-          this.handlerSuccess("Endereço excluido com sucesso!");
+  apagar() {
+    if (this.profissionalEndereco != undefined && this.profissionalEndereco !== null) {
+      this.profissionalEnderecoService.excluirTodos(this.profissionalEndereco[0].codigoProfissional, this.profissionalEndereco[0].codigoEndereco).subscribe(result => {
+        this.enderecoService.delete(this.endereco.codigo).subscribe(result => {
+          this.handlerSuccess('Endereço excluido com sucesso!');
         });
-      },error=>{
+      }, error => {
         console.log (error);
-        this.handleError("Ocorreu um erro na tentativa de excluir o endereço.");
+        this.handleError('Ocorreu um erro na tentativa de excluir o endereço.');
       });
-    }
-    else
-    {
-      this.enderecoService.delete(this.endereco.codigo).subscribe(result=>{
-        this.handlerSuccess("Endereço excluido com sucesso!");
-      }, error=>{
+    } else {
+      this.enderecoService.delete(this.endereco.codigo).subscribe(result => {
+        this.handlerSuccess('Endereço excluido com sucesso!');
+      }, error => {
         console.log (error);
-        this.handleError("Ocorreu um erro na tentativa de excluir o endereço.");
+        this.handleError('Ocorreu um erro na tentativa de excluir o endereço.');
       });
     }
   }
 
-  recuperarDados (){
+  openConfirmExclusao(codigo: number, nome: string) {
+    const mensagem = `Tem certeza que deseja excluir o serviço: [ ${nome} ]?`;
 
-    this.endereco = <Endereco>{};
+    this.alertService.openConfirmModal(mensagem, 'Excluir - Cliente', (answer: boolean) => {
+      if (answer) {
+
+        this.apagar();
+      }
+    }, 'Sim', 'Não'
+    );
+  }
+
+  recuperarDados() {
+
+    this.endereco =  {} as Endereco;
     this.codigoEndereco = 0;
 
-    if (this.data.origemChamada == 2)//profissional
-    {
+    // tslint:disable-next-line: triple-equals
+    if (this.data.origemChamada === 2) {
         this.inscricaoProfissionalEndereco$ = this.profissionalEnderecoService.get<ProfissionalEndereco[]>(this.data.codigo)
-                                                    .subscribe(result=>{
-                                                                        this.profissionalEndereco = result;
+                                                    .pipe(
+                                                      concatMap((result: ProfissionalEndereco) => {
+                                                        this.codigoEndereco = result[0].endereco.codigo;
+                                                        this.inscricaoEndereco$ = this.enderecoService
+                                                                                  .get<Endereco>(this.codigoEndereco)
+                                                                                  .subscribe(result => {
+                                                                                    this.endereco = result;
+                                                                                    this.carregarMunicipios();
 
-                                                                        if (this.profissionalEndereco[0]!==null &&
-                                                                            this.profissionalEndereco[0]!== undefined)
-                                                                        {
-                                                                              this.endereco = this.profissionalEndereco[0].endereco;
-                                                                              this.codigoEndereco = this.endereco.codigo;
+                                                                                  },
+                                                                                  error => {
+                                                                                    console.log(error);
+                                                                                  });
+                                                                                  return of(true);
+                                                                 })
+                                                    )
+                                                    .subscribe(result => {
 
-                                                                              if (this.endereco!=null &&
-                                                                                  this.endereco!=undefined &&
-                                                                                  this.endereco.codigoMunicipio >0
-                                                                                  && this.endereco.codigoUnidadeFederativa > 0 )
-                                                                              {
-                                                                                  this.carregarMunicipios();
-                                                                              }
-                                                                        }
-                                                                      },
-                                                              error=>{
+                                                    },
+
+                                                              error => {
                                                                 console.error(error);
+                                                                // tslint:disable-next-line: max-line-length
                                                                 this.handleError('Erro ao carregar o endereço do profissional. Tente novamente mais tarde.');
                                                               });
     }
@@ -210,8 +220,8 @@ export class EnderecoComponent  implements OnInit {
       .getData<ApiResult<UnidadeFederativa>>(
         0,
         30,
-        "descricao",
-        "ASC",
+        'descricao',
+        'ASC',
         null,
         null,
       )
@@ -230,15 +240,14 @@ export class EnderecoComponent  implements OnInit {
 
   carregarMunicipios() {
     this.municipios = [];
-    if (this.endereco!== null && this.endereco !==undefined)
-    {
-      if (this.endereco.codigoUnidadeFederativa >0){
+    if (this.endereco !== null && this.endereco !== undefined) {
+      if (this.endereco.codigoUnidadeFederativa > 0) {
         this.inscricaoMunicipio$ = this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(
           this.endereco.codigoUnidadeFederativa,
           0,
           1000,
-          "descricao",
-          "ASC",
+          'descricao',
+          'ASC',
           null,
           null,
         ).subscribe(result => { this.municipios = result.data; });
@@ -254,7 +263,7 @@ export class EnderecoComponent  implements OnInit {
     this.serviceAlert.mensagemSucesso(msg);
   }
 
-  onEstadoSelecionado(){
+  onEstadoSelecionado() {
     this.carregarMunicipios();
 
   }
