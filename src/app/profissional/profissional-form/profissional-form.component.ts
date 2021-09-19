@@ -28,75 +28,74 @@ import { Endereco } from 'src/app/endereco/endereco';
 })
 export class ProfissionalFormComponent extends BaseFormComponent implements OnInit {
 
-  codigo: number = 0;
+  codigo = 0;
   formulario: FormGroup;
   profissional: Profissional;
   profissionalEnderecos: Array<ProfissionalEndereco> = [];
   profissionalContatos: Array<ProfissionalContato> = [];
   profissionalDocumentos: Array<ProfissionalDocumento> = [];
 
-  tituloPagina: string = '';
-  descricaoBotaoSalvarEndereco: string = 'Incluir';
+  tituloPagina = '';
+  descricaoBotaoSalvarEndereco = 'Incluir';
   inscricaoEstado$: Subscription;
   inscricaoMunicipio$: Subscription;
-  inscricaoTipoServico$:Subscription;
-  inscricaoAuthService$ : Subscription;
+  inscricaoTipoServico$: Subscription;
+  inscricaoAuthService$: Subscription;
 
 
-  habilitaApagar: boolean = false;
+  habilitaApagar = false;
 
-  optionSituacao: Array<Object> = [{ value: 1, name: "Ativo" }, { value: 2, name: "Inativo" }];
+  optionSituacao: Array<Object> = [{ value: 1, name: 'Ativo' }, { value: 2, name: 'Inativo' }];
   estados: Array<UnidadeFederativa> = [];
   municipios: Array<Municipio> = [];
   tipoServicos: Array<TipoServico> = [];
-  servicoSelecionado : Array<number>=[];
-  dadosEndereco : Endereco;
+  servicoSelecionado: Array<number> = [];
+  dadosEndereco: Endereco;
 
-  codigoUsuario:number;
+  codigoUsuario: number;
 
   salvarRegistro$: Subscription;
 
   constructor(private formBuilder: FormBuilder,
-    private profissionalService: ProfissionalService,
-    private serviceAlert: AlertService,
-    private router: Router,
-    private route: ActivatedRoute,
-    private tipoServicoService: TipoServicoService,
-    private authService: AuthService,
-    public dialog: MatDialog    )
-    {
+              private profissionalService: ProfissionalService,
+              private serviceAlert: AlertService,
+              private router: Router,
+              private route: ActivatedRoute,
+              private tipoServicoService: TipoServicoService,
+              private authService: AuthService,
+              public dialog: MatDialog    ) {
       super();
     }
 
   ngOnInit(): void {
-    this.profissional = this.route.snapshot.data['profissional'] ? this.route.snapshot.data['profissional']:<Profissional>{};
+    this.profissional = this.route.snapshot.data.profissional ? this.route.snapshot.data.profissional :  {} as Profissional;
     this.codigo = (this.profissional.codigo !== null && this.profissional.codigo !== undefined) ? this.profissional.codigo : 0;
     this.tituloPagina = this.codigo == 0 ? 'Novo Registro' : 'Alterar o registro';
     this.habilitaApagar = this.codigo == 0 ? true : false;
     this.criarFormulario();
     this.listaTipoServicos();
-    this.dadosEndereco = <Endereco>{};
+    this.dadosEndereco =  {} as Endereco;
     this.authService.getUserData();
     this.codigoUsuario = this.authService.usuarioLogado.Codigo;
 
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
     if (this.inscricaoEstado$) {
       this.inscricaoEstado$.unsubscribe();
     }
     if (this.inscricaoMunicipio$) {
       this.inscricaoMunicipio$.unsubscribe();
     }
-    if(this.inscricaoTipoServico$){
+    if (this.inscricaoTipoServico$) {
       this.inscricaoTipoServico$.unsubscribe();
     }
-    if(this.salvarRegistro$){
+    if (this.salvarRegistro$) {
       this.salvarRegistro$.unsubscribe();
     }
-    if (this.inscricaoAuthService$){
+    if (this.inscricaoAuthService$) {
       this.inscricaoAuthService$.unsubscribe();
     }
 
@@ -104,39 +103,51 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
   submit() {
 
-    let msgSucess = 'Profissional cadastrado com sucesso!';
-    let msgError = 'Erro ao cadastrar outro profissional!';
+    const msgSucess = 'Profissional cadastrado com sucesso!';
+    const msgError = 'Erro ao cadastrar outro profissional!';
 
     this.atualizarObjetos();
-    this.profissional.codigo = this.codigo!=null ?this.codigo:0;
+    this.profissional.codigo = this.codigo != null ? this.codigo : 0;
 
-     this.salvarRegistro$ = this.profissionalService.save(this.profissional)
+    this.salvarRegistro$ = this.profissionalService.save(this.profissional)
     .subscribe(sucesso => {
       this.handlerSuccess(msgSucess);
       setTimeout(() => { this.retornar(); }, 3000);
     },
       error => {
         console.error(error);
-        this.handleError("Ocorreu um erro na tentativa de salvar o cadastro.");
+        this.handleError('Ocorreu um erro na tentativa de salvar o cadastro.');
       });
   }
 
   criarFormulario() {
-    //criação dos formularios ************************************************
-    //formulario Profissional
+    const patternDataAniversario   = '\^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$';
+    let dataAniversario = null;
+
+    if (this.profissional.dataAniversario !== null && this.profissional.dataAniversario.toString() !== "0001-01-01T00:00:00") {
+      var dataNiver = this.profissional.dataAniversario.toString();
+
+      var ano: string = dataNiver.toString().substring(0, 4);
+      var mes: string = dataNiver.toString().substring(5, 7);
+      var dia: string = dataNiver.toString().substring(8, 10);
+
+      dataAniversario = dia + '/' + mes + '/' + ano;
+    }
+// '^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$')
+    // criação dos formularios ************************************************
+    // formulario Profissional
     this.formulario = this.formBuilder.group({
       codigo: [this.codigo],
       nome: [this.profissional.nome === undefined ? null : this.profissional.nome, [Validators.required, this.isDupeProfissional]],
-      //dataaniversario: [null, [Validators.pattern('^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4}|[0-9]{2})$')]],
-      dataaniversario: [this.profissional.dataaniversario === undefined ? null : this.profissional.dataaniversario, [Validators.pattern('^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$')]],
+      dataAniversario: [ dataAniversario === undefined ? null : dataAniversario, [Validators.pattern(patternDataAniversario)]],
       codigoSituacao: [this.profissional.codigoSituacao === undefined ? 1 : this.profissional.codigoSituacao, [Validators.required]],
       observacao: [this.profissional.observacao === undefined ? null : this.profissional.observacao]
     });
   }
 
-  listaTipoServicos(){
+  listaTipoServicos() {
     this.inscricaoTipoServico$ = this.tipoServicoService.list<TipoServico[]>()
-                                     .subscribe(result=>{this.tipoServicos = result}
+                                     .subscribe(result => {this.tipoServicos = result; }
                                      , error => {
       console.error(error);
       this.handleError('Erro ao carregar a lista de estados. Tente novamente mais tarde.');
@@ -153,14 +164,14 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   }
   openConfirmExclusao() { }
 
-  //** validar se existe*/
+  // ** validar se existe*/
   isDupeProfissional(): AsyncValidatorFn {
 
 
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
 
-      //verificando se é um caso de ediçao ou novo registro
-      var ProfissionalValidar = (this.codigo) ? this.profissional : <Profissional>{};
+      // verificando se é um caso de ediçao ou novo registro
+      const ProfissionalValidar = (this.codigo) ? this.profissional :  {} as Profissional;
 
       ProfissionalValidar.codigo = this.codigo;
       ProfissionalValidar.nome = this.formulario.get('nome').value;
@@ -168,7 +179,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
       return this.profissionalService.isDupe(ProfissionalValidar).pipe(map(result => {
         return (result ? { isDupeProfissional: true } : null);
       }));
-    }
+    };
   }
 
   retornar() {
@@ -176,52 +187,60 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   }
   atualizarObjetos() {
 
-    let valueSubmit = Object.assign({}, this.formulario.value);
-    var dataNiver : Date;
-    if (valueSubmit.dataaniversario !== null  && valueSubmit.dataaniversario !== ''){
-      var dataAux = valueSubmit.dataaniversario;
-      var dataresult = dataAux.substring(6,10) + '-' + dataAux.substring(3,5) + '-' + dataAux.substring(0,2) + 'T00:00:00';
+    const valueSubmit = Object.assign({}, this.formulario.value);
+    let dataNiver: Date;
+    if (valueSubmit.dataAniversario !== null  && valueSubmit.dataAniversario !== '') {
+      const dataAux = valueSubmit.dataAniversario;
+      const dataresult = dataAux.substring(6, 10) + '-' + dataAux.substring(3, 5) + '-' + dataAux.substring(0, 2) + 'T00:00:00';
       dataNiver = new Date(dataresult);
-    }else{
+    } else {
       dataNiver = null;
     }
 
-    //atualizacao
-    if (this.profissional.codigo > 0 ){
+    // atualizacao
+    if (this.profissional.codigo > 0 ) {
       this.profissional.codigousuarioalteracao =  this.codigoUsuario ;
-    }else{
+    } else {
       this.profissional.codigousuariocadastro =  this.codigoUsuario ;
     }
-    this.profissional = valueSubmit;
+
+    this.profissional.nome = valueSubmit.nome;
+    if (dataNiver !== null) {
+      this.profissional.dataAniversario = dataNiver;
+    }
+
+    this.profissional.codigoSituacao = valueSubmit.codigoSituacao;
+    this.profissional.observacao = valueSubmit.observacao;
+
 
 
 
   }
   tipoServicoSelecionado(event, opt, codigoTipoServico) {
 
-    var rep = [];
+    const rep = [];
 
     if (event.checked === true) {
-        //userResponse.push(opt);
+        // userResponse.push(opt);
         this.servicoSelecionado.push(codigoTipoServico);
     }
 
     if (event.checked === false) {
-        var index: number = this.servicoSelecionado.indexOf(codigoTipoServico);
+        const index: number = this.servicoSelecionado.indexOf(codigoTipoServico);
         this.servicoSelecionado.splice(index, 1);
 
     }
 
 
   }
-  openDialogEndereco():void{
+  openDialogEndereco(): void {
     const dialogRef = this.dialog.open(EnderecoComponent,
-      {data : { origemChamada:2, codigo:this.codigo, codigoUsuario : this.codigoUsuario} }
+      {data : { origemChamada: 2, codigo: this.codigo, codigoUsuario : this.codigoUsuario} }
     );
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result!=''){
-        this.dadosEndereco = result;         
+      if (result != '') {
+        this.dadosEndereco = result;
       }
     });
   }

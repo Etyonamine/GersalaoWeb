@@ -8,12 +8,12 @@ export interface Profissional{
   codigousuarioalteracao: number;
   codigoSituacao: number;
   nome: string;
-  dataaniversario: Date;
+  dataAniversario: Date;
   dataAlteracao: Date;
   dataCadastro: Date;
   observacao: string;
-  profissionalContato : ProfissionalContato;
-  profissionalDocumento : ProfissionalDocumento;
-  profissionalEndereco : ProfissionalEndereco;
+  profissionalContato: ProfissionalContato;
+  profissionalDocumento: ProfissionalDocumento;
+  profissionalEndereco: ProfissionalEndereco;
   tipoServico: Array<number>;
 }

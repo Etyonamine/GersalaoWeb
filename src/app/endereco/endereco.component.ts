@@ -1,3 +1,4 @@
+import { removeSummaryDuplicates } from '@angular/compiler';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { concat, of, Subscription } from 'rxjs';
@@ -73,7 +74,7 @@ export class EnderecoComponent  implements OnInit {
       this.inscricaoMunicipio$.unsubscribe();
     }
     if (this.inscricaoProfissionalEndereco$) {
-      this.inscricaoProfissionalEndereco$.unsubscribe;
+      this.inscricaoProfissionalEndereco$.unsubscribe();
     }
   }
 
@@ -148,29 +149,42 @@ export class EnderecoComponent  implements OnInit {
   }
 
   apagar() {
-    if (this.profissionalEndereco != undefined && this.profissionalEndereco !== null) {
-      this.profissionalEnderecoService.excluirTodos(this.profissionalEndereco[0].codigoProfissional, this.profissionalEndereco[0].codigoEndereco).subscribe(result => {
+    let codigo: number;
+
+    if (this.data.origemChamada === 2) {
+      if (this.profissionalEndereco !== undefined && this.profissionalEndereco !== null && this.profissionalEndereco.length !== 0) {
+         codigo = this.profissionalEndereco[0].codigoProfissional;
+         this.profissionalEnderecoService
+                .excluirTodos(codigo, this.codigoEndereco)
+                  .subscribe(() => {
+                      this.enderecoService.delete(this.codigoEndereco).subscribe(result => {
+                        this.recuperarDados();
+                        this.handlerSuccess('Endereço excluido com sucesso!');
+                  });
+                }, error => {
+                  console.log (error);
+
+                  this.handleError('Ocorreu um erro na tentativa de excluir o endereço.');
+
+                });
+      } else {
         this.enderecoService.delete(this.endereco.codigo).subscribe(result => {
           this.handlerSuccess('Endereço excluido com sucesso!');
+        }, error => {
+          console.log (error);
+          this.handleError('Ocorreu um erro na tentativa de excluir o endereço.');
         });
-      }, error => {
-        console.log (error);
-        this.handleError('Ocorreu um erro na tentativa de excluir o endereço.');
-      });
-    } else {
-      this.enderecoService.delete(this.endereco.codigo).subscribe(result => {
-        this.handlerSuccess('Endereço excluido com sucesso!');
-      }, error => {
-        console.log (error);
-        this.handleError('Ocorreu um erro na tentativa de excluir o endereço.');
-      });
+      }
     }
   }
 
-  openConfirmExclusao(codigo: number, nome: string) {
-    const mensagem = `Tem certeza que deseja excluir o serviço: [ ${nome} ]?`;
 
-    this.alertService.openConfirmModal(mensagem, 'Excluir - Cliente', (answer: boolean) => {
+
+
+  openConfirmExclusao() {
+    const mensagem = `Tem certeza que deseja excluir o endereco ?`;
+
+    this.alertService.openConfirmModal(mensagem, 'Excluir - Endereco', (answer: boolean) => {
       if (answer) {
 
         this.apagar();
@@ -186,32 +200,37 @@ export class EnderecoComponent  implements OnInit {
 
     // tslint:disable-next-line: triple-equals
     if (this.data.origemChamada === 2) {
-        this.inscricaoProfissionalEndereco$ = this.profissionalEnderecoService.get<ProfissionalEndereco[]>(this.data.codigo)
+
+        this.inscricaoProfissionalEndereco$ = this.profissionalEnderecoService
+                                                    .get<ProfissionalEndereco[]>(this.data.codigo)
                                                     .pipe(
-                                                      concatMap((result: ProfissionalEndereco) => {
-                                                        this.codigoEndereco = result[0].endereco.codigo;
-                                                        this.inscricaoEndereco$ = this.enderecoService
+                                                      concatMap((result: ProfissionalEndereco[]) => {
+                                                        this.profissionalEndereco = result;
+                                                        if (result !== undefined && result !== null && result.length !== 0) {
+                                                          this.codigoEndereco = result[0].endereco.codigo;
+                                                          this.inscricaoEndereco$ = this.enderecoService
                                                                                   .get<Endereco>(this.codigoEndereco)
-                                                                                  .subscribe(result => {
-                                                                                    this.endereco = result;
+                                                                                  .subscribe(endereco => {
+                                                                                    this.endereco = endereco;
                                                                                     this.carregarMunicipios();
 
                                                                                   },
                                                                                   error => {
                                                                                     console.log(error);
                                                                                   });
-                                                                                  return of(true);
-                                                                 })
+                                                        }
+
+                                                        return of(true);
+                                                      })
                                                     )
                                                     .subscribe(result => {
 
                                                     },
-
-                                                              error => {
-                                                                console.error(error);
-                                                                // tslint:disable-next-line: max-line-length
-                                                                this.handleError('Erro ao carregar o endereço do profissional. Tente novamente mais tarde.');
-                                                              });
+                                                    error => {
+                                                      console.error(error);
+                                                      // tslint:disable-next-line: max-line-length
+                                                      this.handleError('Erro ao carregar o endereço do profissional. Tente novamente mais tarde.');
+                                                    });
     }
   }
 

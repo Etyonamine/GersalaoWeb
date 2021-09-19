@@ -16,7 +16,7 @@
       </mat-form-field>
       <mat-form-field appearance="fill" style="width: 150px">
         <mat-label>Data de aniversário</mat-label>
-        <input matInput placeholder="Digite a data de aniversário" formControlName="dataaniversario" maxlength="10"
+        <input matInput placeholder="Digite a data de aniversário" formControlName="dataAniversario"  maxlength="10"
           matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021" />
       </mat-form-field>
       <mat-form-field *ngIf="optionSituacao" appearance="fill" style="width: 150px">
@@ -46,17 +46,17 @@
         " mensagemErro="Por favor, digite o nome completo! "></app-msg-error>
       <app-msg-error [mostrarErro]="formulario.get('nome').errors?.isDupeProfissional"
         mensagemErro="O nome digitado já existe cadastrado!"></app-msg-error>
-      <app-msg-error [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
+      <app-msg-error [mostrarErro]="formulario.get('dataAniversario').hasError('pattern')"
         mensagemErro="A data está com formato incorreto!"></app-msg-error>
     </div>
     <div>
-      <div class="button-row"> 
+      <div class="button-row">
         <mat-card>
           <mat-card-content>
 
          <!--    <button type="button" mat-raised-button color="primary" [disabled]="formulario.get('codigo').value!==''"
               (click)="openDialogEndereco()">Endereço </button> -->
-              <button type="button" mat-raised-button color="primary"  
+              <button type="button" mat-raised-button color="primary"
               (click)="openDialogEndereco()" [disabled]=" codigo == 0 ">Endereço </button>
             <button type="button" mat-raised-button color="primary" [disabled]="codigo == 0"
               (click)="openDialogEndereco()">Contato </button>
@@ -165,7 +165,7 @@
           </div>
         </mat-tab>-->
 
-    <!--PASTA: CONTATO ******************************************************************* 
+    <!--PASTA: CONTATO *******************************************************************
     <mat-tab label="Contatos">
       <div class="form-group mat-container" formGroupName="contato">
         <mat-form-field appearance="fill" style="width: 410px">
