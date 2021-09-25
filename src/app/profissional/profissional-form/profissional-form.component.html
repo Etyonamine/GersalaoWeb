@@ -59,7 +59,7 @@
               <button type="button" mat-raised-button color="primary"
               (click)="openDialogEndereco()" [disabled]=" codigo == 0 ">Endereço </button>
             <button type="button" mat-raised-button color="primary" [disabled]="codigo == 0"
-              (click)="openDialogEndereco()">Contato </button>
+              (click)="openDialogContato()">Contato </button>
 
           </mat-card-content>
         </mat-card>
@@ -70,101 +70,7 @@
   <mat-tab-group mat-align-tabs="start">-->
 
 
-    <!--PASTA: ENDERECO *******************************************************************
-        <mat-tab label="Endereço">
-          <div class="Form-group mat-container" formGroupName="endereco">
-            <mat-form-field appearance="fill" style="width: 350px">
-              <mat-label>Rua</mat-label>
-              <input matInput formControlName="rua" />
-            </mat-form-field>
-            <mat-form-field appearance="fill" style="width: 100px">
-              <mat-label>Número</mat-label>
-              <input
-                matInput
-                placeholder="Digite o número da rua do Profissional"
-                formControlName="numero"
-                matTooltip="Informar a rua do Profissional"
-              />
-            </mat-form-field>
-            <mat-form-field appearance="fill" style="width: 558px">
-              <mat-label>Complemento</mat-label>
-              <input
-                matInput
-                placeholder="Digite o complemento do Profissional"
-                formControlName="complemento"
-                matTooltip="Informar o complemento do Profissional"
-              />
-            </mat-form-field>
-
-            <div class="form-group mat-container">
-              <mat-form-field appearance="fill" style="width: 440px">
-                <mat-label>Bairro</mat-label>
-                <input
-                  matInput
-                  placeholder="Digite o bairro do Profissional"
-                  formControlName="bairro"
-                  matTooltip="Informar o bairro do Profissional"
-                />
-              </mat-form-field>
-              <mat-form-field appearance="fill" style="width: 100px">
-                <mat-label>CEP</mat-label>
-                <input
-                  matInput
-                  placeholder="Digite o número do CEP"
-                  formControlName="cep"
-                  matTooltip="Informar o CEP do Profissional"
-                  maxlength="8"
-                />
-              </mat-form-field>
-              <mat-form-field appearance="fill" style="width: 150px">
-                <mat-label>Estado</mat-label>
-                <mat-select
-                  formControlName="estado"
-                  matTooltip="Estado federativa do Brasil"
-                >
-                  <mat-option [value]="0"></mat-option>
-                  <mat-option
-                    *ngFor="let estado of estados"
-                    [value]="estado.codigo"
-                  >
-                    {{ estado.descricao }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="fill" style="width: 315px">
-                <mat-label>Município</mat-label>
-                <mat-select
-                  formControlName="municipio"
-                  matTooltip="Municípios do Brasil"
-                >
-                  <mat-option
-                    *ngFor="let municipio of municipios"
-                    [value]="municipio.codigo"
-                  >
-                    {{ municipio.descricao }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-          <div>
-            <app-msg-error
-              [mostrarErro]="
-                formulario.get('endereco.cep').value &&
-                formulario.get('endereco.cep').hasError('pattern')
-              "
-              mensagemErro="Por favor, digitar somente os números do CEP."
-            ></app-msg-error>
-            <app-msg-error
-              [mostrarErro]="
-                formulario.get('endereco.cep').hasError('minlength')
-              "
-              mensagemErro="Por favor, digitar o cep completo."
-            >
-            </app-msg-error>
-          </div>
-        </mat-tab>-->
-
+   
     <!--PASTA: CONTATO *******************************************************************
     <mat-tab label="Contatos">
       <div class="form-group mat-container" formGroupName="contato">

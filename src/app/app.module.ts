@@ -19,6 +19,7 @@ import { ProfissionalModule } from './profissional/profissional.module';
 import { RouterModule } from '@angular/router';
 import { EnderecoModule } from './endereco/endereco.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { ContatoModule } from './contato/contato.module';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { UsuarioModule } from './usuario/usuario.module';
     LoginComponent,
     HomeComponent,
    PaginaNaoEncontradaComponent
+   
    
 
    ],
@@ -47,7 +49,8 @@ import { UsuarioModule } from './usuario/usuario.module';
     SituacaoModule,
     ProfissionalModule,
     EnderecoModule,
-    UsuarioModule
+    UsuarioModule, 
+    ContatoModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,7 +1,6 @@
-import { removeSummaryDuplicates } from '@angular/compiler';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { concat, of, Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { ProfissionalEndereco } from '../profissional/profissional-endereco/profissional-endereco';
 import { ProfissionalEnderecoService } from '../profissional/profissional-endereco/profissional-endereco.service';
@@ -132,8 +131,9 @@ export class EnderecoComponent  implements OnInit {
                                         })
                                       )
                                       .subscribe(result => {
-                                        this.handlerSuccess(msgSucess);
-
+                                        if (result){
+                                          this.handlerSuccess(msgSucess);
+                                        }
                                       }, error => {
                                         console.log(error);
                                         this.handleError(msgError);
@@ -155,17 +155,24 @@ export class EnderecoComponent  implements OnInit {
       if (this.profissionalEndereco !== undefined && this.profissionalEndereco !== null && this.profissionalEndereco.length !== 0) {
          codigo = this.profissionalEndereco[0].codigoProfissional;
          this.profissionalEnderecoService
-                .excluirTodos(codigo, this.codigoEndereco)
-                  .subscribe(() => {
-                      this.enderecoService.delete(this.codigoEndereco).subscribe(result => {
-                        this.recuperarDados();
-                        this.handlerSuccess('Endereço excluido com sucesso!');
-                  });
-                }, error => {
+                .excluirTodos(codigo, this.codigoEndereco)                
+                  .subscribe(result =>{
+                      if (result)
+                      {
+                        this.enderecoService.delete(this.codigoEndereco)
+                                              .subscribe(result => {
+                           this.recuperarDados();
+                           this.handlerSuccess('Endereço excluido com sucesso!');
+                        },error=>{
+                            console.log(error);
+                            this.handleError('Ocorreu um erro na tentativa de excluir o endereço.');          
+                        });
+                  
+                      }
+                    }, error => {
                   console.log (error);
 
-                  this.handleError('Ocorreu um erro na tentativa de excluir o endereço.');
-
+                  this.handleError('Ocorreu um erro na tentativa de excluir o profissional endereço.');
                 });
       } else {
         this.enderecoService.delete(this.endereco.codigo).subscribe(result => {
