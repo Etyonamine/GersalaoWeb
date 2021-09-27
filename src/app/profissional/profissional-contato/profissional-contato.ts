@@ -1,7 +1,10 @@
+import { Contato } from "src/app/contato/contato";
+
 export interface ProfissionalContato{
 
-  CodigoProfissional : number;
-  CodigoContato : number;
-  CodigoUsuarioCadastro : number;
-  DataCadastro : Date;
+  codigoProfissional : number;
+  codigoContato : number;
+  codigoUsuarioCadastro : number;  
+  dataCadastro : Date;  
+  contato: Contato;
 }
