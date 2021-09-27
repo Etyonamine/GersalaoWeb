@@ -22,13 +22,13 @@ import { MatRadioModule} from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule} from '@angular/material/divider';
 
- @NgModule({
+@NgModule({
   declarations: [],
-  imports:[
+  imports: [
     CommonModule
 
   ],
-  exports:[
+  exports: [
     MatButtonModule,
     MatCardModule,
     MatCheckboxModule,

@@ -28,7 +28,7 @@ import { UsuarioModule } from './usuario/usuario.module';
     LoginComponent,
     HomeComponent,
    PaginaNaoEncontradaComponent
-   
+
 
    ],
   imports: [

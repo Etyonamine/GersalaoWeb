@@ -35,7 +35,14 @@
           placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
           matTooltip="Digite aqui caso precise informar alguma observação do Profissional."></textarea>
       </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Different locale</mat-label>
+        <input matInput [matDatepicker]="dp">
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp></mat-datepicker>
+      </mat-form-field>
     </div>
+
     <div>
 
       <app-msg-error [mostrarErro]="

@@ -1,7 +1,12 @@
-<h2 mat-dialog-title>Endereço</h2>
+
 <mat-dialog-content class="mat-typography">
+  <mat-card>
+    <mat-card-title>Endereço</mat-card-title>
+    <mat-card-content>
+
+
   <!-- <form [formGroup]="formulario" (ngSubmit)="onSubmit()"> -->
-    <mat-form-field appearance="fill" style="width: 350px">
+    <mat-form-field appearance="fill" style="width: 500px">
       <mat-label>Rua</mat-label>
       <input matInput
             [(ngModel)]="endereco.descricao"
@@ -18,7 +23,7 @@
         matTooltip="Informar o numero"
       />
     </mat-form-field>
-    <mat-form-field appearance="fill" style="width: 558px">
+    <mat-form-field appearance="fill" style="width: 250px">
       <mat-label>Complemento</mat-label>
       <input
         matInput
@@ -29,7 +34,7 @@
     </mat-form-field>
 
 
-      <mat-form-field appearance="fill" style="width: 440px">
+      <mat-form-field appearance="fill" style="width: 300px">
         <mat-label>Bairro</mat-label>
         <input
           matInput
@@ -67,7 +72,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="fill" style="width: 315px">
+      <mat-form-field appearance="fill" style="width: 300px">
         <mat-label>Município</mat-label>
         <mat-select
         [(ngModel)]="endereco.codigoMunicipio"
@@ -82,7 +87,12 @@
         </mat-select>
       </mat-form-field>
 
-
+      <mat-form-field appearance="fill">
+        <mat-label>Different locale</mat-label>
+        <input matInput [matDatepicker]="dp">
+        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+        <mat-datepicker #dp></mat-datepicker>
+      </mat-form-field>
 
    <!--  <app-msg-error
       [mostrarErro]="
@@ -99,16 +109,19 @@
     >
     </app-msg-error> -->
 
-
-
-<mat-dialog-actions align="end">
-  <button mat-button   mat-dialog-close color="primary">Retornar &nbsp;<i class="material-icons right">reply</i></button>
-  <button mat-button [mat-dialog-close]="endereco" (click)="submit()"  color="primary" >
-    Salvar &nbsp;<i class="material-icons right">save</i>
-  </button>
-  <button mat-button color="warn" [disabled]="codigoEndereco == 0" (click)="openConfirmExclusao()">Apagar &nbsp;<i class="material-icons right">delete</i></button>
-</mat-dialog-actions>
+    </mat-card-content>
+    <mat-card-actions fxLayoutAlign="end" >
+      <button mat-button   mat-dialog-close color="primary">Retornar &nbsp;<i class="material-icons right">reply</i></button>
+      <button mat-button [mat-dialog-close]="endereco" (click)="submit()"  color="primary" >
+        Salvar &nbsp;<i class="material-icons right">save</i>
+      </button>
+      <button mat-button color="warn" [disabled]="codigoEndereco == 0" (click)="openConfirmExclusao()">Apagar &nbsp;<i class="material-icons right">delete</i></button>
+    </mat-card-actions>
+  </mat-card>
 
  <!-- </form>  -->
 </mat-dialog-content>
+
+
+
 

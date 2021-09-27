@@ -19,15 +19,38 @@ import { MatDialog } from '@angular/material/dialog';
 import { EnderecoComponent } from 'src/app/endereco/endereco.component';
 import { Endereco } from 'src/app/endereco/endereco';
 
-
+import {
+  MAT_MOMENT_DATE_FORMATS,
+  MomentDateAdapter,
+  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
+} from '@angular/material-moment-adapter';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
+import 'moment/locale/pt-br';
 
 @Component({
   selector: 'app-profissional-form',
   templateUrl: './profissional-form.component.html',
-  styleUrls: ['./profissional-form.component.scss']
+  styleUrls: ['./profissional-form.component.scss'],
+  providers: [
+    // The locale would typically be provided on the root module of your application. We do it at
+    // the component level here, due to limitations of our example generation script.
+    {provide: MAT_DATE_LOCALE, useValue: 'pt-br'},
+
+    // `MomentDateAdapter` and `MAT_MOMENT_DATE_FORMATS` can be automatically provided by importing
+    // `MatMomentDateModule` in your applications root module. We provide it at the component level
+    // here, due to limitations of our example generation script.
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+  ],
 })
 export class ProfissionalFormComponent extends BaseFormComponent implements OnInit {
 
+
+  
   codigo = 0;
   formulario: FormGroup;
   profissional: Profissional;
@@ -124,14 +147,19 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     const patternDataAniversario   = '\^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$';
     let dataAniversario = null;
 
-    if (this.profissional.dataAniversario !== null && this.profissional.dataAniversario.toString() !== "0001-01-01T00:00:00") {
-      var dataNiver = this.profissional.dataAniversario.toString();
+    if (this.profissional.dataAniversario !== null && this.profissional.dataAniversario !== undefined ) {
 
-      var ano: string = dataNiver.toString().substring(0, 4);
-      var mes: string = dataNiver.toString().substring(5, 7);
-      var dia: string = dataNiver.toString().substring(8, 10);
+      if(this.profissional.dataAniversario.toString() !== "0001-01-01T00:00:00"){
 
-      dataAniversario = dia + '/' + mes + '/' + ano;
+        var dataNiver = this.profissional.dataAniversario.toString();
+
+        var ano: string = dataNiver.toString().substring(0, 4);
+        var mes: string = dataNiver.toString().substring(5, 7);
+        var dia: string = dataNiver.toString().substring(8, 10);
+
+        dataAniversario = dia + '/' + mes + '/' + ano;
+
+      }
     }
 // '^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$')
     // criação dos formularios ************************************************
@@ -235,11 +263,12 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   }
   openDialogEndereco(): void {
     const dialogRef = this.dialog.open(EnderecoComponent,
-      {data : { origemChamada: 2, codigo: this.codigo, codigoUsuario : this.codigoUsuario} }
+      {width: '1000px' ,height: '600px;',
+        data : { origemChamada: 2, codigo: this.codigo, codigoUsuario : this.codigoUsuario} }
     );
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result != '') {
+      if (result !== '') {
         this.dadosEndereco = result;
       }
     });

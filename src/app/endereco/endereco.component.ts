@@ -1,5 +1,6 @@
 import { removeSummaryDuplicates } from '@angular/compiler';
 import { Component, Inject, OnInit } from '@angular/core';
+import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { concat, of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
@@ -35,8 +36,7 @@ export class EnderecoComponent  implements OnInit {
     private alertService: AlertService,
     private profissionalEnderecoService: ProfissionalEnderecoService,
     public dialogRef: MatDialogRef<EnderecoComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-
+    @Inject(MAT_DIALOG_DATA) public data: DialogData
   ) {}
 
 
