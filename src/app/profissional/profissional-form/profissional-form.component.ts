@@ -18,6 +18,7 @@ import { TipoServicoService } from 'src/app/tipo-servico/tipo-servico.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EnderecoComponent } from 'src/app/endereco/endereco.component';
 import { Endereco } from 'src/app/endereco/endereco';
+import { ContatoFormComponent } from 'src/app/contato/contato-form/contato-form.component';
 
 import {
   MAT_MOMENT_DATE_FORMATS,
@@ -147,9 +148,14 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     const patternDataAniversario   = '\^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$';
     let dataAniversario = null;
 
+<<<<<<< HEAD
     if (this.profissional.dataAniversario !== null && this.profissional.dataAniversario !== undefined ) {
 
       if(this.profissional.dataAniversario.toString() !== "0001-01-01T00:00:00"){
+=======
+    if (this.profissional.dataAniversario !== null && this.profissional.dataAniversario !== undefined && this.profissional.dataAniversario.toString() !== "0001-01-01T00:00:00") {
+      var dataNiver = this.profissional.dataAniversario.toString();
+>>>>>>> db3b247e9c65f3c07e54a1edffa16dbcccf2b1c2
 
         var dataNiver = this.profissional.dataAniversario.toString();
 
@@ -269,6 +275,17 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== '') {
+        this.dadosEndereco = result;
+      }
+    });
+  }
+  openDialogContato(): void{
+    const dialogRef = this.dialog.open(ContatoFormComponent,
+      {data : { origemChamada: 2, codigo: this.codigo, codigoUsuario : this.codigoUsuario} }
+    );
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != '') {
         this.dadosEndereco = result;
       }
     });

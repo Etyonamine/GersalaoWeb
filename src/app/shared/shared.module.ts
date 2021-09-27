@@ -1,4 +1,3 @@
-import { AlertService } from './alert/alert.service';
 import { MaterialModule } from './../material/material.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';

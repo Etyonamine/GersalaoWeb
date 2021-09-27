@@ -109,6 +109,7 @@
     >
     </app-msg-error> -->
 
+<<<<<<< HEAD
     </mat-card-content>
     <mat-card-actions fxLayoutAlign="end" >
       <button mat-button   mat-dialog-close color="primary">Retornar &nbsp;<i class="material-icons right">reply</i></button>
@@ -118,6 +119,17 @@
       <button mat-button color="warn" [disabled]="codigoEndereco == 0" (click)="openConfirmExclusao()">Apagar &nbsp;<i class="material-icons right">delete</i></button>
     </mat-card-actions>
   </mat-card>
+=======
+
+
+<mat-dialog-actions align="end">
+  <button mat-button   mat-dialog-close color="primary">Retornar &nbsp;<i class="material-icons right">reply</i></button>
+  <button mat-button (click)="submit()"  color="primary" >
+    Salvar &nbsp;<i class="material-icons right">save</i>
+  </button>
+  <button mat-button color="warn" [disabled]="codigoEndereco == 0" (click)="openConfirmExclusao()">Apagar &nbsp;<i class="material-icons right">delete</i></button>
+</mat-dialog-actions>
+>>>>>>> db3b247e9c65f3c07e54a1edffa16dbcccf2b1c2
 
  <!-- </form>  -->
 </mat-dialog-content>

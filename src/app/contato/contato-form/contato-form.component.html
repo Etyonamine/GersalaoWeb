@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>Contato</h2>
+
+<mat-dialog-content class="mat-typography">
+    <mat-form-field appearance="fill" style="width: 410px">
+        <mat-label>Digite o seu email</mat-label>
+        <input matInput placeholder="nome@example.com" 
+                [(ngModel)]="email.descricao" matTooltip="Informe o e-mail" />
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 300px">
+        <mat-label>Telefone-Fixo</mat-label>
+        <input matInput [(ngModel)]="telefoneFixo.descricao"
+            placeholder="Digite o número do DDD e telefone fixo do Profissional" maxlength="11"
+            matTooltip="Informar somente os números do telefone fixo do Profissional"
+            maxlength="10" />
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill" style="width: 300px">
+        <mat-label>celular</mat-label>
+        <input matInput [(ngModel)]="telefoneCelular.descricao"  placeholder="Digite o número de telefone fixo do Profissional"
+            maxlength="11" matTooltip="Informar somente os números do celular" />
+    </mat-form-field>
+     
+        
+    <div>
+      <app-msg-error [mostrarErro]="telefoneFixoPreenchido && !numeroTelefoneFixoValido" 
+                      mensagemErro="Por favor,verifique e digite somente números!(ddd + telefone) exemplo:  1199998888.">
+      </app-msg-error>
+      <app-msg-error [mostrarErro]="telefoneFixoPreenchido && !qtdeDigitosTelefoneFixo" 
+                      mensagemErro="Por favor,verifique o numero do telefone fixo e digite os 10 digitos (ddd + telefone) exemplo:  1199998888.">
+      </app-msg-error>
+
+      <app-msg-error [mostrarErro]="telefoneCelularPreenchido && !numeroTelefoneCelularValido" 
+                      mensagemErro="Por favor,verifique o numero do telefone celular  e digite somente números!(ddd + telefone) exemplo:  1199998888.">
+      </app-msg-error>
+      <app-msg-error [mostrarErro]="telefoneCelularPreenchido && !qtdeDigitosTelefoneCel" 
+                      mensagemErro="Por favor,verifique e digite os 10 digitos (ddd + telefone) exemplo:  1199998888.">
+      </app-msg-error>
+      <app-msg-error [mostrarErro]="emailPreenchido && email.descricao!=='' && !emailValido "
+          mensagemErro="Por favor, digite um e-mail válido!">
+      </app-msg-error>
+    </div>
+      
+
+        
+<!--
+        <app-msg-error [mostrarErro]="
+                formulario.get('contato.celular').hasError('pattern')
+              " mensagemErro="Por favor, digite somente números."></app-msg-error>
+
+        <app-msg-error [mostrarErro]="
+                formulario.get('contato.celular').hasError('minlength')
+              " mensagemErro="Por favor, digitar os 11 números do celular (ddd + celular).Exemplo:  11999998888">
+        </app-msg-error>-->
+  
+</mat-dialog-content>    
+
+<mat-dialog-actions align="end">
+  <button mat-button   mat-dialog-close color="primary">Retornar &nbsp;<i class="material-icons right">reply</i></button>
+  <button mat-button (click)="submit()"  color="primary" >
+    Salvar &nbsp;<i class="material-icons right">save</i>
+  </button>
+  <button mat-button color="warn" [disabled]="!blnApagar " (click)="openConfirmExclusao()">Apagar &nbsp;<i class="material-icons right">delete</i></button>
+</mat-dialog-actions>

@@ -19,6 +19,7 @@ import { ProfissionalModule } from './profissional/profissional.module';
 import { RouterModule } from '@angular/router';
 import { EnderecoModule } from './endereco/endereco.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { ContatoModule } from './contato/contato.module';
 
 
 @NgModule({
@@ -28,7 +29,12 @@ import { UsuarioModule } from './usuario/usuario.module';
     LoginComponent,
     HomeComponent,
    PaginaNaoEncontradaComponent
+<<<<<<< HEAD
 
+=======
+   
+   
+>>>>>>> db3b247e9c65f3c07e54a1edffa16dbcccf2b1c2
 
    ],
   imports: [
@@ -47,7 +53,8 @@ import { UsuarioModule } from './usuario/usuario.module';
     SituacaoModule,
     ProfissionalModule,
     EnderecoModule,
-    UsuarioModule
+    UsuarioModule, 
+    ContatoModule
   ],
   providers: [],
   bootstrap: [AppComponent]
