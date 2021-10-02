@@ -29,13 +29,6 @@ import { ContatoModule } from './contato/contato.module';
     LoginComponent,
     HomeComponent,
    PaginaNaoEncontradaComponent
-<<<<<<< HEAD
-
-=======
-   
-   
->>>>>>> db3b247e9c65f3c07e54a1edffa16dbcccf2b1c2
-
    ],
   imports: [
     BrowserModule,
@@ -53,7 +46,7 @@ import { ContatoModule } from './contato/contato.module';
     SituacaoModule,
     ProfissionalModule,
     EnderecoModule,
-    UsuarioModule, 
+    UsuarioModule,
     ContatoModule
   ],
   providers: [],
