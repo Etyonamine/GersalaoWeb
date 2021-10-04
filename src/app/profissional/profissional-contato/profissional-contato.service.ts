@@ -14,4 +14,13 @@ export class ProfissionalContatoService  extends BaseService<ProfissionalContato
     super(http, `${environment.API}profissionalContato` );
   } 
   urlApi = `${environment.API}profissionalContato`; 
+
+  ExcluirLista(lista:ProfissionalContato[]){
+    lista.forEach (registro=>{
+      this.http.delete(`${ this.urlApi  + '/' + registro.codigoProfissional + '/' + registro.codigoContato }`).pipe(take(1));
+    });
+    
+    return true;
+
+  }
 }

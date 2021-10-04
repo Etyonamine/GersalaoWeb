@@ -20,6 +20,7 @@ import { RouterModule } from '@angular/router';
 import { EnderecoModule } from './endereco/endereco.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { ContatoModule } from './contato/contato.module';
+import { TipoContatoModule } from './tipo-contato/tipo-contato.module.module';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { ContatoModule } from './contato/contato.module';
     ProfissionalModule,
     EnderecoModule,
     UsuarioModule,
-    ContatoModule
+    ContatoModule,
+    TipoContatoModule
   ],
   providers: [],
   bootstrap: [AppComponent]

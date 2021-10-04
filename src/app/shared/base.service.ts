@@ -75,20 +75,7 @@ export class BaseService<T> {
     return this.http.delete(`${ this.API_URL + '/' + codigo}`).pipe(take(1));
   }
 
-  deleteLote<T>(record:T){
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-     
-    
-
-    const options = {
-        headers: new HttpHeaders({
-            'Content-Type': 'application/json'
-        }),
-        body: {record}
-    } 
-    return this.http.delete<T>(this.API_URL, record).pipe(take(1));
-  }
+   
 
   isDupe( item :T): Observable<boolean> {
     const headers = new HttpHeaders();

@@ -27,6 +27,7 @@ import {
 } from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import 'moment/locale/pt-br';
+import { Contato } from 'src/app/contato/contato';
 
 @Component({
   selector: 'app-profissional-form',
@@ -75,6 +76,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   tipoServicos: Array<TipoServico> = [];
   servicoSelecionado: Array<number> = [];
   dadosEndereco: Endereco;
+  dadosContato : Contato;
 
   codigoUsuario: number;
 
@@ -276,14 +278,16 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   }
   openDialogContato(): void{
     const dialogRef = this.dialog.open(ContatoFormComponent,
-      {data : { origemChamada: 2, codigo: this.codigo, codigoUsuario : this.codigoUsuario} }
+      { width: '800px' ,
+       height: '600px;',
+       data : { origemChamada: 2, codigo: this.codigo, codigoUsuario : this.codigoUsuario} }
     );
 
-    dialogRef.afterClosed().subscribe(result => {
+    /* dialogRef.afterClosed().subscribe(result => {
       if (result != '') {
-        this.dadosEndereco = result;
+        this.dadosContato = result;
       }
-    });
+    }); */
   }
 
 
