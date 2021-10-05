@@ -1,13 +1,12 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
-import { ProfissionalContatoService } from 'src/app/profissional/profissional-contato/profissional-contato.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { ValidaEmailService } from 'src/app/shared/service/valida-email.service';
 import { ValidaNumeroService } from 'src/app/shared/service/valida-numero.service';
 import { ContatoService } from '../contato.service';
 import { ContatoDialog } from './contato-dialog';
-import { Contato } from '../contato';
+import { TipoContato } from 'src/app/tipo-contato/tipo-contato';
 
 @Component({
   selector: 'app-contato-dialog',
@@ -24,6 +23,8 @@ export class ContatoDialogComponent implements OnInit {
   codigoProfissional:number;
   codigoUsuario : number;
 
+  tipos : TipoContato[];
+
   inscricaoProfissionalContato$:Subscription;
   inscricaoContato$:Subscription;
 
@@ -38,10 +39,17 @@ export class ContatoDialogComponent implements OnInit {
     
     this.codigoUsuario = this.data.codigoUsuario;
     this.descricao = this.data.profissionalContato.contato.descricao;
-    this.tipoContato = this.data.profissionalContato.contato.tipoContato.descricao;
+    if (this.data.operacao.toLowerCase()=="editar"){
+      this.tipoContato = this.data.profissionalContato.contato.tipoContato.descricao;
+    }else
+    {
+      this.tipoContato ='';
+    }
+    this.titulo  = this.data.operacao;
     this.codigo = this.data.profissionalContato.codigoContato;
     this.codigoProfissional = this.data.profissionalContato.codigoProfissional;
-     
+    this.tipos = this.data.tiposContato;
+
   }
 
   ngOnDestroy():void{

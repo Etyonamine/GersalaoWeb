@@ -1,9 +1,27 @@
-<h2 mat-dialog-title>{{ titulo }} Contatos do Profissional</h2>
+<h2 mat-dialog-title>{{ titulo }} - Contato - Profissional</h2>
 <mat-dialog-content class="mat-typography">
-    <mat-form-field appearance="fill" style="width: 120px">
+
+    <div [hidden]="tipos">
+         <mat-form-field appearance="fill" style="width: 320px" >
         <mat-label>Tipo</mat-label>
         <input matInput matTooltip="tipo de contato" [(ngModel)]="tipoContato" readonly />
     </mat-form-field>
+    </div>
+   
+    <div [hidden]="!tipos">
+        <mat-form-field *ngIf="tipos" appearance="fill" style="width: 320px"  >
+        <mat-label>Selecione da lista</mat-label>
+        <mat-select matTooltip="tipos">
+            <mat-option *ngFor="let option of tipos" [value]="option.codigo">
+                {{ option.descricao }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    </div>
+    
+
+
+
     <mat-form-field appearance="fill" style="width: 620px">
         <mat-label>Descrição/Valor</mat-label>
         <input matInput matTooltip="valor/descricação do tipo de contato" [(ngModel)]="descricao" />

@@ -11,7 +11,6 @@ import { TipoContato } from 'src/app/tipo-contato/tipo-contato';
 import { TipoContatoService } from 'src/app/tipo-contato/tipo-contato.service';
 import { Contato } from '../contato';
 import { ContatoDialogComponent } from '../contato-dialog/contato-dialog.component';
-import { ContatoService } from '../contato.service';
 
 @Component({
   selector: 'app-contato-form',
@@ -73,17 +72,21 @@ export class ContatoFormComponent implements OnInit, OnDestroy {
   }
    
   openDialogNovo(){
-    var profissionalContatoAdd = <ProfissionalContato>{ codigoProfissional: this.data.codigo, codigoContato : 0, contato : <Contato>{
-                                                                                                                                      codigo:0,
-                                                                                                                                      descricao: null,
-                                                                                                                                      tipoContato : null}};
+    var profissionalContatoAdd = <ProfissionalContato>{     
+                                                            codigoProfissional: this.data.codigo, 
+                                                            codigoContato : 0, 
+                                                            contato : <Contato>{
+                                                                                codigo:0,
+                                                                                descricao: null,
+                                                                                tipoContato : null}};
 
     const dialogRef = this.dialog.open(ContatoDialogComponent,
       {width: '790px' ,height: '600px;',
         data : {
                  operacao: "Adicionar",                  
                  codigoUsuario: this.data.codigoUsuario,
-                 profissionalContato:profissionalContatoAdd
+                 profissionalContato:profissionalContatoAdd,
+                 tiposContato: this.tipoContatos
                 } 
       }
     ); 
