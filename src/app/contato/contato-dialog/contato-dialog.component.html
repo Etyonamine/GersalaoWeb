@@ -7,18 +7,18 @@
         <input matInput matTooltip="tipo de contato" [(ngModel)]="tipoContato" readonly />
     </mat-form-field>
     </div>
-   
+
     <div [hidden]="!tipos">
         <mat-form-field *ngIf="tipos" appearance="fill" style="width: 320px"  >
         <mat-label>Selecione da lista</mat-label>
-        <mat-select matTooltip="tipos">
+        <mat-select matTooltip="tipos"[(value)]= "codigoTipo">
             <mat-option *ngFor="let option of tipos" [value]="option.codigo">
                 {{ option.descricao }}
             </mat-option>
         </mat-select>
     </mat-form-field>
     </div>
-    
+
 
 
 
