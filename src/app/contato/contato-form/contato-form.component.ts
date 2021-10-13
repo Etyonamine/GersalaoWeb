@@ -23,7 +23,7 @@ export class ContatoFormComponent implements OnInit, OnDestroy {
 
   public colunas: string[] = ["tipo", "descricao",  "acao"];
   tipoContatos: TipoContato[];
-  
+
   inscricaoTipoContato$: Subscription;
   inscricaoProfissionalContato$: Subscription;
 
@@ -51,14 +51,14 @@ export class ContatoFormComponent implements OnInit, OnDestroy {
       this.inscricaoTipoContato$.unsubscribe();
     }
   }
-  loadData(query: string = null) {   
+  loadData(query: string = null) {
     //profissional
-    if (this.data.origemChamada == 2) 
+    if (this.data.origemChamada == 2)
     {
        this.inscricaoProfissionalContato$ =  this.profissionalContatoService.get<ProfissionalContato[]>(this.data.codigo
       ).subscribe(result=>{
-                            this.profissionalContatos = result;                           
-                            
+                            this.profissionalContatos = result;
+
       }, error=>
       {
         console.error(error);
@@ -70,35 +70,39 @@ export class ContatoFormComponent implements OnInit, OnDestroy {
       });
     }
   }
-   
+
   openDialogNovo(){
-    var profissionalContatoAdd = <ProfissionalContato>{     
-                                                            codigoProfissional: this.data.codigo, 
-                                                            codigoContato : 0, 
+   
+    var profissionalContatoAdd = <ProfissionalContato>{
+                                                            codigoProfissional: this.data.codigo,
+                                                            codigoContato : 0,
                                                             contato : <Contato>{
                                                                                 codigo:0,
                                                                                 descricao: null,
-                                                                                tipoContato : null}};
+                                                                                tipoContato : null,
+                                                                                codigoUsuarioCadastrado : this.data.codigoUsuario,
+                                                                                codigosituacao : 1},
+                                                            codigoUsuarioCadastro :this.data.codigoUsuario};
 
     const dialogRef = this.dialog.open(ContatoDialogComponent,
       {width: '790px' ,height: '600px;',
         data : {
-                 operacao: "Adicionar",                  
+                 operacao: "Adicionar",
                  codigoUsuario: this.data.codigoUsuario,
                  profissionalContato:profissionalContatoAdd,
                  tiposContato: this.tipoContatos
-                } 
+                }
       }
-    ); 
+    );
   }
   openDialogEditar(profissionalContatoParam:ProfissionalContato){
     const dialogRef = this.dialog.open(ContatoDialogComponent,
       {width: '790px' ,height: '600px;',
         data : {
-                 operacao: "Editar",                  
+                 operacao: "Editar",
                  codigoUsuario: this.data.codigoUsuario,
                  profissionalContato:profissionalContatoParam
-                } 
+                }
       }
     );
   }
@@ -122,9 +126,9 @@ export class ContatoFormComponent implements OnInit, OnDestroy {
         });
   }
 
-  //validar numero 
+  //validar numero
   validaNumero(contato: Contato) {
-    var reg = /^-?(0|[0-9]\d*)?$/;//somente numeros    
+    var reg = /^-?(0|[0-9]\d*)?$/;//somente numeros
     return reg.test(contato.descricao);
   }
 

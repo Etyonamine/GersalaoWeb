@@ -1,8 +1,10 @@
+import { Contato } from 'src/app/contato/contato';
+import { concatMap } from 'rxjs/operators';
 import { ProfissionalContato } from './../../profissional/profissional-contato/profissional-contato';
 import { ProfissionalContatoService } from 'src/app/profissional/profissional-contato/profissional-contato.service';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { ValidaEmailService } from 'src/app/shared/service/valida-email.service';
 import { ValidaNumeroService } from 'src/app/shared/service/valida-numero.service';
@@ -10,14 +12,13 @@ import { ContatoService } from '../contato.service';
 import { ContatoDialog } from './contato-dialog';
 import { TipoContato } from 'src/app/tipo-contato/tipo-contato';
 
+
 @Component({
   selector: 'app-contato-dialog',
   templateUrl: './contato-dialog.component.html',
   styleUrls: ['./contato-dialog.component.scss']
 })
 export class ContatoDialogComponent implements OnInit {
-
-
   titulo:string;
   tipoContato:string;
   descricao : string;
@@ -27,6 +28,8 @@ export class ContatoDialogComponent implements OnInit {
   codigoUsuario : number;
 
   tipos : TipoContato[];
+
+  bln_edicao : boolean;
 
   inscricaoProfissionalContato$:Subscription;
   inscricaoContato$:Subscription;
@@ -49,6 +52,7 @@ export class ContatoDialogComponent implements OnInit {
     {
       this.tipoContato ='';
     }
+    this.bln_edicao = this.data.operacao.toLowerCase() == "editar"? true: false;
 
     this.titulo  = this.data.operacao;
     this.codigo = this.data.profissionalContato.codigoContato;
@@ -124,7 +128,7 @@ export class ContatoDialogComponent implements OnInit {
     contatoGravar.codigoTipoContato=this.codigoTipo;
     contatoGravar.descricao = this.descricao.trim();
     contatoGravar.codigosituacao=1;
-    if(this.codigo=0){
+    if(this.codigo==0){
       contatoGravar.codigoUsuarioCadastrado=this.codigoUsuario;
       contatoGravar.dataCadastro = new Date();
     }else{
@@ -133,12 +137,35 @@ export class ContatoDialogComponent implements OnInit {
     }
 
     this.contatoService.save(contatoGravar)
-                        .subscribe(result=>{
-                          if (result!== null){
-                            //this.handlerSuccess('registro salvado com sucesso!');
-                            this.data.profissionalContato.codigoContato=result.codigo;
-                            this.codigo = result.codigo;
+                        .pipe(concatMap((result : Contato)=>{
+                          if (result!== null && !this.bln_edicao )
+                            {
+                              this.codigo = result.codigo;
+                              this.data.profissionalContato.codigoContato = this.codigo;
+                              var profissionaContatoAdd = <ProfissionalContato>{
+                                codigoProfissional : this.data.profissionalContato.codigoProfissional,
+                                codigoContato : this.codigo,
+                                codigoUsuarioCadastro : this.data.codigoUsuario,
+                                contato : result
+                              };
 
+                              this.profissionalContatoService.save(profissionaContatoAdd)
+                                                            .subscribe(
+
+
+                                                              error=>{                                                           }, error=>{
+                                                              this.contatoService.delete( this.codigo).subscribe();
+                                                              console.log(error);
+                                                              this.handleError('Ocorreu um erro na tentativa de salvar o registro.');
+                                                              return false;
+
+                                                            } );
+                          }
+                          return of (true);
+                        }))
+                        .subscribe(result=>{
+                          if (result){
+                            this.handlerSuccess('registro salvado com sucesso!');
                           }
                         },
                         error=>{
@@ -150,16 +177,7 @@ export class ContatoDialogComponent implements OnInit {
     //gravar no profossionalcontato
     if (this.data.operacao.toLowerCase() !== "editar"){
 
-        this.profissionalContatoService.save(this.data.profissionalContato)
-                                      .subscribe(result=>{
 
-                                      }, error=>{
-                                        this.contatoService.delete( this.codigo).subscribe();
-                                        console.log(error);
-                                        this.handleError('Ocorreu um erro na tentativa de salvar o registro.');
-                                        return false;
-
-                                       } );
     }
     this.handlerSuccess('registro salvo com sucesso!');
   }
