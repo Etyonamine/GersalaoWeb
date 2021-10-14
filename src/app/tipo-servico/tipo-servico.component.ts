@@ -10,53 +10,52 @@ import { TipoServicoService } from './tipo-servico.service';
   styleUrls: ['./tipo-servico.component.scss']
 })
 export class TipoServicoComponent implements OnInit, OnDestroy {
-  inscricao$ : Subscription;
+  inscricao$: Subscription;
   tipoServicos: Array<TipoServico> = [];
 
-  constructor(private tipoServicoService : TipoServicoService,
+  constructor(private tipoServicoService: TipoServicoService,
               private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.loadDatas();
   }
 
-  ngOnDestroy(): void{
+  ngOnDestroy(): void {
     this.inscricao$.unsubscribe();
   }
-  loadDatas(){
+  loadDatas() {
    this.inscricao$ = this.tipoServicoService.list<TipoServico[]>()
-                                            .subscribe(result=> this.tipoServicos = result,
-                                                      error=>{
+                                            .subscribe(result => this.tipoServicos = result,
+                                                      error => {
                                                         console.log(error);
                                                         this.mensagemError('Ocorreu um erro na tentativa de listar os tipos de serviço');
-                                                      })
+                                                      });
 
   }
 
-  mensagemError(msg : string){
+  mensagemError(msg: string) {
     this.alertService.mensagemErro(msg);
   }
 
-  openConfirmExclusao(codigo : number) {
+  openConfirmExclusao(codigo: number) {
     this.alertService.openConfirmModal('Tem certeza que deseja excluir?', 'Excluir - Cliente', (answer: boolean) => {
       if (answer) {
 
         this.exclusaoCliente(codigo);
       }
-    }, "Sim", "Não"
+    }, 'Sim', 'Não'
     );
   }
 
-  exclusaoCliente(codigo : number){
+  exclusaoCliente(codigo: number) {
 
-    var msgSucess : string = 'Registro excluído com sucesso!';
-    var msgErro : string  = 'Ocorreu um erro na tentativa de exclusão  do cliente.';
+    const msgSucess = 'Registro excluído com sucesso!';
+    const msgErro  = 'Ocorreu um erro na tentativa de exclusão  do cliente.';
 
-    this.tipoServicoService.delete(codigo).subscribe(sucesso=>{
+    this.tipoServicoService.delete(codigo).subscribe(() => {
       this.handlerSuccess(msgSucess);
       setTimeout(() => { this.loadDatas(); }, 3000);
-    }, error=>
-    {
+    }, error => {
       console.log(error);
       this.handleError(msgErro);
     });

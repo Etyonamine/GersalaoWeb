@@ -19,24 +19,26 @@ import { TipoContato } from 'src/app/tipo-contato/tipo-contato';
   styleUrls: ['./contato-dialog.component.scss']
 })
 export class ContatoDialogComponent implements OnInit {
-  titulo:string;
-  tipoContato:string;
-  descricao : string;
-  codigo:number;
-  codigoTipo:number;
-  codigoProfissional:number;
-  codigoUsuario : number;
+  titulo: string;
+  tipoContato: string;
+  descricao: string;
+  codigo: number;
+  codigoTipo: number;
+  codigoProfissional: number;
+  codigoUsuario: number;
+  contato: Contato ;
 
-  tipos : TipoContato[];
+  tipos: TipoContato[];
 
-  bln_edicao : boolean;
+  // tslint:disable-next-line: variable-name
+  bln_Edicao: boolean;
 
-  inscricaoProfissionalContato$:Subscription;
-  inscricaoContato$:Subscription;
+  inscricaoProfissionalContato$: Subscription;
+  inscricaoContato$: Subscription;
 
   constructor(
-    private contatoService : ContatoService,
-    private serviceAlert : AlertService,
+    private contatoService: ContatoService,
+    private serviceAlert: AlertService,
     private emailService: ValidaEmailService,
     private numeroService: ValidaNumeroService,
     private profissionalContatoService: ProfissionalContatoService,
@@ -46,71 +48,70 @@ export class ContatoDialogComponent implements OnInit {
 
     this.codigoUsuario = this.data.codigoUsuario;
     this.descricao = this.data.profissionalContato.contato.descricao;
-    if (this.data.operacao.toLowerCase()=="editar"){
+    if (this.data.operacao.toLowerCase() === 'editar') {
       this.tipoContato = this.data.profissionalContato.contato.tipoContato.descricao;
-    }else
-    {
-      this.tipoContato ='';
+    } else {
+      this.tipoContato = '';
     }
-    this.bln_edicao = this.data.operacao.toLowerCase() == "editar"? true: false;
+    this.bln_Edicao = this.data.operacao.toLowerCase() === 'editar' ? true : false;
 
     this.titulo  = this.data.operacao;
     this.codigo = this.data.profissionalContato.codigoContato;
     this.codigoProfissional = this.data.profissionalContato.codigoProfissional;
     this.tipos = this.data.tiposContato;
-    this.codigoTipo=0;
-
+    this.codigoTipo = this.tipos.length === 1 ? this.tipos[0].codigo : 0;
+    this.contato = this.data.profissionalContato.contato;
   }
 
-  ngOnDestroy():void{
-    if (this.inscricaoProfissionalContato$){
+  // tslint:disable-next-line: use-lifecycle-interface
+  ngOnDestroy(): void {
+    if (this.inscricaoProfissionalContato$) {
       this.inscricaoProfissionalContato$.unsubscribe();
     }
-    if (this.inscricaoContato$){
+    if (this.inscricaoContato$) {
       this.inscricaoContato$.unsubscribe();
     }
   }
 
-  validarCampos(){
-    if(this.codigoTipo==0 && this.data.operacao.toLowerCase()!=="editar"){
-      this.handleError("Por favor selecione um tipo.");
+  validarCampos() {
+    if (this.codigoTipo === 0 && this.data.operacao.toLowerCase() !== 'editar') {
+      this.handleError('Por favor selecione um tipo.');
       return false;
-
     }
 
-    if (this.descricao == undefined || this.descricao == null || this.descricao.trim()==''){
+    if (this.descricao === undefined || this.descricao === null || this.descricao.trim() === '') {
       this.handleError('Descricao/Valor não preenchido.');
       return false;
     }
 
-    switch(this.codigoTipo){
-      case 1: //telefone fixo
-        if (this.numeroService.somenteNumero(this.descricao.trim())== false){
+    switch (this.codigoTipo) {
+      case 1: // telefone fixo
+        // tslint:disable-next-line: triple-equals
+        if (this.numeroService.somenteNumero(this.descricao.trim()) === false) {
           this.handleError('Por favor, informe somente números.');
           return false;
         }
 
-        //validar quantidade de caracteres maximo e minimo
-        if (this.numeroService.quantidadeCaracteresValido(10, this.descricao)== false){
+        // validar quantidade de caracteres maximo e minimo
+        if (this.numeroService.quantidadeCaracteresValido(10, this.descricao) === false) {
           this.handleError('Por favor, verifique e informe os 10 números(DDD + telefone-fixo Exemplo: 1122223333).');
           return false;
         }
         break;
-      case 2: //celular
-        if (this.numeroService.somenteNumero(this.descricao.trim())== false){
+      case 2: // celular
+        if (this.numeroService.somenteNumero(this.descricao.trim()) === false) {
           this.handleError('Por favor, informe somente números.');
           return false;
         }
 
-        //validar quantidade de caracteres maximo e minimo
-        if (this.numeroService.quantidadeCaracteresValido(11, this.descricao)== false){
+        // validar quantidade de caracteres maximo e minimo
+        if (this.numeroService.quantidadeCaracteresValido(11, this.descricao) === false) {
           this.handleError('Por favor, verifique e informe os 11 números(DDD + telefone-fixo Exemplo: 11922223333).');
           return false;
         }
         break;
-      default: //e-mail
-      if(this.emailService.validateEmail(this.descricao) == false)
-      {
+      default: // e-mail
+      if (this.emailService.validateEmail(this.descricao) === false) {
         this.handleError('E-mail informado é inválido.');
         return false;
       }
@@ -118,68 +119,68 @@ export class ContatoDialogComponent implements OnInit {
     }
     return true;
   }
-  submit(){
+  submit() {
 
-    if(this.validarCampos()==false){
+    if (this.validarCampos() === false) {
       return false;
     }
-    //gravando os dados.
-    var contatoGravar = this.data.profissionalContato.contato;
-    contatoGravar.codigoTipoContato=this.codigoTipo;
+    // gravando os dados.
+    const contatoGravar = this.data.profissionalContato.contato;
+    contatoGravar.codigoTipoContato = this.codigoTipo;
     contatoGravar.descricao = this.descricao.trim();
-    contatoGravar.codigosituacao=1;
-    if(this.codigo==0){
-      contatoGravar.codigoUsuarioCadastrado=this.codigoUsuario;
+    contatoGravar.codigosituacao = 1;
+
+    if (this.codigo === 0) {
+
+      contatoGravar.codigoUsuarioCadastrado = this.codigoUsuario;
       contatoGravar.dataCadastro = new Date();
-    }else{
+
+    } else {
       contatoGravar.codigoUsuarioAlteracao = this.codigoUsuario;
       contatoGravar.dataAlteracao = new Date();
     }
 
     this.contatoService.save(contatoGravar)
-                        .pipe(concatMap((result : Contato)=>{
-                          if (result!== null && !this.bln_edicao )
-                            {
+                        .pipe(concatMap((result: Contato) => {
+                          if (result !== null && !this.bln_Edicao ) {
+                              this.contato = result;
                               this.codigo = result.codigo;
                               this.data.profissionalContato.codigoContato = this.codigo;
-                              var profissionaContatoAdd = <ProfissionalContato>{
+                              const profissionaContatoAdd = {
                                 codigoProfissional : this.data.profissionalContato.codigoProfissional,
                                 codigoContato : this.codigo,
                                 codigoUsuarioCadastro : this.data.codigoUsuario,
-                                contato : result
-                              };
+                                contato : null
+                              } as ProfissionalContato;
 
                               this.profissionalContatoService.save(profissionaContatoAdd)
-                                                            .subscribe(
-
-
-                                                              error=>{                                                           }, error=>{
+                                                            .subscribe( result1 => {
+                                                              if (result1) {
+                                                                this.data.profissionalContato = result1;
+                                                                this.data.profissionalContato.contato = this.contato;
+                                                                return of (true);
+                                                              }
+                                                            },
+                                                             error => {
                                                               this.contatoService.delete( this.codigo).subscribe();
                                                               console.log(error);
                                                               this.handleError('Ocorreu um erro na tentativa de salvar o registro.');
                                                               return false;
 
-                                                            } );
+                                                            });
                           }
                           return of (true);
                         }))
-                        .subscribe(result=>{
-                          if (result){
+                        .subscribe(result => {
+                          if (result) {
                             this.handlerSuccess('registro salvado com sucesso!');
                           }
                         },
-                        error=>{
+                        error => {
                           console.log(error);
                           this.handleError('Ocorreu um erro na tentativa de salvar o registro.');
                           return false;
                         });
-
-    //gravar no profossionalcontato
-    if (this.data.operacao.toLowerCase() !== "editar"){
-
-
-    }
-    this.handlerSuccess('registro salvo com sucesso!');
   }
 
   handleError(msg: string) {

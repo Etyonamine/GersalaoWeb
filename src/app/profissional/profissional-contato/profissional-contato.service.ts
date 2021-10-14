@@ -10,17 +10,18 @@ import { ProfissionalContato } from './profissional-contato';
 })
 export class ProfissionalContatoService  extends BaseService<ProfissionalContato> {
 
-  constructor(protected http : HttpClient) {
+  constructor(protected http: HttpClient) {
     super(http, `${environment.API}profissionalContato` );
-  } 
-  urlApi = `${environment.API}profissionalContato`; 
+  }
+  urlApi = `${environment.API}profissionalContato`;
 
-  ExcluirLista(lista:ProfissionalContato[]){
-    lista.forEach (registro=>{
+  ExcluirLista(lista: ProfissionalContato[]) {
+    lista.forEach (registro => {
       this.http.delete(`${ this.urlApi  + '/' + registro.codigoProfissional + '/' + registro.codigoContato }`).pipe(take(1));
     });
-    
     return true;
-
+  }
+  Excluir(recurso: ProfissionalContato) {
+    return this.http.delete(`${ this.urlApi  + '/' + recurso.codigoProfissional + '/' + recurso.codigoContato }`).pipe(take(1));
   }
 }
