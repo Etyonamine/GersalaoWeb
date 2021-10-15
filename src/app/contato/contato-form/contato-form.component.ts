@@ -3,7 +3,7 @@ import { ContatoService } from './../contato.service';
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { concat, EMPTY, of, Subscription } from 'rxjs';
+import { EMPTY, of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 
 import { DialogData } from 'src/app/endereco/endereco.component';

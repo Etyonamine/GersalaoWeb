@@ -34,13 +34,7 @@
         <textarea matInput formControlName="observacao" maxlength="300"
           placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
           matTooltip="Digite aqui caso precise informar alguma observação do Profissional."></textarea>
-      </mat-form-field>
-      <mat-form-field appearance="fill">
-        <mat-label>Different locale</mat-label>
-        <input matInput [matDatepicker]="dp">
-        <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-        <mat-datepicker #dp></mat-datepicker>
-      </mat-form-field>
+      </mat-form-field>      
     </div>
 
     <div>
@@ -67,7 +61,8 @@
               (click)="openDialogEndereco()" [disabled]=" codigo == 0 ">Endereço </button>
             <button type="button" mat-raised-button color="primary" [disabled]="codigo == 0"
               (click)="openDialogContato()">Contato </button>
-
+            <button type="button" mat-raised-button color="primary" [disabled]="codigo == 0"
+              (click)="openDialogDocumento()">Documento</button>
           </mat-card-content>
         </mat-card>
     </div>

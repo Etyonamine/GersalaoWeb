@@ -1,5 +1,4 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';

@@ -21,6 +21,7 @@ import { EnderecoModule } from './endereco/endereco.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { ContatoModule } from './contato/contato.module';
 import { TipoContatoModule } from './tipo-contato/tipo-contato.module.module';
+import { DocumentoModule } from './documento/documento.module';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { TipoContatoModule } from './tipo-contato/tipo-contato.module.module';
     LoginComponent,
     HomeComponent,
    PaginaNaoEncontradaComponent
+   
    ],
   imports: [
     BrowserModule,
@@ -49,7 +51,8 @@ import { TipoContatoModule } from './tipo-contato/tipo-contato.module.module';
     EnderecoModule,
     UsuarioModule,
     ContatoModule,
-    TipoContatoModule
+    TipoContatoModule, 
+    DocumentoModule
   ],
   providers: [],
   bootstrap: [AppComponent]

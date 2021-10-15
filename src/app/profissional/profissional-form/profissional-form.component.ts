@@ -28,6 +28,7 @@ import {
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import 'moment/locale/pt-br';
 import { Contato } from 'src/app/contato/contato';
+import { DocumentoFormComponent } from 'src/app/documento/documento-form/documento-form.component';
 
 @Component({
   selector: 'app-profissional-form',
@@ -288,6 +289,13 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
         this.dadosContato = result;
       }
     }); */
+  }
+  openDialogDocumento() {
+    const dialogRef = this.dialog.open(DocumentoFormComponent,
+      { width: '800px' ,
+       height: '600px;',
+       data : { origemChamada: 2, codigoProfissional: this.codigo, codigoUsuario : this.codigoUsuario} }
+    );
   }
 
 
