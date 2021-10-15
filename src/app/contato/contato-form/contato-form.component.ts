@@ -74,7 +74,7 @@ export class ContatoFormComponent implements OnInit, OnDestroy {
       });
     }
   }
-  tiposDialog(){
+  tiposDialog() {
      const tipoAux = this.tipoContatos;
      // filtrando o tipo que ainda nao foi cadastrado.
      if (this.profissionalContatos.length > 0 ) {
@@ -223,13 +223,9 @@ export class ContatoFormComponent implements OnInit, OnDestroy {
     }, 'Sim', 'Não'
     );
   }
-
-
   handleError(msg: string) {
     this.serviceAlert.mensagemErro(msg);
   }
-
-
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);
   }

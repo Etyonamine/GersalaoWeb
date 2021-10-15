@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>{{ titulo }} - Contato - Profissional</h2>
-<mat-dialog-content class="mat-typography">   
+<mat-dialog-content class="mat-typography">
     <div>
         <mat-form-field *ngIf="tipos" appearance="fill" style="width: 320px"  >
         <mat-label>Selecione da lista</mat-label>
@@ -12,7 +12,7 @@
     </div>
     <mat-form-field appearance="fill" style="width: 620px">
         <mat-label>Descrição/Valor</mat-label>
-        <input matInput matTooltip="Informe o documento" [(ngModel)]="descricao" />
+        <input matInput matTooltip="Informe o documento" [(ngModel)]="documento.descricao" [maxlength]="20"/>
     </mat-form-field>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
