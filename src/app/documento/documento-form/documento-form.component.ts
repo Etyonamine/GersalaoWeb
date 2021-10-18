@@ -1,4 +1,5 @@
-import { DocumentoService } from './../documento.service';
+import { DocumentoService } from 'src/app/documento/documento.service';
+import { TipoDocumento } from './../../tipo-documento/tipo-documento';
 import { Documento } from './../documento';
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -10,6 +11,7 @@ import { TipoDocumento } from 'src/app/tipo-documento/tipo-documento';
 import { TipoDocumentoService } from 'src/app/tipo-documento/tipo-documento.service';
 import { DocumentoDialogComponent } from '../documento-dialog/documento-dialog.component';
 import { DocumentoDialog } from '../documento-dialog/documento-dialog';
+import { DocumentoService } from '../documento.service';
 
 export interface DialogDataDocumento {
   origemChamada: number;
@@ -62,13 +64,20 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
        this.profissionalDocumentoService.get<ProfissionalDocumento[]>(this.data.codigoProfissional)
                                         .subscribe(result => {
                                           if (result) {
+                                            this.profissionalDocumentos = result;
+
                                             this.habilitaNovo = result.length === 4 ? false : true;
                                             // recuperando o documento e tipo
-                                            result.forEach(item => {
-                                              this.inscricaoDocumento$ =
-                                                this.documentoService.get<Documento> (item.CodigoDocumento).subscribe(documentoEnc => {
-                                                item.Documento = documentoEnc;
-                                              });
+                                            this.profissionalDocumentos.forEach(item =>{
+                                              this.inscricaoTiposDocumento$ =
+                                                            this.tipoDocumentoService.get<TipoDocumento>(item.documento.codigoTipoDocumento)
+                                                                                     .subscribe(tipoDoc =>{
+                                                                                       item.documento.tipoDocumento = tipoDoc;
+                                                                                     },
+                                                                                     error=> {
+                                                                                       console.error(error);
+                                                                                     })
+
                                             });
                                           }
                                           this.profissionalDocumentos = result;
@@ -102,6 +111,10 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
                                                 documento : documentoDialog
                                                 }
                                               });
+    dialog.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      this.loadData();
+    });
   }
   openDialogEditar(profissionalDocumento: ProfissionalDocumento) {
 

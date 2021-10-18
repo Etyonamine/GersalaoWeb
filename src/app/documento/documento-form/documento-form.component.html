@@ -15,11 +15,11 @@
       <table mat-table [dataSource]="profissionalDocumentos" class="mat-elevation-z8" [hidden]="!profissionalDocumentos" >
       <ng-container matColumnDef="tipo">
         <mat-header-cell *matHeaderCellDef >Tipo</mat-header-cell>
-        <mat-cell *matCellDef="let profiDocumento"> {{ profiDocumento.contato.tipoContato.descricao }} </mat-cell>
+        <mat-cell *matCellDef="let profiDocumento"> {{ profiDocumento.documento.tipoDocumento.descricao }} </mat-cell>
       </ng-container>
       <ng-container matColumnDef="descricao">
         <mat-header-cell *matHeaderCellDef >Descrição</mat-header-cell>
-        <mat-cell *matCellDef="let profiDocumento"> {{ profiDocumento.contato.descricao }} </mat-cell>
+        <mat-cell *matCellDef="let profiDocumento"> {{ profiDocumento.documento.descricao }} </mat-cell>
       </ng-container>
       <ng-container matColumnDef="acao">
         <mat-header-cell *matHeaderCellDef> Ação </mat-header-cell>

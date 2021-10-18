@@ -3,7 +3,7 @@
     <div>
         <mat-form-field *ngIf="tipos" appearance="fill" style="width: 320px"  >
         <mat-label>Selecione da lista</mat-label>
-        <mat-select matTooltip="tipos"[(value)]= "codigoTipo">
+        <mat-select matTooltip="tipos"[(value)]= "documento.codigoTipoDocumento">
             <mat-option *ngFor="let option of tipos" [value]="option.codigo">
                 {{ option.descricao }}
             </mat-option>

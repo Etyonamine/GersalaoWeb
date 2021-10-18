@@ -1,3 +1,4 @@
+import { TipoDocumento } from './../tipo-documento/tipo-documento';
 export interface Documento{
   codigo:number;
   codigoTipoDocumento :number;
@@ -7,4 +8,5 @@ export interface Documento{
   codigoUsuarioCadastro :number;
   dataAlteracao:Date;
   codigoUsuarioAlteracao:number;
+  tipoDocumento: TipoDocumento;
 }

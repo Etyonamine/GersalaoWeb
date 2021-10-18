@@ -1,3 +1,6 @@
+import { ProfissionalDocumentoService } from 'src/app/profissional/profissional-documento/profissional-documento.service';
+import { ProfissionalDocumento } from 'src/app/profissional/profissional-documento/profissional-documento';
+import { DocumentoService } from 'src/app/documento/documento.service';
 import { concatMap } from 'rxjs/operators';
 import { ValidaCpfService } from './../../shared/service/valida-cpf.service';
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
@@ -10,6 +13,7 @@ import { DocumentoDialog } from './documento-dialog';
 import { ValidaNumeroService } from 'src/app/shared/service/valida-numero.service';
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 import { Documento } from '../documento';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-documento-dialog',
@@ -18,6 +22,7 @@ import { Documento } from '../documento';
 })
 export class DocumentoDialogComponent implements OnInit, OnDestroy {
   tipos: TipoDocumento[];
+  inscricaoDocumento$ : Subscription;
   inscricaoTipoDocumento$: Subscription;
   descricao: string;
   codigoTipo: number;
@@ -28,6 +33,8 @@ export class DocumentoDialogComponent implements OnInit, OnDestroy {
     private serviceAlert: AlertService,
     private numeroService: ValidaNumeroService,
     private tipoDocumentoService: TipoDocumentoService,
+    private documentoService : DocumentoService,
+    private profissionalDocumentoService : ProfissionalDocumentoService,
     private validaCpfService: ValidaCpfService,
     @Inject(MAT_DIALOG_DATA) public data: DocumentoDialog
   ) { }
@@ -49,8 +56,28 @@ export class DocumentoDialogComponent implements OnInit, OnDestroy {
     }
     // gravando os dados.
     // objeto a gravar
-    const documentoGravar = this.documento;
-    // documentoGravar.descricao = this.descricao.trim();
+    this.documentoService.save(this.documento).subscribe(result=> {
+      if (result){
+        if (this.documento.codigo === 0){
+          //gravando o profissional documento
+          const profissionalDocumento = {
+            CodigoProfissional : this.data.codigoProfissional,
+            CodigoDocumento : result.codigo,
+            CodigoUsuarioCadastro : this.data.documento.codigoUsuarioCadastro,
+            DataCadastro : new Date()
+          } as ProfissionalDocumento;
+          //gravando via servico
+          this.profissionalDocumentoService.save(profissionalDocumento).subscribe(
+
+          )
+        }
+        this.handlerSuccess('Registro salvo com sucesso!');
+      }
+    },
+    error=> {
+      console.log(error);
+      this.handleError('Ocorreu um erro ao salvar o registro.');
+    });
   }
   validacaoCampos() {
     if (this.documento.descricao === undefined || this.documento.descricao === null || this.documento.descricao.trim() === '') {
