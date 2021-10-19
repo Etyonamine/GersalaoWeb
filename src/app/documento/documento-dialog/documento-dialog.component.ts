@@ -1,3 +1,4 @@
+import { TipoContato } from 'src/app/tipo-contato/tipo-contato';
 import { ProfissionalDocumentoService } from 'src/app/profissional/profissional-documento/profissional-documento.service';
 import { ProfissionalDocumento } from 'src/app/profissional/profissional-documento/profissional-documento';
 import { DocumentoService } from 'src/app/documento/documento.service';
@@ -14,7 +15,8 @@ import { ValidaNumeroService } from 'src/app/shared/service/valida-numero.servic
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 import { Documento } from '../documento';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { timeStamp } from 'console';
+import { TransitionCheckState } from '@angular/material/checkbox';
+
 
 @Component({
   selector: 'app-documento-dialog',
@@ -22,7 +24,7 @@ import { timeStamp } from 'console';
   styleUrls: ['./documento-dialog.component.scss']
 })
 export class DocumentoDialogComponent implements OnInit, OnDestroy {
-  tipos: Array<TipoDocumento>;
+  tipos: TipoDocumento[];
   inscricaoDocumento$: Subscription;
   inscricaoTipoDocumento$: Subscription;
   descricao: string;
@@ -30,21 +32,18 @@ export class DocumentoDialogComponent implements OnInit, OnDestroy {
   titulo: string;
   documento: Documento;
   blnEditar: boolean;
-
   constructor(
     private serviceAlert: AlertService,
     private numeroService: ValidaNumeroService,
-    private tipoDocumentoService: TipoDocumentoService,
     private documentoService: DocumentoService,
     private profissionalDocumentoService: ProfissionalDocumentoService,
-    private validaCpfService: ValidaCpfService,
     @Inject(MAT_DIALOG_DATA) public data: DocumentoDialog
   ) { }
   ngOnInit(): void {
-     this.tipos = this.data.tiposDocumento;
      this.documento = this.data.documento;
      this.titulo = this.documento.codigo === 0 ? 'Editar' : 'Novo';
      this.blnEditar = this.documento.codigo === 0 ? false : true;
+     this.montarComboTipo();
   }
   ngOnDestroy(): void {
     if (this.inscricaoTipoDocumento$) {
@@ -143,5 +142,11 @@ export class DocumentoDialogComponent implements OnInit, OnDestroy {
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);
   }
-
+  montarComboTipo() {
+    if (this.blnEditar === true) {
+      this.tipos = [this.documento.tipoDocumento];
+    } else {
+      this.tipos = this.data.tiposDocumento;
+    }
+  }
 }

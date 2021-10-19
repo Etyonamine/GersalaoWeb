@@ -1,8 +1,9 @@
+import { ProfissionalServico } from './../profissional-servico/profissional-servico';
+import { ProfissionalService } from 'src/app/profissional/profissional.service';
 import { AuthService } from './../../auth-guard/auth.service';
-import { ProfissionalService } from './../profissional.service';
 import { Municipio } from './../../shared/municipios/municipio';
 import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UnidadeFederativa } from 'src/app/shared/UnidadeFederativa/unidadeFederativa';
 import { Profissional } from '../professional';
 import { ProfissionalEndereco } from '../profissional-endereco/profissional-endereco';
@@ -50,16 +51,14 @@ import { DocumentoFormComponent } from 'src/app/documento/documento-form/documen
     {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
   ],
 })
-export class ProfissionalFormComponent extends BaseFormComponent implements OnInit {
-
-
-
+export class ProfissionalFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
   codigo = 0;
   formulario: FormGroup;
   profissional: Profissional;
   profissionalEnderecos: Array<ProfissionalEndereco> = [];
   profissionalContatos: Array<ProfissionalContato> = [];
   profissionalDocumentos: Array<ProfissionalDocumento> = [];
+  profissionalServicos: Array<ProfissionalServico> = [];
 
   tituloPagina = '';
   descricaoBotaoSalvarEndereco = 'Incluir';
@@ -67,7 +66,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   inscricaoMunicipio$: Subscription;
   inscricaoTipoServico$: Subscription;
   inscricaoAuthService$: Subscription;
-
 
   habilitaApagar = false;
 
@@ -77,7 +75,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   tipoServicos: Array<TipoServico> = [];
   servicoSelecionado: Array<number> = [];
   dadosEndereco: Endereco;
-  dadosContato : Contato;
+  dadosContato: Contato;
 
   codigoUsuario: number;
 
@@ -97,8 +95,8 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   ngOnInit(): void {
     this.profissional = this.route.snapshot.data.profissional ? this.route.snapshot.data.profissional :  {} as Profissional;
     this.codigo = (this.profissional.codigo !== null && this.profissional.codigo !== undefined) ? this.profissional.codigo : 0;
-    this.tituloPagina = this.codigo == 0 ? 'Novo Registro' : 'Alterar o registro';
-    this.habilitaApagar = this.codigo == 0 ? true : false;
+    this.tituloPagina = this.codigo === 0 ? 'Novo Registro' : 'Alterar o registro';
+    this.habilitaApagar = this.codigo === 0 ? true : false;
     this.criarFormulario();
     this.listaTipoServicos();
     this.dadosEndereco =  {} as Endereco;
@@ -125,7 +123,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     if (this.inscricaoAuthService$) {
       this.inscricaoAuthService$.unsubscribe();
     }
-
   }
 
   submit() {
@@ -148,18 +145,18 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   }
 
   criarFormulario() {
-    const patternDataAniversario   = '\^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$';
-    let dataAniversario = null;
+    let dataAniversario: string;
 
+    const patternDataAniversario   = '\^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$';
     if (this.profissional.dataAniversario !== null && this.profissional.dataAniversario !== undefined ) {
 
-      if(this.profissional.dataAniversario.toString() !== "0001-01-01T00:00:00"){
+      if (this.profissional.dataAniversario.toString() !== '0001-01-01T00:00:00') {
 
-        var dataNiver = this.profissional.dataAniversario.toString();
+        const dataNiverAux = this.profissional.dataAniversario.toString();
 
-        var ano: string = dataNiver.toString().substring(0, 4);
-        var mes: string = dataNiver.toString().substring(5, 7);
-        var dia: string = dataNiver.toString().substring(8, 10);
+        const ano: string = dataNiverAux.toString().substring(0, 4);
+        const mes: string = dataNiverAux.toString().substring(5, 7);
+        const dia: string = dataNiverAux.toString().substring(8, 10);
 
         dataAniversario = dia + '/' + mes + '/' + ano;
 
@@ -173,7 +170,8 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
       nome: [this.profissional.nome === undefined ? null : this.profissional.nome, [Validators.required, this.isDupeProfissional]],
       dataAniversario: [ dataAniversario === undefined ? null : dataAniversario, [Validators.pattern(patternDataAniversario)]],
       codigoSituacao: [this.profissional.codigoSituacao === undefined ? 1 : this.profissional.codigoSituacao, [Validators.required]],
-      observacao: [this.profissional.observacao === undefined ? null : this.profissional.observacao]
+      observacao: [this.profissional.observacao === undefined ? null : this.profissional.observacao],
+      tipoServico: null
     });
   }
 
@@ -218,6 +216,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.router.navigate(['/profissional']);
   }
   atualizarObjetos() {
+    this.tipoServicos = [];
 
     const valueSubmit = Object.assign({}, this.formulario.value);
     let dataNiver: Date;
@@ -244,7 +243,18 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.profissional.codigoSituacao = valueSubmit.codigoSituacao;
     this.profissional.observacao = valueSubmit.observacao;
 
+    // tipos de servicos
+    if (this.servicoSelecionado.length > 0 ){
 
+      this.servicoSelecionado.forEach(servi =>{
+        this.profissionalServicos.push({
+          codigoProfissional : this.profissional.codigo,
+          codigoServico : servi,
+          valor : this.tipoServicos.find(x=>x.codigo === servi).
+        } as ProfissionalServico)
+        console.log(servi);
+      })
+    }
 
 
   }
@@ -262,12 +272,12 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
         this.servicoSelecionado.splice(index, 1);
 
     }
-
+    console.log (this.servicoSelecionado);
 
   }
   openDialogEndereco(): void {
     const dialogRef = this.dialog.open(EnderecoComponent,
-      {width: '1000px' ,height: '600px;',
+      {width: '1000px' , height: '600px;',
         data : { origemChamada: 2, codigo: this.codigo, codigoUsuario : this.codigoUsuario} }
     );
 
@@ -277,7 +287,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
       }
     });
   }
-  openDialogContato(): void{
+  openDialogContato(): void {
     const dialogRef = this.dialog.open(ContatoFormComponent,
       { width: '800px' ,
        height: '600px;',

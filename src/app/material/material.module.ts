@@ -21,6 +21,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatRadioModule} from '@angular/material/radio';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule} from '@angular/material/divider';
+import { MatGridListModule} from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [],
@@ -36,6 +37,7 @@ import { MatDividerModule} from '@angular/material/divider';
     MatDialogModule,
     MatDividerModule,
     MatFormFieldModule,
+    MatGridListModule,
     MatIconModule,
     MatInputModule,
     MatMenuModule,
