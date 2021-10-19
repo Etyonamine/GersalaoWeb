@@ -6,4 +6,5 @@ export class DocumentoDialog {
     codigoProfissional: number;
     tiposDocumento: TipoDocumento[];
     documento: Documento;
+    codigoUsuario: number;
   }

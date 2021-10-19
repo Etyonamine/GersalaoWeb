@@ -1,22 +1,32 @@
 <h2 mat-dialog-title>{{ titulo }} - Contato - Profissional</h2>
 <mat-dialog-content class="mat-typography">
-    <div>
-        <mat-form-field *ngIf="tipos" appearance="fill" style="width: 320px"  >
-        <mat-label>Selecione da lista</mat-label>
-        <mat-select matTooltip="tipos"[(value)]= "documento.codigoTipoDocumento">
+    <div [hidden]="!blnEditar">
+          <mat-form-field appearance="fill" style="width: 320px" >
+        <mat-label>Tipo</mat-label>
+            <input matInput matTooltip="tipo de documento" [(value)]="documento.tipoDocumento.descricao" readonly />
+        </mat-form-field>
+    </div>
+    <div [hidden] ="blnEditar">
+        <mat-form-field *ngIf="tipos" appearance="fill" style="width: 320px" >
+          <mat-label>Selecione da lista</mat-label>
+           <mat-select matTooltip="tipos"[(value)]= "codigoTipo">
             <mat-option *ngFor="let option of tipos" [value]="option.codigo">
                 {{ option.descricao }}
             </mat-option>
-        </mat-select>
-    </mat-form-field>
+           </mat-select>
+        </mat-form-field>
     </div>
-    <mat-form-field appearance="fill" style="width: 620px">
+    <div>
+      <mat-form-field appearance="fill" style="width: 620px">
         <mat-label>Descrição/Valor</mat-label>
         <input matInput matTooltip="Informe o documento" [(ngModel)]="documento.descricao" [maxlength]="20"/>
-    </mat-form-field>
+      </mat-form-field>
+  </div>
+
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
-    <button mat-raised-button="Salvar o registro" color="primary" (click)="submit()">
+    <button mat-raised-button="Salvar o registro" color="primary" (click)="submit()"  >
         Salvar &nbsp;<mat-icon>save</mat-icon>
     </button>
     <button mat-raised-button="Retornar" color="primary" mat-dialog-close>

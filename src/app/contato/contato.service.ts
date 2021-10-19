@@ -8,9 +8,9 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ContatoService extends BaseService<Contato>{
+export class ContatoService extends BaseService<Contato> {
 
-  constructor(protected http:HttpClient) {
+  constructor(protected http: HttpClient) {
     super(http, `${environment.API}contatos`);
   }
 

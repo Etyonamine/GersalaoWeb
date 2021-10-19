@@ -1,9 +1,9 @@
 import { Documento } from './../../documento/documento';
 export interface ProfissionalDocumento
 {
-  CodigoProfissional : number;
-  CodigoDocumento : number;
-  CodigoUsuarioCadastro : number;
-  DataCadastro : Date;
-  Documento : Documento
+  codigoProfissional: number;
+  codigoDocumento: number;
+  codigoUsuarioCadastro: number;
+  dataCadastro: Date;
+  documento: Documento;
 }

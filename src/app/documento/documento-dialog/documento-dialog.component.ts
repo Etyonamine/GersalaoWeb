@@ -5,7 +5,7 @@ import { concatMap } from 'rxjs/operators';
 import { ValidaCpfService } from './../../shared/service/valida-cpf.service';
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { TipoDocumento } from 'src/app/tipo-documento/tipo-documento';
 import { TipoDocumentoService } from 'src/app/tipo-documento/tipo-documento.service';
@@ -14,6 +14,7 @@ import { ValidaNumeroService } from 'src/app/shared/service/valida-numero.servic
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 import { Documento } from '../documento';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { timeStamp } from 'console';
 
 @Component({
   selector: 'app-documento-dialog',
@@ -21,20 +22,21 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
   styleUrls: ['./documento-dialog.component.scss']
 })
 export class DocumentoDialogComponent implements OnInit, OnDestroy {
-  tipos: TipoDocumento[];
-  inscricaoDocumento$ : Subscription;
+  tipos: Array<TipoDocumento>;
+  inscricaoDocumento$: Subscription;
   inscricaoTipoDocumento$: Subscription;
   descricao: string;
   codigoTipo: number;
   titulo: string;
   documento: Documento;
+  blnEditar: boolean;
 
   constructor(
     private serviceAlert: AlertService,
     private numeroService: ValidaNumeroService,
     private tipoDocumentoService: TipoDocumentoService,
-    private documentoService : DocumentoService,
-    private profissionalDocumentoService : ProfissionalDocumentoService,
+    private documentoService: DocumentoService,
+    private profissionalDocumentoService: ProfissionalDocumentoService,
     private validaCpfService: ValidaCpfService,
     @Inject(MAT_DIALOG_DATA) public data: DocumentoDialog
   ) { }
@@ -42,7 +44,7 @@ export class DocumentoDialogComponent implements OnInit, OnDestroy {
      this.tipos = this.data.tiposDocumento;
      this.documento = this.data.documento;
      this.titulo = this.documento.codigo === 0 ? 'Editar' : 'Novo';
-     this.descricao = this.documento.descricao;
+     this.blnEditar = this.documento.codigo === 0 ? false : true;
   }
   ngOnDestroy(): void {
     if (this.inscricaoTipoDocumento$) {
@@ -54,30 +56,46 @@ export class DocumentoDialogComponent implements OnInit, OnDestroy {
     if (this.validacaoCampos() === false) {
       return false;
     }
+    const documentoGravar = this.documento;
+    if (this.documento.codigo > 0 ) {
+      documentoGravar.codigoUsuarioAlteracao = this.data.codigoUsuario;
+    } else {
+      documentoGravar.codigoUsuarioCadastro = this.data.codigoUsuario;
+      documentoGravar.tipoDocumento = null;
+    }
+
     // gravando os dados.
     // objeto a gravar
-    this.documentoService.save(this.documento).subscribe(result=> {
-      if (result){
-        if (this.documento.codigo === 0){
-          //gravando o profissional documento
-          const profissionalDocumento = {
-            CodigoProfissional : this.data.codigoProfissional,
-            CodigoDocumento : result.codigo,
-            CodigoUsuarioCadastro : this.data.documento.codigoUsuarioCadastro,
-            DataCadastro : new Date()
-          } as ProfissionalDocumento;
-          //gravando via servico
-          this.profissionalDocumentoService.save(profissionalDocumento).subscribe(
-
-          )
-        }
-        this.handlerSuccess('Registro salvo com sucesso!');
-      }
-    },
-    error=> {
-      console.log(error);
-      this.handleError('Ocorreu um erro ao salvar o registro.');
-    });
+    this.documentoService.save(documentoGravar)
+                         .subscribe(result => {
+                              if (result && documentoGravar.codigo === 0 ) {
+                                // gravando o profissional documento
+                                const profissionalDocumento = {
+                                  codigoProfissional : this.data.codigoProfissional,
+                                  codigoDocumento : result.codigo,
+                                  codigoUsuarioCadastro : this.data.documento.codigoUsuarioCadastro,
+                                  dataCadastro : new Date(),
+                                  documento : null
+                                } as ProfissionalDocumento;
+                                // gravando via servico
+                                this.profissionalDocumentoService.save(profissionalDocumento)
+                                                                .subscribe( profidoc => {
+                                                                  if (profidoc) {
+                                                                    return of (true);
+                                                                  }
+                                                                },
+                                                                  error => {
+                                                                    console.log(error);
+                                                                    this.handleError(
+                                                                      'Ocorreu um erro na tentativa de salvar o Novo registro.'
+                                                                    );
+                                                                  });
+                              }
+                              this.handlerSuccess('Registro salvo com sucesso!');
+                         },
+                          error => {
+                            console.log(error);
+                          });
   }
   validacaoCampos() {
     if (this.documento.descricao === undefined || this.documento.descricao === null || this.documento.descricao.trim() === '') {
@@ -125,4 +143,5 @@ export class DocumentoDialogComponent implements OnInit, OnDestroy {
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);
   }
+
 }

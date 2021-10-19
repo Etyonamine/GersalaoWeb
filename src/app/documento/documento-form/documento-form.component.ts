@@ -1,16 +1,15 @@
-import { DocumentoService } from 'src/app/documento/documento.service';
-import { TipoDocumento } from './../../tipo-documento/tipo-documento';
+import { concatMap } from 'rxjs/operators';
+
 import { Documento } from './../documento';
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EMPTY, Subscription } from 'rxjs';
+import { EMPTY, of, Subscription } from 'rxjs';
 import { ProfissionalDocumento } from 'src/app/profissional/profissional-documento/profissional-documento';
 import { ProfissionalDocumentoService } from 'src/app/profissional/profissional-documento/profissional-documento.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { TipoDocumento } from 'src/app/tipo-documento/tipo-documento';
 import { TipoDocumentoService } from 'src/app/tipo-documento/tipo-documento.service';
 import { DocumentoDialogComponent } from '../documento-dialog/documento-dialog.component';
-import { DocumentoDialog } from '../documento-dialog/documento-dialog';
 import { DocumentoService } from '../documento.service';
 
 export interface DialogDataDocumento {
@@ -25,7 +24,7 @@ export interface DialogDataDocumento {
   styleUrls: ['./documento-form.component.scss']
 })
 export class DocumentoFormComponent implements OnInit, OnDestroy {
-  colunas: string[] = ['tipo', 'descricao',  'acao'];
+  colunas: string[] = [ 'tipo', 'descricao',  'acao'];
   codigoDocumento: number;
   habilitaNovo: boolean;
   profissionalDocumentos: ProfissionalDocumento[];
@@ -33,6 +32,7 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
   inscricaoProfissionalDocumento$: Subscription;
   inscricaoTiposDocumento$: Subscription;
   inscricaoDocumento$: Subscription;
+  inscricaoDialog$: Subscription;
 
   constructor(
     private profissionalDocumentoService: ProfissionalDocumentoService,
@@ -43,8 +43,8 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: DialogDataDocumento
   ) { }
   ngOnInit(): void {
-    this.loadData();
     this.listarTiposDocumentos();
+    this.loadData();
   }
   ngOnDestroy(): void {
     if (this.inscricaoProfissionalDocumento$) {
@@ -56,9 +56,43 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
     if (this.inscricaoDocumento$) {
       this.inscricaoDocumento$.unsubscribe();
     }
+    if (this.inscricaoDialog$) {
+      this.inscricaoDialog$.unsubscribe();
+    }
+  }
+  apagar(codigoDoc: number) {
+    const profidocApagar = {
+      codigoProfissional : this.data.codigoProfissional,
+      codigoDocumento : codigoDoc
+    } as ProfissionalDocumento;
+
+    this.profissionalDocumentoService.Excluir(profidocApagar).pipe(
+      concatMap(() => {
+        this.documentoService.delete(profidocApagar.codigoDocumento)
+                             .subscribe(exclusao => {
+                              return of (true);
+                            },
+                            error => {
+                                console.log(error);
+                                this.handleError('Ocorreu o erro exclusão do documento.');
+                            });
+        return of (true);
+      })
+    )
+    .subscribe(result => {
+      if (result) {
+        this.handlerSuccess('Registro apagado com sucesso!');
+        this.loadData();
+      }
+    }, error => {
+      console.log (error);
+      this.handleError('Ocorreu um erro na tentativa de excluir o registro.');
+    });
+
   }
   loadData(query: string = null) {
     this.habilitaNovo = false;
+    this.listarTiposDocumentos();
     // profissional
     if (this.data.origemChamada === 2) {
        this.profissionalDocumentoService.get<ProfissionalDocumento[]>(this.data.codigoProfissional)
@@ -68,19 +102,18 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
 
                                             this.habilitaNovo = result.length === 4 ? false : true;
                                             // recuperando o documento e tipo
-                                            this.profissionalDocumentos.forEach(item =>{
-                                              this.inscricaoTiposDocumento$ =
-                                                            this.tipoDocumentoService.get<TipoDocumento>(item.documento.codigoTipoDocumento)
-                                                                                     .subscribe(tipoDoc =>{
-                                                                                       item.documento.tipoDocumento = tipoDoc;
-                                                                                     },
-                                                                                     error=> {
-                                                                                       console.error(error);
-                                                                                     })
-
+                                            this.profissionalDocumentos.forEach(item => {
+                                                this.tiposDocumento.forEach(tipoPesq => {
+                                                  if (tipoPesq.codigo === item.documento.codigoTipoDocumento) {
+                                                    item.documento.tipoDocumento = {
+                                                      codigo : tipoPesq.codigo,
+                                                      descricao : tipoPesq.descricao
+                                                    } as TipoDocumento;
+                                                  }
+                                                });
                                             });
                                           }
-                                          this.profissionalDocumentos = result;
+
                                         }, error => {
                                           console.error(error);
                                           this.handleError('Ocorreu erro na tentativa de recuperar a lista de documentos do profissional.');
@@ -99,7 +132,8 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
       descricao : '',
       codigoSituacao : 1,
       codigoUsuarioCadastro : this.data.codigoUsuario,
-      codigoTipoDocumento : 0
+      codigoTipoDocumento : 0,
+      tipoDocumento : { codigo : 0 , descricao : ''} as TipoDocumento
     } as Documento;
 
      // montando o dialogo
@@ -108,19 +142,39 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
                                         data : {
                                                 codigoProfissional : this.data.codigoProfissional,
                                                 tiposDocumento : tiposDialog,
-                                                documento : documentoDialog
+                                                documento : documentoDialog,
+                                                codigoUsuario : this.data.codigoUsuario
                                                 }
                                               });
-    dialog.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+    this.inscricaoDialog$ = dialog.afterClosed().subscribe(result => {
       this.loadData();
     });
   }
   openDialogEditar(profissionalDocumento: ProfissionalDocumento) {
+    // verificar quais os tipos que podem ser enviados para o dialogo
+    const tiposDialog = this.tiposDialog();
 
+    // montando o dialogo
+    const dialog = this.dialog.open(DocumentoDialogComponent, {
+      width: '790px' , height: '600px;',
+        data : {
+                codigoProfissional : this.data.codigoProfissional,
+                tiposDocumento : tiposDialog.length === 0 ? profissionalDocumento.documento.tipoDocumento : tiposDialog,
+                documento : profissionalDocumento.documento,
+                codigoUsuario : this.data.codigoUsuario
+                }
+              });
+    this.inscricaoDialog$ = dialog.afterClosed().subscribe(() => {
+          this.loadData();
+        });
   }
   openDialogApagar(codigoDocumento: number) {
-
+    this.serviceAlert.openConfirmModal('Tem certeza que deseja excluir?', 'Excluir - Documento', (resposta: boolean) => {
+      if (resposta) {
+        this.apagar(codigoDocumento);
+      }
+    }, 'Sim', 'Não'
+    );
   }
   handleError(msg: string) {
     this.serviceAlert.mensagemErro(msg);
@@ -145,7 +199,7 @@ export class DocumentoFormComponent implements OnInit, OnDestroy {
 
      this.profissionalDocumentos.forEach(item => {
        tipoAux.forEach( (tipo , index) => {
-          if (item.Documento.codigoTipoDocumento === tipo.codigo) {
+          if (item.documento.codigoTipoDocumento === tipo.codigo) {
            tipoAux.splice(index, 1);
          }
        });

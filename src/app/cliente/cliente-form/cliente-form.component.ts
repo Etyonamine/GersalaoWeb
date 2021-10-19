@@ -754,8 +754,11 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
         if (result.length > 0) {
           this.descricaoBotaoSalvarEndereco = 'Atualizar';
           this.endereco = this.clienteEnderecos[0].endereco;
-          this.codigoUnidadeFederativa = (this.endereco.codigoUnidadeFederativa !== undefined && this.endereco.codigoUnidadeFederativa) ? this.endereco.codigoUnidadeFederativa : 0;
-          this.codigoMunic = (this.endereco.codigoMunicipio && this.endereco.codigoMunicipio !== undefined) ? this.endereco.codigoMunicipio : 0;
+          this.codigoUnidadeFederativa = (
+              this.endereco.codigoUnidadeFederativa !== undefined &&
+              this.endereco.codigoUnidadeFederativa) ? this.endereco.codigoUnidadeFederativa : 0;
+          this.codigoMunic = (
+              this.endereco.codigoMunicipio && this.endereco.codigoMunicipio !== undefined) ? this.endereco.codigoMunicipio : 0;
 
           this.formulario.patchValue({
             endereco: {
