@@ -7,12 +7,11 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { PaginaNaoEncontradaComponent } from './pagina-nao-encontrada/pagina-nao-encontrada.component';
 
-
 const routes: Routes = [
   {
-    path:'cliente',
-        loadChildren:()=> import ('./cliente/cliente.module').then(mod=>mod.ClienteModule),
-     canActivate:[AuthGuard],
+    path: 'cliente',
+        loadChildren: () => import ('./cliente/cliente.module').then(mod=>mod.ClienteModule),
+     canActivate: [AuthGuard],
      canLoad: [AuthGuard]
   },
   {
@@ -23,32 +22,32 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent,
      canActivate:[AuthGuard]
-  },   
+  },
   {
     path: 'profissional',
-    loadChildren:()=> import ('./profissional/profissional.module').then(mod=>mod.ProfissionalModule),
+    loadChildren: () => import ('./profissional/profissional.module').then(mod => mod.ProfissionalModule),
     canActivate:[AuthGuard],
     canLoad: [AuthGuard]
   },
   {
     path: 'servico',
-      loadChildren: ()=> import('./servico/servico.module').then(mod=>mod.ServicoModule),
+      loadChildren: () => import('./servico/servico.module').then(mod => mod.ServicoModule),
       canActivate : [AuthGuard],
       canLoad : [AuthGuard]
   },
   {
-    path:'tipo-servico',
-      loadChildren:()=> import('./tipo-servico/tipo-servico.module').then(mod=>mod.TipoServicoModule),
+    path: 'tipo-servico',
+      loadChildren: () => import('./tipo-servico/tipo-servico.module').then(mod => mod.TipoServicoModule),
       canActivate:[AuthGuard],
       canLoad: [AuthGuard]
 
   },
-  { path:'', redirectTo:'/home', pathMatch: 'full'},
-  { path:'**', component: PaginaNaoEncontradaComponent }
+  { path: '', redirectTo: '/home', pathMatch: 'full'},
+  { path: '**', component: PaginaNaoEncontradaComponent }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{useHash : true})],
+  imports: [RouterModule.forRoot(routes, { useHash : true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

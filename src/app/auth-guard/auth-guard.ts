@@ -10,8 +10,8 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate, CanLoad {
 
   constructor(
-              private authService:AuthService,
-              private router:Router
+              private authService: AuthService,
+              private router: Router
               ) { }
 
   private verificarAcesso(){
@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate, CanLoad {
   canLoad(route: Route,
           segments: UrlSegment[]): boolean | Observable<boolean> | Promise<boolean>
   {
-    //console.log('canLoad: verificando se usuário pode carregar');
+    // console.log('canLoad: verificando se usuário pode carregar');
     return this.verificarAcesso();
   }
 
@@ -35,7 +35,7 @@ export class AuthGuard implements CanActivate, CanLoad {
               route: ActivatedRouteSnapshot,
               state: RouterStateSnapshot): boolean | Observable<boolean>
   {
-    //console.log('AuthGuard');
+    // console.log('AuthGuard');
     return this.verificarAcesso();
   }
 

@@ -10,11 +10,11 @@ import { Login } from './login';
 })
 export class LoginService extends BaseService<Login>{
 
-  constructor(protected http : HttpClient) {
+  constructor(protected http: HttpClient) {
     super(http, `${environment.API}usuarios`);
   }
   validarLogin(login: Login){
-    var url : string = `${environment.API}usuarios`;
+    var url: string = `${environment.API}usuarios`;
     return this.http.post<Login>(url, login).pipe(take(1));
   }
 }

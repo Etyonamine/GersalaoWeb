@@ -55,8 +55,9 @@ export class TipoServicoFormComponent extends BaseFormComponent implements OnIni
   }
   submit() {
 
-    var codigoSituacao: number = +this.codigoStatus;
-    //mensagens
+    let codigoSituacao: number = +this.codigoStatus;
+
+    // mensagens
     let msgSucess = 'Cliente cadastrado com sucesso!';
     let msgError = 'Erro ao cadastrar outro cliente!';
 

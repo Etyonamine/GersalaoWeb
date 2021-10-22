@@ -64,29 +64,6 @@
         ></textarea>
       </mat-form-field>
     </div>
-    <div>
-      <mat-tab-group mat-align-tabs="start">
-        <mat-tab label="Grupo-Serviços">
-          <section class="mat-check-section">
-            <div *ngFor="let tipoServico of tipoServicos">
-              <mat-checkbox
-                formControlName="tipoServico"
-                [checked]="tipoServico.codigo"
-                class="mat-check-margin"
-                (change)="
-                  tipoServicoSelecionado(
-                    $event,
-                    tipoServico,
-                    tipoServico.codigo
-                  )
-                "
-                >{{ tipoServico.descricao }}
-              </mat-checkbox>
-            </div>
-          </section>
-        </mat-tab>
-      </mat-tab-group>
-    </div>
 
     <div>
       <app-msg-error
@@ -106,22 +83,8 @@
         mensagemErro="A data está com formato incorreto!"
       ></app-msg-error>
     </div>
-
     <div>
-      <!--       <div class="button-row">
-        <mat-card-actions align="start">
-          <mat-card-content>
-              <button type="button" mat-raised-button color="primary"
-              (click)="openDialogEndereco()" [disabled]=" codigo == 0 ">Endereço </button>
-            <button type="button" mat-raised-button color="primary" [disabled]="codigo == 0"
-              (click)="openDialogContato()">Contato </button>
-            <button type="button" mat-raised-button color="primary" [disabled]="codigo == 0"
-              (click)="openDialogDocumento()">Documento</button>
-          </mat-card-content>
-        </mat-card-actions>
-    </div> -->
     </div>
-
     <!-- botoes *********************************************************************************************************-->
     <table>
       <tr>
@@ -188,7 +151,5 @@
       </tr>
     </table>
   </form>
-
 </div>
-
 <!-- <app-form-debug [form]="formulario"></app-form-debug> -->

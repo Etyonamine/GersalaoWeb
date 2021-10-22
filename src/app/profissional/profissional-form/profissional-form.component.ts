@@ -1,3 +1,4 @@
+import { ProfissionalTipoServicoService } from './../profissional-tipo-servico/profissional-tipo-servico.service';
 import { ProfissionalServico } from './../profissional-servico/profissional-servico';
 import { ProfissionalService } from 'src/app/profissional/profissional.service';
 import { AuthService } from './../../auth-guard/auth.service';
@@ -30,6 +31,7 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
 import 'moment/locale/pt-br';
 import { Contato } from 'src/app/contato/contato';
 import { DocumentoFormComponent } from 'src/app/documento/documento-form/documento-form.component';
+import { ProfissionalTipoServico } from '../profissional-tipo-servico/profissional-tipo-servico';
 
 @Component({
   selector: 'app-profissional-form',
@@ -54,21 +56,21 @@ import { DocumentoFormComponent } from 'src/app/documento/documento-form/documen
 export class ProfissionalFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
   codigo = 0;
   formulario: FormGroup;
+
   profissional: Profissional;
   profissionalEnderecos: Array<ProfissionalEndereco> = [];
   profissionalContatos: Array<ProfissionalContato> = [];
   profissionalDocumentos: Array<ProfissionalDocumento> = [];
-  profissionalServicos: Array<ProfissionalServico> = [];
-
   tituloPagina = '';
   descricaoBotaoSalvarEndereco = 'Incluir';
   inscricaoEstado$: Subscription;
   inscricaoMunicipio$: Subscription;
   inscricaoTipoServico$: Subscription;
   inscricaoAuthService$: Subscription;
-
+  allChecked: boolean = false;
   habilitaApagar = false;
 
+  // tslint:disable-next-line: ban-types
   optionSituacao: Array<Object> = [{ value: 1, name: 'Ativo' }, { value: 2, name: 'Inativo' }];
   estados: Array<UnidadeFederativa> = [];
   municipios: Array<Municipio> = [];
@@ -76,7 +78,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   servicoSelecionado: Array<number> = [];
   dadosEndereco: Endereco;
   dadosContato: Contato;
-
   codigoUsuario: number;
 
   salvarRegistro$: Subscription;
@@ -98,7 +99,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.tituloPagina = this.codigo === 0 ? 'Novo Registro' : 'Alterar o registro';
     this.habilitaApagar = this.codigo === 0 ? true : false;
     this.criarFormulario();
-    this.listaTipoServicos();
     this.dadosEndereco =  {} as Endereco;
     this.authService.getUserData();
     this.codigoUsuario = this.authService.usuarioLogado.Codigo;
@@ -162,7 +162,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
       }
     }
-// '^([0]?[1-9]|[1|2][0-9]|[3][0|1])[./-]([0]?[1-9]|[1][0-2])[./-]([0-9]{4})$')
+
     // criação dos formularios ************************************************
     // formulario Profissional
     this.formulario = this.formBuilder.group({
@@ -170,21 +170,10 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
       nome: [this.profissional.nome === undefined ? null : this.profissional.nome, [Validators.required, this.isDupeProfissional]],
       dataAniversario: [ dataAniversario === undefined ? null : dataAniversario, [Validators.pattern(patternDataAniversario)]],
       codigoSituacao: [this.profissional.codigoSituacao === undefined ? 1 : this.profissional.codigoSituacao, [Validators.required]],
-      observacao: [this.profissional.observacao === undefined ? null : this.profissional.observacao],
-      tipoServico: null
-    });
-  }
-
-  listaTipoServicos() {
-    this.inscricaoTipoServico$ = this.tipoServicoService.list<TipoServico[]>()
-                                     .subscribe(result => {this.tipoServicos = result; }
-                                     , error => {
-      console.error(error);
-      this.handleError('Erro ao carregar a lista de estados. Tente novamente mais tarde.');
+      observacao: [this.profissional.observacao === undefined ? null : this.profissional.observacao]
     });
 
   }
-
   handleError(msg: string) {
     this.serviceAlert.mensagemErro(msg);
   }
@@ -216,7 +205,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.router.navigate(['/profissional']);
   }
   atualizarObjetos() {
-    this.tipoServicos = [];
+    // this.tipoServicos = [];
 
     const valueSubmit = Object.assign({}, this.formulario.value);
     let dataNiver: Date;
@@ -242,37 +231,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
     this.profissional.codigoSituacao = valueSubmit.codigoSituacao;
     this.profissional.observacao = valueSubmit.observacao;
-
-    // tipos de servicos
-    if (this.servicoSelecionado.length > 0 ){
-
-      this.servicoSelecionado.forEach(servi =>{
-        this.profissionalServicos.push({
-          codigoProfissional : this.profissional.codigo,
-          codigoServico : servi,
-          valor : this.tipoServicos.find(x=>x.codigo === servi).
-        } as ProfissionalServico)
-        console.log(servi);
-      })
-    }
-
-
-  }
-  tipoServicoSelecionado(event, opt, codigoTipoServico) {
-
-    const rep = [];
-
-    if (event.checked === true) {
-        // userResponse.push(opt);
-        this.servicoSelecionado.push(codigoTipoServico);
-    }
-
-    if (event.checked === false) {
-        const index: number = this.servicoSelecionado.indexOf(codigoTipoServico);
-        this.servicoSelecionado.splice(index, 1);
-
-    }
-    console.log (this.servicoSelecionado);
 
   }
   openDialogEndereco(): void {
@@ -307,6 +265,4 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
        data : { origemChamada: 2, codigoProfissional: this.codigo, codigoUsuario : this.codigoUsuario} }
     );
   }
-
-
 }
