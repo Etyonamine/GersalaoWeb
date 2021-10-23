@@ -116,6 +116,15 @@
         >
           Documento
         </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="accent"
+          [disabled]="codigo == 0"
+          (click)="openDialogTipoServico()"
+        >
+
+        </button>
         </td>
         <td style="width:25%;text-align: right;">
           <button

@@ -4,6 +4,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { ProfissionalTipoServico } from './profissional-tipo-servico';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogDataProfissional } from '../DialogDataProfissional';
+import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-profissional-tipo-servico',

@@ -1,3 +1,4 @@
+import { ProfissionalTipoServicoComponent } from './../profissional-tipo-servico/profissional-tipo-servico.component';
 import { ProfissionalTipoServicoService } from './../profissional-tipo-servico/profissional-tipo-servico.service';
 import { ProfissionalServico } from './../profissional-servico/profissional-servico';
 import { ProfissionalService } from 'src/app/profissional/profissional.service';
@@ -265,4 +266,13 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
        data : { origemChamada: 2, codigoProfissional: this.codigo, codigoUsuario : this.codigoUsuario} }
     );
   }
+  openDialogTipoServico() {
+    const dialogRef = this.dialog.open(ProfissionalTipoServicoComponent,
+    {        width: '800px' ,
+      height: '600px;',
+      data : { codigo : this.profissional.codigo,
+      codigoUsuario : this.codigoUsuario}
+      } );
+  }
+
 }
