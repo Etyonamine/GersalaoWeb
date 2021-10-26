@@ -49,7 +49,7 @@ export class AuthService {
           this.mostrarMenuEmitter.emit(true);
           // this.router.navigate(['/home']);
 
-          this.router.navigate(['/home', httpLogin]);
+          this.router.navigate(['/home']);
         } else {
           this.alertService.mensagemErro('Usuário ou senha inválido!');
         }
