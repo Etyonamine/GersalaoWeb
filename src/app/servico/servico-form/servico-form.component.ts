@@ -56,16 +56,15 @@ export class ServicoFormComponent extends BaseFormComponent
   }
 
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
+    // Called once, before the instance is destroyed.
+    // Add 'implements OnDestroy' to the class.
     if (this.inscricaoTipo$) {
       this.inscricaoTipo$.unsubscribe;
     }
   }
-
   submit() {
     this.verificarExistencia();
-    if (this.registroExiste==true) {
+    if (this.registroExiste === true) {
       this.handlerErro("O nome do serviço e tipo já existe cadastrado.");
       return;
     }
@@ -92,18 +91,13 @@ export class ServicoFormComponent extends BaseFormComponent
                           console.error(error);
                           this.handlerErro("Ocorreu um erro na tentativa de salvar o cadastro.");
                         });
-
   }
-
   listaTipos() {
     this.inscricaoTipo$ =
       this.tipoServicoService.list<TipoServico[]>()
         .subscribe(result => this.tipoServicos
-
         );
-
   }
-
   handlerErro(msg: string) {
     this.alertService.mensagemErro(msg);
   }
@@ -120,7 +114,6 @@ export class ServicoFormComponent extends BaseFormComponent
       console.log(error);
       this.handlerErro(msgErro);
     });
-
   }
   openConfirmExclusao() {
     this.alertService.openConfirmModal('Tem certeza que deseja excluir?', 'Excluir - Serviço', (answer: boolean) => {
@@ -130,17 +123,15 @@ export class ServicoFormComponent extends BaseFormComponent
     }, "Sim", "Não"
     );
   }
-
   retornar() {
     this.router.navigate(['/servico']);
   }
-
   verificarExistencia() {
     this.registroExiste = false;
 
     var codigo: number = 0;
     var codigoTipo: number = 0;
-    //verificando se é um caso de ediçao ou novo registro
+    // verificando se é um caso de ediçao ou novo registro
     var servicoValidar = (codigo) ? this.servico : <Servico>{};
     var retornoValor: boolean;
 

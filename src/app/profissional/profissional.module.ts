@@ -7,9 +7,10 @@ import { ProfissionalComponent } from './profissional.component';
 import { SharedModule } from './../shared/shared.module';
 import { ProfissionalFormComponent } from './profissional-form/profissional-form.component';
 import { RouterModule } from '@angular/router';
+import { ProfissionalTipoServicoComponent } from './profissional-tipo-servico/profissional-tipo-servico.component';
 
 @NgModule({
-  declarations: [ProfissionalComponent, ProfissionalFormComponent],
+  declarations: [ProfissionalComponent, ProfissionalFormComponent, ProfissionalTipoServicoComponent],
   imports: [
     CommonModule,
     FormsModule,

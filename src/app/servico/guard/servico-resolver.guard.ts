@@ -18,8 +18,8 @@ export class ServicoResolveGuard implements Resolve<Servico>{
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Servico | Observable<Servico> | Promise<Servico> {
-    if (route.params && route.params['codigo']) {
-      return this.servicoService.get<Servico>(route.params['codigo']);
+    if (route.params && route.params[ 'codigo' ]) {
+      return this.servicoService.get<Servico>(route.params[ 'codigo' ]);
     }
     return of (this.servico);
   }
