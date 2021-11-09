@@ -30,6 +30,8 @@ import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/
 import 'moment/locale/pt-br';
 import { Contato } from 'src/app/contato/contato';
 import { DocumentoFormComponent } from 'src/app/documento/documento-form/documento-form.component';
+import { ProfissionalTipoServico } from '../profissional-tipo-servico/profissional-tipo-servico';
+import { ProfissionalTipoServicoService } from '../profissional-tipo-servico/profissional-tipo-servico.service';
 
 @Component({
   selector: 'app-profissional-form',
@@ -58,7 +60,8 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   profissionalEnderecos: Array<ProfissionalEndereco> = [];
   profissionalContatos: Array<ProfissionalContato> = [];
   profissionalDocumentos: Array<ProfissionalDocumento> = [];
-  profissionalServicos: Array<ProfissionalServico> = [];
+  profissionalTipoServicos: Array<ProfissionalTipoServico> = [];
+  
 
   tituloPagina = '';
   descricaoBotaoSalvarEndereco = 'Incluir';
@@ -132,16 +135,28 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
     this.atualizarObjetos();
     this.profissional.codigo = this.codigo != null ? this.codigo : 0;
-
-    this.salvarRegistro$ = this.profissionalService.save(this.profissional)
-    .subscribe(sucesso => {
-      this.handlerSuccess(msgSucess);
-      setTimeout(() => { this.retornar(); }, 3000);
-    },
-      error => {
-        console.error(error);
-        this.handleError('Ocorreu um erro na tentativa de salvar o cadastro.');
-      });
+    if (this.profissional.codigo !== 0 ){
+      this.salvarRegistro$ = this.profissionalService.Atualizar(this.profissional)
+      .subscribe(sucesso => {
+        this.handlerSuccess(msgSucess);
+        setTimeout(() => { this.retornar(); }, 3000);
+      },
+        error => {
+          console.error(error);
+          this.handleError('Ocorreu um erro na tentativa de salvar o cadastro.');
+        });                                      
+    }else{
+      this.salvarRegistro$ = this.profissionalService.save(this.profissional)
+      .subscribe(sucesso => {
+        this.handlerSuccess(msgSucess);
+        setTimeout(() => { this.retornar(); }, 3000);
+      },
+        error => {
+          console.error(error);
+          this.handleError('Ocorreu um erro na tentativa de salvar o cadastro.');
+        });
+    }
+    
   }
 
   criarFormulario() {
@@ -217,6 +232,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   }
   atualizarObjetos() {
     this.tipoServicos = [];
+    var listaTiposServico: Array<ProfissionalTipoServico> = [];
 
     const valueSubmit = Object.assign({}, this.formulario.value);
     let dataNiver: Date;
@@ -244,18 +260,24 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.profissional.observacao = valueSubmit.observacao;
 
     // tipos de servicos
-    if (this.servicoSelecionado.length > 0 ){
+    if (this.servicoSelecionado.length > 0 ){      
+     this.servicoSelecionado.forEach( tpServi =>{
 
-      this.servicoSelecionado.forEach(servi =>{
-        this.profissionalServicos.push({
-          codigoProfissional : this.profissional.codigo,
-          codigoServico : servi,
-          valor : this.tipoServicos.find(x=>x.codigo === servi).
-        } as ProfissionalServico)
-        console.log(servi);
-      })
+          //profissional tipo 
+          const profissionalTipoServico = {
+            codigoProfissional : this.codigo,
+            codigoTipoServico : tpServi,
+            codigoUsuario : this.codigoUsuario,
+            dataCadastro : new Date(),
+            valorComissao : 0 
+          } as ProfissionalTipoServico;
+
+          // adicionando na lista de tipos de servico do profissional
+          listaTiposServico.push(profissionalTipoServico);
+        }       
+     )
     }
-
+    this.profissional.listatiposervico = listaTiposServico;
 
   }
   tipoServicoSelecionado(event, opt, codigoTipoServico) {
