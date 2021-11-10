@@ -248,26 +248,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
     this.profissional.codigoSituacao = valueSubmit.codigoSituacao;
     this.profissional.observacao = valueSubmit.observacao;
-
-    // tipos de servicos
-    if (this.servicoSelecionado.length > 0 ){      
-     this.servicoSelecionado.forEach( tpServi =>{
-
-          //profissional tipo 
-          const profissionalTipoServico = {
-            codigoProfissional : this.codigo,
-            codigoTipoServico : tpServi,
-            codigoUsuario : this.codigoUsuario,
-            dataCadastro : new Date(),
-            valorComissao : 0 
-          } as ProfissionalTipoServico;
-
-          // adicionando na lista de tipos de servico do profissional
-          listaTiposServico.push(profissionalTipoServico);
-        }       
-     )
-    }
-    this.profissional.listatiposervico = listaTiposServico;
+ 
 
   }
   tipoServicoSelecionado(event, opt, codigoTipoServico) {

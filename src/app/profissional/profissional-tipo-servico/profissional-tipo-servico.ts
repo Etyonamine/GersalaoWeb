@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-export interface ProfissionalTipoServico {
-    codigoProfissional: number;
-    codigoTipoServico: number;
-    codigoUsuario:number;
-    dataCadastro: Date;
-    valorComissao: number;
-}
-=======
 export class ProfissionalTipoServico {
   codigoProfissional: number;
   codigoTipoServico: number;
@@ -14,4 +5,3 @@ export class ProfissionalTipoServico {
   dataCadastro: Date;
   codigoUsuarioCadastro: number;
 }
->>>>>>> c893be033f1accde49973bdbfe9fbdaa9c655d08

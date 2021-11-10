@@ -933,4 +933,7 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
     });
 
   }
+  openDialogFormaPagto(){
+    
+  }
 }

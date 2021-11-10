@@ -299,30 +299,47 @@
     <!-- botoes *********************************************************************************************************-->
     <div style="margin-top: 10px">
       <mat-card>
-        <mat-card-content>
-          <div class="button-row">
-            <button
-              type="submit"
-              mat-raised-button
-              color="primary"
-              [disabled]="!formulario.valid"
-            >
-              Salvar &nbsp;<i class="material-icons right">save</i>
-            </button>
-            <button
-              type="button"
-              mat-raised-button
-              color="warn"
-              [disabled]="habilitaApagar"
-              (click)="openConfirmExclusao()"
-            >
-              Apagar &nbsp;<i class="material-icons right">delete_forever</i>
-            </button>
-
-            <button mat-raised-button color="primary" (click)="retornar()">
-              Retornar &nbsp;<i class="material-icons right">reply</i>
-            </button>
-          </div>
+        <mat-card-content>                    
+            <table>
+              <tr>
+                <td  style="width:25%; text-align: left;">
+                  <button
+                    type="button"
+                    mat-raised-button
+                    color="accent"
+                    [disabled]="codigo == 0"
+                    (click)="openDialogFormaPagto()"
+                  >
+                    Forma Pagamento
+                  </button>
+                </td>
+                <td  style="width:25%; text-align: left;">
+                    <button
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    [disabled]="!formulario.valid"
+                  >
+                    Salvar &nbsp;<i class="material-icons right">save</i>
+                  </button>
+                  <button
+                    type="button"
+                    mat-raised-button
+                    color="warn"
+                    [disabled]="habilitaApagar"
+                    (click)="openConfirmExclusao()"
+                  >
+                    Apagar &nbsp;<i class="material-icons right">delete_forever</i>
+                  </button>
+      
+                  <button mat-raised-button color="primary" (click)="retornar()">
+                    Retornar &nbsp;<i class="material-icons right">reply</i>
+                  </button>
+              
+                </td>
+              </tr>
+            </table>
+          
         </mat-card-content>
       </mat-card>
     </div>
