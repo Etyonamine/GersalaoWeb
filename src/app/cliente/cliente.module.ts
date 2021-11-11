@@ -9,13 +9,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from './../shared/shared.module';
 import { ClienteService } from './cliente.service';
+import { ClienteFormaPagamentoComponent } from './cliente-forma-pagamento/cliente-forma-pagamento.component';
 
 
 
 @NgModule({
   declarations: [
     ClienteComponent,
-    ClienteFormComponent
+    ClienteFormComponent,
+    ClienteFormaPagamentoComponent
   ],
   imports: [
     CommonModule ,

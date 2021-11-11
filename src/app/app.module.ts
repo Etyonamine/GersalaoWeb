@@ -22,6 +22,7 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { ContatoModule } from './contato/contato.module';
 import { TipoContatoModule } from './tipo-contato/tipo-contato.module.module';
 import { DocumentoModule } from './documento/documento.module';
+import { FormaPagamentoModule } from './forma-pagamento/forma-pagamento.module';
 
 
 @NgModule({
@@ -30,7 +31,7 @@ import { DocumentoModule } from './documento/documento.module';
     NavegacaoComponent,
     LoginComponent,
     HomeComponent,
-   PaginaNaoEncontradaComponent
+    PaginaNaoEncontradaComponent  
    
    ],
   imports: [
@@ -52,7 +53,8 @@ import { DocumentoModule } from './documento/documento.module';
     UsuarioModule,
     ContatoModule,
     TipoContatoModule, 
-    DocumentoModule
+    DocumentoModule, 
+    FormaPagamentoModule
   ],
   providers: [],
   bootstrap: [AppComponent]
