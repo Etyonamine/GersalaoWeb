@@ -32,7 +32,6 @@ import 'moment/locale/pt-br';
 import { Contato } from 'src/app/contato/contato';
 import { DocumentoFormComponent } from 'src/app/documento/documento-form/documento-form.component';
 import { ProfissionalTipoServico } from '../profissional-tipo-servico/profissional-tipo-servico';
-import { ProfissionalTipoServicoService } from '../profissional-tipo-servico/profissional-tipo-servico.service';
 
 @Component({
   selector: 'app-profissional-form',

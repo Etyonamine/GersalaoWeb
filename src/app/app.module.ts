@@ -25,13 +25,15 @@ import { DocumentoModule } from './documento/documento.module';
 import { FormaPagamentoModule } from './forma-pagamento/forma-pagamento.module';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
     NavegacaoComponent,
     LoginComponent,
     HomeComponent,
-    PaginaNaoEncontradaComponent  
+    PaginaNaoEncontradaComponent
+    
    
    ],
   imports: [

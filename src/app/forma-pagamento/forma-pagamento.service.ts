@@ -11,6 +11,6 @@ export class FormaPagamentoService extends BaseService<FormaPagamento>{
 
   constructor(protected http: HttpClient)
   {
-    super(http, `${environment.API}formaPagamento`);
+    super(http, `${environment.API}FormasPagamento`);
    }
 }

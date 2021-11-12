@@ -1,7 +1,11 @@
+import { FormaPagamento } from "src/app/forma-pagamento/forma-pagamento";
+
 export interface ClienteFormaPagamento{
     codigoCliente: number;
-    codigoFormaPagamento: number;
-    descricao: string;
+    codigoFormaPagto: number;
+    valor: string;
     observacao: string;
     dataCadastro: Date;
+    codigoUsuarioCadastro: number;
+    formaPagamento: FormaPagamento;
 }

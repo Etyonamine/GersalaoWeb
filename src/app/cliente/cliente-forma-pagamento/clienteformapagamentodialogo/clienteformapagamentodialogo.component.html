@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>{{ titulo }} - Forma de Pagamento</h2>
+<mat-dialog-content class="mat-typography">
+    <div [hidden]="!formas">
+        <mat-form-field *ngIf="formas" appearance="fill" style="width: 320px">
+            <mat-label>Selecione da lista</mat-label>
+            <mat-select matTooltip="formas" [(value)]="clienteFormaPagto.codigoFormaPagto">
+                <mat-option *ngFor="let option of formas" [value]="option.codigoFormaPagto">
+                    {{ option.descricaoFormaPagto }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="fill" style="width: 620px">
+        <mat-label>Descrição/Valor</mat-label>
+        <input matInput matTooltip="valor/descricação do tipo de contato" [(ngModel)]="clienteFormaPagto.valor" />
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-raised-button="Salvar o registro" [disabled] = "clienteFormaPagto.codigoFormaPagto === 0 " color="primary" (click)="submit()">
+        Salvar &nbsp;<mat-icon>save</mat-icon>
+    </button>
+    <button mat-raised-button="Retornar" color="primary" mat-dialog-close>
+        Retornar<mat-icon>reply</mat-icon>
+    </button>
+</mat-dialog-actions>

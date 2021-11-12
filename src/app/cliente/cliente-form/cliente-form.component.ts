@@ -28,6 +28,9 @@ import { ClienteContato } from '../cliente-contato/cliente-contato';
 import { ClienteDocumento } from '../cliente-documento/cliente-documento';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { DocumentoService } from 'src/app/documento/documento.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ClienteFormaPagamentoComponent } from '../cliente-forma-pagamento/cliente-forma-pagamento.component';
+import { AuthService } from 'src/app/auth-guard/auth.service';
 
 
 
@@ -99,6 +102,8 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
     private enderecoService: EnderecoService,
     private route: ActivatedRoute,
     private router: Router,
+    public dialog: MatDialog ,
+    private authService: AuthService
 
 
   ) {
@@ -219,6 +224,8 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
       (selectedValue) => this.valorDocumentoMudou = true);
 
     this.rotulos_modos_operacao();
+
+    this.codigoLogin = this.authService.usuarioLogado.Codigo;
   }
 
   ngOnDestroy(): void {
@@ -934,6 +941,10 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
 
   }
   openDialogFormaPagto(){
-    
+    const dialogRef = this.dialog.open(ClienteFormaPagamentoComponent,
+      { width: '800px' ,
+       height: '600px;',
+       data : { codigo: this.codigo, codigoUsuario : this.codigoLogin} }
+    );
   }
 }

@@ -10,6 +10,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from './../shared/shared.module';
 import { ClienteService } from './cliente.service';
 import { ClienteFormaPagamentoComponent } from './cliente-forma-pagamento/cliente-forma-pagamento.component';
+import { ClienteformapagamentodialogoComponent } from './cliente-forma-pagamento/clienteformapagamentodialogo/clienteformapagamentodialogo.component';
+
 
 
 
@@ -17,7 +19,8 @@ import { ClienteFormaPagamentoComponent } from './cliente-forma-pagamento/client
   declarations: [
     ClienteComponent,
     ClienteFormComponent,
-    ClienteFormaPagamentoComponent
+    ClienteFormaPagamentoComponent,
+    ClienteformapagamentodialogoComponent
   ],
   imports: [
     CommonModule ,
