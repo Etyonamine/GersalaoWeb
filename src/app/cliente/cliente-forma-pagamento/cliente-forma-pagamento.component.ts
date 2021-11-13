@@ -23,6 +23,7 @@ export class ClienteFormaPagamentoComponent implements OnInit {
   constructor(private clienteFormaPagamentoService: ClienteFormaPagamentoService,
               private serviceAlert:AlertService,
               public dialog: MatDialog ,
+              private alertService:AlertService,
               @Inject(MAT_DIALOG_DATA) public data: ClienteFormaPagamentoDialog) { }
 
   ngOnInit(): void {
@@ -101,10 +102,30 @@ export class ClienteFormaPagamentoComponent implements OnInit {
       this.loadData();
     });
   }
-  openDialogApagar(codigoFormaPagto: number){
-
+  openDialogApagar(codigo: number){
+    this.alertService.openConfirmModal('Tem certeza que deseja excluir?', 'Excluir - forma de pagamento', (resposta: boolean) => {
+      if (resposta) {
+        this.apagar(codigo);
+        // this.exclusaoCliente(codigo);
+      }
+    }, 'Sim', 'Não'
+    );
   }
-  submit(){
+  apagar(codigoExcluir: number) {
+    
+     const codigoClienteExcluir = this.data.codigo;
+     
+    
 
+    this.clienteFormaPagamentoService.deletePkDuplo(codigoClienteExcluir, codigoExcluir)
+                                     .subscribe(result=>{
+                                       this.handlerSuccess('Registro apagado com sucesso!');
+                                       this.loadData();
+                                     },error =>{
+                                       console.log('Erro ao excluir a forma de pagamento -' + error);
+                                       this.handleError('Houve um erro ao tentar excluir a forma de pagamento.');
+                                     }
+                                     )
+    
   }
 }

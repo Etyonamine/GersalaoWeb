@@ -8,6 +8,12 @@
                  (click)="openDialogNovo()">Adicionar &nbsp;
                  <i class="material-icons right">add</i>
           </button>
+      &nbsp;
+      &nbsp;      
+      <button mat-raised-button="Retornar" color="primary" mat-dialog-close>
+        Retornar<mat-icon>reply</mat-icon>
+      </button>
+      
   </div>
 
   <div>
@@ -27,8 +33,8 @@
           <button
             mat-mini-fab
             color="primary"
-            aria-label="Editar o tipo de serviço"
-            value="{{ clienteFrmPg.CodigoFormaPagto }}"
+            aria-label="Editar o registro"
+            value="{{ clienteFrmPg.codigoFormaPagto }}"
             (click)="openDialogEditar(clienteFrmPg)"
           >
             <mat-icon>edit</mat-icon>
@@ -36,10 +42,10 @@
           &nbsp;
           <button
             mat-mini-fab
-            aria-label="Example icon button with a home icon"
+            aria-label="Apagar o registro"
             color="warn"
-            value="{{clienteFrmPg.CodigoFormaPagto}}"
-            (click)="openDialogApagar(clienteFrmPg.CodigoFormaPagto)"
+            value="{{clienteFrmPg.codigoFormaPagto}}"
+            (click)="openDialogApagar(clienteFrmPg.codigoFormaPagto)"
           >
             <mat-icon>delete</mat-icon>
           </button>
@@ -49,4 +55,7 @@
       <mat-row *matRowDef="let row; columns: colunas"></mat-row>
     </table>
   </div>
+  
+    
+  
 </mat-dialog-content>

@@ -50,7 +50,10 @@ export class BaseService<T> {
   {
     return this.http.put<T>(`${ this.API_URL + '/'+ record['codigo'] }`, record).pipe(take(1));
   }
-
+  private updatePkDuplo(record: T, codigo1:string , codigo2: string)
+  {
+    return this.http.put<T>(`${ this.API_URL + '/'+ codigo1 + '/' + codigo2 }`, record).pipe(take(1));
+  }
   // put<T>(recurso:T): Observable<T> {
   //   return this.http.put<T>(`${ this.API_URL + '/'+ recurso['codigo'] }`, recurso).pipe(take(1));
   // }
@@ -71,10 +74,21 @@ export class BaseService<T> {
     }
   }
 
+  savePkDuplo(recurso:T, codigo1 , codigo2){
+    if(codigo1 !== ''){
+      return this.updatePkDuplo(recurso, codigo1, codigo2);
+    }
+    else{
+      return this.create(recurso);
+    }
+  }
+
   delete (codigo){
     return this.http.delete(`${ this.API_URL + '/' + codigo}`).pipe(take(1));
   }
-
+  deletePkDuplo(codigo1, codigo2){
+    return this.http.delete(`${ this.API_URL + '/' + codigo1 + '/' + codigo2}`).pipe(take(1));
+  }
 
 
   isDupe( item :T): Observable<boolean> {

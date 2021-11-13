@@ -59,12 +59,18 @@ export class ClienteformapagamentodialogoComponent implements OnInit, OnDestroy 
       this.handleError('Atenção!Por favor, selecione uma forma de pagamento!');
       return false;
     }
-    this.clienteFormaPagto.formaPagamento = null;
+    //this.clienteFormaPagto.formaPagamento = null;
     
-    this.inscricaoClienteFormaPagto$ = this.clienteFormaPagamentoService.save(this.clienteFormaPagto).subscribe(result=>{
-      if (result){
+    this.inscricaoClienteFormaPagto$ = this.clienteFormaPagamentoService.savePkDuplo(this.clienteFormaPagto, 
+                                                                                          this.clienteFormaPagto.codigoCliente.toString(), 
+                                                                                          this.clienteFormaPagto.codigoFormaPagto.toString())
+                                                                        .subscribe(result=>{
+      
         this.handlerSuccess('Forma de pagamento salvo com sucesso!');
-      }
+      
+    },error=>{
+      console.log (error);
+      this.handleError('Ocorreu um erro ao tentar salvar o registro.');
     });
    console.log(this.clienteFormaPagto);    
   }
