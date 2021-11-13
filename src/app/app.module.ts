@@ -23,6 +23,8 @@ import { ContatoModule } from './contato/contato.module';
 import { TipoContatoModule } from './tipo-contato/tipo-contato.module.module';
 import { DocumentoModule } from './documento/documento.module';
 import { FormaPagamentoModule } from './forma-pagamento/forma-pagamento.module';
+import { TipoProdutoModule } from './tipo-produto/tipo-produto.module';
+
 
 
 
@@ -34,7 +36,6 @@ import { FormaPagamentoModule } from './forma-pagamento/forma-pagamento.module';
     HomeComponent,
     PaginaNaoEncontradaComponent
     
-   
    ],
   imports: [
     BrowserModule,
@@ -55,6 +56,7 @@ import { FormaPagamentoModule } from './forma-pagamento/forma-pagamento.module';
     UsuarioModule,
     ContatoModule,
     TipoContatoModule, 
+    TipoProdutoModule,
     DocumentoModule, 
     FormaPagamentoModule
   ],

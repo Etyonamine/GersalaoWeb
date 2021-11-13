@@ -42,6 +42,13 @@ const routes: Routes = [
       canLoad: [AuthGuard]
 
   },
+  {
+    path: 'tipo-produto',
+      loadChildren: () => import('./tipo-produto/tipo-produto.module').then(mod => mod.TipoProdutoModule),
+      canActivate:[AuthGuard],
+      canLoad: [AuthGuard]
+
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PaginaNaoEncontradaComponent }
 ];
