@@ -1,4 +1,4 @@
 export interface TipoProduto{
-    codigo:Number;
+    codigo:number;
     nome: string;
 }

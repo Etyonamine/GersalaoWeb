@@ -90,13 +90,12 @@ export class BaseService<T> {
     return this.http.delete(`${ this.API_URL + '/' + codigo1 + '/' + codigo2}`).pipe(take(1));
   }
 
-
   isDupe( item :T): Observable<boolean> {
     const headers = new HttpHeaders();
     headers.set("Content-Type", "application/json; charset=utf-8");
 
     var url = this.API_URL + '/IsDupe';
-    return this.http.post<boolean>(url,item,{headers});
+    return this.http.post<boolean>(url,item,{headers}).pipe(take(1));
   }
 }
 
