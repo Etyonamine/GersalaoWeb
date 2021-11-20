@@ -91,13 +91,14 @@ export class BaseService<T> {
   }
 
   isDupe( item :T): Observable<boolean> {
-     
+       
     const headers = new HttpHeaders();
     headers.set("Content-Type", "application/json; charset=utf-8");
 
     var url = this.API_URL + '/IsDupe';
-    return this.http.post<boolean>(url,item,{headers}).pipe(take(1));
+    return this.http.post<boolean>(url,item ).pipe(take(1));
   }
+  
 }
 
 

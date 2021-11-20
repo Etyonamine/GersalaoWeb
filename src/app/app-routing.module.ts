@@ -30,6 +30,12 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
+    path: 'produto-linha',
+    loadChildren: () => import ('./produto-linha/produto-linha.module').then(mod => mod.ProdutoLinhaModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+  },
+  {
     path: 'profissional',
     loadChildren: () => import ('./profissional/profissional.module').then(mod => mod.ProfissionalModule),
     canActivate:[AuthGuard],
