@@ -79,14 +79,11 @@ export class TipoProdutoDialogoComponent extends BaseFormComponent implements On
    // ** validar se existe*/
    isDupe(fieldName:string): AsyncValidatorFn {
     return(control:AbstractControl):Observable<{[key:string]:any}| null>=>{
-      var params = new HttpParams()
-      .set ("codigo",(this.tipoProduto.codigo)?this.tipoProduto.codigo.toString():"0")
-      .set("nome",control.value);
-      var url = `${environment.API}tipoProdutos/isDupe`;     
-
-      return  this.http.post<boolean>(url,null,{params})
-                  .pipe(map(result=>{
-                        return (result ? {isDupe:true} : null);
+      
+      return this.tipoProdutoService.isDupe2(
+          this.tipoProduto.codigo.toString(), 
+              control.value).pipe(map(result => {
+        return (result ? { isDupe: true } : null);
       }));
     }
 /* 

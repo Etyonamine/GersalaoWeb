@@ -135,8 +135,7 @@ export class TipoProdutoComponent implements OnInit, OnDestroy {
                               });
 
                             //atualizar a pagina quando retornar do dialog 
-                            dialog.afterClosed().subscribe(result => {
-                              console.log(`Dialog result: ${result}`);
+                            dialog.afterClosed().subscribe(result => {                               
                               this.loadData();
                             });    
                           }, error =>{

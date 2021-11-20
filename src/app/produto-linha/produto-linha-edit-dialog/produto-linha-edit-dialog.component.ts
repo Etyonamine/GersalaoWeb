@@ -67,7 +67,7 @@ export class ProdutoLinhaEditDialogComponent extends BaseFormComponent  implemen
         nome: this.formulario === undefined ? this.linhaProduto.nome:this.formulario.get('nome').value
       } as ProdutoLinha;
      
-      return  this.produtoLinhaService.isDupe(produtoLinhaValidar)
+      return  this.produtoLinhaService.isDupe2(produtoLinhaValidar.codigo.toString(),produtoLinhaValidar.nome)
                   .pipe(map(result=>{
                         return (result ? {isDupe:true} : null);
       }));

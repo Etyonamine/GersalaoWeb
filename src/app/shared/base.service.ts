@@ -98,6 +98,14 @@ export class BaseService<T> {
     var url = this.API_URL + '/IsDupe';
     return this.http.post<boolean>(url,item ).pipe(take(1));
   }
+
+  isDupe2(codigo: string, texto: string){
+    var params = new HttpParams()
+    .set ("codigo",(codigo)?codigo:"0")
+    .set("nome",texto);
+    var url = this.API_URL + '/IsDupe';
+    return this.http.post<boolean>(url,null,{params}).pipe(take(1));
+  }
   
 }
 

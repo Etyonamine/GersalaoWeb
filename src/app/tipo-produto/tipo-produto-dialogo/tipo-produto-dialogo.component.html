@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ titulo }} - Tipo - Produto</h2>
+<h2 mat-dialog-title>&nbsp;{{ titulo }} - Tipo - Produto</h2>
 
 <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
     <div class="form-group mat-container">
@@ -22,7 +22,9 @@
                 </mat-radio-group>
             
         </mat-dialog-content>
-         
+        <div *ngIf="formulario.get('nome').errors?.isDupe" class = "registroEncontrado">
+            Por favor, verificar! Este tipo já existe cadastrado.
+        </div>
 
        <!--  <div>
             <app-msg-error
