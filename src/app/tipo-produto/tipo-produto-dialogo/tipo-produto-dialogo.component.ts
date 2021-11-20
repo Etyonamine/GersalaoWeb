@@ -1,3 +1,4 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -5,6 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
+import { environment } from 'src/environments/environment.prod';
 import { TipoProduto } from '../tipo-produto';
 import { TipoProdutoService } from '../tipo-produto.service';
 
@@ -17,6 +19,7 @@ export class TipoProdutoDialogoComponent extends BaseFormComponent implements On
 
   titulo: string;
   codigo: number;
+  codigoSituacao: number;
   tipoProduto: TipoProduto;
   nome: string;
   inscricao$: Subscription;
@@ -25,6 +28,7 @@ export class TipoProdutoDialogoComponent extends BaseFormComponent implements On
   
   constructor( private formBuilder: FormBuilder,
                private tipoProdutoService: TipoProdutoService,
+               private http: HttpClient,
                @Inject(MAT_DIALOG_DATA) public data: TipoProduto,
                private alertService:AlertService
                ) {
@@ -32,11 +36,11 @@ export class TipoProdutoDialogoComponent extends BaseFormComponent implements On
   }
 
   ngOnInit(): void {    
-    this.tipoProduto = this.data;
-    this.nome = this.tipoProduto.nome;
-    this.codigo = this.data.codigo;
-    this.titulo = this.data.codigo !== 0 ? "Editar": "Novo";
+    this.tipoProduto = this.data;      
+    this.titulo = this.tipoProduto.codigo !== 0 ? "Editar": "Novo";
+    this.codigoSituacao = this.tipoProduto.codigo !== 0 ?  this.tipoProduto.codigoSituacao : 1;
     this.criarFormulario()
+    
   }
   ngOnDestroy():void{
     if (this.inscricao$){
@@ -45,18 +49,26 @@ export class TipoProdutoDialogoComponent extends BaseFormComponent implements On
   }
   //criar formulario
   criarFormulario(){
-    this.formulario = new FormGroup({
-      nome: new FormControl(this.nome === undefined ? null : this.nome, Validators.required)
-    },null, this.isDupe());  
+    this.formulario =   this.formBuilder.group({
+      nome: [this.tipoProduto.nome, Validators.required, this.isDupe("nome")],
+      situacao:[this.codigoSituacao.toString(),Validators.required]
+     }); 
+    
   }
   
   submit(){
-    this.nome = this.formulario.get("nome").value;
-
-    if (this.nome ==='' || this.nome === undefined){
-      this.handleError('Por favor, digite um nome!');
-      return false;
-    }    
+    this.tipoProduto.nome = this.formulario.get("nome").value;
+    this.tipoProduto.codigoSituacao = this.formulario.get("situacao").value;
+        
+    this.inscricao$ = this.tipoProdutoService.save(this.tipoProduto).subscribe(result=>{
+       
+        this.handlerSuccess("Registro salvo com sucesso!");
+     
+    },error=>{
+      console.log(error);
+      this.handleError('Ocorreu um erro ao tentar salvar o arquivo.');
+    });
+    
   }
   handlerSuccess(msg: string) {
     this.alertService.mensagemSucesso(msg);
@@ -65,14 +77,16 @@ export class TipoProdutoDialogoComponent extends BaseFormComponent implements On
     this.alertService.mensagemErro(msg);
   }
    // ** validar se existe*/
-   isDupe(): AsyncValidatorFn {
+   isDupe(fieldName:string): AsyncValidatorFn {
     return(control:AbstractControl):Observable<{[key:string]:any}| null>=>{
-      var tipoProduto = <TipoProduto>{};
-      tipoProduto.codigo = (this.codigo)?this.codigo:0;
-      tipoProduto.nome = this.formulario.get("nome").value;
+      var params = new HttpParams()
+      .set ("codigo",(this.tipoProduto.codigo)?this.tipoProduto.codigo.toString():"0")
+      .set("nome",control.value);
+      var url = `${environment.API}tipoProdutos/isDupe`;     
 
-      return this.tipoProdutoService.isDupe(tipoProduto).pipe(map(result=>{
-        return (result ? {isDupe:true} : null);
+      return  this.http.post<boolean>(url,null,{params})
+                  .pipe(map(result=>{
+                        return (result ? {isDupe:true} : null);
       }));
     }
 /* 

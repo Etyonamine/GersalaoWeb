@@ -103,22 +103,69 @@ export class TipoProdutoComponent implements OnInit, OnDestroy {
     // montando os dados de profissional contato
     const tipoProdutoAdd = {
       codigo : 0,
+      codigoSituacao : 1,
       nome :''
     } as TipoProduto;
     // montando o dialogo
     const dialogRef = this.dialog.open(TipoProdutoDialogoComponent,
       {width: '790px' , height: '600px;',
-        data : {tipoProduto : tipoProdutoAdd}
+        data : tipoProdutoAdd
       });
-  }
 
-  openConfirmExclusao(codigo: number)
+    //atualizar a pagina quando retornar do dialog
+    dialogRef.afterClosed().subscribe(result => {       
+      this.loadData();
+    });     
+  }
+  openEditar(codigo: number)
   {
+    this.inscricao$ = this.tipoProdutoService.get<TipoProduto>(codigo)
+                          .subscribe(result => {
 
+                            const tipoProdutoEdit = {
+                              codigo : result.codigo,
+                              codigoSituacao : result.codigoSituacao,
+                              nome : result.nome,                              
+                              situacao: result.situacao
+                            } as TipoProduto;
+                            
+                            const dialog = this.dialog.open(TipoProdutoDialogoComponent,
+                              {width: '790px' , height: '600px;',
+                                data : tipoProdutoEdit
+                              });
+
+                            //atualizar a pagina quando retornar do dialog 
+                            dialog.afterClosed().subscribe(result => {
+                              console.log(`Dialog result: ${result}`);
+                              this.loadData();
+                            });    
+                          }, error =>{
+                           
+                            this.handleError("Ocorreu um erro na recuperação da informação do tipo de produto.");                            
+                          });   
+
+                          
+  }         
+  openConfirmExclusao(codigo: number,tipo: string)
+  {
+    this.alertService.openConfirmModal('Tem certeza que deseja excluir o tipo [ ' + tipo + ' ]?', 'Excluir - tipo de produto', (resposta: boolean) => {
+      if (resposta) {
+        this.apagar(codigo);
+        // this.exclusaoCliente(codigo);
+      }
+    }, 'Sim', 'Não'
+    );
   }
-  
+  apagar(codigo:number){
+   this.tipoProdutoService.delete(codigo).subscribe(result=>{
+    this.handlerSuccess('Registro apagado com sucesso!');
+   },error=>{
+     this.handleError('Ocorreu um erro ao tentar apagar o registro.');
+   });
+  }
   handlerSuccess(msg: string) {
     this.alertService.mensagemSucesso(msg);
+    this.loadData();
   }
 
   handleError(msg: string) {

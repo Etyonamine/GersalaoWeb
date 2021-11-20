@@ -4,7 +4,7 @@
     <div class="form-group mat-container">
         <mat-dialog-content class="mat-typography">
 
-            <mat-form-field appearance="fill" style="width: 620px">
+            <mat-form-field appearance="fill" style="width: 420px">
                 <mat-label>Nome</mat-label>
                 <input matInput 
                        matTooltip="Digite o nome do tipo de produto que deseja!" 
@@ -13,20 +13,23 @@
                        required
                 />
             </mat-form-field>
+             
+           
+            <mat-radio-group aria-label="Select an option"  formControlName="situacao" >
+                <mat-label>Situa&ccedil;&abreve;o: </mat-label> &nbsp;
+                <mat-radio-button value="1">Ativo</mat-radio-button>
+                <mat-radio-button value="2">Inativo</mat-radio-button>
+                </mat-radio-group>
+            
         </mat-dialog-content>
-        <!--  <div *ngIf="formulario.invalid && formulario.errors?.isDupe"
-              class="alert alert-danger">
-            <strong>
-                Este tipo já existe no cadastro.
-            </strong>
-        </div> -->
+         
 
-        <div>
+       <!--  <div>
             <app-msg-error
             [mostrarErro]="formulario.invalid && formulario.errors?.isDupe"
             mensagemErro="O tipo digitado já existe no cadastrado!"
           ></app-msg-error>
-        </div>
+        </div> -->
 
         <mat-dialog-actions align="end">
             <button type ="submit" mat-raised-button="Salvar o registro" color="primary"  [disabled]="!formulario.valid" >

@@ -36,20 +36,25 @@
             <!-- <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
             <mat-cell *matCellDef="let tipo"> {{ tipo.codigo }} </mat-cell> -->
             <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
-          <mat-cell *matCellDef="let tipoProdutos">
+          <mat-cell *matCellDef="let tipo">
             
               <button
                 mat-mini-fab
                 color="primary"
-                aria-label="Editar o tipo de produto"                   > 
-                (click) =""
+                aria-label="Editar o tipo de produto"                   
+                (click) ="openEditar(tipo.codigo)"
+              > 
+                
                                       
                 <mat-icon>edit</mat-icon>
               </button>
 
               <button
                 mat-mini-fab
-                aria-label="Apagar o tipo de produto" color="warn">
+                aria-label="Apagar o tipo de produto" 
+                color="warn"
+                (click) ="openConfirmExclusao(tipo.codigo, tipo.nome)"
+                >
                 <!-- value="{{profissional.codigo}}"  -->               
                 
                 <mat-icon>delete</mat-icon>
