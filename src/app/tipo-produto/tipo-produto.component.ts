@@ -17,7 +17,7 @@ import { TipoProdutoService } from './tipo-produto.service';
   styleUrls: ['./tipo-produto.component.scss']
 })
 export class TipoProdutoComponent implements OnInit, OnDestroy {
-  colunas : string[] =["codigo","nome", "acao"];
+  colunas : string[] =["codigo","nome", "situacao","acao"];
   tipoProdutos: MatTableDataSource<TipoProduto>;
   inscricao$: Subscription;
   codigoUsuario: number;

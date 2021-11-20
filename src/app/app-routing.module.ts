@@ -24,6 +24,12 @@ const routes: Routes = [
      canActivate:[AuthGuard]
   },
   {
+    path: 'produto',
+    loadChildren: () => import ('./produto/produto.module').then(mod => mod.ProdutoModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+  },
+  {
     path: 'profissional',
     loadChildren: () => import ('./profissional/profissional.module').then(mod => mod.ProfissionalModule),
     canActivate:[AuthGuard],

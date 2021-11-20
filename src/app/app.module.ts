@@ -24,6 +24,7 @@ import { TipoContatoModule } from './tipo-contato/tipo-contato.module.module';
 import { DocumentoModule } from './documento/documento.module';
 import { FormaPagamentoModule } from './forma-pagamento/forma-pagamento.module';
 import { TipoProdutoModule } from './tipo-produto/tipo-produto.module';
+import { ProdutoModule } from './produto/produto.module';
 
 
 
@@ -34,8 +35,7 @@ import { TipoProdutoModule } from './tipo-produto/tipo-produto.module';
     NavegacaoComponent,
     LoginComponent,
     HomeComponent,
-    PaginaNaoEncontradaComponent
-    
+    PaginaNaoEncontradaComponent     
    ],
   imports: [
     BrowserModule,
@@ -57,6 +57,7 @@ import { TipoProdutoModule } from './tipo-produto/tipo-produto.module';
     ContatoModule,
     TipoContatoModule, 
     TipoProdutoModule,
+    ProdutoModule,
     DocumentoModule, 
     FormaPagamentoModule
   ],

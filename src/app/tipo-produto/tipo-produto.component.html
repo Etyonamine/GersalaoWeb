@@ -28,6 +28,10 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
             <mat-cell *matCellDef="let tipo"> {{ tipo.nome }} </mat-cell>
           </ng-container>
+          <ng-container matColumnDef="situacao">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Situa&ccedil;&atilde;o</mat-header-cell>
+            <mat-cell *matCellDef="let tipo"> {{ tipo.situacao.descricao }} </mat-cell>
+          </ng-container>
           <ng-container matColumnDef="acao">
             <!-- <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
             <mat-cell *matCellDef="let tipo"> {{ tipo.codigo }} </mat-cell> -->
@@ -38,8 +42,7 @@
                 mat-mini-fab
                 color="primary"
                 aria-label="Editar o tipo de produto"                   > 
-                <!-- [routerLink]="['/profissional', profissional.codigo]" 
-                >  -->
+                (click) =""
                                       
                 <mat-icon>edit</mat-icon>
               </button>
