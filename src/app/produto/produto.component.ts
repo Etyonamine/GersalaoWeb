@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -6,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
 import { Produto } from './produto';
+import { ProdutoEditComponent } from './produto-edit/produto-edit.component';
 import { ProdutoService } from './produto.service';
 
 @Component({
@@ -35,7 +37,8 @@ export class ProdutoComponent implements OnInit {
 
   constructor(
               private alertService: AlertService, 
-              private produtoService: ProdutoService) { }
+              private produtoService: ProdutoService,
+              public dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -80,7 +83,27 @@ export class ProdutoComponent implements OnInit {
 
   openNovoRegistro()
   {
+    // montando os dados de profissional contato
+    const ProdutoAdd = {
+      codigo : 0,
+      nome : null,
+      codigoFornecedor : null,
+      observacao : null,
+      codigoSituacao : 1,
+      situacao : null, 
+      tipoProduto : null
+    } as Produto;
 
+    // montando o dialogo
+    const dialogRef = this.dialog.open(ProdutoEditComponent,
+      {width: '790px' , height: '600px;',
+        data : ProdutoAdd
+      });
+
+    //atualizar a pagina quando retornar do dialog
+    dialogRef.afterClosed().subscribe(result => {       
+        //this.loadData();
+    }); 
   }
   
   handlerSuccess(msg: string) {
