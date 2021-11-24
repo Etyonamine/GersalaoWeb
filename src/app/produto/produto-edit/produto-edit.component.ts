@@ -1,7 +1,5 @@
-import { removeSummaryDuplicates } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { ProdutoLinha } from 'src/app/produto-linha/produto-linha';
 import { ProdutoLinhaService } from 'src/app/produto-linha/produto-linha.service';
@@ -10,6 +8,7 @@ import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component'
 import { ApiResult } from 'src/app/shared/base.service';
 import { TipoProduto } from 'src/app/tipo-produto/tipo-produto';
 import { TipoProdutoService } from 'src/app/tipo-produto/tipo-produto.service';
+import { Produto } from '../produto';
 
 @Component({
   selector: 'app-produto-edit',
@@ -17,15 +16,13 @@ import { TipoProdutoService } from 'src/app/tipo-produto/tipo-produto.service';
   styleUrls: ['./produto-edit.component.scss']
 })
 export class ProdutoEditComponent extends BaseFormComponent implements OnInit, OnDestroy {
-  submit() {
-    throw new Error('Method not implemented.');
-  }
+  
   formulario: FormGroup;
   tituloPagina: string;
   codigo: number;
   tipos: Array<TipoProduto> =[];
   linhas: Array<ProdutoLinha>=[];
-
+  produto: Produto;
   inscricaoTipo$: Subscription;
   inscricaoLinhas$: Subscription;
 
@@ -103,7 +100,20 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   isDupe(){
 
   }
-  
+  submit() {
+
+    this.produto = {
+      nome :   this.formulario.get("nome").value,
+      codigoFornecedor : this.formulario.get("codigoFornecedor").value,
+      codigoTipoProduto : this.formulario.get("tipo").value,
+      codigoSituacao : this.formulario.get("situacao").value,
+      observacao : this.formulario.get("observacao").value
+    } as Produto;
+ 
+    console.log(this.produto);
+
+
+  }
   handlerSuccess(msg: string) {
     this.alertService.mensagemSucesso(msg);
   }
