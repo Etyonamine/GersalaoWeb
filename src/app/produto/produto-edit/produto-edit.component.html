@@ -32,7 +32,7 @@
             <mat-form-field
               *ngIf="tipos"
               appearance="fill"
-              style="width: 150px"
+              style="width: 250px"
             >
               <mat-label>Tipo</mat-label>
               <mat-select
@@ -52,7 +52,7 @@
             <mat-form-field
               *ngIf="linhas"
               appearance="fill"
-              style="width: 150px"
+              style="width: 235px"
             >
               <mat-label>Linha</mat-label>
               <mat-select
@@ -67,7 +67,12 @@
                   {{ linha.nome }}
                 </mat-option>
               </mat-select>
+
             </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 200px">
+              <mat-label>Código do Fornecedor</mat-label>
+              <input matInput formControlName="codigoFornecedor" readonly />
+            </mat-form-field>            
           </div>
           <div class="form-group mat-container">
             <mat-form-field appearance="fill" class="observacao" style="width: 700px;">
