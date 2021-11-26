@@ -5,107 +5,109 @@
       </mat-card-title>
       <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
           <mat-card-content>
-          <div class="form-group mat-container">
-            <mat-form-field appearance="fill" style="width: 70px">
-              <mat-label>Código</mat-label>
-              <input matInput formControlName="codigo" readonly />
-            </mat-form-field>
-            <mat-form-field appearance="fill" style="width: 335px">
-              <mat-label>Nome</mat-label>
-              <input
-                matInput
-                placeholder="Digite o nome do produto"
-                id="nome"
-                formControlName="nome"
-                matTooltip="Informar o nome do produto"
-                required
-              />
-            </mat-form-field>    
-            &nbsp;
-            <mat-radio-group aria-label="Select an option"  formControlName="situacao" >
-              <mat-label>Situa&ccedil;&abreve;o: </mat-label> &nbsp;
-              <mat-radio-button value="1">Ativo</mat-radio-button>
-              <mat-radio-button value="2">Inativo</mat-radio-button>
-            </mat-radio-group>              
-          </div>
-          <div class="form-group mat-container">
-            <mat-form-field
-              *ngIf="tipos"
-              appearance="fill"
-              style="width: 250px"
-            >
-              <mat-label>Tipo</mat-label>
-              <mat-select
-                formControlName="tipo"
-                matTooltip="Tipo(s) de Produto(s)"
-                required
+            <div class="form-group mat-container">
+              <mat-form-field appearance="fill" style="width: 70px">
+                <mat-label>Código</mat-label>
+                <input matInput formControlName="codigo" readonly />
+              </mat-form-field>
+              <mat-form-field appearance="fill" style="width: 335px">
+                <mat-label>Nome</mat-label>
+                  <input
+                    matInput
+                    placeholder="Digite o nome do produto"
+                    id="nome"
+                    formControlName="nome"
+                    matTooltip="Informar o nome do produto"
+                    required
+                  />
+              </mat-form-field>    
+              
+              
+              <mat-radio-group aria-label="Select an option"  formControlName="situacao" >
+                <mat-label>Situa&ccedil;&abreve;o: </mat-label> &nbsp;
+                <mat-radio-button value="1">Ativo</mat-radio-button>
+                <mat-radio-button value="2">Inativo</mat-radio-button>
+              </mat-radio-group>              
+              
+            </div>
+            <div class="form-group mat-container">
+              <mat-form-field
+                *ngIf="tipos"
+                appearance="fill"
+                style="width: 250px"
               >
-                <mat-option
-                  *ngFor="let tipo of tipos"
-                  [value]="tipo.codigo"
+                <mat-label>Tipo</mat-label>
+                <mat-select
+                  formControlName="tipo"
+                  matTooltip="Tipo(s) de Produto(s)"
+                  required
                 >
-                  {{ tipo.nome }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <!-- linha de produtos-->
-            <mat-form-field
-              *ngIf="linhas"
-              appearance="fill"
-              style="width: 235px"
-            >
-              <mat-label>Linha</mat-label>
-              <mat-select
-                formControlName="linha"
-                matTooltip="Linha(s) de Produto(s)"
-                required
+                  <mat-option
+                    *ngFor="let tipo of tipos"
+                    [value]="tipo.codigo"
+                  >
+                    {{ tipo.nome }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <!-- linha de produtos-->
+              <mat-form-field
+                *ngIf="linhas"
+                appearance="fill"
+                style="width: 235px"
               >
-                <mat-option
-                  *ngFor="let linha of linhas"
-                  [value]="linha.codigo"
+                <mat-label>Linha</mat-label>
+                <mat-select
+                  formControlName="linha"
+                  matTooltip="Linha(s) de Produto(s)"
+                  required
                 >
-                  {{ linha.nome }}
-                </mat-option>
-              </mat-select>
+                  <mat-option
+                    *ngFor="let linha of linhas"
+                    [value]="linha.codigo"
+                  >
+                    {{ linha.nome }}
+                  </mat-option>
+                </mat-select>
 
-            </mat-form-field>
-            <mat-form-field appearance="fill" style="width: 200px">
-              <mat-label>Código do Fornecedor</mat-label>
-              <input matInput formControlName="codigoFornecedor" readonly />
-            </mat-form-field>            
-          </div>
-          <div class="form-group mat-container">
-            <mat-form-field appearance="fill" class="observacao" style="width: 700px;">
-              <mat-label>Observação</mat-label>
-              <textarea
-                matInput
-                formControlName="observacao"
-                maxlength="300"
-                style = "height:100px;"
-                placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
-                matTooltip="Digite aqui caso precise informar alguma observação do produto."
-              ></textarea>
-            </mat-form-field>
-          </div>
-          <div>
-            
-            <app-msg-error
-              [mostrarErro]="            
-                formulario.get('nome').touched &&
-                formulario.get('nome').hasError('required')
-              "
-              mensagemErro="Por favor, digite o nome completo! "
-            ></app-msg-error>
-            <app-msg-error
-              [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
-              mensagemErro="O nome digitado já existe cadastrado!"
-            ></app-msg-error>
-            <!-- <app-msg-error
-              [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
-              mensagemErro="A data está com formato incorreto!"
-            ></app-msg-error> -->
-          </div>
-        </mat-card-content>
+              </mat-form-field>
+              <mat-form-field appearance="fill" style="width: 200px">
+                <mat-label>Código do Fornecedor</mat-label>
+                <input matInput formControlName="codigoFornecedor" readonly />
+              </mat-form-field>            
+            </div>
+            <div class="form-group mat-container">
+              <mat-form-field appearance="fill" class="observacao" style="width: 700px;">
+                <mat-label>Observação</mat-label>
+                <textarea
+                  matInput
+                  formControlName="observacao"
+                  maxlength="300"
+                  style = "height:100px;"
+                  placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
+                  matTooltip="Digite aqui caso precise informar alguma observação do produto."
+                ></textarea>
+              </mat-form-field>
+            </div>
+            <div>
+              
+              <app-msg-error
+                [mostrarErro]="            
+                  formulario.get('nome').touched &&
+                  formulario.get('nome').hasError('required')
+                "
+                mensagemErro="Por favor, digite o nome completo! "
+              ></app-msg-error>
+              <app-msg-error
+                [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
+                mensagemErro="O nome digitado já existe cadastrado!"
+              ></app-msg-error>
+              <!-- <app-msg-error
+                [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
+                mensagemErro="A data está com formato incorreto!"
+              ></app-msg-error> -->
+            </div>
+          </mat-card-content>
         <!-- botoes *********************************************************************************************************-->          
         <mat-dialog-actions align="end">
           <button type ="submit" mat-raised-button="Salvar o registro" color="primary"  [disabled]="!formulario.valid" >

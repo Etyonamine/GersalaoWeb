@@ -90,6 +90,7 @@ export class ProdutoComponent implements OnInit {
       codigoFornecedor : null,
       observacao : null,
       codigoSituacao : 1,
+      codigoLinha : 0 ,
       situacao : null, 
       tipoProduto : null
     } as Produto;

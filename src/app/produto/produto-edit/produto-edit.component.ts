@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { ProdutoLinha } from 'src/app/produto-linha/produto-linha';
 import { ProdutoLinhaService } from 'src/app/produto-linha/produto-linha.service';
@@ -20,6 +21,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   formulario: FormGroup;
   tituloPagina: string;
   codigo: number;
+  codigoSituacao: number;
   tipos: Array<TipoProduto> =[];
   linhas: Array<ProdutoLinha>=[];
   produto: Produto;
@@ -31,13 +33,15 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       private alertService: AlertService,
       private tipoProdutoService: TipoProdutoService,
       private linhaProdutoService:ProdutoLinhaService,
+      @Inject(MAT_DIALOG_DATA) public data: Produto
       ) {
     super();
    }  
   ngOnInit(): void {
-    this.criarFormulario();
+    this.codigo = this.data.codigo;//codigo do produto    
     this.carregarTipos();
     this.carregarLinhas();
+    this.criarFormulario();
   }
   ngOnDestroy(): void{
     if(this.inscricaoTipo$){
@@ -48,15 +52,16 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     }
   }
   criarFormulario(){
-    this.formulario = this.formBuilder.group ({
-      codigo:[0],
-      nome: [null, [Validators.required,this.isDupe]],
+    this.codigoSituacao = this.codigo == 0 ? 1: this.data.codigoSituacao;
+    this.formulario = this.formBuilder.group({
+      codigo:[this.codigo],
+      nome: [null, Validators.required],
       observacao: [null], 
-      tipo: [0,[Validators.required]],
-      linha:[0,[Validators.required]],
+      tipo: [this.data.codigoTipoProduto,Validators.required],
+      linha:[this.data.codigoLinha,Validators.required],
       codigoFornecedor:[null],
-      situacao : [1,[Validators.required]]
-    })
+      situacao : [null,Validators.required]
+    });
   }
   carregarTipos(){
     this.inscricaoTipo$ = this.tipoProdutoService.getData<ApiResult<TipoProduto>>(
