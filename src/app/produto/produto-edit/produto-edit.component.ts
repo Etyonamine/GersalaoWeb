@@ -39,9 +39,12 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
    }  
   ngOnInit(): void {
     this.codigo = this.data.codigo;//codigo do produto    
+    this.codigoSituacao = this.codigo ==0?1:this.data.codigoSituacao;
     this.carregarTipos();
     this.carregarLinhas();
     this.criarFormulario();
+     
+
   }
   ngOnDestroy(): void{
     if(this.inscricaoTipo$){
@@ -52,7 +55,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     }
   }
   criarFormulario(){
-    this.codigoSituacao = this.codigo == 0 ? 1: this.data.codigoSituacao;
+    
     this.formulario = this.formBuilder.group({
       codigo:[this.codigo],
       nome: [null, Validators.required],
@@ -60,7 +63,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       tipo: [this.data.codigoTipoProduto,Validators.required],
       linha:[this.data.codigoLinha,Validators.required],
       codigoFornecedor:[null],
-      situacao : [null,Validators.required]
+      situacao : [this.codigoSituacao.toString(),Validators.required]
     });
   }
   carregarTipos(){
