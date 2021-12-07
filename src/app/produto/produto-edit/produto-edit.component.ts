@@ -10,6 +10,7 @@ import { ApiResult } from 'src/app/shared/base.service';
 import { TipoProduto } from 'src/app/tipo-produto/tipo-produto';
 import { TipoProdutoService } from 'src/app/tipo-produto/tipo-produto.service';
 import { Produto } from '../produto';
+import { ProdutoService } from '../produto.service';
 
 @Component({
   selector: 'app-produto-edit',
@@ -27,12 +28,15 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   produto: Produto;
   inscricaoTipo$: Subscription;
   inscricaoLinhas$: Subscription;
+  inscricaoProduto$: Subscription;
+  isSubmitted = false;
 
   constructor(
       private formBuilder:FormBuilder,
       private alertService: AlertService,
       private tipoProdutoService: TipoProdutoService,
       private linhaProdutoService:ProdutoLinhaService,
+      private produtoService: ProdutoService,
       @Inject(MAT_DIALOG_DATA) public data: Produto
       ) {
     super();
@@ -60,8 +64,8 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       codigo:[this.codigo],
       nome: [null, Validators.required],
       observacao: [null], 
-      tipo: [this.data.codigoTipoProduto,Validators.required],
-      linha:[this.data.codigoLinha,Validators.required],
+      tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
+      linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
       codigoFornecedor:[null],
       situacao : [this.codigoSituacao.toString(),Validators.required]
     });
@@ -109,16 +113,27 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
 
   }
   submit() {
-
+    this.isSubmitted = true;
+    if (!this.formulario.valid) {
+      return false;
+    }
     this.produto = {
       nome :   this.formulario.get("nome").value,
-      codigoFornecedor : this.formulario.get("codigoFornecedor").value,
+      codigoFornecedor : this.formulario.get("codigoFornecedor").value !== null ?this.formulario.get("codigoFornecedor").value:0 ,
       codigoTipoProduto : this.formulario.get("tipo").value,
       codigoSituacao : this.formulario.get("situacao").value,
+      codigoLinha : this.formulario.get("linha").value,
       observacao : this.formulario.get("observacao").value
     } as Produto;
- 
-    console.log(this.produto);
+    
+    this.inscricaoProduto$ = this.produtoService.save(this.produto).subscribe(result=>{
+                              this.handlerSuccess("Registro salvado com sucesso!");
+                            },error=>{
+                              console.log(error);
+                              this.handleError('Ocorreu erro ao salvar o registro.');
+                            });
+
+    //console.log(this.produto);
 
 
   }

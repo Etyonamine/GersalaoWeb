@@ -102,6 +102,10 @@
                 [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
                 mensagemErro="O nome digitado já existe cadastrado!"
               ></app-msg-error>
+              <app-msg-error
+                [mostrarErro]="isSubmitted && formulario.get('linha').hasError('required') "
+                mensagemErro="Por favor, informar a linha de produto">
+              </app-msg-error>
               <!-- <app-msg-error
                 [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
                 mensagemErro="A data está com formato incorreto!"
