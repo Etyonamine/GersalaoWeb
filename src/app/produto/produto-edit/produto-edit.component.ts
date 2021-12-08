@@ -62,11 +62,11 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     
     this.formulario = this.formBuilder.group({
       codigo:[this.codigo],
-      nome: [null, Validators.required],
-      observacao: [null], 
+      nome: [(this.codigo==0?null:this.data.nome), Validators.required],
+      observacao: [(this.codigo==0?null:this.data.observacao)], 
       tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
       linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
-      codigoFornecedor:[null],
+      codigoFornecedor:[(this.codigo==0?null:this.data.codigoFornecedor)],
       situacao : [this.codigoSituacao.toString(),Validators.required]
     });
   }
@@ -118,6 +118,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       return false;
     }
     this.produto = {
+      codigo: this.codigo,
       nome :   this.formulario.get("nome").value,
       codigoFornecedor : this.formulario.get("codigoFornecedor").value !== null ?this.formulario.get("codigoFornecedor").value:0 ,
       codigoTipoProduto : this.formulario.get("tipo").value,
@@ -137,6 +138,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
 
 
   }
+  
   handlerSuccess(msg: string) {
     this.alertService.mensagemSucesso(msg);
   }

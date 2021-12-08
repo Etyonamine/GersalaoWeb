@@ -16,7 +16,7 @@ import { ProdutoService } from './produto.service';
   styleUrls: ['./produto.component.scss']
 })
 export class ProdutoComponent implements OnInit {
-
+  produto: Produto;
   produtos: MatTableDataSource<Produto>;
   colunas: string[] =["codigo","tipo","nome", "acao"];
 
@@ -41,6 +41,7 @@ export class ProdutoComponent implements OnInit {
               public dialog: MatDialog) { }
 
   ngOnInit(): void {
+    this.loadData();
   }
   
   loadData(query:string = null){
@@ -103,10 +104,48 @@ export class ProdutoComponent implements OnInit {
 
     //atualizar a pagina quando retornar do dialog
     dialogRef.afterClosed().subscribe(result => {       
-        //this.loadData();
+        this.loadData();
     }); 
+  }  
+  openEditarRegistro(codigo:number){
+
+    this.inscricao$ = this.produtoService.get<Produto>(codigo)
+                          .subscribe(result=>{
+                            this.produto = result;
+                            // montando o dialogo
+                            const dialogRef = this.dialog.open(ProdutoEditComponent,
+                              {width: '790px' , height: '600px;',
+                                data :  this.produto
+                              });
+
+                            //atualizar a pagina quando retornar do dialog
+                            dialogRef.afterClosed().subscribe(result => {       
+                                this.loadData();
+                            }); 
+                          },error=>{
+                            console.log(error);
+                            this.handleError('Ocorreu um erro ao recuperar os dados do produto.');
+                          });
   }
-  
+  openApagarRegistro(codigo: number) {
+    this.alertService.openConfirmModal('Tem certeza que deseja excluir?', 'Excluir - Produto', (resposta: boolean) => {
+      if (resposta) {
+        this.apagar(codigo);
+        // this.exclusaoCliente(codigo);
+      }
+    }, 'Sim', 'Não'
+    );
+  }
+  apagar(codigoExcluir: number) {
+    this.inscricao$ = this.produtoService.delete(codigoExcluir)
+                          .subscribe(result=>{
+                            this.handlerSuccess('Registro apagado com sucesso!');
+                            this.loadData();
+                          },error=>{
+                            console.log(error);
+                            this.handleError('Ocorreu um erro ao recuperar dados do produto para excluri.');
+                          });      
+  }
   handlerSuccess(msg: string) {
     this.alertService.mensagemSucesso(msg);
   }

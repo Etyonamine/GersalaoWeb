@@ -39,17 +39,20 @@
                 <button
                   mat-mini-fab
                   color="primary"
-                  aria-label="Editar o produto"                   > 
-                  
-                                        
+                  aria-label="Editar o produto"         
+                  value="{{ produtos.codigo }}"
+                  (click)="openEditarRegistro(produtos.codigo)"
+                 >                                         
                   <mat-icon>edit</mat-icon>
                 </button>
   
                 <button
                   mat-mini-fab
-                  aria-label="Apagar o tipo de produto" color="warn">
-                  
-                  
+                  aria-label="Apagar o tipo de produto" 
+                  color="warn"
+                  value="{{ produtos.codigo }}"
+                  (click)="openApagarRegistro(produtos.codigo)"
+                >                                    
                   <mat-icon>delete</mat-icon>
                 </button>
               
