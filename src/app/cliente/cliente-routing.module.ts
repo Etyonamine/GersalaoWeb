@@ -10,11 +10,11 @@ const clienteRoutes: Routes = [
   {path:'', component: ClienteComponent},
   {path:'cliente-novo',
       component:ClienteFormComponent},
-  {
-      path:':codigo',
-      component:ClienteFormComponent,
-      resolve:{
-        cliente: ClienteResolveGuard
+      {
+        path:':codigo',
+        component:ClienteFormComponent,
+        resolve:{
+          cliente: ClienteResolveGuard
       }
   }
 ];

@@ -6,4 +6,5 @@ export interface Compra{
     dataVenctoBoleto: Date;
     dataPagtoBoleto: Date;
     dataCadatro: Date;
+    observacao: string
 }

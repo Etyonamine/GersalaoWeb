@@ -16,7 +16,7 @@ import { CompraServiceService } from './compra-service.service';
 export class CompraComponent implements OnInit, OnDestroy {
   compras: MatTableDataSource<Compra>;
   inscricao$  : Subscription;
-  colunas: string[]=["codigo","Data", "Valor","acao"];
+  colunas: string[]=["codigo","data", "valor","datacadastro","acao"];
  
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;

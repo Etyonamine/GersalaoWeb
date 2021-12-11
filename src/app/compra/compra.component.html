@@ -30,7 +30,13 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
             <mat-cell *matCellDef="let compra"> {{ compra.codigo }} </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="compra">
+          <ng-container matColumnDef="data">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Compra</mat-header-cell>
+            <mat-cell *matCellDef="let compra"><a >{{
+                compra.dataCompra
+                }}</a></mat-cell>
+          </ng-container>        
+          <ng-container matColumnDef="valor">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Compra</mat-header-cell>
             <mat-cell *matCellDef="let compra"><a >{{
                 compra.dataCompra

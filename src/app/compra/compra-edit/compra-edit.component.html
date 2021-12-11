@@ -1,0 +1,126 @@
+<div class="container">
+  <mat-card>
+    <mat-card-title> Cadastro de Clientes - {{ tituloPagina }} </mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+        <div class="form-group mat-container">
+          <mat-form-field appearance="fill" style="width: 70px">
+            <mat-label>Código</mat-label>
+            <input matInput formControlName="codigo" readonly />
+          </mat-form-field>
+          <mat-form-field appearance="fill" >
+            <mat-label>Data</mat-label>
+            <input
+              matInput
+              placeholder="Digite a data de compra"              
+              formControlName="dataCompra"
+              matTooltip="Informar a data de compra"
+              matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
+              required
+            />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Valor</mat-label>             
+            <input
+              matInput
+              formControlName="valor"              
+              class="right-align"              
+              required
+              placeholder="Digite o valor do serviço"
+              placeholder="0.000,00" 
+              appTwoDigitDecimaNumber
+              required
+            />
+            <span matPrefix>R$&nbsp;</span>
+            <!-- <span matSuffix>,00</span> -->
+          </mat-form-field>  
+          <mat-form-field appearance="fill" >
+            <mat-label>Vencimento-boleto</mat-label>
+            <input
+              matInput
+              placeholder="Digite a data de vencimento do boleto"
+               
+              formControlName="dataVenctoBoleto"
+              matTooltip="Informar a data de vencimento do boleto"
+              matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
+              required
+            />
+          </mat-form-field>    
+          <div class="form-group mat-container">
+          <mat-form-field appearance="fill" class="observacao">
+            <mat-label>Observação</mat-label>
+            <textarea
+              matInput
+              formControlName="observacao"
+              maxlength="300"
+              placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
+              matTooltip="Digite aqui caso precise informar alguma observação do cliente."
+            ></textarea>
+          </mat-form-field>
+          </div>
+        </div>
+        <div>
+          
+          <!-- <app-msg-error
+            [mostrarErro]="
+              formulario.get('nome').invalid &&
+              formulario.get('nome').hasError('required')
+            "
+            mensagemErro="Por favor, digite o nome completo! "
+          ></app-msg-error>
+          <app-msg-error
+            [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
+            mensagemErro="O nome digitado já existe cadastrado!"
+          ></app-msg-error>
+          <app-msg-error
+            [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
+            mensagemErro="A data está com formato incorreto!"
+          ></app-msg-error> -->
+        </div>               
+        <!-- botoes *********************************************************************************************************-->
+        <div style="margin-top: 10px">
+    
+              <!--   <table>
+                  <tr>
+                    <td  style="width:25%; text-align: left;">
+                      <button
+                        type="button"
+                        mat-raised-button
+                        color="accent"
+                        [disabled]="codigo == 0"
+                        (click)="openDialogFormaPagto()"
+                      >
+                        Forma Pagamento
+                      </button>
+                    </td>
+                    <td  style="width:25%; text-align: left;">
+                        <button
+                        type="submit"
+                        mat-raised-button
+                        color="primary"
+                        [disabled]="!formulario.valid"
+                      >
+                        Salvar &nbsp;<i class="material-icons right">save</i>
+                      </button>
+                      <button
+                        type="button"
+                        mat-raised-button
+                        color="warn"
+                        [disabled]="habilitaApagar"
+                        (click)="openConfirmExclusao()"
+                      >
+                        Apagar &nbsp;<i class="material-icons right">delete_forever</i>
+                      </button>
+          
+                      <button mat-raised-button color="primary" (click)="retornar()">
+                        Retornar &nbsp;<i class="material-icons right">reply</i>
+                      </button>
+                  
+                    </td>
+                  </tr>
+                </table>   -->
+        </div>
+      </form>  
+    </mat-card-content>    
+  </mat-card>
+</div>
