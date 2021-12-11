@@ -26,6 +26,7 @@ import { FormaPagamentoModule } from './forma-pagamento/forma-pagamento.module';
 import { TipoProdutoModule } from './tipo-produto/tipo-produto.module';
 import { ProdutoModule } from './produto/produto.module';
 import { ProdutoLinhaModule } from './produto-linha/produto-linha.module';
+import { CompraModule } from './compra/compra.module';
 
 
 
@@ -36,7 +37,7 @@ import { ProdutoLinhaModule } from './produto-linha/produto-linha.module';
     NavegacaoComponent,
     LoginComponent,
     HomeComponent,
-    PaginaNaoEncontradaComponent    
+    PaginaNaoEncontradaComponent 
    ],
   imports: [
     BrowserModule,
@@ -61,7 +62,8 @@ import { ProdutoLinhaModule } from './produto-linha/produto-linha.module';
     ProdutoModule,
     DocumentoModule, 
     FormaPagamentoModule, 
-    ProdutoLinhaModule
+    ProdutoLinhaModule,
+    CompraModule
   ],
   providers: [],
   bootstrap: [AppComponent]

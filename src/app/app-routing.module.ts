@@ -23,6 +23,12 @@ const routes: Routes = [
     component: HomeComponent,
      canActivate:[AuthGuard]
   },
+  { 
+    path: 'compra',
+    loadChildren: () => import ('./compra/compra.module').then(mod => mod.CompraModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+  },
   {
     path: 'produto',
     loadChildren: () => import ('./produto/produto.module').then(mod => mod.ProdutoModule),

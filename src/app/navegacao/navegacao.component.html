@@ -18,18 +18,29 @@
     <button mat-button [routerLink]="['home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>
 
     <button mat-button [matMenuTriggerFor]="cadastro" > &nbsp; <i class ="material-icons right">app_registration</i>Cadastro</button>
+
+    
+
     <mat-menu #cadastro="matMenu">
       <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>
+      <mat-divider></mat-divider>
       <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>
       <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item [matMenuTriggerFor]="compra" ><i class ="material-icons right">inventory</i> Compra</button>
       <button mat-menu-item [matMenuTriggerFor]="produto" ><i class ="material-icons right">qr_code</i> Produto</button>
-      <!-- <button mat-menu-item [routerLink]="['servico']">Serviço</button> -->      
-      
+      <!-- <button mat-menu-item [routerLink]="['servico']">Serviço</button> -->       
     </mat-menu>
+
     <mat-menu #servicos="matMenu">
       <button mat-menu-item [routerLink]="['servico']"> <i class ="material-icons right">app_registration</i> Cadastro</button>
       <button mat-menu-item [routerLink]="['tipo-servico']"> <i class ="material-icons right">category</i> Tipo</button>
     </mat-menu>
+
+    <mat-menu #compra="matMenu">
+      <button mat-menu-item [routerLink]="['compra']"> <i class ="material-icons right">inventory</i> Cadastro</button>           
+    </mat-menu>
+
     <mat-menu #produto="matMenu">
       <button mat-menu-item [routerLink]="['produto']"> <i class ="material-icons right">app_registration</i> Cadastro</button>
       <button mat-menu-item [routerLink]="['tipo-produto']"><i class ="material-icons right">category</i> Tipo</button>

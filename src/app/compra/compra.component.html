@@ -1,0 +1,84 @@
+
+<div>
+    <p *ngIf="!compras"><em>Carregando...</em></p>
+  
+  </div>
+  <div [hidden]="!compras">
+    <mat-card>
+      <div>
+        <mat-card-header>
+          <mat-label>Lista de Compras - efetuadas</mat-label>
+        </mat-card-header>
+      </div>
+      <div>
+       <mat-card-content>
+        <mat-form-field [hidden]="!compras">
+          <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por compra (ou parte dele)..." />
+        </mat-form-field>
+  
+        <div class="commands text-right" style="margin-top: 5px;" *ngIf="compras">
+          <button mat-raised-button
+                  color="primary"
+                  [routerLink]="['compra-novo']" >
+            Registrar nova compra &nbsp;<i class="material-icons right">add</i>
+          </button>
+        </div>         
+    
+        <table mat-table [dataSource]="compras" class="mat-elevation-z8" [hidden]="!compras" matSort
+          (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+          <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-cell *matCellDef="let compra"> {{ compra.codigo }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="compra">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Compra</mat-header-cell>
+            <mat-cell *matCellDef="let compra"><a >{{
+                compra.dataCompra
+                }}</a></mat-cell>
+          </ng-container>        
+          <ng-container matColumnDef="datacadastro">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Cadastro</mat-header-cell>
+            <mat-cell *matCellDef="let compra">{{
+              compra.dataCadastro | date: "dd/MM/yyyy HH:mm:ss"
+              }}</mat-cell>
+          </ng-container>          
+          <ng-container matColumnDef="acao">
+            <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+            <mat-cell *matCellDef="let compra">
+              
+                <button
+                  mat-mini-fab
+                  color="primary"
+                  aria-label="Editar o Compra"                   
+                  [routerLink]="['/compra', compra.codigo]"
+                  >  
+                                        
+                  <mat-icon>edit</mat-icon>
+                </button>
+  
+                <button
+                  mat-mini-fab
+                  aria-label="Apagar o compra"
+                  value="{{compra.codigo}}"                
+                  color="warn">
+                  <mat-icon>delete</mat-icon>
+                </button>
+               
+            </mat-cell>
+          </ng-container>
+  
+          <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+        </table>  
+  
+        <mat-paginator [hidden]="!compras" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+          showFirstLastButtons>
+        </mat-paginator>
+  
+      </mat-card-content>
+      </div>
+  
+    </mat-card>
+  
+  </div>
+  
