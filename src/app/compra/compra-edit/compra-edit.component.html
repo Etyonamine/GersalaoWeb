@@ -8,7 +8,7 @@
             <mat-label>Código</mat-label>
             <input matInput formControlName="codigo" readonly />
           </mat-form-field>
-          <mat-form-field appearance="fill" >
+          <!-- <mat-form-field appearance="fill" >
             <mat-label>Data</mat-label>
             <input
               matInput
@@ -18,7 +18,9 @@
               matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
               required
             />
-          </mat-form-field>
+          </mat-form-field> -->
+          
+          
           <mat-form-field appearance="fill">
             <mat-label>Valor</mat-label>             
             <input
@@ -123,4 +125,12 @@
       </form>  
     </mat-card-content>    
   </mat-card>
+  <div>
+    <mat-form-field appearance="fill">
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="picker"  >
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
 </div>
