@@ -23,8 +23,10 @@
             Registrar nova compra &nbsp;<i class="material-icons right">add</i>
           </button>
         </div>         
-    
-        <table mat-table [dataSource]="compras" class="mat-elevation-z8" [hidden]="!compras" matSort
+        <div style="width: 100%;">
+          <table mat-table [dataSource]="compras" class="mat-elevation-z8" [hidden]="!compras" matSort
+        
+       
           (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
           <ng-container matColumnDef="codigo">
             <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
@@ -75,8 +77,8 @@
   
           <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
           <mat-row *matRowDef="let row; columns: colunas"></mat-row>
-        </table>  
-  
+          </table>  
+        </div>
         <mat-paginator [hidden]="!compras" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
           showFirstLastButtons>
         </mat-paginator>

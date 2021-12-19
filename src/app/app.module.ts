@@ -27,6 +27,9 @@ import { TipoProdutoModule } from './tipo-produto/tipo-produto.module';
 import { ProdutoModule } from './produto/produto.module';
 import { ProdutoLinhaModule } from './produto-linha/produto-linha.module';
 import { CompraModule } from './compra/compra.module';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { TwoDecimalNumberDirective } from './two-decimal-number.directive';
+import { CompraDetalheModule } from './compra-detalhe/compra-detalhe.module';
 
 
 
@@ -37,7 +40,8 @@ import { CompraModule } from './compra/compra.module';
     NavegacaoComponent,
     LoginComponent,
     HomeComponent,
-    PaginaNaoEncontradaComponent 
+    PaginaNaoEncontradaComponent,
+    TwoDecimalNumberDirective     
    ],
   imports: [
     BrowserModule,
@@ -63,9 +67,12 @@ import { CompraModule } from './compra/compra.module';
     DocumentoModule, 
     FormaPagamentoModule, 
     ProdutoLinhaModule,
-    CompraModule
+    CompraModule,
+    CompraDetalheModule
   ],
-  providers: [],
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

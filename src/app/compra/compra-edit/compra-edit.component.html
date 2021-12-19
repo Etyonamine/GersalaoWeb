@@ -1,65 +1,155 @@
 <div class="container">
   <mat-card>
-    <mat-card-title> Cadastro de Clientes - {{ tituloPagina }} </mat-card-title>
+    <mat-card-title> Cadastro de compras - {{ tituloPagina }} </mat-card-title>
+    <div>
+      <mat-divider></mat-divider>
+    </div>
     <mat-card-content>
       <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
         <div class="form-group mat-container">
           <mat-form-field appearance="fill" style="width: 70px">
             <mat-label>Código</mat-label>
             <input matInput formControlName="codigo" readonly />
+          </mat-form-field>                  
+         
+          <mat-form-field appearance="fill">
+            <mat-label>Data de Compra</mat-label>
+            <input matInput  
+                  [matDatepicker]="picker3" 
+                  formControlName="dataCompra"                   
+                  required >
+            <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+            <mat-datepicker #picker3></mat-datepicker>
           </mat-form-field>
-          <!-- <mat-form-field appearance="fill" >
-            <mat-label>Data</mat-label>
-            <input
-              matInput
-              placeholder="Digite a data de compra"              
-              formControlName="dataCompra"
-              matTooltip="Informar a data de compra"
-              matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
-              required
-            />
-          </mat-form-field> -->
-          
-          
+
           <mat-form-field appearance="fill">
             <mat-label>Valor</mat-label>             
             <input
-              matInput
-              formControlName="valor"              
-              class="right-align"              
+              matInput                                       
+              class="right-align"               
+              formControlName="valor"   
               required
               placeholder="Digite o valor do serviço"
-              placeholder="0.000,00" 
-              appTwoDigitDecimaNumber
-              required
+              placeholder="0.000,00"     
+              [readonly]="true"
             />
             <span matPrefix>R$&nbsp;</span>
             <!-- <span matSuffix>,00</span> -->
           </mat-form-field>  
-          <mat-form-field appearance="fill" >
-            <mat-label>Vencimento-boleto</mat-label>
-            <input
-              matInput
-              placeholder="Digite a data de vencimento do boleto"
-               
-              formControlName="dataVenctoBoleto"
-              matTooltip="Informar a data de vencimento do boleto"
-              matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
-              required
-            />
-          </mat-form-field>    
-          <div class="form-group mat-container">
-          <mat-form-field appearance="fill" class="observacao">
-            <mat-label>Observação</mat-label>
-            <textarea
-              matInput
-              formControlName="observacao"
-              maxlength="300"
-              placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
-              matTooltip="Digite aqui caso precise informar alguma observação do cliente."
-            ></textarea>
+          
+          <mat-form-field appearance="fill">
+            <mat-label>Data Vencimento Boleto</mat-label>
+            <input matInput [matDatepicker]="picker4" 
+                  formControlName="dataVenctoBoleto" 
+                  matTooltip="Informar a data de vencimento do boleto"
+                  matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"                  
+                   >
+            <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+            <mat-datepicker #picker4></mat-datepicker>
           </mat-form-field>
+          <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Data de Pagamento</mat-label>
+            <input matInput   
+                   formControlName="dataPagtoBoleto" 
+                   value="">
+          </mat-form-field>
+          <div class="form-group mat-container">
+            <mat-form-field appearance="fill" class="observacao">
+              <mat-label>Observação</mat-label>
+              <textarea
+                matInput
+                formControlName="observacao"
+                maxlength="300"
+                placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
+                matTooltip="Digite aqui caso precise informar alguma observação do cliente."
+              ></textarea>
+            </mat-form-field>
           </div>
+          <div>
+            <div>
+              <mat-divider></mat-divider>
+              <mat-card-subtitle><h3><b>Adicionar o produto comprado</b></h3></mat-card-subtitle>
+            </div>
+          </div>
+          <div class="form-group mat-container">
+            <div>
+              <mat-form-field               
+                appearance="fill"
+                style="width: 235px"
+              >
+                <mat-label>Produto</mat-label>
+                <mat-select                  
+                  matTooltip="Por favor, selecione um produto da lista"
+                  
+                >
+                  <mat-option
+                    *ngFor="let produto of produtos" 
+                    [value] ="produto.codigo"
+                  >
+                    {{ produto.nome }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="fill">
+                <mat-label>Valor</mat-label>             
+                <input
+                  matInput                                       
+                  class="right-align"                                 
+                  (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"
+                  autocomplete="off"
+                  placeholder="Digite o valor unitário do Produto"
+                  placeholder="0.000,00"     
+                  matTooltip="Por favor, digite o valor unitário do produto comprado."
+                      
+                />
+                <span matPrefix>R$&nbsp;</span>
+                <!-- <span matSuffix>,00</span> -->
+              </mat-form-field>  
+              <mat-form-field appearance="fill">
+                <mat-label>Quantidade</mat-label>             
+                <input
+                  matInput                                       
+                  type="number"
+                  autocomplete="off"
+                  class="right-align"               
+                  placeholder="Digite a quantidade total comprada"  
+                  matTooltip="Por favor, digite a quantidade de produto(s) comprado(s)"                    
+                />                
+                <!-- <span matSuffix>,00</span> -->
+              </mat-form-field> 
+              <button
+              type="submit"
+              mat-raised-button
+              color="primary"
+              [disabled]="!formulario.valid"
+            >
+              Adicionar &nbsp;<i class="material-icons right">add</i>
+            </button>
+
+            </div>
+            <mat-card-subtitle><h3><b>Lista de Produto(s) comprado(s)</b></h3></mat-card-subtitle>
+            <div class="form-group mat-container">
+              <table>
+                <tr >
+                  <th colspan="3">Lista de Produtos</th>
+                </tr>
+                <tr>
+                  <th>Produto</th>
+                  <th>Valor Unit&agrave;rio</th>
+                  <th>Quantidade</th>
+                  
+                </tr>
+                <tr *ngFor="let produtoLista in produtosCompra">
+                  <td>{{produtoLista.Nome}}</td>
+                  <td>135,00</td>
+                  <td>003</td>
+                </tr>
+              </table>
+            </div>
+           
+          </div>
+          
+         
         </div>
         <div>
           
@@ -78,59 +168,36 @@
             [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
             mensagemErro="A data está com formato incorreto!"
           ></app-msg-error> -->
-        </div>               
+        </div>   
+        <div>
+          <mat-divider></mat-divider>
+        </div>
+        
+        
+
         <!-- botoes *********************************************************************************************************-->
         <div style="margin-top: 10px">
-    
-              <!--   <table>
-                  <tr>
-                    <td  style="width:25%; text-align: left;">
-                      <button
-                        type="button"
-                        mat-raised-button
-                        color="accent"
-                        [disabled]="codigo == 0"
-                        (click)="openDialogFormaPagto()"
-                      >
-                        Forma Pagamento
-                      </button>
-                    </td>
-                    <td  style="width:25%; text-align: left;">
-                        <button
-                        type="submit"
-                        mat-raised-button
-                        color="primary"
-                        [disabled]="!formulario.valid"
-                      >
-                        Salvar &nbsp;<i class="material-icons right">save</i>
-                      </button>
-                      <button
-                        type="button"
-                        mat-raised-button
-                        color="warn"
-                        [disabled]="habilitaApagar"
-                        (click)="openConfirmExclusao()"
-                      >
-                        Apagar &nbsp;<i class="material-icons right">delete_forever</i>
-                      </button>
-          
-                      <button mat-raised-button color="primary" (click)="retornar()">
-                        Retornar &nbsp;<i class="material-icons right">reply</i>
-                      </button>
-                  
-                    </td>
-                  </tr>
-                </table>   -->
+          <table>
+            <tr>              
+              <td  style="text-align: left;">
+                  <button
+                  type="submit"
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="!formulario.valid"
+                >
+                  Salvar &nbsp;<i class="material-icons right">save</i>
+                </button>    
+                <button mat-raised-button color="primary" (click)="retornar()">
+                  Retornar &nbsp;<i class="material-icons right">reply</i>
+                </button>            
+              </td>
+            </tr>
+          </table>
         </div>
+         
       </form>  
     </mat-card-content>    
   </mat-card>
-  <div>
-    <mat-form-field appearance="fill">
-      <mat-label>Choose a date</mat-label>
-      <input matInput [matDatepicker]="picker"  >
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-  </div>
+   
 </div>

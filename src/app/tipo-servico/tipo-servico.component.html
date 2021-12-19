@@ -12,7 +12,8 @@
         </button>
       </div>
       <mat-card-content>
-        <table class="mat-elevation-z8" [hidden]="!tipoServicos">
+
+        <table [class.mat-elevation-z8]="true" [hidden]="!tipoServicos">
           <thead>
             <tr>
               <th>Codigo</th>

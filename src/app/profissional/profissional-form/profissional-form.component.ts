@@ -20,15 +20,8 @@ import { TipoServicoService } from 'src/app/tipo-servico/tipo-servico.service';
 import { MatDialog } from '@angular/material/dialog';
 import { EnderecoComponent } from 'src/app/endereco/endereco.component';
 import { Endereco } from 'src/app/endereco/endereco';
-import { ContatoFormComponent } from 'src/app/contato/contato-form/contato-form.component';
-
-import {
-  MAT_MOMENT_DATE_FORMATS,
-  MomentDateAdapter,
-  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-} from '@angular/material-moment-adapter';
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
-import 'moment/locale/pt-br';
+import { ContatoFormComponent } from 'src/app/contato/contato-form/contato-form.component'; 
+ 
 import { Contato } from 'src/app/contato/contato';
 import { DocumentoFormComponent } from 'src/app/documento/documento-form/documento-form.component';
 import { ProfissionalTipoServico } from '../profissional-tipo-servico/profissional-tipo-servico';
@@ -38,19 +31,7 @@ import { ProfissionalTipoServico } from '../profissional-tipo-servico/profission
   templateUrl: './profissional-form.component.html',
   styleUrls: ['./profissional-form.component.scss'],
   providers: [
-    // The locale would typically be provided on the root module of your application. We do it at
-    // the component level here, due to limitations of our example generation script.
-    {provide: MAT_DATE_LOCALE, useValue: 'pt-br'},
-
-    // `MomentDateAdapter` and `MAT_MOMENT_DATE_FORMATS` can be automatically provided by importing
-    // `MatMomentDateModule` in your applications root module. We provide it at the component level
-    // here, due to limitations of our example generation script.
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
-    },
-    {provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS},
+     
   ],
 })
 export class ProfissionalFormComponent extends BaseFormComponent implements OnInit, OnDestroy {

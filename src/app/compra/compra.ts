@@ -1,3 +1,5 @@
+import { CompraDetalhe } from "../compra-detalhe/compra-detalhe";
+
 export interface Compra{
     codigo: number;
     valor: number;
@@ -6,5 +8,6 @@ export interface Compra{
     dataVenctoBoleto: Date;
     dataPagtoBoleto: Date;
     dataCadatro: Date;
-    observacao: string
+    observacao: string;
+    compraDetalhe: CompraDetalhe;
 }
