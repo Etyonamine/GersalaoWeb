@@ -1,9 +1,11 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth-guard/auth.service';
+import { CompraDetalhe } from 'src/app/compra-detalhe/compra-detalhe';
 import { Produto } from 'src/app/produto/produto';
 import { ProdutoService } from 'src/app/produto/produto.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -23,10 +25,13 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   tituloPagina:string;
   habilitaApagar:boolean;
   valorDigitado: number = 0;
-  produtos:Array<Produto>;
-  produtosCompra: Array<Produto>;
-  
+  produtos:Array<Produto>;  
+  listaCompraDetalhe: Array<CompraDetalhe>=[];
   inscricao$ : Subscription;
+
+  codigoProdutoAdd : number = 0;
+  quantidadeProdutoAdd: number = 0;
+  valorUnitarioAdd: number = 0;
 
   date = new FormControl(new Date());
   serializedDate = new FormControl(new Date().toISOString());
@@ -102,5 +107,30 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
       console.log(error);
       this.handleError('Ocorreu um erro na recuperação da lista de produtos');
     })
+  }
+  adicionarProduto()
+  {
+    //consistencias
+    if (this.codigoProdutoAdd == 0 ){
+      this.handleError('Por favor, selecione um produto da lista.');
+      return false;
+    }
+    if (this.valorUnitarioAdd === 0  || this.valorUnitarioAdd === undefined){
+      this.handleError('Por favor, informe o valor unitário do produto comprado.');
+      return false;
+    }
+    if (this.quantidadeProdutoAdd === 0  || this.quantidadeProdutoAdd === undefined){
+      this.handleError('Por favor, informe a quantidade de produto comprado.');
+      return false;
+    }
+    const produtoAdicionar = {
+      codigo : this.codigo,
+      codigoProduto : this.codigoProdutoAdd,
+      quantidadeProduto : this.quantidadeProdutoAdd,
+      valorUnitario : this.valorUnitarioAdd
+    } as CompraDetalhe;
+
+   this.listaCompraDetalhe.push(produtoAdicionar);
+   console.log(this.listaCompraDetalhe);
   }
 }

@@ -80,7 +80,7 @@
                 <mat-label>Produto</mat-label>
                 <mat-select                  
                   matTooltip="Por favor, selecione um produto da lista"
-                  
+                  [(value)]="codigoProdutoAdd"                  
                 >
                   <mat-option
                     *ngFor="let produto of produtos" 
@@ -90,24 +90,27 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <mat-form-field appearance="fill">
+              <mat-form-field appearance="fill" style="text-align: right;">
                 <mat-label>Valor</mat-label>             
                 <input
+                  [(ngModel)]= "valorUnitarioAdd"
+                  [ngModelOptions]="{standalone: true}"
                   matInput                                       
                   class="right-align"                                 
                   (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"
                   autocomplete="off"
                   placeholder="Digite o valor unitário do Produto"
                   placeholder="0.000,00"     
-                  matTooltip="Por favor, digite o valor unitário do produto comprado."
-                      
+                  matTooltip="Por favor, digite o valor unitário do produto comprado."                      
                 />
                 <span matPrefix>R$&nbsp;</span>
                 <!-- <span matSuffix>,00</span> -->
               </mat-form-field>  
-              <mat-form-field appearance="fill">
+              <mat-form-field appearance="fill"  style="text-align: right;">
                 <mat-label>Quantidade</mat-label>             
                 <input
+                  [(ngModel)] = "quantidadeProdutoAdd"   
+                  [ngModelOptions]="{standalone: true}"
                   matInput                                       
                   type="number"
                   autocomplete="off"
@@ -118,10 +121,11 @@
                 <!-- <span matSuffix>,00</span> -->
               </mat-form-field> 
               <button
-              type="submit"
+              type="button"
               mat-raised-button
               color="primary"
-              [disabled]="!formulario.valid"
+              [disabled]="codigo > 0"
+              (click) = "adicionarProduto()"
             >
               Adicionar &nbsp;<i class="material-icons right">add</i>
             </button>
@@ -139,10 +143,10 @@
                   <th>Quantidade</th>
                   
                 </tr>
-                <tr *ngFor="let produtoLista in produtosCompra">
-                  <td>{{produtoLista.Nome}}</td>
-                  <td>135,00</td>
-                  <td>003</td>
+                <tr *ngFor="let produtoLista of listaCompraDetalhe">
+                  <td>{{produtoLista.produto.nome}}</td>
+                  <td>{{produtoLista.valorUnitario}}</td>
+                  <td>{{produtoLista.quantidadeProdutos}}</td>
                 </tr>
               </table>
             </div>
