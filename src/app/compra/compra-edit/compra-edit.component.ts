@@ -25,6 +25,8 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   tituloPagina:string;
   habilitaApagar:boolean;
   valorDigitado: number = 0;
+  valorTotalProdutoAdd = 0;
+
   produtos:Array<Produto>;  
   listaCompraDetalhe: Array<CompraDetalhe>=[];
   inscricao$ : Subscription;
@@ -62,8 +64,8 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     //formulario cliente
     this.formulario = this.formBuilder.group({
       codigo: [{value:this.compra.codigo, disabled:true}],
-      dataCompra: [this.compra.dataCompra === null? new Date:this.compra.dataCompra, [Validators.required]],
-      valor:[this.compra.valor ,[Validators.required, Validators.min(1),Validators.max(9999),Validators.pattern('^([0-9]+(\.[0-9]{3})*(,[0-9]+)?$)')]],
+      valor: [{value:null,disabled:true},Validators.required],
+      dataCompra: [this.compra.dataCompra === null? new Date:this.compra.dataCompra, [Validators.required]],      
       dataVenctoBoleto:[this.compra.dataVenctoBoleto === null?new Date: this.compra.dataVenctoBoleto,[Validators.required]],
       dataPagtoBoleto:[{value:this.compra.dataPagtoBoleto,disabled:true}],
       observacao:[this.compra.observacao]
@@ -82,13 +84,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     this.compra = Object.assign({}, this.formulario.value);
     console.log(this.compra);
 
-  }
-  openDialogFormaPagto(){
-
-  }
-  openConfirmExclusao(){
-
-  }
+  } 
   retornar()
   {
     
@@ -109,7 +105,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     })
   }
   adicionarProduto()
-  {
+  {    
     //consistencias
     if (this.codigoProdutoAdd == 0 ){
       this.handleError('Por favor, selecione um produto da lista.');
@@ -123,14 +119,34 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
       this.handleError('Por favor, informe a quantidade de produto comprado.');
       return false;
     }
-    const produtoAdicionar = {
-      codigo : this.codigo,
-      codigoProduto : this.codigoProdutoAdd,
-      quantidadeProduto : this.quantidadeProdutoAdd,
-      valorUnitario : this.valorUnitarioAdd
-    } as CompraDetalhe;
+    let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == this.codigoProdutoAdd);
 
-   this.listaCompraDetalhe.push(produtoAdicionar);
-   console.log(this.listaCompraDetalhe);
+    if (index !== -1){
+        this.listaCompraDetalhe.find(x=>x.codigoProduto == this.codigoProdutoAdd).quantidadeProduto += this.quantidadeProdutoAdd;
+    }else{
+      let produtoSelecionado = this.produtos.find(x=>x.codigo == this.codigoProdutoAdd);
+
+      const produtoAdicionar = {
+        codigo : this.codigo,
+        codigoProduto : this.codigoProdutoAdd,
+        quantidadeProduto : this.quantidadeProdutoAdd,
+        valorUnitario : this.valorUnitarioAdd, 
+        produto : <Produto>{codigo : this.codigoProdutoAdd,
+        nome :  produtoSelecionado.nome}
+      } as CompraDetalhe;
+  
+     this.listaCompraDetalhe.push(produtoAdicionar);
+    }
+    //somando valores
+    let total = this.listaCompraDetalhe.reduce((sum,current) => sum + current.valorUnitario,0);
+    console.log(total);
+   // this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
+    //limpando os campos
+    this.codigoProdutoAdd = 0;
+    this.quantidadeProdutoAdd = null;
+    this.valorUnitarioAdd = null;
+
+   
+  
   }
 }

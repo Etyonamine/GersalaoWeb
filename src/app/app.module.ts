@@ -3,7 +3,7 @@ import { SituacaoModule } from './situacao/situacao/situacao.module';
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
 import { ClienteModule } from './cliente/cliente.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -72,6 +72,10 @@ import { CompraDetalheModule } from './compra-detalhe/compra-detalhe.module';
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
+    ,
+    // *************************************************
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
+    // *************************************************
   ],
   bootstrap: [AppComponent]
 })
