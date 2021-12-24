@@ -1,4 +1,5 @@
 import { ThrowStmt } from '@angular/compiler';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
@@ -119,34 +120,41 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
       this.handleError('Por favor, informe a quantidade de produto comprado.');
       return false;
     }
-    let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == this.codigoProdutoAdd);
+    let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == this.codigoProdutoAdd && x.valorUnitario.toString().replace('.','').replace(',','') == this.valorUnitarioAdd.toString().replace('.','').replace(',',''));
+    this.valorTotalProdutoAdd += (parseFloat(this.valorUnitarioAdd.toString().replace('.','').replace(',','.')) * this.quantidadeProdutoAdd);
 
     if (index !== -1){
-        this.listaCompraDetalhe.find(x=>x.codigoProduto == this.codigoProdutoAdd).quantidadeProduto += this.quantidadeProdutoAdd;
+        if (this.listaCompraDetalhe[index].valorUnitario.toString().replace('.','').replace(',','') == this.valorUnitarioAdd.toString().replace('.','').replace(',','')){
+          this.listaCompraDetalhe[index].quantidadeProduto += this.quantidadeProdutoAdd;
+        }else{
+          this.adicionarLista();    
+        }
+        
     }else{
-      let produtoSelecionado = this.produtos.find(x=>x.codigo == this.codigoProdutoAdd);
-
-      const produtoAdicionar = {
-        codigo : this.codigo,
-        codigoProduto : this.codigoProdutoAdd,
-        quantidadeProduto : this.quantidadeProdutoAdd,
-        valorUnitario : this.valorUnitarioAdd, 
-        produto : <Produto>{codigo : this.codigoProdutoAdd,
-        nome :  produtoSelecionado.nome}
-      } as CompraDetalhe;
-  
-     this.listaCompraDetalhe.push(produtoAdicionar);
+      this.adicionarLista();
     }
     //somando valores
     let total = this.listaCompraDetalhe.reduce((sum,current) => sum + current.valorUnitario,0);
-    console.log(total);
+    console.log(this.valorTotalProdutoAdd);
    // this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
     //limpando os campos
     this.codigoProdutoAdd = 0;
     this.quantidadeProdutoAdd = null;
-    this.valorUnitarioAdd = null;
+    this.valorUnitarioAdd = null;  
+  }
 
-   
-  
+  adicionarLista(){
+    let produtoSelecionado = this.produtos.find(x=>x.codigo == this.codigoProdutoAdd);
+
+    const produtoAdicionar = {
+      codigo : this.codigo,
+      codigoProduto : this.codigoProdutoAdd,
+      quantidadeProduto : this.quantidadeProdutoAdd,
+      valorUnitario : this.valorUnitarioAdd, 
+      produto : <Produto>{codigo : this.codigoProdutoAdd,
+      nome :  produtoSelecionado.nome}
+    } as CompraDetalhe;
+
+   this.listaCompraDetalhe.push(produtoAdicionar);
   }
 }

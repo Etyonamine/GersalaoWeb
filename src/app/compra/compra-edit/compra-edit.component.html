@@ -32,7 +32,7 @@
               placeholder="Digite o valor do serviço"
               placeholder="0.000,00"                   
               [readonly]="true"
-              value="valorTotalProdutoAdd"
+              value="valorTotalProdutoAdd | currency "
             />
             <!-- <span matPrefix>R$&nbsp;</span> -->
             <!-- <span matSuffix>,00</span> -->
@@ -97,12 +97,12 @@
                   [(ngModel)]= "valorUnitarioAdd"
                   [ngModelOptions]="{standalone: true}"
                   matInput                                       
-                  class="right-align"                                 
-                  (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"
+                  class="right-align"                                                   
                   autocomplete="off"
                   placeholder="Digite o valor unitário do Produto"
                   placeholder="0.000,00"     
                   matTooltip="Por favor, digite o valor unitário do produto comprado."                      
+                  appTwoDigitDecimaNumber
                 />
                 <span matPrefix>R$&nbsp;</span>
                 <!-- <span matSuffix>,00</span> -->
@@ -114,6 +114,8 @@
                   [ngModelOptions]="{standalone: true}"
                   matInput                                       
                   type="number"
+                  step="1"
+                  min="0"
                   autocomplete="off"
                   class="right-align"               
                   placeholder="Digite a quantidade total comprada"  
@@ -147,8 +149,8 @@
                 </tr>
                 <tr *ngFor="let produtoLista of listaCompraDetalhe">
                   <td>{{produtoLista.produto.nome}}</td>
-                  <td>{{produtoLista.valorUnitario}} </td>
-                  <td>{{produtoLista.quantidadeProduto}}</td>
+                  <td>{{produtoLista.valorUnitario.toString().replace('.','').replace(',','.') | currency }} </td>
+                  <td>{{produtoLista.quantidadeProduto }}</td>
                 </tr>
               </table>
             </div>
