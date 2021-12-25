@@ -13,10 +13,11 @@
           </mat-form-field>                  
          
           <mat-form-field appearance="fill">
-            <mat-label>Data de Compra</mat-label>
+            <mat-label>Data de Lançamento</mat-label>
             <input matInput  
                   [matDatepicker]="picker3" 
-                  formControlName="dataCompra"                   
+                  formControlName="dataCompra"    
+                  [max] = "dataMaximaCompra"             
                   required >
             <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
             <mat-datepicker #picker3></mat-datepicker>
@@ -31,8 +32,9 @@
               required
               placeholder="Digite o valor do serviço"
               placeholder="0.000,00"                   
-              [readonly]="true"
-              value="valorTotalProdutoAdd | currency "
+              [readonly]="true"              
+              value="{{ valorTotalProdutoAdd | currency:'BRL':'symbol':'1.2-2':'pt'}}"  
+              readonly                          
             />
             <!-- <span matPrefix>R$&nbsp;</span> -->
             <!-- <span matSuffix>,00</span> -->
@@ -43,7 +45,8 @@
             <input matInput [matDatepicker]="picker4" 
                   formControlName="dataVenctoBoleto" 
                   matTooltip="Informar a data de vencimento do boleto"
-                  matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"                  
+                  matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"   
+                  (dateInput)="addEventDigitarESelecionarBoleto('input', $event)" (dateChange)="addEventDigitarESelecionarBoleto('change', $event)"               
                    />
             <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
             <mat-datepicker #picker4></mat-datepicker>
@@ -52,7 +55,8 @@
             <mat-label>Data de Pagamento</mat-label>
             <input matInput   
                    formControlName="dataPagtoBoleto" 
-                   value="">
+                   readonly
+                    >
           </mat-form-field>
           <div class="form-group mat-container">
             <mat-form-field appearance="fill" class="observacao">
@@ -102,7 +106,7 @@
                   placeholder="Digite o valor unitário do Produto"
                   placeholder="0.000,00"     
                   matTooltip="Por favor, digite o valor unitário do produto comprado."                      
-                  appTwoDigitDecimaNumber
+                  (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"
                 />
                 <span matPrefix>R$&nbsp;</span>
                 <!-- <span matSuffix>,00</span> -->
@@ -139,19 +143,41 @@
             <div class="form-group mat-container">
               <table>
                 <tr >
-                  <th colspan="3">Lista de Produtos</th>
+                  <th colspan="5">Lista de Produtos</th>
                 </tr>
                 <tr>
                   <th>Produto</th>
                   <th>Valor Unit&agrave;rio</th>
                   <th>Quantidade</th>
+                  <th>Valor Total</th>
+                  <th></th>
                   
                 </tr>
                 <tr *ngFor="let produtoLista of listaCompraDetalhe">
                   <td>{{produtoLista.produto.nome}}</td>
-                  <td>{{produtoLista.valorUnitario.toString().replace('.','').replace(',','.') | currency }} </td>
+                  <td>{{produtoLista.valorUnitario |  currency:'BRL':'symbol':'1.2-2':'pt' }} </td>
                   <td>{{produtoLista.quantidadeProduto }}</td>
+                  <td>{{(produtoLista.valorUnitario * produtoLista.quantidadeProduto) | currency:'BRL':'symbol':'1.2-2':'pt'}}</td> 
+                  <td>
+                    <button
+                      mat-mini-fab
+                      aria-label="Apagar a compra adicionada" 
+                      color="warn"                      
+                      (click)="removerDaLista(produtoLista.codigoProduto,produtoLista.valorUnitario)"
+                    >                                    
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
                 </tr>
+                
+                <tfoot *ngIf="valorTotalProdutoAdd > 0">
+                  <tr>
+                    <td colspan="3" style ="text-align: right;">Total</td>
+                    <td style ="text-align: center;">{{valorTotalProdutoAdd | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+                
               </table>
             </div>
            

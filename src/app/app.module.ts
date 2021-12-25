@@ -31,8 +31,9 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { TwoDecimalNumberDirective } from './two-decimal-number.directive';
 import { CompraDetalheModule } from './compra-detalhe/compra-detalhe.module';
 
-
-
+import localePt from '@angular/common/locales/pt';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(localePt);
 
 @NgModule({
   declarations: [

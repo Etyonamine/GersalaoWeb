@@ -1,8 +1,7 @@
-import { ThrowStmt } from '@angular/compiler';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth-guard/auth.service';
@@ -36,6 +35,14 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   quantidadeProdutoAdd: number = 0;
   valorUnitarioAdd: number = 0;
 
+  events: string[] = [];
+  dataMaximaCompra : Date = new Date(new Date().toDateString());
+  dataCompraHoje = (c:FormControl)=>{
+    let valor = new Date(c.value);
+
+    return (valor.getDate() <= this.dataMaximaCompra.getDate()) ? true:false;    
+  }
+
   date = new FormControl(new Date());
   serializedDate = new FormControl(new Date().toISOString());
   constructor(
@@ -62,13 +69,15 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     }
   }
   criacaoFormulario(){
+    let hoje = new Date();
+
     //formulario cliente
     this.formulario = this.formBuilder.group({
-      codigo: [{value:this.compra.codigo, disabled:true}],
-      valor: [{value:null,disabled:true},Validators.required],
-      dataCompra: [this.compra.dataCompra === null? new Date:this.compra.dataCompra, [Validators.required]],      
+      codigo: [this.compra.codigo],
+      valor: [null,[Validators.required,Validators.min(1), Validators.max(9999)]],
+      dataCompra: [this.compra.dataCompra === null? new Date:this.compra.dataCompra, [Validators.required,this.dataCompraHoje]],      
       dataVenctoBoleto:[this.compra.dataVenctoBoleto === null?new Date: this.compra.dataVenctoBoleto,[Validators.required]],
-      dataPagtoBoleto:[{value:this.compra.dataPagtoBoleto,disabled:true}],
+      dataPagtoBoleto:[this.compra.dataPagtoBoleto],
       observacao:[this.compra.observacao]
     });
   }
@@ -83,12 +92,27 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 	}
   submit() {
     this.compra = Object.assign({}, this.formulario.value);
+    let dataCompraParam = new Date(this.formulario.get('dataCompra').value);
+    let dataBoletoParam = new Date(this.formulario.get('dataVenctoBoleto').value);
+    let valorTotalParam = this.formulario.get('valor').value;
+       
+    if ( dataCompraParam.getDate() > dataBoletoParam.getDate()){
+      this.handleError('Por favor, verificar se a data de boleto está correta');
+      return false;
+    }
+
+    this.compra.dataCompra = dataCompraParam;
+    this.compra.dataVenctoBoleto = dataBoletoParam;
+    //this.compra.valor = parseFloat(valorTotalParam.toString().replace('.','').replace(',','.'));
+    this.compra.valor = parseFloat(valorTotalParam);
+    this.compra.observacao = this.formulario.get('observacao').value;
+
     console.log(this.compra);
 
   } 
   retornar()
   {
-    
+    this.router.navigate(['/compra']);
   }
   handleError(msg:string)
   {
@@ -120,21 +144,26 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
       this.handleError('Por favor, informe a quantidade de produto comprado.');
       return false;
     }
-    let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == this.codigoProdutoAdd && x.valorUnitario.toString().replace('.','').replace(',','') == this.valorUnitarioAdd.toString().replace('.','').replace(',',''));
-    this.valorTotalProdutoAdd += (parseFloat(this.valorUnitarioAdd.toString().replace('.','').replace(',','.')) * this.quantidadeProdutoAdd);
+    if (this.valorUnitarioAdd.toString().indexOf('.')!= -1 && this.valorUnitarioAdd.toString().indexOf(',')==-1){
+      this.handleError('Por favor, verificar se o valor unitário foi informado corretamente.Exemplo: 1 ou 1,00 ou 1.000,00');
+      return false;
+    }
+    let valorUnitarioParam = parseFloat(this.valorUnitarioAdd.toString().replace('.','').replace(',','.'));
 
-    if (index !== -1){
-        if (this.listaCompraDetalhe[index].valorUnitario.toString().replace('.','').replace(',','') == this.valorUnitarioAdd.toString().replace('.','').replace(',','')){
-          this.listaCompraDetalhe[index].quantidadeProduto += this.quantidadeProdutoAdd;
-        }else{
-          this.adicionarLista();    
-        }
-        
-    }else{
-      this.adicionarLista();
+    let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == this.codigoProdutoAdd && x.valorUnitario == valorUnitarioParam);
+    
+
+    if (index !== -1){        
+        this.listaCompraDetalhe[index].quantidadeProduto += this.quantidadeProdutoAdd;        
+    }
+    else
+    {
+        this.adicionarLista();
     }
     //somando valores
-    let total = this.listaCompraDetalhe.reduce((sum,current) => sum + current.valorUnitario,0);
+    this.valorTotalProdutoAdd += (valorUnitarioParam * this.quantidadeProdutoAdd);    
+    this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
+
     console.log(this.valorTotalProdutoAdd);
    // this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
     //limpando os campos
@@ -145,16 +174,47 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
   adicionarLista(){
     let produtoSelecionado = this.produtos.find(x=>x.codigo == this.codigoProdutoAdd);
+    let valorUnitarioAdicionar : number = parseFloat(this.valorUnitarioAdd.toString().replace('.','').replace(',','.'));
 
     const produtoAdicionar = {
       codigo : this.codigo,
       codigoProduto : this.codigoProdutoAdd,
       quantidadeProduto : this.quantidadeProdutoAdd,
-      valorUnitario : this.valorUnitarioAdd, 
+      valorUnitario : valorUnitarioAdicionar, 
       produto : <Produto>{codigo : this.codigoProdutoAdd,
       nome :  produtoSelecionado.nome}
     } as CompraDetalhe;
 
    this.listaCompraDetalhe.push(produtoAdicionar);
   }
+
+  removerDaLista(codigoProduto:number, valorUnitario:number)
+  {
+
+    let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == codigoProduto && x.valorUnitario == valorUnitario);
+    this.listaCompraDetalhe.splice(index,1);
+    this.valorTotalProdutoAdd -= valorUnitario;
+    this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
+
+  }
+  addEventDigitarESelecionarBoleto(type: string, event: MatDatepickerInputEvent<Date>) {
+    let dataBoleto = new Date(event.value);
+    if (type === "input"){
+      
+      if (event.value !== null )
+      {
+        let dataCompra = new Date(this.formulario.get('dataCompra').value);
+        
+        if (dataCompra.getDate() > dataBoleto.getDate()){
+          this.handleError('Por favor, verifique se a data de boleto está superior da data de Compra.');
+        
+        
+          return false;
+        }
+      }
+    }
+    this.events.push(`${type}: ${event.value}`);
+  }
+
+  
 }
