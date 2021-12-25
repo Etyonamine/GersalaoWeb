@@ -33,15 +33,15 @@
             <mat-cell *matCellDef="let compra"> {{ compra.codigo }} </mat-cell>
           </ng-container>
           <ng-container matColumnDef="data">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Compra</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Compra</mat-header-cell>
             <mat-cell *matCellDef="let compra"><a >{{
-                compra.dataCompra
+                compra.dataCompra  | date: "dd/MM/yyyy"
                 }}</a></mat-cell>
           </ng-container>        
           <ng-container matColumnDef="valor">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Compra</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Valor-total</mat-header-cell>
             <mat-cell *matCellDef="let compra"><a >{{
-                compra.dataCompra
+                compra.valor | currency:'BRL':'symbol':'1.2-2':'pt'
                 }}</a></mat-cell>
           </ng-container>        
           <ng-container matColumnDef="datacadastro">
@@ -61,16 +61,16 @@
                   [routerLink]="['/compra', compra.codigo]"
                   >  
                                         
-                  <mat-icon>edit</mat-icon>
+                  <mat-icon>view_comfy</mat-icon>
                 </button>
   
-                <button
+                <!-- <button
                   mat-mini-fab
                   aria-label="Apagar o compra"
                   value="{{compra.codigo}}"                
                   color="warn">
                   <mat-icon>delete</mat-icon>
-                </button>
+                </button> -->
                
             </mat-cell>
           </ng-container>
