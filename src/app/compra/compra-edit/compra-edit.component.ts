@@ -1,17 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { CompraDetalhe } from 'src/app/compra-detalhe/compra-detalhe';
+import { CompraDetalheService } from 'src/app/compra-detalhe/compra-detalhe.service';
 import { Produto } from 'src/app/produto/produto';
 import { ProdutoService } from 'src/app/produto/produto.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
 import { Compra } from '../compra';
+import { CompraServiceService } from '../compra-service.service';
 
 @Component({
   selector: 'app-compra-edit',
@@ -29,7 +31,8 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
   produtos:Array<Produto>;  
   listaCompraDetalhe: Array<CompraDetalhe>=[];
-  inscricao$ : Subscription;
+  inscricao$: Subscription;
+  inscricaoDetalhe$: Subscription;
 
   codigoProdutoAdd : number = 0;
   quantidadeProdutoAdd: number = 0;
@@ -51,7 +54,10 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private serviceAlert:AlertService,
-    private produtoService: ProdutoService
+    private produtoService: ProdutoService,
+    private compraService : CompraServiceService,
+    private compraDetalheService: CompraDetalheService,
+    
   ) 
   {
     super();
@@ -59,13 +65,21 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.compra = this.route.snapshot.data['compra']=== undefined?{codigo : null, dataCompra : null, valor: null, dataVenctoBoleto : null, dataPagtoBoleto:null, observacao: null}:this.route.snapshot.data['compra'];
+    this.codigo = this.compra.codigo == null? 0 : this.compra.codigo;
+    this.loadData();
     this.criacaoFormulario();
     this.listaProdutos();
+    this.valorTotalProdutoAdd = this.compra == null?0: this.compra.valor;
+    
+
     }
   ngOnDestroy():void{
 
     if(this.inscricao$){
       this.inscricao$.unsubscribe();
+    }
+    if(this.inscricaoDetalhe$){
+      this.inscricaoDetalhe$.unsubscribe();
     }
   }
   criacaoFormulario(){
@@ -74,7 +88,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     //formulario cliente
     this.formulario = this.formBuilder.group({
       codigo: [this.compra.codigo],
-      valor: [null,[Validators.required,Validators.min(1), Validators.max(9999)]],
+      valor: [this.compra.valor,[Validators.required,Validators.min(1), Validators.max(9999)]],
       dataCompra: [this.compra.dataCompra === null? new Date:this.compra.dataCompra, [Validators.required,this.dataCompraHoje]],      
       dataVenctoBoleto:[this.compra.dataVenctoBoleto === null?new Date: this.compra.dataVenctoBoleto,[Validators.required]],
       dataPagtoBoleto:[this.compra.dataPagtoBoleto],
@@ -101,14 +115,43 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
       return false;
     }
 
+    //preeenchendo o objeto compra.
+    this.compra.codigo = 0;    
     this.compra.dataCompra = dataCompraParam;
-    this.compra.dataVenctoBoleto = dataBoletoParam;
-    //this.compra.valor = parseFloat(valorTotalParam.toString().replace('.','').replace(',','.'));
+    this.compra.dataVenctoBoleto = dataBoletoParam;    
     this.compra.valor = parseFloat(valorTotalParam);
     this.compra.observacao = this.formulario.get('observacao').value;
-
-    console.log(this.compra);
-
+    this.compra.dataCompra = new Date();
+    
+    //salvando o registro.
+    this.inscricao$ =  this.compraService.save(this.compra)
+                                        .pipe(
+                                          concatMap( (result:Compra) =>
+                                            {
+                                              let codigoCompra  = result.codigo;
+                                              this.listaCompraDetalhe.forEach(detalhe=>{
+                                                  detalhe.codigo = 0 ;    
+                                                  detalhe.produto = null;                                              
+                                                  detalhe.codigoCompra = codigoCompra;
+                                                  detalhe.dataCadastro = new Date();
+                                                  this.inscricaoDetalhe$ = this.compraDetalheService.save(detalhe)
+                                                                          .subscribe(result=>{},error=>{                                                                            
+                                                                            this.compraDetalheService.excluirTodosProdutos(codigoCompra).subscribe();
+                                                                            this.compraService.delete(codigoCompra).subscribe();
+                                                                            console.log(error);
+                                                                            this.handleError('Ocorreu um erro ao tentar salvar um produto da compra.Será desfeito a operação.');
+                                                                          });
+                                              })
+                                              
+                                              return of (true);
+                                            }                                           
+                                          )
+                                        ).subscribe(result=>{
+                                          if (result){
+                                            this.handlerSuccess('Compra salva com sucesso!');
+                                            setTimeout(() => { this.retornar(); }, 3000);
+                                          }
+                                        });
   } 
   retornar()
   {
@@ -117,6 +160,10 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   handleError(msg:string)
   {
     this.serviceAlert.mensagemErro(msg);
+  }
+  
+  handlerSuccess(msg: string) {
+    this.serviceAlert.mensagemSucesso(msg);
   }
   listaProdutos()
   {
@@ -164,7 +211,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     this.valorTotalProdutoAdd += (valorUnitarioParam * this.quantidadeProdutoAdd);    
     this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
 
-    console.log(this.valorTotalProdutoAdd);
+    
    // this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
     //limpando os campos
     this.codigoProdutoAdd = 0;
@@ -216,5 +263,27 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     this.events.push(`${type}: ${event.value}`);
   }
 
+  loadData(){
+    if (this.codigo > 0 ){
+      this.inscricao$ = this.compraService.get<Compra>(this.codigo).subscribe(result=>
+      {
+        this.compra = result;
+        
+        this.listaCompraDetalhe = result.listaCompraDetalhe;
+
+        this.listaCompraDetalhe.forEach(detalhe=>{
+          this.inscricao$ = this.produtoService.get<Produto>(detalhe.codigoProduto).subscribe(result=>{
+              detalhe.produto = {codigo: result.codigo, nome : result.nome} as Produto;
+            }
+          );
+          
+        });          
+        
+      },error=>{
+        console.log(error);
+        this.handleError('Ocorreu um erro ao consultar os dados da compra.');
+      });
+    }
+  }
   
 }

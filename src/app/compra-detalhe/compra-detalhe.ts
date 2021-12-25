@@ -7,4 +7,5 @@ export interface CompraDetalhe{
     valorUnitario: number;
     quantidadeProduto: number; 
     produto: Produto;   
+    dataCadastro: Date;
 }

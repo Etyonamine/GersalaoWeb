@@ -164,6 +164,7 @@
                       aria-label="Apagar a compra adicionada" 
                       color="warn"                      
                       (click)="removerDaLista(produtoLista.codigoProduto,produtoLista.valorUnitario)"
+                      [disabled]="codigo > 0 "
                     >                                    
                       <mat-icon>delete</mat-icon>
                     </button>
@@ -218,7 +219,7 @@
                   type="submit"
                   mat-raised-button
                   color="primary"
-                  [disabled]="!formulario.valid"
+                  [disabled]="!formulario.valid || codigo > 0 "
                 >
                   Salvar &nbsp;<i class="material-icons right">save</i>
                 </button>    
