@@ -33,6 +33,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   listaCompraDetalhe: Array<CompraDetalhe>=[];
   inscricao$: Subscription;
   inscricaoDetalhe$: Subscription;
+  inscricaoProduto$: Subscription;
 
   codigoProdutoAdd : number = 0;
   quantidadeProdutoAdd: number = 0;
@@ -64,13 +65,17 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.compra = this.route.snapshot.data['compra']=== undefined?{codigo : null, dataCompra : null, valor: null, dataVenctoBoleto : null, dataPagtoBoleto:null, observacao: null}:this.route.snapshot.data['compra'];
+     
+
+    this.compra = this.route.snapshot.data['compra']=== undefined?
+                                {codigo : null, dataCompra : null, valor: null, dataVenctoBoleto : null, dataPagtoBoleto:null, observacao: null}:
+                                this.route.snapshot.data['compra'];
     this.codigo = this.compra.codigo == null? 0 : this.compra.codigo;
-    this.loadData();
-    this.criacaoFormulario();
-    this.listaProdutos();
-    this.valorTotalProdutoAdd = this.compra == null?0: this.compra.valor;
     
+    this.loadData();
+    this.criacaoFormulario();    
+    this.valorTotalProdutoAdd = this.compra == null?0: this.compra.valor;
+    this.tituloPagina = this.codigo>0 ?"consulta de registro": "Novo registro"
 
     }
   ngOnDestroy():void{
@@ -105,8 +110,8 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 		
 	}
   submit() {
-    this.compra = Object.assign({}, this.formulario.value);
-    let dataCompraParam = new Date(this.formulario.get('dataCompra').value);
+     
+    let dataCompraParam =  new Date(this.formulario.get('dataCompra').value );
     let dataBoletoParam = new Date(this.formulario.get('dataVenctoBoleto').value);
     let valorTotalParam = this.formulario.get('valor').value;
        
@@ -117,21 +122,22 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
     //preeenchendo o objeto compra.
     this.compra.codigo = 0;    
-    this.compra.dataCompra = dataCompraParam;
+    this.compra.dataCompra = new Date(dataCompraParam.toDateString());
     this.compra.dataVenctoBoleto = dataBoletoParam;    
     this.compra.valor = parseFloat(valorTotalParam);
     this.compra.observacao = this.formulario.get('observacao').value;
-    this.compra.dataCompra = new Date();
+    this.compra.dataCadatro = new Date();
     
     //salvando o registro.
     this.inscricao$ =  this.compraService.save(this.compra)
                                         .pipe(
                                           concatMap( (result:Compra) =>
                                             {
+
                                               let codigoCompra  = result.codigo;
-                                              this.listaCompraDetalhe.forEach(detalhe=>{
-                                                  detalhe.codigo = 0 ;    
-                                                  detalhe.produto = null;                                              
+                                              /* this.listaCompraDetalhe.forEach(detalhe=>{
+                                                  detalhe.codigo = 0 ;                                                      
+                                                  detalhe.produto = null;                                                                                                
                                                   detalhe.codigoCompra = codigoCompra;
                                                   detalhe.dataCadastro = new Date();
                                                   this.inscricaoDetalhe$ = this.compraDetalheService.save(detalhe)
@@ -141,13 +147,27 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
                                                                             console.log(error);
                                                                             this.handleError('Ocorreu um erro ao tentar salvar um produto da compra.Será desfeito a operação.');
                                                                           });
-                                              })
+
+
+                                              }) */
+                                               
                                               
+                                              this.listaCompraDetalhe.forEach(detalhe =>{
+                                                detalhe.codigoCompra = result.codigo;
+                                                detalhe.dataCadastro = new Date();
+                                                detalhe.produto = null;
+                                                
+                                              })
+
+                                              this.inscricaoDetalhe$ = this.compraDetalheService.salvarLista(this.listaCompraDetalhe).subscribe();
+
                                               return of (true);
                                             }                                           
                                           )
                                         ).subscribe(result=>{
                                           if (result){
+                                            this.codigo = 0;
+                                            this.listaCompraDetalhe = null;
                                             this.handlerSuccess('Compra salva com sucesso!');
                                             setTimeout(() => { this.retornar(); }, 3000);
                                           }
@@ -264,25 +284,34 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   }
 
   loadData(){
-    if (this.codigo > 0 ){
-      this.inscricao$ = this.compraService.get<Compra>(this.codigo).subscribe(result=>
-      {
-        this.compra = result;
-        
-        this.listaCompraDetalhe = result.listaCompraDetalhe;
+    
+    this.listaProdutos();
 
-        this.listaCompraDetalhe.forEach(detalhe=>{
-          this.inscricao$ = this.produtoService.get<Produto>(detalhe.codigoProduto).subscribe(result=>{
-              detalhe.produto = {codigo: result.codigo, nome : result.nome} as Produto;
-            }
-          );
-          
-        });          
-        
-      },error=>{
-        console.log(error);
-        this.handleError('Ocorreu um erro ao consultar os dados da compra.');
-      });
+    if (this.codigo > 0 ){
+      this.inscricao$ = this.compraService.get<Compra>(this.codigo)
+                                          .pipe(
+                                              concatMap((result: Compra)=>
+                                              {
+                                                i : Number;
+                                                for ( let i=0; i <= result.listaCompraDetalhe.length-1;i++){
+                                                    
+                                                    let nomeProdt =  this.produtos.find(x=>x.codigo == result.listaCompraDetalhe[i].codigoProduto).nome;
+
+                                                    result.listaCompraDetalhe[i].produto = {codigo : result.listaCompraDetalhe[i].codigo , nome :nomeProdt} as Produto ;
+                                                }
+                                                  
+                                                    
+
+                                                
+                                                                                                 
+                                                
+                                                  return of (result);
+                                              }
+                                              
+      ))
+      .subscribe( (resultado : Compra) =>{
+         this.listaCompraDetalhe = resultado.listaCompraDetalhe;
+      });      
     }
   }
   

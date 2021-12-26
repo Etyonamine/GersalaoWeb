@@ -128,6 +128,7 @@
                 />                
                 <!-- <span matSuffix>,00</span> -->
               </mat-form-field> 
+              &nbsp;
               <button
               type="button"
               mat-raised-button
@@ -140,7 +141,7 @@
 
             </div>
             <mat-card-subtitle><h3><b>Lista de Produto(s) comprado(s)</b></h3></mat-card-subtitle>
-            <div class="form-group mat-container">
+            <div class="form-group mat-container"  >
               <table>
                 <tr >
                   <th colspan="5">Lista de Produtos</th>
@@ -153,23 +154,26 @@
                   <th></th>
                   
                 </tr>
-                <tr *ngFor="let produtoLista of listaCompraDetalhe">
-                  <td>{{produtoLista.produto.nome}}</td>
-                  <td>{{produtoLista.valorUnitario |  currency:'BRL':'symbol':'1.2-2':'pt' }} </td>
-                  <td>{{produtoLista.quantidadeProduto }}</td>
-                  <td>{{(produtoLista.valorUnitario * produtoLista.quantidadeProduto) | currency:'BRL':'symbol':'1.2-2':'pt'}}</td> 
-                  <td>
-                    <button
-                      mat-mini-fab
-                      aria-label="Apagar a compra adicionada" 
-                      color="warn"                      
-                      (click)="removerDaLista(produtoLista.codigoProduto,produtoLista.valorUnitario)"
-                      [disabled]="codigo > 0 "
-                    >                                    
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </td>
-                </tr>
+                <tbody > 
+                  <tr  *ngFor="let produtoLista of  listaCompraDetalhe">
+                    <td>{{produtoLista.produto.nome}}</td>
+                    <td>{{produtoLista.valorUnitario |  currency:'BRL':'symbol':'1.2-2':'pt' }} </td>
+                    <td>{{produtoLista.quantidadeProduto }}</td>
+                    <td>{{(produtoLista.valorUnitario * produtoLista.quantidadeProduto) | currency:'BRL':'symbol':'1.2-2':'pt'}}</td> 
+                    <td>
+                      <button
+                        mat-mini-fab
+                        aria-label="Apagar a compra adicionada" 
+                        color="warn"                      
+                        (click)="removerDaLista(produtoLista.codigoProduto,produtoLista.valorUnitario)"
+                        [disabled]="codigo > 0 "
+                      >                                    
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+             
                 
                 <tfoot *ngIf="valorTotalProdutoAdd > 0">
                   <tr>
@@ -222,7 +226,8 @@
                   [disabled]="!formulario.valid || codigo > 0 "
                 >
                   Salvar &nbsp;<i class="material-icons right">save</i>
-                </button>    
+                </button>   
+                &nbsp;
                 <button mat-raised-button color="primary" (click)="retornar()">
                   Retornar &nbsp;<i class="material-icons right">reply</i>
                 </button>            

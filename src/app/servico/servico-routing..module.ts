@@ -10,12 +10,12 @@ const servicosRoutes: Routes = [
    {path:'', component: ServicoComponent},
    {path:'servico-novo',
      component:ServicoFormComponent},
-  {
+    {
       path:':codigo',
       component:ServicoFormComponent,
       resolve:{
         servico: ServicoResolveGuard
-      }
+    }
   }
 ];
 

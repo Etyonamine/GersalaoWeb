@@ -19,4 +19,9 @@ export class CompraDetalheService extends BaseService<CompraDetalhe> {
    let urlParam = `this.url + '\TodosProdutos\' + codigoCompra`;
     return this.http.delete(urlParam).pipe(take(1));
   }
+
+  salvarLista(lista : Array<CompraDetalhe>){
+
+    return this.http.post(this.url,lista).pipe(take(1));
+  }
 }

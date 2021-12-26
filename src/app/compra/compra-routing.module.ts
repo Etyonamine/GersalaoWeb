@@ -5,10 +5,8 @@ import { CompraComponent } from './compra.component';
 import { CompraResolveGuard } from './guard/compra-resolver.guard';
 import { CompraEditComponent } from './compra-edit/compra-edit.component';
 
-const routes: Routes = [
-  {
-    path:'', component: CompraComponent
-  },
+const comprasRoutes: Routes = [
+  {path:'', component: CompraComponent},
   {path:'compra-novo',
       component:CompraEditComponent},
       {
@@ -18,13 +16,14 @@ const routes: Routes = [
           compra: CompraResolveGuard
       }
   }
+    
 ];
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(comprasRoutes)
   ],
   exports: [
     RouterModule
