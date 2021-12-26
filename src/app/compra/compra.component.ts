@@ -1,12 +1,22 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
 import { Compra } from './compra';
+import { CompraBaixaPagtoComponent } from './compra-baixa-pagto/compra-baixa-pagto.component';
 import { CompraServiceService } from './compra-service.service';
+
+export interface DialogDataBaixaPagto {  
+  codigoCompra: number; 
+  dataCompra : Date;
+  dataBoleto : Date;
+  valorTotal : number; 
+}
 
 @Component({
   selector: 'app-compra',
@@ -16,7 +26,7 @@ import { CompraServiceService } from './compra-service.service';
 export class CompraComponent implements OnInit, OnDestroy {
   compras: MatTableDataSource<Compra>;
   inscricao$  : Subscription;
-  colunas: string[]=["codigo","data", "valor","datacadastro","acao"];
+  colunas: string[]=["codigo","dataCompra", "valor","dataVenctoBoleto","dataPagtoBoleto","datacadastro","acao"];
  
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
@@ -30,11 +40,14 @@ export class CompraComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort:MatSort;
 
+   
   constructor(
               private compraService: CompraServiceService,
-              private serviceAlert: AlertService) { }
+              private serviceAlert: AlertService,
+              public dialog: MatDialog              ) { }
 
   ngOnInit(): void {
+     
     this.loadData();
   }
 
@@ -92,6 +105,28 @@ export class CompraComponent implements OnInit, OnDestroy {
   handleError()
   {
     this.serviceAlert.mensagemErro('Erro ao carregar a lista de compras. Tente novamente mais tarde.');
+  }
+
+  dialogBaixaPagto(codigoCompraParam:number){
+    let index = this.compras.data.findIndex(x=>x.codigo === codigoCompraParam);
+    const objCompra = this.compras.data[index];
+
+     // montando o dialogo
+     const dialogRef = this.dialog.open(CompraBaixaPagtoComponent,
+      {width: '700px' , height: '900px;',
+        data : {
+                 codigoCompra: codigoCompraParam,
+                 dataCompra: objCompra.dataCompra,
+                 dataBoleto: objCompra.dataVenctoBoleto,
+                 valorTotal: objCompra.valor
+                }
+      }
+    );
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      this.loadData();
+    });
   }
 
 }

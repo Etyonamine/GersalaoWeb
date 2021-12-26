@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, Subscription } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
@@ -13,6 +14,7 @@ import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
 import { Compra } from '../compra';
+import { CompraBaixaPagtoComponent } from '../compra-baixa-pagto/compra-baixa-pagto.component';
 import { CompraServiceService } from '../compra-service.service';
 
 @Component({
@@ -58,7 +60,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     private produtoService: ProdutoService,
     private compraService : CompraServiceService,
     private compraDetalheService: CompraDetalheService,
-    
+    public dialog: MatDialog,
   ) 
   {
     super();
@@ -175,7 +177,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   } 
   retornar()
   {
-    this.router.navigate(['/compra']);
+    this.router.navigate(['/compra']);    
   }
   handleError(msg:string)
   {
@@ -315,4 +317,31 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     }
   }
   
+  dialogBaixaPagto(){   
+    
+
+     // montando o dialogo
+     const dialogRef = this.dialog.open(CompraBaixaPagtoComponent,
+      {width: '700px' , height: '900px;',
+        data : {
+                 codigoCompra: this.compra.codigo,
+                 dataCompra: this.compra.dataCompra,
+                 dataBoleto: this.compra.dataVenctoBoleto,
+                 valorTotal: this.compra.valor
+                }
+      }
+    );
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      
+      this.inscricao$ = this.compraService.get<Compra>(this.codigo).subscribe(result=>{
+        
+        this.formulario.controls['dataPagtoBoleto'].setValue( result.dataPagtoBoleto);
+      },error=>{
+        console.log(error);
+        this.handleError('Erro ao consultar informações da compra.');
+      })
+       
+    });
+  }
 }

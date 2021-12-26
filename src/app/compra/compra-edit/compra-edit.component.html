@@ -51,12 +51,23 @@
             <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
             <mat-datepicker #picker4></mat-datepicker>
           </mat-form-field>
-          <mat-form-field class="example-full-width" appearance="fill">
+          <!-- <mat-form-field class="example-full-width" appearance="fill">
             <mat-label>Data de Pagamento</mat-label>
             <input matInput   
                    formControlName="dataPagtoBoleto" 
                    readonly
                     >
+          </mat-form-field> -->
+          <mat-form-field appearance="fill">
+            <mat-label>Data Vencimento Boleto</mat-label>
+            <input matInput [matDatepicker]="picker5" 
+                  formControlName="dataPagtoBoleto" 
+                  matTooltip="Informar a data de pagamento de boleto"
+                  matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021" 
+                  readonly                    
+                   />
+            <mat-datepicker-toggle matSuffix [for]="picker5" disabled="true"></mat-datepicker-toggle>
+            <mat-datepicker #picker5></mat-datepicker>
           </mat-form-field>
           <div class="form-group mat-container">
             <mat-form-field appearance="fill" class="observacao">
@@ -227,6 +238,15 @@
                 >
                   Salvar &nbsp;<i class="material-icons right">save</i>
                 </button>   
+                         
+                
+                &nbsp;
+                <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
+                  [disabled]="formulario.get('dataPagtoBoleto').value != null"
+                  type="button">
+                  Baixa de Pagamento &nbsp;<i class="material-icons right">paid</i>
+                </button>
+                
                 &nbsp;
                 <button mat-raised-button color="primary" (click)="retornar()">
                   Retornar &nbsp;<i class="material-icons right">reply</i>

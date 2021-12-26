@@ -32,7 +32,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
             <mat-cell *matCellDef="let compra"> {{ compra.codigo }} </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="data">
+          <ng-container matColumnDef="dataCompra">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Compra</mat-header-cell>
             <mat-cell *matCellDef="let compra"><a >{{
                 compra.dataCompra  | date: "dd/MM/yyyy"
@@ -43,7 +43,19 @@
             <mat-cell *matCellDef="let compra"><a >{{
                 compra.valor | currency:'BRL':'symbol':'1.2-2':'pt'
                 }}</a></mat-cell>
-          </ng-container>        
+          </ng-container>     
+          <ng-container matColumnDef="dataVenctoBoleto">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Dt. Boleto</mat-header-cell>
+            <mat-cell *matCellDef="let compra">{{
+              compra.dataVenctoBoleto | date: "dd/MM/yyyy HH:mm:ss"
+              }}</mat-cell>
+          </ng-container> 
+          <ng-container matColumnDef="dataPagtoBoleto">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Dt. Pagto.</mat-header-cell>
+            <mat-cell *matCellDef="let compra">{{
+              compra.dataPagtoBoleto | date: "dd/MM/yyyy HH:mm:ss"
+              }}</mat-cell>
+          </ng-container>    
           <ng-container matColumnDef="datacadastro">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Cadastro</mat-header-cell>
             <mat-cell *matCellDef="let compra">{{
@@ -64,13 +76,19 @@
                   <mat-icon>view_comfy</mat-icon>
                 </button>
   
-                <!-- <button
+                <button
+                  [disabled] = "compra.dataPagtoBoleto !== null"
                   mat-mini-fab
-                  aria-label="Apagar o compra"
+                  aria-label="Baixa de Pagamento"
                   value="{{compra.codigo}}"                
-                  color="warn">
-                  <mat-icon>delete</mat-icon>
-                </button> -->
+                  color="warn"
+                  (click) = "dialogBaixaPagto(compra.codigo)"
+                  >
+                  <!-- <span class="material-icons-outlined">
+                    paid
+                    </span> -->
+                  <mat-icon>paid</mat-icon>
+                </button>
                
             </mat-cell>
           </ng-container>
