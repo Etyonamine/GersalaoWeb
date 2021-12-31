@@ -1,3 +1,4 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
@@ -8,6 +9,8 @@ import { concatMap, map } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { CompraDetalhe } from 'src/app/compra-detalhe/compra-detalhe';
 import { CompraDetalheService } from 'src/app/compra-detalhe/compra-detalhe.service';
+import { Estoque } from 'src/app/estoque/estoque';
+import { EstoqueService } from 'src/app/estoque/estoque.service';
 import { Produto } from 'src/app/produto/produto';
 import { ProdutoService } from 'src/app/produto/produto.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -36,6 +39,8 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   inscricao$: Subscription;
   inscricaoDetalhe$: Subscription;
   inscricaoProduto$: Subscription;
+  inscricaoEstoque$: Subscription;
+  inscricaoEstoqueSubmit$: Subscription;
 
   codigoProdutoAdd : number = 0;
   quantidadeProdutoAdd: number = 0;
@@ -60,6 +65,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     private produtoService: ProdutoService,
     private compraService : CompraServiceService,
     private compraDetalheService: CompraDetalheService,
+    private estoqueService: EstoqueService,
     public dialog: MatDialog,
   ) 
   {
@@ -68,10 +74,11 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
   ngOnInit(): void {
      
+    let objCompra = this.route.snapshot.data['compra']=== undefined ? null :   this.route.snapshot.data['compra'];
 
-    this.compra = this.route.snapshot.data['compra']=== undefined?
+    this.compra = objCompra === undefined?
                                 {codigo : null, dataCompra : null, valor: null, dataVenctoBoleto : null, dataPagtoBoleto:null, observacao: null}:
-                                this.route.snapshot.data['compra'];
+                                objCompra.result;
     this.codigo = this.compra.codigo == null? 0 : this.compra.codigo;
     
     this.loadData();
@@ -87,6 +94,12 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     }
     if(this.inscricaoDetalhe$){
       this.inscricaoDetalhe$.unsubscribe();
+    }
+    if(this.inscricaoEstoque$){
+      this.inscricaoEstoque$.unsubscribe();
+    }
+    if (this.inscricaoEstoqueSubmit$){
+      this.inscricaoEstoqueSubmit$.unsubscribe();
     }
   }
   criacaoFormulario(){
@@ -161,13 +174,53 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
                                                 
                                               })
 
-                                              this.inscricaoDetalhe$ = this.compraDetalheService.salvarLista(this.listaCompraDetalhe).subscribe();
+                                              this.inscricaoDetalhe$ = this.compraDetalheService.salvarLista(this.listaCompraDetalhe)
+                                                                                                .subscribe();
+                                              
 
                                               return of (true);
                                             }                                           
                                           )
                                         ).subscribe(result=>{
                                           if (result){
+                                              let dataCorrente = new Date ();                                             
+
+                                              //gravando no estoque
+                                              this.listaCompraDetalhe.forEach(detalhe=>{
+                                                
+                                                let estoqueParam = {
+                                                                      codigoProduto : detalhe.codigoProduto,
+                                                                      dataEntrada : dataCorrente,
+                                                                      valorUnitario : detalhe.valorUnitario,
+                                                                      quantidadeEstoque : detalhe.quantidadeProduto
+                                                                   } as Estoque;
+
+                                                this.inscricaoEstoque$ = this.estoqueService.existeEstoque(estoqueParam)
+                                                                                             .pipe(
+                                                                                               concatMap((retornoExiste : boolean)=>{
+                                                                                                 if (retornoExiste){
+                                                                                                  this.inscricaoEstoqueSubmit$ = this.estoqueService.atualizarQuantidadeEstoque(estoqueParam)
+                                                                                                                      .subscribe(()=>{},error=>{
+                                                                                                                        console.log(error);
+                                                                                                                        this.handlerSuccess('Ocorreu um erro na atualização da quantidade de estoque.');
+                                                                                                                      });
+                                                                                                 }
+                                                                                                 else
+                                                                                                 {
+                                                                                                    this.inscricaoEstoqueSubmit$ = this.estoqueService.save(estoqueParam)
+                                                                                                                     .subscribe(()=>{},
+                                                                                                                     error=>{
+                                                                                                                      console.log(error);
+                                                                                                                      this.handlerSuccess('Ocorreu um erro no cadastro de estoque.');
+                                                                                                                     });
+                                                                                                 }
+                                                                                                  return of(true);
+                                                                                                })
+                                                                                             )
+                                                                                             .subscribe();
+
+                                              });
+
                                             this.codigo = 0;
                                             this.listaCompraDetalhe = null;
                                             this.handlerSuccess('Compra salva com sucesso!');
@@ -259,10 +312,18 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
   removerDaLista(codigoProduto:number, valorUnitario:number)
   {
+    if (this.listaCompraDetalhe.length == 1){
+      this.valorTotalProdutoAdd =0;      
+      this.listaCompraDetalhe.splice(0,1);
 
-    let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == codigoProduto && x.valorUnitario == valorUnitario);
-    this.listaCompraDetalhe.splice(index,1);
-    this.valorTotalProdutoAdd -= valorUnitario;
+    }else{
+      let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == codigoProduto && x.valorUnitario == valorUnitario);
+      this.listaCompraDetalhe.splice(index,1);
+      this.valorTotalProdutoAdd -= valorUnitario;
+    }
+    
+    
+    
     this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
 
   }
@@ -292,10 +353,12 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     if (this.codigo > 0 ){
       this.inscricao$ = this.compraService.get<Compra>(this.codigo)
                                           .pipe(
-                                              concatMap((result: Compra)=>
+                                              concatMap(result=>
                                               {
+                                                
                                                 i : Number;
-                                                for ( let i=0; i <= result.listaCompraDetalhe.length-1;i++){
+                                                let itotal = objCompra.result.listaCompraDetalhe.length;
+                                                for ( let i=0; i <= (itotal-1);i++){
                                                     
                                                     let nomeProdt =  this.produtos.find(x=>x.codigo == result.listaCompraDetalhe[i].codigoProduto).nome;
 
@@ -313,6 +376,9 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
       ))
       .subscribe( (resultado : Compra) =>{
          this.listaCompraDetalhe = resultado.listaCompraDetalhe;
+      }, error=>{
+         console.log(error);
+         this.handleError('Ocorreu um erro');
       });      
     }
   }
