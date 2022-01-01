@@ -242,7 +242,7 @@
                 
                 &nbsp;
                 <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
-                  [disabled]="formulario.get('dataPagtoBoleto').value != null"
+                  [disabled]="(formulario.get('dataPagtoBoleto').value != null && codigo > 0) ||(codigo == 0 || codigo == null )"
                   type="button">
                   Baixa de Pagamento &nbsp;<i class="material-icons right">paid</i>
                 </button>

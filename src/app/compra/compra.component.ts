@@ -32,7 +32,7 @@ export class CompraComponent implements OnInit, OnDestroy {
   defaultPageSize:number = 10;
 
   public defaultSortColumn:string = "codigo";
-  public defaultSortOrder:string = "asc";
+  public defaultSortOrder:string = "desc";
 
   defaultFilterColumn: string= "codigo";
   filterQuery:string=null;

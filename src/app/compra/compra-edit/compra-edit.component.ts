@@ -74,13 +74,11 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
   ngOnInit(): void {
      
-    let objCompra = this.route.snapshot.data['compra']=== undefined ? null :   this.route.snapshot.data['compra'];
+    this.compra = this.route.snapshot.data['compra']=== undefined ? {codigo : null, valor : null, dataCompra : null, dataPagtoBoleto : null, listaCompraDetalhe  : null,dataVenctoBoleto : null } as Compra:   this.route.snapshot.data['compra'];
 
-    this.compra = objCompra === undefined?
-                                {codigo : null, dataCompra : null, valor: null, dataVenctoBoleto : null, dataPagtoBoleto:null, observacao: null}:
-                                objCompra.result;
-    this.codigo = this.compra.codigo == null? 0 : this.compra.codigo;
     
+    this.codigo = this.compra == null? 0 : this.compra.codigo;
+    this.listaProdutos();
     this.loadData();
     this.criacaoFormulario();    
     this.valorTotalProdutoAdd = this.compra == null?0: this.compra.valor;
@@ -351,19 +349,23 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     this.listaProdutos();
 
     if (this.codigo > 0 ){
-      this.inscricao$ = this.compraService.get<Compra>(this.codigo)
+      this.inscricao$ = this.compraService.get(this.codigo)
                                           .pipe(
-                                              concatMap(result=>
+                                              concatMap((result:Compra)=>
                                               {
-                                                
+                                                let objCompra = result; 
                                                 i : Number;
-                                                let itotal = objCompra.result.listaCompraDetalhe.length;
-                                                for ( let i=0; i <= (itotal-1);i++){
+                                                objCompra.listaCompraDetalhe.forEach(detalhe=>{
+                                                  let index = this.produtos.findIndex(x=>x.codigo == detalhe.codigoProduto);                                 
+                                                  detalhe.produto = this.produtos[index];
+
+                                                 })
+                                               /*  for ( let i=0; i <= (itotal-1);i++){
                                                     
                                                     let nomeProdt =  this.produtos.find(x=>x.codigo == result.listaCompraDetalhe[i].codigoProduto).nome;
 
                                                     result.listaCompraDetalhe[i].produto = {codigo : result.listaCompraDetalhe[i].codigo , nome :nomeProdt} as Produto ;
-                                                }
+                                                } */
                                                   
                                                     
 
