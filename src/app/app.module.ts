@@ -30,6 +30,7 @@ import { CompraModule } from './compra/compra.module';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { TwoDecimalNumberDirective } from './two-decimal-number.directive';
 import { CompraDetalheModule } from './compra-detalhe/compra-detalhe.module';
+import { EstoqueModule } from './estoque/estoque.module';
 
 import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
@@ -69,7 +70,8 @@ registerLocaleData(localePt);
     FormaPagamentoModule, 
     ProdutoLinhaModule,
     CompraModule,
-    CompraDetalheModule
+    CompraDetalheModule,
+    EstoqueModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},

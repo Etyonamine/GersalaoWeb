@@ -30,6 +30,12 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
+    path: 'estoque',
+      loadChildren:()=>import ('./estoque/estoque.module').then(mod=>mod.EstoqueModule),
+      canActivate:[AuthGuard],
+      canLoad: [AuthGuard]
+  },
+  {
     path: 'produto',
     loadChildren: () => import ('./produto/produto.module').then(mod => mod.ProdutoModule),
     canActivate:[AuthGuard],

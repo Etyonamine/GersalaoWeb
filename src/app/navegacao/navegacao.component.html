@@ -28,6 +28,7 @@
       <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button>
       <mat-divider></mat-divider>
       <button mat-menu-item [matMenuTriggerFor]="compra" ><i class ="material-icons right">inventory</i> Compra</button>
+      <button mat-menu-item [matMenuTriggerFor]="estoque" ><i class ="material-icons right">storage</i> Estoque</button>
       <button mat-menu-item [matMenuTriggerFor]="produto" ><i class ="material-icons right">qr_code</i> Produto</button>
       <!-- <button mat-menu-item [routerLink]="['servico']">Serviço</button> -->       
     </mat-menu>
@@ -40,6 +41,11 @@
     <mat-menu #compra="matMenu">
       <button mat-menu-item [routerLink]="['compra']"> <i class ="material-icons right">inventory</i> Cadastro</button>           
     </mat-menu>
+
+    <mat-menu #estoque="matMenu">
+      <button mat-menu-item [routerLink]="['estoque']"> <i class ="material-icons right">search</i> Consultar</button>           
+    </mat-menu>
+
 
     <mat-menu #produto="matMenu">
       <button mat-menu-item [routerLink]="['produto']"> <i class ="material-icons right">app_registration</i> Cadastro</button>
