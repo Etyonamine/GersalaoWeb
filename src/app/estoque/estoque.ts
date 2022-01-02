@@ -6,6 +6,7 @@ export class Estoque {
     valorUnitario: number;
     quantidadeEstoque: number;
     quantidadeVenda: number;
+    quantidadeTotal: number;
     dataAlteracao: Date;
     produto: Produto;
 }
