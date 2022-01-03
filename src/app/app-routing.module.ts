@@ -36,6 +36,12 @@ const routes: Routes = [
       canLoad: [AuthGuard]
   },
   {
+    path: 'pedido',
+      loadChildren:()=>import ('./pedido/pedido.module').then(mod=>mod.PedidoModule),
+      canActivate:[AuthGuard],
+      canLoad: [AuthGuard]
+  },
+  {
     path: 'produto',
     loadChildren: () => import ('./produto/produto.module').then(mod => mod.ProdutoModule),
     canActivate:[AuthGuard],

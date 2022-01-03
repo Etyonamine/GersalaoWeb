@@ -31,9 +31,11 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { TwoDecimalNumberDirective } from './two-decimal-number.directive';
 import { CompraDetalheModule } from './compra-detalhe/compra-detalhe.module';
 import { EstoqueModule } from './estoque/estoque.module';
+import { PedidoModule } from './pedido/pedido.module';
 
 import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
+
 registerLocaleData(localePt);
 
 @NgModule({
@@ -43,7 +45,7 @@ registerLocaleData(localePt);
     LoginComponent,
     HomeComponent,
     PaginaNaoEncontradaComponent,
-    TwoDecimalNumberDirective     
+    TwoDecimalNumberDirective
    ],
   imports: [
     BrowserModule,
@@ -71,7 +73,8 @@ registerLocaleData(localePt);
     ProdutoLinhaModule,
     CompraModule,
     CompraDetalheModule,
-    EstoqueModule
+    EstoqueModule,
+    PedidoModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
