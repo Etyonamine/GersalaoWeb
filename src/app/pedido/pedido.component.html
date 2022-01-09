@@ -1,1 +1,73 @@
-<p>pedido works!</p>
+<div>
+    <p *ngIf="!pedidos"><em>Carregando...</em></p>
+</div>
+<div [hidden]="!pedidos">
+    <mat-card>
+        <div>
+          <mat-card-header>
+            <mat-label>Lista de Pedidos</mat-label>
+          </mat-card-header>
+        </div>
+        <div>
+         <mat-card-content>
+          <!-- <mat-form-field [hidden]="!pedidos">
+            <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome do produto (ou parte dele)..." />
+          </mat-form-field>     -->              
+          <div style="width: 100%;">
+            <table mat-table [dataSource]="pedidos" class="mat-elevation-z8" [hidden]="!pedidos" matSort         
+            (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+            <ng-container matColumnDef="codigo">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+              <mat-cell *matCellDef="let pedido"> {{ pedido.codigo }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="dataPedido">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Data do Pedido</mat-header-cell>
+              <mat-cell *matCellDef="let pedido"><a >
+                  {{ pedido.dataPedido | date:"dd/MM/yyyy HH:mm:ss"}}
+                </a></mat-cell>
+            </ng-container>        
+            <ng-container matColumnDef="valorTotal">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Quantidade-total</mat-header-cell>
+              <mat-cell *matCellDef="let pedido"><a >{{
+                  pedido.valorTotal
+                  }}</a></mat-cell>
+            </ng-container>       
+            <ng-container matColumnDef="acao">
+              <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+              <mat-cell *matCellDef="let pedido">                
+                  <button
+                    mat-mini-fab
+                    color="primary"
+                    aria-label="Editar o pedido"                   
+                    [routerLink]="['/pedido', pedido.codigo]"
+                    >  
+                                          
+                    <mat-icon>view_comfy</mat-icon>
+                  </button>                 
+              </mat-cell>
+            </ng-container>        
+            <!-- <ng-container matColumnDef="acao">
+              <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+              <mat-cell *matCellDef="let pedido">
+                
+                  <button
+                    mat-mini-fab
+                    color="primary"
+                    aria-label="consultar detalhe"                   
+                    [routerLink]="['/pedido', pedido.codigoProduto]"
+                    >                                            
+                    <mat-icon>view_comfy</mat-icon>
+                  </button>
+              </mat-cell>
+            </ng-container>  -->   
+            <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+            </table>  
+          </div>
+          <mat-paginator [hidden]="!pedidos" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+            showFirstLastButtons>
+          </mat-paginator>    
+        </mat-card-content>
+        </div>    
+      </mat-card>
+</div>
