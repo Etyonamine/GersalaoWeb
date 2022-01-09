@@ -17,7 +17,8 @@ import { EstoqueService } from './estoque.service';
   styleUrls: ['./estoque.component.scss']
 })
 export class EstoqueComponent implements OnInit {
-  colunas: string[]=["codigo","nome", "quantidade","acao"];
+  //colunas: string[]=["codigo","nome", "quantidade","acao"];
+  colunas: string[]=["codigo","nome", "quantidade"];
   estoques: MatTableDataSource<Estoque>;
 
   //incricao%

@@ -15,11 +15,15 @@
   <span class="example-spacer"></span>
   <div *ngIf="mostrarMenu">
 
-    <button mat-button [routerLink]="['home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>
-
+    <button mat-button [routerLink]="['home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>    
     <button mat-button [matMenuTriggerFor]="cadastro" > &nbsp; <i class ="material-icons right">app_registration</i>Cadastro</button>
-
+    <button mat-button [matMenuTriggerFor]="Venda" > &nbsp; <i class ="material-icons right">point_of_sale</i>Venda</button>
     
+
+
+    <mat-menu #Venda="matMenu">
+      <button mat-menu-item [routerLink]="['pedido']" ><i class ="material-icons right">point_of_sale</i>Pedido</button>
+    </mat-menu>
 
     <mat-menu #cadastro="matMenu">
       <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>

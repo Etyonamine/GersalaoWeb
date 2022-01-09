@@ -32,7 +32,7 @@
                   estoque.quantidadeEstoque
                   }}</a></mat-cell>
             </ng-container>               
-            <ng-container matColumnDef="acao">
+            <!-- <ng-container matColumnDef="acao">
               <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
               <mat-cell *matCellDef="let estoque">
                 
@@ -45,7 +45,7 @@
                     <mat-icon>view_comfy</mat-icon>
                   </button>
               </mat-cell>
-            </ng-container>    
+            </ng-container>  -->   
             <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
             <mat-row *matRowDef="let row; columns: colunas"></mat-row>
             </table>  
