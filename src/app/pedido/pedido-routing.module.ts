@@ -12,7 +12,7 @@ const pedidoRoutes: Routes = [
   {path:'pedido-form',
       component:PedidoFormComponent},
       {
-        path:':codigo',
+        path:':codigoCliente/:codigoPedido',
         component:PedidoFormComponent,
         resolve:{
           estoques: PedidoResolveGuard
