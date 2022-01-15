@@ -15,7 +15,7 @@ import { PedidoService } from './pedido.service';
   styleUrls: ['./pedido.component.scss']
 })
 export class PedidoComponent implements OnInit {
-  colunas: string[]=["codigo","dataPedido", "valorTotal","acao"];
+  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal","acao"];
   pedidos: MatTableDataSource<Pedido>;
   inscricao$: Subscription;
   
@@ -90,7 +90,7 @@ export class PedidoComponent implements OnInit {
   }
   handleError()
   {
-    this.serviceAlert.mensagemErro('Erro ao carregar a lista de estoques. Tente novamente mais tarde.');
+    this.serviceAlert.mensagemErro('Erro ao carregar a lista de pedidos. Tente novamente mais tarde.');
   }
 
 }

@@ -1,4 +1,117 @@
-<p>pedido-form works!</p>
-codigo - Cliente 
-{{ codigoCliente }}
-codigo - pedido {{ codigoPedido }}
+<mat-card>
+  <mat-card-title> Cadastro de Pedidos - {{ tituloPagina }} </mat-card-title>
+  <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+
+    <div class="form-group mat-container">
+      <mat-form-field appearance="fill" style="width: 70px">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="codigoPedido" readonly />
+      </mat-form-field>
+      <mat-form-field *ngIf="clientes" appearance="fill" style="width: 300px">
+        <mat-label>Selecione o cliente</mat-label>
+        <mat-select formControlName="codigoCliente" matTooltip="Situação do cliente" required>
+          <mat-option *ngFor="let cliente of clientes" [value]="cliente.codigo">
+            {{ cliente.codigo }} - {{ cliente.nome }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 250px">
+        <mat-label>Data-Pedido</mat-label>
+        <input matInput readonly [value]=" dataPedido | date:'dd/MM/yyyy HH:mm:ss' " />
+      </mat-form-field >
+      <mat-form-field appearance="fill">
+        <mat-label>Quantidade - Total</mat-label>
+        <input matInput readonly [value] = " quantidadeTotal "/>
+      </mat-form-field >
+      <mat-form-field appearance="fill">
+        <mat-label>Valor - Total</mat-label>
+        <input matInput readonly [value] = "valorTotal  | currency:'BRL':'symbol':'1.2-2':'pt' "/>
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 250px">
+        <mat-label>Data-Fechamento</mat-label>
+
+        <input matInput readonly [value]="dataFechto !== ' ' ? '' : dataFechto  | date:'dd/MM/yyyy HH:mm:ss' " />
+
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 250px">
+        <mat-label>Situação</mat-label>
+        <input matInput formControlName="situacao" readonly />
+      </mat-form-field>
+
+      <!--         <app-msg-error
+            [mostrarErro]="
+            formulario.get('nome').invalid &&
+            formulario.get('nome').hasError('required')
+            "
+            mensagemErro="Por favor, digite o nome completo! " >
+        </app-msg-error>
+ -->
+    </div>
+    <div class="form-group mat-container">
+      <button mat-raised-button color="primary" [routerLink]="['itemPedido-novo']">
+        Adicionar Item &nbsp;<i class="material-icons right">add</i>
+      </button>
+    </div>
+    <div class="form-group mat-container">
+      <div style="width: 100%;">
+        <table mat-table [dataSource]="itensPedido" class="mat-elevation-z8" [hidden]="!itensPedido" matSort
+          (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}"
+          matSortDirection="{{ defaultSortOrder }}">
+          <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>N&ugrave;mero</mat-header-cell>
+            <mat-cell *matCellDef="let item"> {{ item.codigo }} </mat-cell>
+            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+            
+          </ng-container>
+          <ng-container matColumnDef="produto">
+            <mat-header-cell *matHeaderCellDef >Produto</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+              {{ item.produto.nome }}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+          </ng-container>
+          <ng-container matColumnDef="valor">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>valor-unit&agrave;rio</mat-header-cell>
+            <mat-cell *matCellDef="let item">{{
+              item.valorVenda | currency:'BRL':'symbol':'1.2-2':'pt'
+              }}
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef>Total</mat-footer-cell>
+          </ng-container>
+          <ng-container matColumnDef="quantidade">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Quantidade-total</mat-header-cell>
+            <mat-cell *matCellDef="let item"><a>{{
+                item.quantidade
+                }}</a>
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef> {{ getQuantidadeTotal() }} </mat-footer-cell>
+          </ng-container>
+          <ng-container matColumnDef="subTotal">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>total</mat-header-cell>
+            <mat-cell *matCellDef="let item"><a>{{
+                (item.quantidade * item.valorVenda) | currency:'BRL':'symbol':'1.2-2':'pt'
+                }}</a>
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef> {{getValorTotal() | currency:'BRL':'symbol':'1.2-2':'pt'}}</mat-footer-cell>
+          </ng-container>
+          <ng-container matColumnDef="acao">
+            <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+            <mat-cell *matCellDef="let item">
+              <button mat-mini-fab color="warn" aria-label="apagar item do pedido">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-cell>
+              <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+          <mat-footer-row *matFooterRowDef="colunas"></mat-footer-row>
+        </table>
+      </div>
+      <mat-paginator [hidden]="!itensPedido" (page)="getData($event)" [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons>
+      </mat-paginator>
+    </div>
+  </form>
+</mat-card>

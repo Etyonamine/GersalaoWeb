@@ -10,7 +10,7 @@ export class BaseService<T> {
   constructor(
               protected http: HttpClient,
               private API_URL: string) { }
-
+  
   getData<ApiResult>(pageIndex: number,
     pageSize: number,
     sortColumn: string,
