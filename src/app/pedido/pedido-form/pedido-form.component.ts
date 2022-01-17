@@ -157,8 +157,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.itensPedido.data.forEach(item=>{
       total+=(item.quantidade );
     });
-
-    this.quantidadeTotal  = total;
+    
     return total;
   }
   getValorTotal() {

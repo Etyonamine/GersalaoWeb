@@ -23,7 +23,7 @@ export class PedidoResolveGuard implements Resolve<Pedido>{
         let codigoPedido = parseInt(route.params['codigoPedido']);
         let codigoCliente = parseInt(route.params['codigoCliente']);
         
-        return this.pedidoService.getPedido(codigoPedido,codigoCliente);
+        return this.pedidoService.getPedido(codigoCliente,codigoPedido);
               
     }
     return of (this.pedido);
