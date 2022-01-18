@@ -46,9 +46,27 @@
             mensagemErro="Por favor, digite o nome completo! " >
         </app-msg-error>
  -->
+
     </div>
+    
     <div class="form-group mat-container">
-      <button mat-raised-button color="primary" [routerLink]="['itemPedido-novo']">
+      <mat-form-field appearance="fill" class="observacao">
+        <mat-label>Observação</mat-label>
+        <textarea
+          matInput
+          formControlName="observacao"
+          maxlength="300"
+          placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
+          matTooltip="Digite aqui caso precise informar alguma observação do cliente."
+        ></textarea>
+      </mat-form-field>
+    </div>
+    
+    <div class="form-group mat-container">
+      <button mat-raised-button color="primary" 
+              [routerLink]="['itemPedido-novo']"
+              [disabled] = "formulario.get('DataFechto').value != null"
+              >
         Adicionar Item &nbsp;<i class="material-icons right">add</i>
       </button>
     </div>

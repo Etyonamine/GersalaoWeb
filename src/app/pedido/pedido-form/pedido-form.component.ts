@@ -90,7 +90,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.formulario = this.formBuilder.group({
       codigoPedido: [this.codigoPedido],
       codigoCliente: [this.codigoCliente],            
-      situacao: [ this.situacao ]
+      situacao: [ this.situacao ],
+      observacao: [this.pedido.observacao==null?null: this.pedido.observacao]
     });
   }
   listarClientes(){
