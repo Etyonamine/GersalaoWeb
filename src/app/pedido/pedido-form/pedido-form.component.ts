@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,6 +13,7 @@ import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component'
 import { ApiResult } from 'src/app/shared/base.service';
 import { Pedido } from '../pedido';
 import { PedidoItem } from '../pedido-item/pedido-item';
+import { PedidoItemComponent } from '../pedido-item/pedido-item.component';
 import { PedidoItemService } from '../pedido-item/pedido-item.service';
 
 @Component({
@@ -21,7 +23,7 @@ import { PedidoItemService } from '../pedido-item/pedido-item.service';
 })
 export class PedidoFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
   submit() {
-    throw new Error('Method not implemented.');
+    
   }
 
 
@@ -58,7 +60,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
               private formBuilder: FormBuilder,
               private clienteService: ClienteService,
               private pedidoItemService: PedidoItemService,
-              private serviceAlert: AlertService)
+              private serviceAlert: AlertService,
+              public dialog: MatDialog  
+              )
      {
     super();
   }
@@ -160,6 +164,21 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     });
     
     return total;
+  }
+  openDialogPedidoItem(){
+    const dialogRef = this.dialog.open(PedidoItemComponent,
+      {width: '790px' , height: '600px;',
+        data : {
+                  
+                 codigoCliente : this.codigoCliente,
+                 codigoPedido : this.codigoPedido                 
+                }
+      }
+    );
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+      this.loadData();
+    });
   }
   getValorTotal() {
     let total:number = 0;

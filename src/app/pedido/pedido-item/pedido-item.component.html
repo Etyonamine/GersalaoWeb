@@ -1,1 +1,16 @@
 <p>pedido-item works!</p>
+
+<label > Cliente = </label><input [(ngModel)]="nomeCliente" readonly/>
+<label> Pedido =   </label><input [(ngModel)]="codigoPedido" readonly/> 
+
+
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+    <mat-form-field *ngIf="produtos" appearance="fill" style="width: 300px">
+        <mat-label>Selecione o Produto</mat-label>
+        <mat-select formControlName="codigoProduto" matTooltip="selecione um produto" required>
+          <mat-option *ngFor="let produto of produtos" [value]="produto.codigo">
+            {{ produto.nome }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+</form>

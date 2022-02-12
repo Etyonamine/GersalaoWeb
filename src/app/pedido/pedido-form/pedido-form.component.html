@@ -9,7 +9,7 @@
       </mat-form-field>
       <mat-form-field *ngIf="clientes" appearance="fill" style="width: 300px">
         <mat-label>Selecione o cliente</mat-label>
-        <mat-select formControlName="codigoCliente" matTooltip="Situação do cliente" required>
+        <mat-select formControlName="codigoCliente" matTooltip="codigo do cliente" required>
           <mat-option *ngFor="let cliente of clientes" [value]="cliente.codigo">
             {{ cliente.codigo }} - {{ cliente.nome }}
           </mat-option>
@@ -64,8 +64,8 @@
     
     <div class="form-group mat-container">
       <button mat-raised-button color="primary" 
-              [routerLink]="['itemPedido-novo']"
-              [disabled] = "formulario.get('DataFechto').value != null"
+            [disabled]="formulario.get('situacao').value !='Aberto'"
+            (click)="openDialogPedidoItem()"              
               >
         Adicionar Item &nbsp;<i class="material-icons right">add</i>
       </button>
@@ -115,7 +115,7 @@
           <ng-container matColumnDef="acao">
             <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
             <mat-cell *matCellDef="let item">
-              <button mat-mini-fab color="warn" aria-label="apagar item do pedido">
+              <button mat-mini-fab color="warn" aria-label="apagar item do pedido" [disabled]="formulario.get('situacao').value !='Aberto'">
                 <mat-icon>delete</mat-icon>
               </button>
             </mat-cell>
