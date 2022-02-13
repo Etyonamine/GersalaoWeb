@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Subscription } from 'rxjs';
 import { Cliente } from 'src/app/cliente/cliente';
 import { ClienteService } from 'src/app/cliente/cliente.service';
+import { EstoqueService } from 'src/app/estoque/estoque.service';
 import { Produto } from 'src/app/produto/produto';
 import { ProdutoService } from 'src/app/produto/produto.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -51,6 +52,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   situacao: string;
   quantidadeProdutoSel: number;
   valorProdutoSel: number;
+  percentualComissao: number;
+  codigoProdutoSelecionado : number;
 
   pedido: Pedido;
   clientes: Array<Cliente>;
@@ -61,6 +64,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   inscricao$: Subscription;
   inscricaoItem$: Subscription;
   inscricaoProduto$:Subscription;
+  inscricaoEstoque$:Subscription;
   
   constructor(private route: ActivatedRoute,
               private formBuilder: FormBuilder,
@@ -68,6 +72,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
               private pedidoItemService: PedidoItemService,
               private produtoService: ProdutoService,
               private serviceAlert: AlertService,
+              private serviceEstoque: EstoqueService,
               public dialog: MatDialog  
               )
      {
@@ -212,6 +217,16 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   }
   adicionarListaItem(){
 
+    if (Number(this.valorProdutoSel) == NaN){
+      this.handleError('Por favor, informar um valor de venda válido!');
+      return false;
+    }
+
+    if (Number(this.formulario.get('codigoProdutoSel').value )){
+      this.handleError('Por favor, selecionar um produto válido!');
+      return false;
+    }
+
   }
   listaProdutos(){
     this.inscricaoProduto$ = this.produtoService.ListarTodos()
@@ -222,9 +237,28 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                                   this.handleError('Erro ao recuperar lista de produtos.');
                                                 })
   }
-  preencherValorProdutoSelecionado(codigo){
-    //this.valorProdutoSel = this.produtos.find(x=>x.codigo == codigo);
-    this.handlerSuccess(codigo);
+  preencherValorProdutoSelecionado(codigoProduto){
+    this.codigoProdutoSelecionado = codigoProduto;
+    
+    let indexProduto = this.produtos.findIndex(x=>x.codigo == codigoProduto);
+    this.percentualComissao = ((this.produtos[indexProduto].valorComissao / 100) + 1);
+
+    this.inscricaoEstoque$ = this.serviceEstoque.valorVenda(codigoProduto)
+                                                .subscribe(result=>{
+                                                    let valorEncontrado = result;
+
+                                                    if (valorEncontrado >=0 ){
+                                                        this.valorProdutoSel = (Number(valorEncontrado) * this.percentualComissao);
+                                                        this.valorProdutoSel = Number(this.valorProdutoSel.toFixed(2));
+                                                    }else{
+                                                      this.valorProdutoSel = 0;
+                                                    }
+                                                    
+                                                }, error =>{
+                                                  console.log('erro ao consultar o valor unitario');
+                                                  this.handleError('Ocorreu erro de calculo de valor de venda.');
+                                                });
+    
   }
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);

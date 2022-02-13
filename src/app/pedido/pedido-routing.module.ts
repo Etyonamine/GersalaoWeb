@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { PedidoComponent } from './pedido.component';
 import { PedidoResolveGuard } from './guard/pedido-resolver.guard';
-import { PedidoFormComponent } from "./pedido-form/PedidoFormComponent";
+import { PedidoFormComponent } from './pedido-form/pedido-form.component';
+
 
 
 

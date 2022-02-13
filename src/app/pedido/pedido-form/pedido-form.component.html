@@ -65,7 +65,8 @@
     <div class="container">
       <mat-form-field  appearance="fill" style="width: 300px">
         <mat-label>Selecione um Produto</mat-label>
-        <mat-select  matTooltip="lista de produtos" 
+        <mat-select 
+                    matTooltip="lista de produtos" 
                     [disabled]="formulario.get('situacao').value !='Aberto'" 
                     (selectionChange)="preencherValorProdutoSelecionado($event.value)">
           <mat-option *ngFor="let produto of produtos" [value]="produto.codigo">
@@ -82,10 +83,8 @@
           [(ngModel)] = "valorProdutoSel"    
           [ngModelOptions]="{standalone: true}"          
           placeholder="Valor do produto"
-          placeholder="0.000,00"                   
-          [readonly]="true"              
-          value="{{ valorProdutoSel | currency:'BRL':'symbol':'1.2-2':'pt'}}"            
-          readonly                          
+          placeholder="0.000,00"                                       
+                                    
         />
         <!-- <span matPrefix>R$&nbsp;</span> -->
         <!-- <span matSuffix>,00</span> -->

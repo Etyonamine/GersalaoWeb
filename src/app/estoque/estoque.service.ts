@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
 import { Injectable } from '@angular/core';
+import { $ } from 'protractor';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment.prod';
@@ -59,5 +60,11 @@ export class EstoqueService extends BaseService<Estoque>{
         .set("filterQuery", filterQuery);
     }
     return this.http.get<ApiResult>(urlEstoqueTotal, { params }).pipe(take(1));
+  }
+
+  valorVenda(codigoProduto){
+    let urlValorVenda= this.url + '/valorVenda?codigoProduto=' + codigoProduto.toString();
+    
+    return this.http.post(urlValorVenda,null).pipe(take(1));
   }
 }
