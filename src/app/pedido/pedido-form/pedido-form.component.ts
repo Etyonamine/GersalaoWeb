@@ -8,6 +8,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Subscription } from 'rxjs';
 import { Cliente } from 'src/app/cliente/cliente';
 import { ClienteService } from 'src/app/cliente/cliente.service';
+import { Produto } from 'src/app/produto/produto';
+import { ProdutoService } from 'src/app/produto/produto.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
@@ -47,19 +49,24 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   quantidadeTotal:number;
   dataFechto: string;
   situacao: string;
+  quantidadeProdutoSel: number;
+  valorProdutoSel: number;
 
   pedido: Pedido;
   clientes: Array<Cliente>;
+  produtos: Array<Produto>;
   itensPedido: MatTableDataSource<PedidoItem>;
   tituloPagina:string;
   formulario: FormGroup;
   inscricao$: Subscription;
   inscricaoItem$: Subscription;
+  inscricaoProduto$:Subscription;
   
   constructor(private route: ActivatedRoute,
               private formBuilder: FormBuilder,
               private clienteService: ClienteService,
               private pedidoItemService: PedidoItemService,
+              private produtoService: ProdutoService,
               private serviceAlert: AlertService,
               public dialog: MatDialog  
               )
@@ -81,6 +88,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.criarFormulario();
     this.listarClientes();
     this.loadData();
+    this.listaProdutos()
   }
   ngOnDestroy(){
     if (this.inscricao$){
@@ -88,6 +96,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     }
     if (this.inscricaoItem$){
       this.inscricaoItem$.unsubscribe();
+    }
+    if(this.inscricaoProduto$){
+      this.inscricaoProduto$.unsubscribe();
     }
   }
   criarFormulario(){
@@ -198,5 +209,24 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   handleError(message:string)
   {
     this.serviceAlert.mensagemErro(message);
+  }
+  adicionarListaItem(){
+
+  }
+  listaProdutos(){
+    this.inscricaoProduto$ = this.produtoService.ListarTodos()
+                                                .subscribe(result=>{
+                                                  this.produtos = result;
+                                                },error=>{
+                                                  console.log(error);
+                                                  this.handleError('Erro ao recuperar lista de produtos.');
+                                                })
+  }
+  preencherValorProdutoSelecionado(codigo){
+    //this.valorProdutoSel = this.produtos.find(x=>x.codigo == codigo);
+    this.handlerSuccess(codigo);
+  }
+  handlerSuccess(msg: string) {
+    this.serviceAlert.mensagemSucesso(msg);
   }
 }

@@ -2,7 +2,7 @@
   <mat-card-title> Cadastro de Pedidos - {{ tituloPagina }} </mat-card-title>
   <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
 
-    <div class="form-group mat-container">
+    <div class="container">
       <mat-form-field appearance="fill" style="width: 70px">
         <mat-label>Código</mat-label>
         <input matInput formControlName="codigoPedido" readonly />
@@ -49,7 +49,7 @@
 
     </div>
     
-    <div class="form-group mat-container">
+    <div class="container">
       <mat-form-field appearance="fill" class="observacao">
         <mat-label>Observação</mat-label>
         <textarea
@@ -62,13 +62,59 @@
       </mat-form-field>
     </div>
     
-    <div class="form-group mat-container">
+    <div class="container">
+      <mat-form-field  appearance="fill" style="width: 300px">
+        <mat-label>Selecione um Produto</mat-label>
+        <mat-select  matTooltip="lista de produtos" 
+                    [disabled]="formulario.get('situacao').value !='Aberto'" 
+                    (selectionChange)="preencherValorProdutoSelecionado($event.value)">
+          <mat-option *ngFor="let produto of produtos" [value]="produto.codigo">
+            {{ produto.nome }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Valor Produto</mat-label>             
+        <input
+          matInput                                       
+          class="right-align"                         
+          [(ngModel)] = "valorProdutoSel"    
+          [ngModelOptions]="{standalone: true}"          
+          placeholder="Valor do produto"
+          placeholder="0.000,00"                   
+          [readonly]="true"              
+          value="{{ valorProdutoSel | currency:'BRL':'symbol':'1.2-2':'pt'}}"            
+          readonly                          
+        />
+        <!-- <span matPrefix>R$&nbsp;</span> -->
+        <!-- <span matSuffix>,00</span> -->
+      </mat-form-field>  
+      <mat-form-field appearance="fill"  style="text-align: right;">
+        <mat-label>Quantidade</mat-label>             
+        <input 
+          [(ngModel)] = "quantidadeProdutoSel"   
+          [ngModelOptions]="{standalone: true}"
+          matInput                                       
+          type="number"
+          step="1"
+          min="0"
+          autocomplete="off"
+          class="right-align"               
+          placeholder="Digite a quantidade total comprada"  
+          matTooltip="Quantidade de produto(s)" 
+          [disabled]="formulario.get('situacao').value !='Aberto'"                             
+        />                
+        <!-- <span matSuffix>,00</span> -->
+      </mat-form-field> 
+      &nbsp;
       <button mat-raised-button color="primary" 
             [disabled]="formulario.get('situacao').value !='Aberto'"
-            (click)="openDialogPedidoItem()"              
+            (click)="adicionarListaItem()"              
               >
         Adicionar Item &nbsp;<i class="material-icons right">add</i>
       </button>
+      
     </div>
     <div class="form-group mat-container">
       <div style="width: 100%;">
@@ -115,7 +161,11 @@
           <ng-container matColumnDef="acao">
             <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
             <mat-cell *matCellDef="let item">
-              <button mat-mini-fab color="warn" aria-label="apagar item do pedido" [disabled]="formulario.get('situacao').value !='Aberto'">
+              <button mat-mini-fab 
+                color="warn" 
+                aria-label="apagar item do pedido" 
+                [disabled]="formulario.get('situacao').value !='Aberto'"
+              >
                 <mat-icon>delete</mat-icon>
               </button>
             </mat-cell>

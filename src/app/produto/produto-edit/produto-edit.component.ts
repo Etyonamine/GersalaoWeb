@@ -1,3 +1,5 @@
+import { NumberSymbol } from '@angular/common';
+import { decimalDigest } from '@angular/compiler/src/i18n/digest';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -30,6 +32,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   inscricaoLinhas$: Subscription;
   inscricaoProduto$: Subscription;
   isSubmitted = false;
+  valorComissaoField : string;
 
   constructor(
       private formBuilder:FormBuilder,
@@ -47,7 +50,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     this.carregarTipos();
     this.carregarLinhas();
     this.criarFormulario();
-     
+    this.valorComissaoField =  this.data.valorComissao != null?this.data.valorComissao.toString().replace('.',','): null;
 
   }
   ngOnDestroy(): void{
@@ -67,7 +70,8 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
       linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
       codigoFornecedor:[(this.codigo==0?null:this.data.codigoFornecedor)],
-      situacao : [this.codigoSituacao.toString(),Validators.required]
+      situacao : [this.codigoSituacao.toString(),Validators.required],
+      valorComissao : [ this.data.valorComissao]
     });
   }
   carregarTipos(){
@@ -117,6 +121,23 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     if (!this.formulario.valid) {
       return false;
     }
+    if (this.valorComissaoField == null || this.valorComissaoField == undefined){
+      this.handleError('Por favor, informe o valor de comissão do produto! Valor máximo 100%');
+      return false;
+    }else{
+      let valorComissaoGravar = this.valorComissaoField.replace(',','.');
+      if(isNaN(Number(valorComissaoGravar))){
+        this.handleError('Valor de comissão informado inválido!');
+        return false;
+      }
+      if (Number(valorComissaoGravar) > 100 || Number(valorComissaoGravar) < 0 ) 
+      {
+        this.handleError('Valor deve ser entre 0 a 100');
+        return false;
+      }
+
+      this.valorComissaoField = valorComissaoGravar;
+    }
     this.produto = {
       codigo: this.codigo,
       nome :   this.formulario.get("nome").value,
@@ -124,7 +145,8 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       codigoTipoProduto : this.formulario.get("tipo").value,
       codigoSituacao : this.formulario.get("situacao").value,
       codigoLinha : this.formulario.get("linha").value,
-      observacao : this.formulario.get("observacao").value
+      observacao : this.formulario.get("observacao").value,
+      valorComissao : Number(this.valorComissaoField.replace(',','.'))
     } as Produto;
     
     this.inscricaoProduto$ = this.produtoService.save(this.produto).subscribe(result=>{

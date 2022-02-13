@@ -10,3 +10,8 @@ table{
     padding: 5px;
     border : 1px solid black;
   }
+  .container .mat-form-field + .mat-form-field {
+    margin-left: 5px;
+    margin-top: 5px;
+  
+  }

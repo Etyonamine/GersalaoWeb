@@ -7,8 +7,9 @@ export interface Produto{
     codigoTipoProduto: number;
     codigoSituacao: number;
     codigoLinha: number;
-    nome:string;   
-    observacao:string;
+    nome: string;   
+    valorComissao:  number;
+    observacao: string;
     tipoProduto: TipoProduto;
     situacao: Situacao;    
     

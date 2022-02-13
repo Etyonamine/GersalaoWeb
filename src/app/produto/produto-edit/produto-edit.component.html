@@ -50,6 +50,16 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
+              <mat-form-field>
+                <mat-label>% Comiss&aacute;o</mat-label>
+                <input matInput 
+                    [(ngModel)] ="valorComissaoField"
+                    [ngModelOptions]="{standalone: true}"
+                    matTooltip="Valor de Comissão do Vendedor"
+                    placeholder="0,00"                    
+                    required
+                     />
+              </mat-form-field>
               <!-- linha de produtos-->
               <mat-form-field
                 *ngIf="linhas"
@@ -89,6 +99,7 @@
                 ></textarea>
               </mat-form-field>
             </div>
+           
             <div>
               
               <app-msg-error

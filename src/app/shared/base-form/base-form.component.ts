@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
+ 
 
 @Component({
   selector: 'app-base-form',
@@ -8,6 +9,8 @@ import { FormArray, FormGroup } from '@angular/forms';
 export abstract class BaseFormComponent implements OnInit {
 
   formulario: FormGroup;
+  
+  
 
   constructor() { }
 
@@ -71,5 +74,6 @@ export abstract class BaseFormComponent implements OnInit {
 
   getCampo(campo: string){
     return this.formulario.get(campo);
-  }
+  }  
+
 }
