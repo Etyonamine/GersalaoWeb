@@ -62,13 +62,15 @@
       </mat-form-field>
     </div>
     
-    <div class="container">
-      <mat-form-field  appearance="fill" style="width: 300px">
+    <div class="container" disabled ="formulario.get('situacao').value !='Aberto'"  >
+      <mat-form-field  appearance="fill" style="width: 300px"
+      >
         <mat-label>Selecione um Produto</mat-label>
         <mat-select 
-                    matTooltip="lista de produtos" 
-                    [disabled]="formulario.get('situacao').value !='Aberto'" 
+                    [formControlName]="'codigoProdutoSelecionado'"
+                    matTooltip="lista de produtos"                     
                     (selectionChange)="preencherValorProdutoSelecionado($event.value)">
+          <mat-option [value]="0"></mat-option>
           <mat-option *ngFor="let produto of produtos" [value]="produto.codigo">
             {{ produto.nome }}
           </mat-option>
@@ -84,7 +86,7 @@
           [ngModelOptions]="{standalone: true}"          
           placeholder="Valor do produto"
           placeholder="0.000,00"                                       
-                                    
+          [disabled]="formulario.get('situacao').value !='Aberto'"                            
         />
         <!-- <span matPrefix>R$&nbsp;</span> -->
         <!-- <span matSuffix>,00</span> -->
@@ -100,9 +102,9 @@
           min="0"
           autocomplete="off"
           class="right-align"               
-          placeholder="Digite a quantidade total comprada"  
+          placeholder="Digite a quantidade total a adicionar"  
           matTooltip="Quantidade de produto(s)" 
-          [disabled]="formulario.get('situacao').value !='Aberto'"                             
+          [disabled]="formulario.get('situacao').value !='Aberto'"             
         />                
         <!-- <span matSuffix>,00</span> -->
       </mat-form-field> 
@@ -117,6 +119,42 @@
     </div>
     <div class="form-group mat-container">
       <div style="width: 100%;">
+        <table class="mat-elevation-z8">
+          <thead class = "itemPedidoTabela">
+            <tr>
+              <th>Produto</th>
+              <th>Valor-Venda</th>
+              <th>Quantidade</th>
+              <th>Valor-Total</th>
+              <th>Ações</th>
+            </tr>            
+          </thead>          
+          <tbody style="text-align: center;"> 
+              <tr  *ngFor="let item of  itensPedidos2" >
+                <td>{{item.produto.nome}}</td>
+                <td>{{item.valorVenda | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>
+                <td>{{item.quantidade}}</td>                
+                <td>{{(item.valorVenda * item.quantidade)  | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>                
+                <td>
+                  <button mat-raised-button color="warn"
+                    [disabled]="formulario.get('situacao').value !='Aberto'"                    
+                    (click) = "removeListaItem(item.codigoProduto)"
+                    >Remover Item &nbsp;<i class="material-icons right">remove</i>
+                  </button>
+                  <!-- <button mat-mini-fab 
+                  color="warn" 
+                  aria-label="apagar item do pedido" 
+                                    [disabled]="formulario.get('situacao').value !='Aberto'"
+                  
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button> -->
+                </td>
+              </tr>
+          </tbody>          
+        </table>
+      </div>
+    <!--   <div style="width: 100%;">
         <table mat-table [dataSource]="itensPedido" class="mat-elevation-z8" [hidden]="!itensPedido" matSort
           (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}"
           matSortDirection="{{ defaultSortOrder }}">
@@ -178,7 +216,7 @@
       </div>
       <mat-paginator [hidden]="!itensPedido" (page)="getData($event)" [pageSize]="10"
         [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons>
-      </mat-paginator>
+      </mat-paginator> -->
     </div>
   </form>
 </mat-card>

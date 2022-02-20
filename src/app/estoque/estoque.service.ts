@@ -67,4 +67,10 @@ export class EstoqueService extends BaseService<Estoque>{
     
     return this.http.post(urlValorVenda,null).pipe(take(1));
   }
+
+  estoquePorProduto(codigoProduto:number){
+    let urlestoquePorProduto= this.url + '/estoquePorProduto?codigoProduto=' + codigoProduto.toString();
+    
+    return this.http.post<Estoque[]>(urlestoquePorProduto,null).pipe(take(1));
+  }
 }

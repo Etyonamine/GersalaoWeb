@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Subscription } from 'rxjs';
 import { Cliente } from 'src/app/cliente/cliente';
 import { ClienteService } from 'src/app/cliente/cliente.service';
+import { Estoque } from 'src/app/estoque/estoque';
 import { EstoqueService } from 'src/app/estoque/estoque.service';
 import { Produto } from 'src/app/produto/produto';
 import { ProdutoService } from 'src/app/produto/produto.service';
@@ -54,6 +55,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   valorProdutoSel: number;
   percentualComissao: number;
   codigoProdutoSelecionado : number;
+  itensPedidos2: Array<PedidoItem> = [];
+  valorCusto : number;
+  estoque : Estoque;
 
   pedido: Pedido;
   clientes: Array<Cliente>;
@@ -94,6 +98,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.listarClientes();
     this.loadData();
     this.listaProdutos()
+    this.valorProdutoSel = 0;
+    this.quantidadeProdutoSel = 1;
   }
   ngOnDestroy(){
     if (this.inscricao$){
@@ -111,7 +117,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       codigoPedido: [this.codigoPedido],
       codigoCliente: [this.codigoCliente],            
       situacao: [ this.situacao ],
-      observacao: [this.pedido.observacao==null?null: this.pedido.observacao]
+      observacao: [this.pedido.observacao==null?null: this.pedido.observacao] ,
+      codigoProdutoSelecionado: [{value: null, disabled: this.pedido.dataFechamento != null?true:false}]
+        
     });
   }
   listarClientes(){
@@ -157,11 +165,11 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                       filterQuery
                     ).subscribe(result =>{
 
-                    
-                      this.itensPedido = new MatTableDataSource<PedidoItem>(result.data);                      
+                      this.itensPedidos2 = result.data;
+                     /*  this.itensPedido = new MatTableDataSource<PedidoItem>(result.data);                      
                       this.paginator.length=result.totalCount;
                       this.paginator.pageIndex=result.pageIndex;
-                      this.paginator.pageSize=result.pageSize;                      
+                      this.paginator.pageSize=result.pageSize;        */               
                     }, error=>
                     {
                       console.error(error);
@@ -192,7 +200,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       }
     );
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+      
       this.loadData();
     });
   }
@@ -217,16 +225,67 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   }
   adicionarListaItem(){
 
-    if (Number(this.valorProdutoSel) == NaN){
+  
+    
+    if (this.codigoProdutoSelecionado == 0 || this.codigoProdutoSelecionado == undefined){
+      this.handleError('Por favor, selecionar um produto válido!');
+      return false;
+    } 
+    if (Number(this.valorProdutoSel) == NaN ||this.valorProdutoSel == undefined){
       this.handleError('Por favor, informar um valor de venda válido!');
       return false;
     }
-
-    if (Number(this.formulario.get('codigoProdutoSel').value )){
-      this.handleError('Por favor, selecionar um produto válido!');
+    if (this.quantidadeProdutoSel == 0 || this.quantidadeProdutoSel == undefined ){
+      this.handleError('Por favor, informar a quantidade de itens do produto!');
       return false;
     }
 
+    if (this.itensPedidos2.find(x=>x.codigoProduto == this.codigoProdutoSelecionado)){
+      this.handlerExclamation("Este produto já está na lista!Por favor, remover primeiro e tentar novamente.");
+      return false;
+    }
+    //this.produtos.find(x=>x.codigo==this.codigoProdutoSelecionado);
+    /* let pedidoItemAdd = {
+                          codigoProduto : this.codigoProdutoSelecionado,
+                          quantidade : this.quantidadeProdutoSel,
+                          valorVenda : this.valorProdutoSel, 
+                          produto: this.produtos.find(x=>x.codigo==this.codigoProdutoSelecionado)
+                        } as PedidoItem; */
+    this.itensPedidos2.push({
+                            codigo : 1,
+                            valorCusto : this.valorCusto,
+                            pedido : null,
+                            cliente : null, 
+                            codigoPedido : this.codigoPedido,
+                            codigoCliente : this.codigoCliente,
+                            codigoProduto : this.codigoProdutoSelecionado,
+                            quantidade : this.quantidadeProdutoSel,
+                            valorVenda : this.valorProdutoSel, 
+                            dataAlteracao : null,
+                            dataCadastro : new Date(),
+                            produto: this.produtos.find(x=>x.codigo == this.codigoProdutoSelecionado)} );
+  //somando o valor total
+  this.valorTotal = this.valorTotal + (this.valorProdutoSel * this.quantidadeProdutoSel);
+  this.quantidadeTotal = this.quantidadeTotal + this.quantidadeProdutoSel ;
+
+   //limpando as selecões   
+   this.codigoProdutoSelecionado = 0 ;
+   this.valorProdutoSel  = 0;
+   this.quantidadeProdutoSel = 1;
+   this.formulario.controls['codigoProdutoSelecionado'].setValue('0');
+   
+
+  }
+  removeListaItem(codigoProduto:number){
+    //subtraindo o valor total
+    this.valorTotal = this.valorTotal - (this.itensPedidos2.find(x=>x.codigoProduto).valorVenda * this.itensPedidos2.find(x=>x.codigoProduto).quantidade);
+    this.quantidadeTotal = this.quantidadeTotal - this.itensPedidos2.find(x=>x.codigoProduto).quantidade ;
+
+    //removendo o array
+    let indexExcluir = this.itensPedidos2.findIndex(x=>x.codigoProduto);
+    this.itensPedidos2.splice(indexExcluir,1);
+
+    
   }
   listaProdutos(){
     this.inscricaoProduto$ = this.produtoService.ListarTodos()
@@ -239,17 +298,20 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   }
   preencherValorProdutoSelecionado(codigoProduto){
     this.codigoProdutoSelecionado = codigoProduto;
-    
+    this.valorCusto =0;
+    this.valorProdutoSel = 0;
+
     let indexProduto = this.produtos.findIndex(x=>x.codigo == codigoProduto);
     this.percentualComissao = ((this.produtos[indexProduto].valorComissao / 100) + 1);
 
-    this.inscricaoEstoque$ = this.serviceEstoque.valorVenda(codigoProduto)
+    /* this.inscricaoEstoque$ = this.serviceEstoque.valorVenda(codigoProduto)
                                                 .subscribe(result=>{
                                                     let valorEncontrado = result;
 
                                                     if (valorEncontrado >=0 ){
                                                         this.valorProdutoSel = (Number(valorEncontrado) * this.percentualComissao);
                                                         this.valorProdutoSel = Number(this.valorProdutoSel.toFixed(2));
+                                                        
                                                     }else{
                                                       this.valorProdutoSel = 0;
                                                     }
@@ -257,10 +319,36 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                                 }, error =>{
                                                   console.log('erro ao consultar o valor unitario');
                                                   this.handleError('Ocorreu erro de calculo de valor de venda.');
+                                                }); */
+
+    this.inscricaoEstoque$ = this.serviceEstoque.estoquePorProduto(codigoProduto)
+                                                .subscribe(result=>{
+                                                  if (result.length > 0 ) {
+                                                    
+                                                    this.estoque = result[0];
+                                                    
+                                                    this.valorProdutoSel = (this.estoque.valorUnitario * this.percentualComissao);
+                                                    this.valorCusto = this.estoque.valorUnitario;
+
+                                                    this.valorProdutoSel = Number(this.valorProdutoSel.toFixed(2));
+                                                    this.valorCusto = Number(this.valorCusto.toFixed(2));
+ 
+                                                  }else{
+                                                    this.handlerExclamation('Não existe estoque para este produto!');
+                                                  }
+                                                  
+                                                }, 
+                                                error=>{
+                                                  console.log(error);
+                                                  this.handleError('Ocorreu um erro ao tentar recuperar as informações do produto no estoque!')
                                                 });
+
     
   }
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);
+  }
+  handlerExclamation(msg:string){
+    this.serviceAlert.mensagemExclamation(msg);
   }
 }

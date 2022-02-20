@@ -22,7 +22,11 @@ body {
   background: red;
   color:white;
 }
-
+.exclamation-snackbar {
+  background: yellow;
+  color:black;
+  font-weight: bold;
+}
 
 .container .mat-form-field + .mat-form-field {
   margin-left: 5px;

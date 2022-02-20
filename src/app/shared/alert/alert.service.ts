@@ -30,7 +30,9 @@ export class AlertService {
       case('erro'):
         nomeClasse = 'error-snackbar' ;
         break;
-
+      case ('exclamation'):
+          nomeClasse = 'exclamation-snackbar' ;
+          break;
       default:
          nomeClasse = 'sucess-snackbar' ;
         break;
@@ -57,6 +59,10 @@ export class AlertService {
 
   mensagemErro(msg: string) {
     this.mensagemAlerta(msg, 'erro');
+  }
+
+  mensagemExclamation(msg:string){
+    this.mensagemAlerta(msg,'exclamation')
   }
 
   openConfirmModal(messagem: string, titulo: string,  callBackFunction: Function, okText?:string ,cancelTxt?:string) {
