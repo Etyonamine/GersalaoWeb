@@ -30,7 +30,9 @@
       <mat-form-field appearance="fill" style="width: 250px">
         <mat-label>Data-Fechamento</mat-label>
 
-        <input matInput readonly [value]="dataFechto !== ' ' ? '' : dataFechto  | date:'dd/MM/yyyy HH:mm:ss' " />
+        <input matInput readonly
+             
+               [value]="dataFechto == null ? '' : dataFechto | date: 'dd/MM/YYYY'  " />
 
       </mat-form-field>
       <mat-form-field appearance="fill" style="width: 250px">
@@ -129,7 +131,7 @@
               <th>Ações</th>
             </tr>            
           </thead>          
-          <tbody style="text-align: center;"> 
+          <tbody style="text-align: center;" > 
               <tr  *ngFor="let item of  itensPedidos2" >
                 <td>{{item.produto.nome}}</td>
                 <td>{{item.valorVenda | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>
@@ -154,69 +156,33 @@
           </tbody>          
         </table>
       </div>
-    <!--   <div style="width: 100%;">
-        <table mat-table [dataSource]="itensPedido" class="mat-elevation-z8" [hidden]="!itensPedido" matSort
-          (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}"
-          matSortDirection="{{ defaultSortOrder }}">
-          <ng-container matColumnDef="codigo">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>N&ugrave;mero</mat-header-cell>
-            <mat-cell *matCellDef="let item"> {{ item.codigo }} </mat-cell>
-            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
-            
-          </ng-container>
-          <ng-container matColumnDef="produto">
-            <mat-header-cell *matHeaderCellDef >Produto</mat-header-cell>
-            <mat-cell *matCellDef="let item">
-              {{ item.produto.nome }}
-            </mat-cell>
-            <mat-footer-cell *matFooterCellDef></mat-footer-cell>
-          </ng-container>
-          <ng-container matColumnDef="valor">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>valor-unit&agrave;rio</mat-header-cell>
-            <mat-cell *matCellDef="let item">{{
-              item.valorVenda | currency:'BRL':'symbol':'1.2-2':'pt'
-              }}
-            </mat-cell>
-            <mat-footer-cell *matFooterCellDef>Total</mat-footer-cell>
-          </ng-container>
-          <ng-container matColumnDef="quantidade">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Quantidade-total</mat-header-cell>
-            <mat-cell *matCellDef="let item"><a>{{
-                item.quantidade
-                }}</a>
-            </mat-cell>
-            <mat-footer-cell *matFooterCellDef> {{ getQuantidadeTotal() }} </mat-footer-cell>
-          </ng-container>
-          <ng-container matColumnDef="subTotal">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>total</mat-header-cell>
-            <mat-cell *matCellDef="let item"><a>{{
-                (item.quantidade * item.valorVenda) | currency:'BRL':'symbol':'1.2-2':'pt'
-                }}</a>
-            </mat-cell>
-            <mat-footer-cell *matFooterCellDef> {{getValorTotal() | currency:'BRL':'symbol':'1.2-2':'pt'}}</mat-footer-cell>
-          </ng-container>
-          <ng-container matColumnDef="acao">
-            <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
-            <mat-cell *matCellDef="let item">
-              <button mat-mini-fab 
-                color="warn" 
-                aria-label="apagar item do pedido" 
+      <!-- botoes *********************************************************************************************************-->
+      <div style="margin-top: 10px">
+        <table>
+          <tr>              
+            <td  style="text-align: left;">
+                <button
+                type="submit"
+                mat-raised-button
+                color="primary"
                 [disabled]="formulario.get('situacao').value !='Aberto'"
               >
-                <mat-icon>delete</mat-icon>
+                Salvar &nbsp;<i class="material-icons right">save</i>
+              </button>              
+              &nbsp;
+              <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
+                [disabled]="formulario.get('situacao').value !='Aberto'"
+                type="button">
+                Salvar e baixar pagamento &nbsp;<i class="material-icons right">paid</i>
               </button>
-            </mat-cell>
-              <mat-footer-cell *matFooterCellDef></mat-footer-cell>
-          </ng-container>
-
-          <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: colunas"></mat-row>
-          <mat-footer-row *matFooterRowDef="colunas"></mat-footer-row>
+              &nbsp;
+              <button mat-raised-button color="primary" (click)="retornar()">
+                Retornar &nbsp;<i class="material-icons right">reply</i>
+              </button>            
+            </td>
+          </tr>
         </table>
-      </div>
-      <mat-paginator [hidden]="!itensPedido" (page)="getData($event)" [pageSize]="10"
-        [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons>
-      </mat-paginator> -->
+      </div>   
     </div>
   </form>
 </mat-card>

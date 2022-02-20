@@ -9,7 +9,15 @@
       </mat-card-header>
     </div>
     <div>
+      <div class="commands text-right" style="margin-top: 5px;" >
+    <button mat-raised-button
+            color="primary"
+            [routerLink]="['pedido-form']" >
+      Registrar nova compra &nbsp;<i class="material-icons right">add</i>
+    </button>
+  </div>         
       <mat-card-content>
+         
         <!-- <mat-form-field [hidden]="!pedidos">
             <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome do produto (ou parte dele)..." />
           </mat-form-field>     -->

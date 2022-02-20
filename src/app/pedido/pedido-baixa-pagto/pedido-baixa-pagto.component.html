@@ -1,0 +1,30 @@
+<h2 mat-dialog-title> Informar a data de pagamento do cliente</h2>
+<mat-dialog-content class="mat-typography"> 
+        <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+            <div class="form-group mat-container">
+                <div>
+                    <mat-form-field appearance="fill" style = "width: 400px;">
+                        <mat-label>Data de Pagamento</mat-label>
+                        <input matInput [matDatepicker]="picker5" formControlName="dataPagtoCliente"  
+                            matTooltip="Informar a data de pagamento do cliente" matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
+                            [min]="dataPedido" [max]="dataHoje" required  />
+                        <mat-datepicker-toggle matSuffix [for]="picker5"  ></mat-datepicker-toggle>
+                        <mat-datepicker #picker5></mat-datepicker>
+                    </mat-form-field>
+                </div> 
+            </div> 
+        </form> 
+</mat-dialog-content>
+ 
+<mat-dialog-actions align="end">
+    <button mat-raised-button="Confirmar" 
+            color="primary" 
+            [mat-dialog-close]="formulario.get('dataPagtoCliente').value"
+            [disabled] = "!formulario.valid"
+            >
+            Confirmar &nbsp;<mat-icon>check</mat-icon>
+    </button>
+    <button mat-raised-button (click)="onNoClick()"color="primary" >
+        Retornar<mat-icon>reply</mat-icon>
+    </button>
+</mat-dialog-actions>

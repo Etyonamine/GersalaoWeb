@@ -16,6 +16,7 @@ import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
 import { Pedido } from '../pedido';
+import { PedidoBaixaPagtoComponent } from '../pedido-baixa-pagto/pedido-baixa-pagto.component';
 import { PedidoItem } from '../pedido-item/pedido-item';
 import { PedidoItemComponent } from '../pedido-item/pedido-item.component';
 import { PedidoItemService } from '../pedido-item/pedido-item.service';
@@ -49,7 +50,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   dataPedido: string;
   valorTotal: number;
   quantidadeTotal:number;
-  dataFechto: string;
+  dataFechto: Date;
+  
   situacao: string;
   quantidadeProdutoSel: number;
   valorProdutoSel: number;
@@ -77,7 +79,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
               private produtoService: ProdutoService,
               private serviceAlert: AlertService,
               private serviceEstoque: EstoqueService,
-              public dialog: MatDialog  
+              public dialog: MatDialog  ,
+              private router: Router,
               )
      {
     super();
@@ -91,9 +94,16 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.dataPedido = this.pedido != null?this.pedido.dataPedido.toString():new Date().toString();
     this.valorTotal = this.pedido != null?this.pedido.valorTotal:0;
     this.quantidadeTotal = this.pedido != null?this.pedido.quantidadeTotal:0;
-    this.dataFechto = this.pedido.dataFechamento != null?this.pedido.dataFechamento.toString():"";
-    this.situacao = this.pedido.dataFechamento != null?"Fechado":"Aberto";
-
+    if (this.pedido != undefined){
+      this.dataFechto = this.pedido.dataFechamento != null?this.pedido.dataFechamento:null;  
+      this.situacao = this.pedido.dataFechamento != null?"Fechado":"Aberto";
+    }else{
+      this.dataFechto = null;
+      this.situacao = "Aberto";
+    }
+    
+    
+    
     this.criarFormulario();
     this.listarClientes();
     this.loadData();
@@ -113,12 +123,17 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     }
   }
   criarFormulario(){
+    let observParam : string;
+
+    if (this.pedido!= undefined){
+      observParam = this.pedido.observacao.trim() ;
+    }
     this.formulario = this.formBuilder.group({
       codigoPedido: [this.codigoPedido],
       codigoCliente: [this.codigoCliente],            
       situacao: [ this.situacao ],
-      observacao: [this.pedido.observacao==null?null: this.pedido.observacao] ,
-      codigoProdutoSelecionado: [{value: null, disabled: this.pedido.dataFechamento != null?true:false}]
+      observacao: [observParam == null ?null: observParam] ,
+      codigoProdutoSelecionado: [{value: null, disabled: this.pedido!= undefined && this.pedido.dataFechamento != null?true:false}]
         
     });
   }
@@ -251,6 +266,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                           valorVenda : this.valorProdutoSel, 
                           produto: this.produtos.find(x=>x.codigo==this.codigoProdutoSelecionado)
                         } as PedidoItem; */
+    
+    
     this.itensPedidos2.push({
                             codigo : 1,
                             valorCusto : this.valorCusto,
@@ -344,6 +361,29 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                                 });
 
     
+  }
+  dialogBaixaPagto()
+  {
+    const dialogRef = this.dialog.open(PedidoBaixaPagtoComponent,
+      {width: '450px' , height: '400px;',
+        data : {
+                  dataFechto : this.dataFechto ,
+                  dataCadastro : new Date(this.dataPedido)
+                }
+      }
+    );
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined){
+        this.dataFechto =  new Date(result);
+        this.situacao = result == undefined? "Aberto": "Fechado";
+      }
+      
+      
+    });
+
+  }
+  retornar(){
+    this.router.navigate(['/pedido']);
   }
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);

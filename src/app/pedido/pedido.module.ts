@@ -6,12 +6,13 @@ import { PedidoRoutingModule } from './pedido-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { PedidoItemComponent } from './pedido-item/pedido-item.component';
 import { PedidoFormComponent } from './pedido-form/pedido-form.component';
+import { PedidoBaixaPagtoComponent } from './pedido-baixa-pagto/pedido-baixa-pagto.component';
 
 @NgModule({
   declarations: [
     PedidoComponent,
     PedidoFormComponent,    
-    PedidoItemComponent
+    PedidoItemComponent, PedidoBaixaPagtoComponent
   ],
   imports: [
     CommonModule,

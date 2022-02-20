@@ -18,7 +18,9 @@ export class PedidoComponent implements OnInit {
   colunas: string[]=["cliente","codigo","dataPedido", "valorTotal","acao"];
   pedidos: MatTableDataSource<Pedido>;
   inscricao$: Subscription;
-  
+  codigoPedido: number;
+  codigoCliente: number;
+
   //filtros da consulta
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
@@ -37,6 +39,8 @@ export class PedidoComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.codigoCliente = 0;
+    this.codigoPedido =0 ;
   }
 
   ngOnDestroy(): void {
