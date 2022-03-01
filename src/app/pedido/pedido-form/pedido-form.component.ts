@@ -27,9 +27,7 @@ import { PedidoItemService } from '../pedido-item/pedido-item.service';
   styleUrls: ['./pedido-form.component.scss']
 })
 export class PedidoFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
-  submit() {
-    
-  }
+ 
 
 
   colunas: string[]=["codigo","produto","valor", "quantidade","subTotal","acao"];
@@ -51,7 +49,10 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   valorTotal: number;
   quantidadeTotal:number;
   dataFechto: Date;
-  
+  dataCancelamento: string;
+  motivoCancelamento:string;
+
+
   situacao: string;
   quantidadeProdutoSel: number;
   valorProdutoSel: number;
@@ -94,14 +95,23 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.dataPedido = this.pedido != null?this.pedido.dataPedido.toString():new Date().toString();
     this.valorTotal = this.pedido != null?this.pedido.valorTotal:0;
     this.quantidadeTotal = this.pedido != null?this.pedido.quantidadeTotal:0;
+    this.dataCancelamento = (this.pedido!= null && this.pedido.dataCancelamento != null) ? this.pedido.dataCancelamento.toDateString() : null;
+    this.motivoCancelamento = this.pedido!= null ? this.pedido.motivoCancelamento: null;
+
     if (this.pedido != undefined){
       this.dataFechto = this.pedido.dataFechamento != null?this.pedido.dataFechamento:null;  
-      this.situacao = this.pedido.dataFechamento != null?"Fechado":"Aberto";
+      if (this.dataCancelamento != null){
+        this.situacao ="Cancelado";
+      }else{
+        this.situacao = this.pedido.dataFechamento != null?"Fechado":"Aberto";
+      }
+      
     }else{
       this.dataFechto = null;
       this.situacao = "Aberto";
     }
     
+
     
     
     this.criarFormulario();
@@ -133,7 +143,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       codigoCliente: [this.codigoCliente],            
       situacao: [ this.situacao ],
       observacao: [observParam == null ?null: observParam] ,
-      codigoProdutoSelecionado: [{value: null, disabled: this.pedido!= undefined && this.pedido.dataFechamento != null?true:false}]
+      codigoProdutoSelecionado: [{value: null, disabled: this.pedido!= undefined && this.pedido.dataFechamento != null?true:false}],
+      motivoCancelamento: this.motivoCancelamento,
+      dataCancelamento: this.dataCancelamento
         
     });
   }
@@ -390,5 +402,16 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   }
   handlerExclamation(msg:string){
     this.serviceAlert.mensagemExclamation(msg);
+  }
+  submit() {
+
+    //status
+    if (this.dataCancelamento == null){
+      let codigoStatus = this.dataFechto != null ? 0: 1;
+    }else{
+      let codigoStatus = 2;
+    }
+    
+
   }
 }

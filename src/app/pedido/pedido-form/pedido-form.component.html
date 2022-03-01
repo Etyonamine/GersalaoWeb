@@ -37,7 +37,8 @@
       </mat-form-field>
       <mat-form-field appearance="fill" style="width: 250px">
         <mat-label>Situação</mat-label>
-        <input matInput formControlName="situacao" readonly />
+        <input matInput formControlName="situacao" readonly
+        [value]="dataCancelamento == null ? '' : dataFechto | date: 'dd/MM/YYYY'  " />
       </mat-form-field>
 
       <!--         <app-msg-error
@@ -63,7 +64,25 @@
         ></textarea>
       </mat-form-field>
     </div>
-    
+    <!-- Informações sobre o cancelamento-->
+    <div class="container">
+      <mat-form-field appearance="fill" >
+        <mat-label>Cancelamento em:</mat-label>
+        <input matInput formControlName="dataCancelamento" readonly />
+      </mat-form-field>      
+      <mat-form-field appearance="fill" >
+        <mat-label>motivo do cancelamento</mat-label>
+        <textarea
+          matInput
+          formControlName="motivoCancelamento"
+          maxlength="300"
+          placeholder="Informações sobre o cancelamento do pedido"
+          matTooltip="Detalhes do motivo do cancelamento do pedido"
+          readonly
+        ></textarea>
+      </mat-form-field>
+    </div>
+    <!--Adicionar novos itens-->
     <div class="container" disabled ="formulario.get('situacao').value !='Aberto'"  >
       <mat-form-field  appearance="fill" style="width: 300px"
       >

@@ -8,5 +8,7 @@ export class Pedido{
     quantidadeTotal: number;
     observacao: string;
     dataFechamento: Date;
+    dataCancelamento: Date;
+    motivoCancelamento: string;
     cliente: Cliente;
 }
