@@ -10,11 +10,25 @@ table{
     padding: 5px;
     border : 1px solid black;
   }
-  .container .mat-form-field + .mat-form-field {
-    margin-left: 5px;
-    margin-top: 5px;
-  
+  .container  {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
   }
+   
+ /*  .mat-form-field + .mat-form-field {
+    margin-left: 5px;
+    margin-top: 5px;        
+  } */
   .itemPedidoTabela{
     background-color: lightsteelblue;
   }
+  .motivoCancelamento{
+    width: 1000px;
+  }
+  
+  .observacao{
+    width: 780px;
+  }
+  

@@ -1,5 +1,8 @@
 <mat-card>
   <mat-card-title> Cadastro de Pedidos - {{ tituloPagina }} </mat-card-title>
+  <div class="container">
+    <mat-divider></mat-divider>
+  </div>
   <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
 
     <div class="container">
@@ -10,6 +13,7 @@
       <mat-form-field *ngIf="clientes" appearance="fill" style="width: 300px">
         <mat-label>Selecione o cliente</mat-label>
         <mat-select formControlName="codigoCliente" matTooltip="codigo do cliente" required>
+         <!--  <mat-option [value]="0"></mat-option> -->
           <mat-option *ngFor="let cliente of clientes" [value]="cliente.codigo">
             {{ cliente.codigo }} - {{ cliente.nome }}
           </mat-option>
@@ -60,27 +64,37 @@
           formControlName="observacao"
           maxlength="300"
           placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
-          matTooltip="Digite aqui caso precise informar alguma observação do cliente."
+          matTooltip="Digite aqui caso precise informar alguma observação do cliente."          
         ></textarea>
       </mat-form-field>
+    </div>
+    <div class="container">
+      <mat-divider></mat-divider>
     </div>
     <!-- Informações sobre o cancelamento-->
     <div class="container">
       <mat-form-field appearance="fill" >
         <mat-label>Cancelamento em:</mat-label>
-        <input matInput formControlName="dataCancelamento" readonly />
+        <input matInput formControlName="dataCancelamento" readonly    />
       </mat-form-field>      
-      <mat-form-field appearance="fill" >
+    </div>
+    
+    <div class="container">
+      
+      <mat-form-field appearance="fill" class="motivoCancelamento" >
         <mat-label>motivo do cancelamento</mat-label>
         <textarea
           matInput
           formControlName="motivoCancelamento"
-          maxlength="300"
+          maxlength="300"          
           placeholder="Informações sobre o cancelamento do pedido"
           matTooltip="Detalhes do motivo do cancelamento do pedido"
           readonly
         ></textarea>
       </mat-form-field>
+    </div>
+    <div class="container">
+      <mat-divider></mat-divider>
     </div>
     <!--Adicionar novos itens-->
     <div class="container" disabled ="formulario.get('situacao').value !='Aberto'"  >
@@ -107,7 +121,7 @@
           [ngModelOptions]="{standalone: true}"          
           placeholder="Valor do produto"
           placeholder="0.000,00"                                       
-          [disabled]="formulario.get('situacao').value !='Aberto'"                            
+          [disabled]="formulario.get('situacao').value !='Aberto' "                            
         />
         <!-- <span matPrefix>R$&nbsp;</span> -->
         <!-- <span matSuffix>,00</span> -->
@@ -131,12 +145,15 @@
       </mat-form-field> 
       &nbsp;
       <button mat-raised-button color="primary" 
-            [disabled]="formulario.get('situacao').value !='Aberto'"
+            [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid "
             (click)="adicionarListaItem()"              
               >
         Adicionar Item &nbsp;<i class="material-icons right">add</i>
       </button>
       
+    </div>
+    <div class="container">
+      <mat-divider></mat-divider>
     </div>
     <div class="form-group mat-container">
       <div style="width: 100%;">
@@ -184,16 +201,22 @@
                 type="submit"
                 mat-raised-button
                 color="primary"
-                [disabled]="formulario.get('situacao').value !='Aberto'"
+                [disabled]="!formulario.valid || formulario.get('situacao').value !='Aberto'"
               >
                 Salvar &nbsp;<i class="material-icons right">save</i>
               </button>              
               &nbsp;
               <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
-                [disabled]="formulario.get('situacao').value !='Aberto'"
+                [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid || !itensPedido"
                 type="button">
                 Salvar e baixar pagamento &nbsp;<i class="material-icons right">paid</i>
               </button>
+              &nbsp;
+              <button mat-raised-button color="accent" (click)="limparCampos()"
+              [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid"
+              >
+                Limpar Campos &nbsp;<i class="material-icons right">backspace</i>
+              </button>            
               &nbsp;
               <button mat-raised-button color="primary" (click)="retornar()">
                 Retornar &nbsp;<i class="material-icons right">reply</i>
@@ -204,4 +227,5 @@
       </div>   
     </div>
   </form>
+   
 </mat-card>

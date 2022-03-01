@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -89,7 +89,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
   ngOnInit(): void {
     this.pedido = this.route.snapshot.data['pedido'];
-    this.codigoCliente = this.pedido != null?this.pedido.codigoCliente:0;
+    this.codigoCliente = this.pedido != null?this.pedido.codigoCliente:null;
     this.codigoPedido = this.pedido != null?this.pedido.codigo:0;
     this.tituloPagina = this.pedido != null?"Editar":"Novo";
     this.dataPedido = this.pedido != null?this.pedido.dataPedido.toString():new Date().toString();
@@ -140,9 +140,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     }
     this.formulario = this.formBuilder.group({
       codigoPedido: [this.codigoPedido],
-      codigoCliente: [this.codigoCliente],            
+      codigoCliente: [this.codigoCliente,[Validators.required]] ,            
       situacao: [ this.situacao ],
-      observacao: [observParam == null ?null: observParam] ,
+      observacao: [{value:observParam == null ?null: observParam, disabled: (this.dataFechto != null || this.dataCancelamento!=null )? true:false}] ,
       codigoProdutoSelecionado: [{value: null, disabled: this.pedido!= undefined && this.pedido.dataFechamento != null?true:false}],
       motivoCancelamento: this.motivoCancelamento,
       dataCancelamento: this.dataCancelamento
@@ -410,8 +410,17 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       let codigoStatus = this.dataFechto != null ? 0: 1;
     }else{
       let codigoStatus = 2;
-    }
+    }   
     
-
+    this.serviceAlert.openConfirmModal('Tem certeza que deseja salvar este pedido?', 'Salvar - Pedido', (answer: boolean) => {
+      if (!answer) {        
+        return false;
+      }
+    }, "Sim", "Não"
+    );
+    
+  }
+  limparCampos(){
+    
   }
 }
