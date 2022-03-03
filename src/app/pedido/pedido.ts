@@ -1,4 +1,5 @@
 import { Cliente } from "../cliente/cliente";
+import { PedidoItem } from "./pedido-item/pedido-item";
 
 export class Pedido{
     codigo: number;
@@ -11,4 +12,5 @@ export class Pedido{
     dataCancelamento: Date;
     motivoCancelamento: string;
     cliente: Cliente;
+    listaPedidoItem: PedidoItem[];
 }

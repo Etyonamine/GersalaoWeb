@@ -1,11 +1,15 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, Subscription } from 'rxjs';
+import { timeStamp } from 'console';
+import { now } from 'moment';
+import { EMPTY, of, Subscription } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 import { Cliente } from 'src/app/cliente/cliente';
 import { ClienteService } from 'src/app/cliente/cliente.service';
 import { Estoque } from 'src/app/estoque/estoque';
@@ -20,6 +24,7 @@ import { PedidoBaixaPagtoComponent } from '../pedido-baixa-pagto/pedido-baixa-pa
 import { PedidoItem } from '../pedido-item/pedido-item';
 import { PedidoItemComponent } from '../pedido-item/pedido-item.component';
 import { PedidoItemService } from '../pedido-item/pedido-item.service';
+import { PedidoService } from '../pedido.service';
 
 @Component({
   selector: 'app-pedido-form',
@@ -72,12 +77,13 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   inscricaoItem$: Subscription;
   inscricaoProduto$:Subscription;
   inscricaoEstoque$:Subscription;
+
   
   constructor(private route: ActivatedRoute,
               private formBuilder: FormBuilder,
               private clienteService: ClienteService,
+              private pedidoService: PedidoService,
               private pedidoItemService: PedidoItemService,
-              private produtoService: ProdutoService,
               private serviceAlert: AlertService,
               private serviceEstoque: EstoqueService,
               public dialog: MatDialog  ,
@@ -111,13 +117,10 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       this.situacao = "Aberto";
     }
     
-
-    
-    
     this.criarFormulario();
     this.listarClientes();
     this.loadData();
-    this.listaProdutos()
+    this.listaProdutoEstoque()
     this.valorProdutoSel = 0;
     this.quantidadeProdutoSel = 1;
   }
@@ -136,7 +139,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     let observParam : string;
 
     if (this.pedido!= undefined){
-      observParam = this.pedido.observacao.trim() ;
+      observParam = this.pedido.observacao ;
     }
     this.formulario = this.formBuilder.group({
       codigoPedido: [this.codigoPedido],
@@ -191,8 +194,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                       filterColumn,
                       filterQuery
                     ).subscribe(result =>{
-
-                      this.itensPedidos2 = result.data;
+                      if (result && result.totalCount >0 ){
+                        this.itensPedidos2 = result.data;
+                      }
                      /*  this.itensPedido = new MatTableDataSource<PedidoItem>(result.data);                      
                       this.paginator.length=result.totalCount;
                       this.paginator.pageIndex=result.pageIndex;
@@ -281,7 +285,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     
     
     this.itensPedidos2.push({
-                            codigo : 1,
+                            codigo : 0,
                             valorCusto : this.valorCusto,
                             pedido : null,
                             cliente : null, 
@@ -316,14 +320,25 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
     
   }
-  listaProdutos(){
-    this.inscricaoProduto$ = this.produtoService.ListarTodos()
+  listaProdutoEstoque()
+  {
+    this.produtos = Array<Produto>();
+
+    this.inscricaoEstoque$ = this.serviceEstoque.listaProdutosDisponiveis().subscribe(result=>{
+      if (result){
+        result.forEach(estoque=>{
+          this.produtos.push(estoque.produto);
+        })
+      }
+    })
+    /* this.inscricaoProduto$ = this.produtoService.ListarTodos()
                                                 .subscribe(result=>{
                                                   this.produtos = result;
                                                 },error=>{
                                                   console.log(error);
                                                   this.handleError('Erro ao recuperar lista de produtos.');
-                                                })
+                                                }); */
+
   }
   preencherValorProdutoSelecionado(codigoProduto){
     this.codigoProdutoSelecionado = codigoProduto;
@@ -331,24 +346,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.valorProdutoSel = 0;
 
     let indexProduto = this.produtos.findIndex(x=>x.codigo == codigoProduto);
-    this.percentualComissao = ((this.produtos[indexProduto].valorComissao / 100) + 1);
-
-    /* this.inscricaoEstoque$ = this.serviceEstoque.valorVenda(codigoProduto)
-                                                .subscribe(result=>{
-                                                    let valorEncontrado = result;
-
-                                                    if (valorEncontrado >=0 ){
-                                                        this.valorProdutoSel = (Number(valorEncontrado) * this.percentualComissao);
-                                                        this.valorProdutoSel = Number(this.valorProdutoSel.toFixed(2));
-                                                        
-                                                    }else{
-                                                      this.valorProdutoSel = 0;
-                                                    }
-                                                    
-                                                }, error =>{
-                                                  console.log('erro ao consultar o valor unitario');
-                                                  this.handleError('Ocorreu erro de calculo de valor de venda.');
-                                                }); */
+    this.percentualComissao = ((this.produtos[indexProduto].valorComissao / 100) + 1);     
 
     this.inscricaoEstoque$ = this.serviceEstoque.estoquePorProduto(codigoProduto)
                                                 .subscribe(result=>{
@@ -387,6 +385,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined){
         this.dataFechto =  new Date(result);
+        this.pedido.dataFechamento = new Date(result);
         this.situacao = result == undefined? "Aberto": "Fechado";
       }
       
@@ -403,7 +402,11 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   handlerExclamation(msg:string){
     this.serviceAlert.mensagemExclamation(msg);
   }
-  submit() {
+  onSubmit(): void {
+      
+  }
+  submit() 
+  {
 
     //status
     if (this.dataCancelamento == null){
@@ -411,15 +414,110 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     }else{
       let codigoStatus = 2;
     }   
-    
-    this.serviceAlert.openConfirmModal('Tem certeza que deseja salvar este pedido?', 'Salvar - Pedido', (answer: boolean) => {
-      if (!answer) {        
+
+    //criando o objeto que será gravado
+    let pedidoGravar = this.pedido !=null ? this.pedido: { codigo : 0 , codigoCliente : this.codigoCliente} as Pedido;
+    let itensPedidoGravar = this.itensPedidos2;
+    //confirmando que deseja salvar o registro.
+    this.serviceAlert.openConfirmModal('Tem certeza que deseja salvar este pedido?', 'Salvar - Pedido', (answer: boolean) => 
+    {
+      if (!answer)
+      {        
         return false;
       }
-    }, "Sim", "Não"
-    );
+      else
+      {
+        //complementando as informações
+        pedidoGravar.valorTotal = this.valorTotal;
+        pedidoGravar.observacao = this.formulario.get('observacao').value;
+        pedidoGravar.cliente = null;
+        pedidoGravar.listaPedidoItem = null;
     
-  }
+        if (pedidoGravar.codigo == 0 )//alteração;
+        {
+          pedidoGravar.dataPedido = new Date();             
+          pedidoGravar.codigoCliente = this.formulario.get('codigoCliente').value;
+
+          this.inscricao$ = this.pedidoService.savePkDuplo(pedidoGravar, pedidoGravar.codigo, pedidoGravar.codigoCliente).pipe(concatMap(result=>{
+              if (result){
+                this.codigoPedido = result.codigo;
+                this.pedido = result;
+
+                if (itensPedidoGravar.length > 0){
+                  itensPedidoGravar.forEach(item=>{
+                    item.codigoPedido = result.codigo;
+                    item.codigoCliente = result.codigoCliente;
+                    item.produto = null;
+                    this.inscricaoItem$ = this.pedidoItemService.save(item).subscribe(result=>{
+                      
+                    },error=>{
+                      console.log(error);
+                      this.handleError('Ocorreu um erro na gravação do itens de pedido');
+                    })   
+                  });            
+                }
+                return of(true);          
+              }
+            }      
+          )
+          ).subscribe(gravaItem =>{
+            if (gravaItem){
+              this.handlerSuccess('Registro salvo com sucesso!');        
+            }
+          });
+        
+        }      
+        else
+        {
+          this.inscricao$ = this.pedidoService
+                                .savePkDuplo(pedidoGravar, pedidoGravar.codigo.toString(), pedidoGravar.codigoCliente.toString())
+                                .pipe(
+                                  concatMap(atualizado=>{
+                                    if (atualizado != null){
+                                      if (itensPedidoGravar.length > 0){
+                                        itensPedidoGravar.forEach(item=>
+                                          {
+                                            if (item.codigo == 0)
+                                            {
+                                                item.codigoPedido = pedidoGravar.codigo;
+                                                item.codigoCliente = pedidoGravar.codigoCliente;
+                                                item.produto = null;
+      
+      
+                                                this.inscricaoItem$ = this.pedidoItemService.save(item)
+                                                                                            .subscribe(gravacaoItem=>
+                                                                                              {
+                                                                                                if(gravacaoItem){
+                                                                                                  this.listaProdutoEstoque();
+                                                                                                }                                                                                                
+                                                                                              },error=>{
+                                                                                                          console.log(error);
+                                                                                                          this.handleError('Ocorreu um erro na gravação do itens de pedido');
+                                                                                              });                                             
+                                            }
+                                          });
+                                      }
+                                    }                                                                    
+                                    return of(true);  
+                                  }
+                                  )
+                                )
+                                .subscribe(result=>{
+                                    if(result){                                    
+                                      this.handlerSuccess('Registro atualizado com sucesso!');
+                                      setTimeout(() => { this.retornar(); }, 3000);
+                                    }
+                                }, error=>{
+                                  console.log(error);
+                                  this.handleError('Ocorreu um erro ao tentar gravar o pedido.');
+                                });
+        }
+      }},
+     "Sim", "Não"
+    );
+
+}
+
   limparCampos(){
     
   }

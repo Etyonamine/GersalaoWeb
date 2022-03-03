@@ -145,6 +145,7 @@
       </mat-form-field> 
       &nbsp;
       <button mat-raised-button color="primary" 
+            id="btnAdicionarProduto"
             [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid "
             (click)="adicionarListaItem()"              
               >
@@ -197,17 +198,18 @@
         <table>
           <tr>              
             <td  style="text-align: left;">
-                <button
-                type="submit"
+                <button        
+                id="btnSalvar"                         
                 mat-raised-button
                 color="primary"
                 [disabled]="!formulario.valid || formulario.get('situacao').value !='Aberto'"
+                (click)="submit()"
               >
                 Salvar &nbsp;<i class="material-icons right">save</i>
               </button>              
               &nbsp;
               <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
-                [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid || !itensPedido"
+                [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid || quantidadeTotal == 0"
                 type="button">
                 Salvar e baixar pagamento &nbsp;<i class="material-icons right">paid</i>
               </button>

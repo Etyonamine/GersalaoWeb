@@ -75,7 +75,7 @@ export class BaseService<T> {
   }
 
   savePkDuplo(recurso:T, codigo1 , codigo2){
-    if(codigo1 !== ''){
+    if(codigo1 !== '' && codigo1 > 0 ){
       return this.updatePkDuplo(recurso, codigo1, codigo2);
     }
     else{

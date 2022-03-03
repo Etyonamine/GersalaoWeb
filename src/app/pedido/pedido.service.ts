@@ -19,4 +19,5 @@ export class PedidoService extends BaseService<Pedido> {
      
     return this.http.get<Pedido>(urlGet).pipe(take(1));
   }
+  
 }

@@ -16,7 +16,7 @@ export class PedidoItemService extends BaseService<PedidoItem>{
    }
 
    getDataCodigo<ApiResult>(
-     codigoCliente:number,
+    codigoCliente:number,
     codigoPedido:number,
     pageIndex: number,
     pageSize: number,
@@ -27,8 +27,8 @@ export class PedidoItemService extends BaseService<PedidoItem>{
 
 
         var params = new HttpParams()
-          .set("codigoCliente", codigoCliente.toString())
-          .set("codigoPedido", codigoPedido.toString())
+          .set("codigoCliente", codigoCliente !== null? codigoCliente.toString(): '0')
+          .set("codigoPedido", codigoPedido!== null?codigoPedido.toString():'0')
           .set("pageIndex", pageIndex.toString())
           .set("pageSize", pageSize.toString())
           .set("sortColumn", sortColumn)
