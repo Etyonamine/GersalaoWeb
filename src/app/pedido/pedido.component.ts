@@ -96,5 +96,8 @@ export class PedidoComponent implements OnInit {
   {
     this.serviceAlert.mensagemErro('Erro ao carregar a lista de pedidos. Tente novamente mais tarde.');
   }
+  openConfirmExclusao(codigoPedido:number, codigoCliente:number)
+  {
 
+  }
 }

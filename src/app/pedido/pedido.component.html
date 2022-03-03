@@ -53,6 +53,14 @@
 
                   <mat-icon>view_comfy</mat-icon>
                 </button>
+                <button
+                  mat-mini-fab
+                  aria-label="Excluir pedido"                  
+                  (click)="openConfirmExclusao(pedido.codigo, pedido.codigoCliente)"
+                  color="warn"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
               </mat-cell>
             </ng-container>
             <!-- <ng-container matColumnDef="acao">

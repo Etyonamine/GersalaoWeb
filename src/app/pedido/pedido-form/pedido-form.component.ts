@@ -77,7 +77,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   inscricaoItem$: Subscription;
   inscricaoProduto$:Subscription;
   inscricaoEstoque$:Subscription;
-
+  inscricaoErroGravar$:Subscription;
   
   constructor(private route: ActivatedRoute,
               private formBuilder: FormBuilder,
@@ -133,6 +133,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     }
     if(this.inscricaoProduto$){
       this.inscricaoProduto$.unsubscribe();
+    }
+    if (this.inscricaoErroGravar$){
+      this.inscricaoErroGravar$.unsubscribe();
     }
   }
   criarFormulario(){
@@ -331,14 +334,6 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
         })
       }
     })
-    /* this.inscricaoProduto$ = this.produtoService.ListarTodos()
-                                                .subscribe(result=>{
-                                                  this.produtos = result;
-                                                },error=>{
-                                                  console.log(error);
-                                                  this.handleError('Erro ao recuperar lista de produtos.');
-                                                }); */
-
   }
   preencherValorProdutoSelecionado(codigoProduto){
     this.codigoProdutoSelecionado = codigoProduto;
@@ -427,6 +422,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       }
       else
       {
+        let listaParaBaixaEstoque : Array<PedidoItem>=[];
+
         //complementando as informações
         pedidoGravar.valorTotal = this.valorTotal;
         pedidoGravar.observacao = this.formulario.get('observacao').value;
@@ -448,11 +445,26 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                     item.codigoPedido = result.codigo;
                     item.codigoCliente = result.codigoCliente;
                     item.produto = null;
-                    this.inscricaoItem$ = this.pedidoItemService.save(item).subscribe(result=>{
-                      
+                    this.inscricaoItem$ = this.pedidoItemService.save(item).subscribe(itemGravado=>{
+
+                      if (itemGravado){
+                        //adicionando a lista para baixar.                        
+                        this.baixaEstoque( itemGravado.codigoProduto,itemGravado.quantidade );
+                      }                      
+
                     },error=>{
                       console.log(error);
-                      this.handleError('Ocorreu um erro na gravação do itens de pedido');
+                      
+                      //apagar registro ja criado.
+                      this.inscricaoErroGravar$ = this.pedidoService.deletePkDuplo(pedidoGravar.codigoCliente, pedidoGravar.codigo).subscribe(result=>{
+                        if (result){
+                          this.handleError('Ocorreu um erro na gravação do Pedido e seus itens!');
+                        }else{
+                          console.log('rollback : Ocorreu um erro ao tentar excluir o pedido criado.')
+                        }                        
+                      },error=>{
+                        console.log('rollback : Ocorreu um erro ao tentar excluir o pedido criado.')
+                      });
                     })   
                   });            
                 }
@@ -461,13 +473,21 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
             }      
           )
           ).subscribe(gravaItem =>{
-            if (gravaItem){
+            if (gravaItem)
+            {
+              //executar baixa de estoque
+              if(!listaParaBaixaEstoque && listaParaBaixaEstoque.length > 0 ){
+                listaParaBaixaEstoque.forEach(item=>{
+                   
+                });
+              }
+
               this.handlerSuccess('Registro salvo com sucesso!');        
             }
           });
         
         }      
-        else
+        else //Editando o registro
         {
           this.inscricao$ = this.pedidoService
                                 .savePkDuplo(pedidoGravar, pedidoGravar.codigo.toString(), pedidoGravar.codigoCliente.toString())
@@ -481,14 +501,15 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                             {
                                                 item.codigoPedido = pedidoGravar.codigo;
                                                 item.codigoCliente = pedidoGravar.codigoCliente;
-                                                item.produto = null;
-      
+                                                item.produto = null;      
       
                                                 this.inscricaoItem$ = this.pedidoItemService.save(item)
                                                                                             .subscribe(gravacaoItem=>
                                                                                               {
                                                                                                 if(gravacaoItem){
                                                                                                   this.listaProdutoEstoque();
+                                                                                              
+                                                                                                      this.baixaEstoque( item.codigoProduto,item.quantidade );
                                                                                                 }                                                                                                
                                                                                               },error=>{
                                                                                                           console.log(error);
@@ -503,7 +524,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                   )
                                 )
                                 .subscribe(result=>{
-                                    if(result){                                    
+                                    if(result){                                                                            
                                       this.handlerSuccess('Registro atualizado com sucesso!');
                                       setTimeout(() => { this.retornar(); }, 3000);
                                     }
@@ -520,5 +541,14 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
   limparCampos(){
     
+  }
+  baixaEstoque(codigoProduto :number, quantidade:number){
+    this.inscricao$ = this.serviceEstoque.baixarEstoque(codigoProduto,quantidade)
+    .subscribe(result=>{
+
+    },error=>{
+       console.log(error);
+       this.handleError('Ocorreu um erro ao baixar o estoque!');                                                            
+    }) ;
   }
 }
