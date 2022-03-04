@@ -7,8 +7,8 @@
 
     <div class="container">
       <mat-form-field appearance="fill" style="width: 70px">
-        <mat-label>Código</mat-label>
-        <input matInput formControlName="codigoPedido" readonly />
+        <mat-label>N&uacute;mero</mat-label>
+        <input matInput formControlName="numeroPedido" readonly />
       </mat-form-field>
       <mat-form-field *ngIf="clientes" appearance="fill" style="width: 300px">
         <mat-label>Selecione o cliente</mat-label>
@@ -168,7 +168,7 @@
               <th>Ações</th>
             </tr>            
           </thead>          
-          <tbody style="text-align: center;" > 
+          <tbody *ngIf="!itensPedidos2" style="text-align: center;" > 
               <tr  *ngFor="let item of  itensPedidos2" >
                 <td>{{item.produto.nome}}</td>
                 <td>{{item.valorVenda | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>

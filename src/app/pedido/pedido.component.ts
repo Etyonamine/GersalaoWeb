@@ -20,7 +20,8 @@ export class PedidoComponent implements OnInit {
   inscricao$: Subscription;
   codigoPedido: number;
   codigoCliente: number;
-
+  numeroPedidoFmt: string;
+  
   //filtros da consulta
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;

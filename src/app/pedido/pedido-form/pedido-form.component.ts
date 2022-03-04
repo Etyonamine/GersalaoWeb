@@ -154,7 +154,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       observParam = this.pedido.observacao ;
     }
     this.formulario = this.formBuilder.group({
-      codigoPedido: [this.codigoPedido],
+      numeroPedido: [ this.pedido!= null ||this.pedido!=undefined ? this.pedido.numeroPedido : "0"],
       codigoCliente: [this.codigoCliente,[Validators.required]] ,            
       situacao: [ this.situacao ],
       observacao: [{value:observParam == null ?null: observParam, disabled: (this.dataFechto != null || this.dataCancelamento!=null )? true:false}] ,
@@ -311,6 +311,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                             valorVenda : this.valorProdutoSel, 
                             dataAlteracao : null,
                             dataCadastro : new Date(),
+                            numeroPedido : '0000',
                             produto: this.produtos.find(x=>x.codigo == this.codigoProdutoSelecionado)} );
   //somando o valor total
   this.valorTotal = this.valorTotal + (this.valorProdutoSel * this.quantidadeProdutoSel);
@@ -616,6 +617,14 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
   limparCampos(){
     
+
+    this.formulario.patchValue({
+      codigoCliente :  null,
+      observacao: null
+    });;
+    this.codigoCliente = 0;
+    
+
   }
   baixaEstoque(codigoProduto :number, quantidade:number){
     this.inscricao$ = this.serviceEstoque.baixarEstoque(codigoProduto,quantidade)

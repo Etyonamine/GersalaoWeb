@@ -10,6 +10,7 @@ export class PedidoItem{
     valorCusto: number;
     valorVenda: number;
     quantidade: number;
+    numeroPedido: string;
     dataCadastro: Date;
     dataAlteracao:Date;
     pedido: Pedido;
