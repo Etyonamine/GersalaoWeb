@@ -168,7 +168,7 @@
               <th>Ações</th>
             </tr>            
           </thead>          
-          <tbody *ngIf="!itensPedidos2" style="text-align: center;" > 
+          <tbody *ngIf="itensPedidos2" style="text-align: center;" > 
               <tr  *ngFor="let item of  itensPedidos2" >
                 <td>{{item.produto.nome}}</td>
                 <td>{{item.valorVenda | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>

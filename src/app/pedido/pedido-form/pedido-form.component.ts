@@ -80,6 +80,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   inscricaoErroGravar$:Subscription;
   inscricaoDelete$: Subscription;
   inscricaoAdicionarEstoque$: Subscription;
+  inscricaoValorCusto$: Subscription;
 
   constructor(private route: ActivatedRoute,
               private formBuilder: FormBuilder,
@@ -417,22 +418,29 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
     let indexProduto = this.produtos.findIndex(x=>x.codigo == codigoProduto);
     this.percentualComissao = ((this.produtos[indexProduto].valorComissao / 100) + 1);     
+    
 
-    this.inscricaoEstoque$ = this.serviceEstoque.estoquePorProduto(codigoProduto)
-                                                .subscribe(result=>{
-                                                  if (result.length > 0 ) {
-                                                    
-                                                    this.estoque = result[0];
-                                                    
-                                                    this.valorProdutoSel = (this.estoque.valorUnitario * this.percentualComissao);
-                                                    this.valorCusto = this.estoque.valorUnitario;
-
-                                                    this.valorProdutoSel = Number(this.valorProdutoSel.toFixed(2));
-                                                    this.valorCusto = Number(this.valorCusto.toFixed(2));
+    this.inscricaoEstoque$ = this.serviceEstoque.valorVenda(codigoProduto)  
+                                                .pipe(concatMap(valorVendaEncontrado=>{
+                                                  if (valorVendaEncontrado!= null ) {                                                   
+                                                                                                        
+                                                    this.valorProdutoSel = (Number(valorVendaEncontrado) * this.percentualComissao);
+                                                    this.valorProdutoSel = Number(this.valorProdutoSel.toFixed(2));                                                    
  
                                                   }else{
                                                     this.handlerExclamation('Não existe estoque para este produto!');
                                                   }
+                                                  return of (true);
+                                                }))                                                  
+                                                .subscribe(resultado=>{
+                                                  this.inscricaoValorCusto$ = this.serviceEstoque.valorCusto(codigoProduto)
+                                                                                                 .subscribe(valor=>{
+                                                                                                    if (valor!= null){              
+                                                                                                      this.valorCusto = Number(valor.toString());                                                                                        
+                                                                                                      this.valorCusto = Number(this.valorCusto.toFixed(2));
+                                                                                                    }
+                                                                                                 })
+
                                                   
                                                 }, 
                                                 error=>{
