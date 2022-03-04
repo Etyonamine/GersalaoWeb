@@ -40,5 +40,12 @@ export class PedidoItemService extends BaseService<PedidoItem>{
             .set("filterQuery", filterQuery);
         }
     return this.http.get<ApiResult>(this.url , { params }).pipe(take(1));
+  
+  
+  }
+
+  excluirItem(codigoItem:number, codigoPedido:number , codigoCliente:number){
+    let urlDelete = this.url + `/${codigoCliente}/${codigoPedido}/${codigoItem}`;
+    return this.http.delete(urlDelete).pipe(take(1));
   }
 }

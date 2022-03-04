@@ -38,6 +38,7 @@ export class PedidoComponent implements OnInit {
               private pedidoService: PedidoService) { }
 
   ngOnInit(): void {
+    this.pedidos = null;
     this.loadData();
     this.codigoCliente = 0;
     this.codigoPedido =0 ;

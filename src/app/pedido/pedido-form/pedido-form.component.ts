@@ -78,7 +78,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   inscricaoProduto$:Subscription;
   inscricaoEstoque$:Subscription;
   inscricaoErroGravar$:Subscription;
-  
+  inscricaoDelete$: Subscription;
+  inscricaoAdicionarEstoque$: Subscription;
+
   constructor(private route: ActivatedRoute,
               private formBuilder: FormBuilder,
               private clienteService: ClienteService,
@@ -136,6 +138,13 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     }
     if (this.inscricaoErroGravar$){
       this.inscricaoErroGravar$.unsubscribe();
+    }
+    if (this.inscricaoDelete$){
+      this.inscricaoDelete$.unsubscribe();
+    }
+    if (this.inscricaoAdicionarEstoque$)
+    {
+      this.inscricaoAdicionarEstoque$.unsubscribe();
     }
   }
   criarFormulario(){
@@ -199,6 +208,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                     ).subscribe(result =>{
                       if (result && result.totalCount >0 ){
                         this.itensPedidos2 = result.data;
+                        this.itensPedidos2.forEach(item=>{
+                          this.quantidadeTotal += item.quantidade;
+                        });
                       }
                      /*  this.itensPedido = new MatTableDataSource<PedidoItem>(result.data);                      
                       this.paginator.length=result.totalCount;
@@ -313,14 +325,76 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
   }
   removeListaItem(codigoProduto:number){
-    //subtraindo o valor total
-    this.valorTotal = this.valorTotal - (this.itensPedidos2.find(x=>x.codigoProduto).valorVenda * this.itensPedidos2.find(x=>x.codigoProduto).quantidade);
-    this.quantidadeTotal = this.quantidadeTotal - this.itensPedidos2.find(x=>x.codigoProduto).quantidade ;
+    this.serviceAlert.openConfirmModal('Tem certeza que deseja remover da lista este item de pedido?', 'Remover da lista - Pedido', (answer: boolean) => 
+    {
+      let qtdeItens = this.itensPedidos2.length;
 
-    //removendo o array
-    let indexExcluir = this.itensPedidos2.findIndex(x=>x.codigoProduto);
-    this.itensPedidos2.splice(indexExcluir,1);
+      if (!answer)
+      {        
+        return false;
+      }
+      else{
+      //subtraindo o valor total
+      this.valorTotal = this.valorTotal - (this.itensPedidos2.find(x=>x.codigoProduto).valorVenda * this.itensPedidos2.find(x=>x.codigoProduto).quantidade);
+      this.quantidadeTotal = this.quantidadeTotal - this.itensPedidos2.find(x=>x.codigoProduto).quantidade ;
+        
+      //removendo o array
+      let indexExcluir = this.itensPedidos2.findIndex(x=>x.codigoProduto);
+      if(this.itensPedidos2[indexExcluir].codigo > 0 ){
+        //excluindo o item da tabela pedido_item
+        this.inscricaoDelete$ = this.pedidoItemService.excluirItem(this.itensPedidos2[indexExcluir].codigo,
+                                                                   this.itensPedidos2[indexExcluir].codigoPedido, 
+                                                                   this.itensPedidos2[indexExcluir].codigoCliente)
+                                                       .pipe(
+                                                          concatMap(result=>{
+                                                            if (result){
+                                                                          this.inscricaoAdicionarEstoque$ = this.serviceEstoque.adicionarQuantidadePorProduto(this.itensPedidos2[indexExcluir].codigoPedido, 
+                                                                                                                                                  this.itensPedidos2[indexExcluir].quantidade)                                                                                                                    
+                                                                                                                   .subscribe(retorno=>{
+                                                                                                                      //se for igual a 1 o tamanho da matriz deve atualizar o pedido
+                                                                                                                      if(retorno && qtdeItens == 1){
+                                                                                                                        this.pedido.valorTotal = 0 ;
+                                                                                                                        this.pedido.quantidadeTotal =0 ;                                                                                                                       
+                                                                                                                        
+                                                                                                                        this.inscricao$ = this.pedidoService.savePkDuplo(this.pedido, this.pedido.codigo, this.pedido.codigoCliente)
+                                                                                                                                                            .subscribe( resultadoAtualizarPedido=>{
+                                                                                                                             if(resultadoAtualizarPedido){
+                                                                                                                                return of(true);
+                                                                                                                             }
+                                                                                                                         },
+                                                                                                                         error=>{
+                                                                                                                           console.log(error);
+                                                                                                                           this.handleError('Ocorreu um erro ao atualizar o pedido!');
+                                                                                                                         }
+                                                                                                                        );
+                                                                                                                      }
+                                                                                                                      return of(true);
+                                                                                                                    }                                                                                                                 
+                                                                                                                   );
+                                                                          return of(true);
+                                                              }                                                            
+                                                            }                                                            
+                                                          )
+                                                       )
+                                                       .subscribe(result=>{
+                                                        this.itensPedidos2.splice(indexExcluir,1);
+                                                        this.handlerSuccess("Item removido com sucesso!");
+                                                       },
+                                                       error =>{
+                                                         console.log (error);
+                                                         this.handleError("Ocorreu erro ao tentar remover o item.");
+                                                       }
+                                                         
+                                                       );
+      }else{
+        this.itensPedidos2.splice(indexExcluir,1);
+        this.valorTotal -= this.itensPedidos2[indexExcluir].valorVenda;
+        this.quantidadeTotal -=this.itensPedidos2[indexExcluir].quantidade;
+      }     
 
+    }},
+    "Sim", "Não"
+    );
     
   }
   listaProdutoEstoque()
@@ -382,6 +456,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
         this.dataFechto =  new Date(result);
         this.pedido.dataFechamento = new Date(result);
         this.situacao = result == undefined? "Aberto": "Fechado";
+        this.submit();
       }
       
       
@@ -537,7 +612,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
      "Sim", "Não"
     );
 
-}
+  }
 
   limparCampos(){
     
