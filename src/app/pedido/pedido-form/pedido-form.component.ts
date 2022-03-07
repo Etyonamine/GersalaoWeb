@@ -486,17 +486,20 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   }
   submit() 
   {
-
+    let codigoStatus: number = 0;
     //status
     if (this.dataCancelamento == null){
-      let codigoStatus = this.dataFechto != null ? 0: 1;
+       codigoStatus = this.dataFechto != null ? 1: 0;
     }else{
-      let codigoStatus = 2;
+       codigoStatus = 2;
     }   
 
     //criando o objeto que será gravado
     let pedidoGravar = this.pedido !=null ? this.pedido: { codigo : 0 , codigoCliente : this.codigoCliente} as Pedido;
     let itensPedidoGravar = this.itensPedidos2;
+
+    pedidoGravar.codigoStatus  = codigoStatus;
+
     //confirmando que deseja salvar o registro.
     this.serviceAlert.openConfirmModal('Tem certeza que deseja salvar este pedido?', 'Salvar - Pedido', (answer: boolean) => 
     {
