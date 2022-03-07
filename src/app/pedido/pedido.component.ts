@@ -15,7 +15,7 @@ import { PedidoService } from './pedido.service';
   styleUrls: ['./pedido.component.scss']
 })
 export class PedidoComponent implements OnInit {
-  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal","acao"];
+  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal","situacao","acao"];
   pedidos: MatTableDataSource<Pedido>;
   inscricao$: Subscription;
   codigoPedido: number;
@@ -29,7 +29,7 @@ export class PedidoComponent implements OnInit {
   public defaultSortColumn:string = "dataPedido";
   public defaultSortOrder:string = "desc";
 
-  defaultFilterColumn: string= "dataPedido";
+  defaultFilterColumn: string= "NomeCliente";
   filterQuery:string=null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;

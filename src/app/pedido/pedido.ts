@@ -12,6 +12,8 @@ export class Pedido{
     dataCancelamento: Date;
     motivoCancelamento: string;
     numeroPedido: string;
+    nomeCliente: string;
+    situacao: string,
     cliente: Cliente;
     listaPedidoItem: PedidoItem[];
 }

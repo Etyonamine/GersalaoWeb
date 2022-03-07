@@ -8,14 +8,22 @@
         <mat-label>Lista de Pedidos</mat-label>
       </mat-card-header>
     </div>
-    <div>
-      <div class="commands text-right" style="margin-top: 5px;" >
-    <button mat-raised-button
+    <div  >      
+        <mat-form-field [hidden]="!pedidos"style="width: 100%;" >
+          <input matInput (keyup)="loadData($event.target.value)" 
+                 placeholder="Pesquisar por nome do cliente (ou parte dele)..."
+                 />
+        </mat-form-field>
+    </div>
+    
+    <div class="commands text-right" style="margin-top: 5px;" >
+      <button mat-raised-button
             color="primary"
             [routerLink]="['pedido-form']" >
       Registrar nova compra &nbsp;<i class="material-icons right">add</i>
-    </button>
-  </div>         
+      </button>
+    </div>  
+    <div>
       <mat-card-content>
          
         <!-- <mat-form-field [hidden]="!pedidos">
@@ -40,9 +48,15 @@
                 </a></mat-cell>
             </ng-container>
             <ng-container matColumnDef="valorTotal">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Quantidade-total</mat-header-cell>
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Valor-total</mat-header-cell>
               <mat-cell *matCellDef="let pedido"><a>{{
                   pedido.valorTotal
+                  }}</a></mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="situacao">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Situação</mat-header-cell>
+              <mat-cell *matCellDef="let pedido"><a>{{
+                  pedido.situacao
                   }}</a></mat-cell>
             </ng-container>
             <ng-container matColumnDef="acao">
