@@ -56,7 +56,12 @@ export class AuthService {
       },
       (error) => {
         console.error(error.error);
-        this.alertService.mensagemErro(error.error);
+        if (error.status = "404"){
+          this.alertService.mensagemExclamation('Usuario ou senha inválido!');
+        }else{
+          this.alertService.mensagemErro('Ocorreu um erro ao tentar validar o seu acesso!');
+        }
+        
         return;
       }
     );
