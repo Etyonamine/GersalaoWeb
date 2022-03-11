@@ -42,7 +42,7 @@
       <mat-form-field appearance="fill" style="width: 250px">
         <mat-label>Situação</mat-label>
         <input matInput formControlName="situacao" readonly
-        [value]="dataCancelamento == null ? '' : dataFechto | date: 'dd/MM/YYYY'  " />
+          />
       </mat-form-field>
 
       <!--         <app-msg-error
@@ -75,7 +75,7 @@
     <div class="container">
       <mat-form-field appearance="fill" >
         <mat-label>Cancelamento em:</mat-label>
-        <input matInput formControlName="dataCancelamento" readonly    />
+        <input matInput readonly [value] = "pedido.dataCancelamento | date : 'dd/MM/yyyy HH:mm:ss'"       />
       </mat-form-field>      
     </div>
     

@@ -53,6 +53,15 @@
                   pedido.valorTotal
                   }}</a></mat-cell>
             </ng-container>
+            <ng-container matColumnDef="dataCancelamento">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Cancelamento</mat-header-cell>
+              <mat-cell *matCellDef="let pedido">
+                {{
+                  pedido.dataCancelamento != null ? (pedido.dataCancelamento | date : 'dd/MM/yyyy HH:mm:ss') : ''
+                }}
+              </mat-cell>
+            </ng-container>
+
             <ng-container matColumnDef="situacao">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Situação</mat-header-cell>
               <mat-cell *matCellDef="let pedido"><a>{{
@@ -63,17 +72,20 @@
               <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
               <mat-cell *matCellDef="let pedido">
                 <button mat-mini-fab color="primary" aria-label="Editar o pedido"
+                  matTooltip="Editar o pedido"
                   [routerLink]="['/pedido', pedido.codigoCliente, pedido.codigo]">
 
-                  <mat-icon>view_comfy</mat-icon>
+                  <mat-icon>edit</mat-icon>
                 </button>
                 <button
-                  mat-mini-fab
-                  aria-label="Excluir pedido"                  
-                  (click)="openConfirmExclusao(pedido.codigo, pedido.codigoCliente)"
+                  mat-mini-fab color="accent"
+                  aria-label="Cancelar o  pedido"                                    
+                  matTooltip="Cancelar todo o pedido"
                   color="warn"
+                  [disabled] = "pedido.dataCancelamento != null"
+                  [routerLink]="['pedido-cancelar', pedido.codigoCliente, pedido.codigo]"
                 >
-                  <mat-icon>delete</mat-icon>
+                  <mat-icon>close</mat-icon>
                 </button>
               </mat-cell>
             </ng-container>

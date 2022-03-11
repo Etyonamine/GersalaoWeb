@@ -15,7 +15,7 @@ import { PedidoService } from './pedido.service';
   styleUrls: ['./pedido.component.scss']
 })
 export class PedidoComponent implements OnInit {
-  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal","situacao","acao"];
+  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal", "dataCancelamento","situacao","acao"];
   pedidos: MatTableDataSource<Pedido>;
   inscricao$: Subscription;
   codigoPedido: number;

@@ -104,12 +104,12 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.dataPedido = this.pedido != null?this.pedido.dataPedido.toString():new Date().toString();
     this.valorTotal = this.pedido != null?this.pedido.valorTotal:0;
     this.quantidadeTotal = this.pedido != null?this.pedido.quantidadeTotal:0;
-    this.dataCancelamento = (this.pedido!= null && this.pedido.dataCancelamento != null) ? this.pedido.dataCancelamento.toDateString() : null;
+    
     this.motivoCancelamento = this.pedido!= null ? this.pedido.motivoCancelamento: null;
 
     if (this.pedido != undefined){
       this.dataFechto = this.pedido.dataFechamento != null?this.pedido.dataFechamento:null;  
-      if (this.dataCancelamento != null){
+      if (this.pedido.dataCancelamento != null){
         this.situacao ="Cancelado";
       }else{
         this.situacao = this.pedido.dataFechamento != null?"Fechado":"Aberto";
@@ -158,10 +158,10 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       numeroPedido: [ this.pedido!= null ||this.pedido!=undefined ? this.pedido.numeroPedido : "0"],
       codigoCliente: [this.codigoCliente,[Validators.required]] ,            
       situacao: [ this.situacao ],
-      observacao: [{value:observParam == null ?null: observParam, disabled: (this.dataFechto != null || this.dataCancelamento!=null )? true:false}] ,
+      observacao: [{value:observParam == null ?null: observParam, disabled: (this.dataFechto != null || this.pedido.dataCancelamento!=null )? true:false}] ,
       codigoProdutoSelecionado: [{value: null, disabled: this.pedido!= undefined && this.pedido.dataFechamento != null?true:false}],
       motivoCancelamento: this.motivoCancelamento,
-      dataCancelamento: this.dataCancelamento
+      dataCancelamento: this.pedido.dataCancelamento != null ? this.pedido.dataCancelamento : null
         
     });
   }
@@ -488,7 +488,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   {
     let codigoStatus: number = 0;
     //status
-    if (this.dataCancelamento == null){
+    if (this.pedido.dataCancelamento == null){
        codigoStatus = this.dataFechto != null ? 1: 0;
     }else{
        codigoStatus = 2;

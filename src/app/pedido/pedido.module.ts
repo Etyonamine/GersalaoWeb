@@ -7,12 +7,13 @@ import { SharedModule } from '../shared/shared.module';
 import { PedidoItemComponent } from './pedido-item/pedido-item.component';
 import { PedidoFormComponent } from './pedido-form/pedido-form.component';
 import { PedidoBaixaPagtoComponent } from './pedido-baixa-pagto/pedido-baixa-pagto.component';
+import { PedidoCancelarComponent } from './pedido-cancelar/pedido-cancelar.component';
 
 @NgModule({
   declarations: [
     PedidoComponent,
     PedidoFormComponent,    
-    PedidoItemComponent, PedidoBaixaPagtoComponent
+    PedidoItemComponent, PedidoBaixaPagtoComponent, PedidoCancelarComponent
   ],
   imports: [
     CommonModule,
