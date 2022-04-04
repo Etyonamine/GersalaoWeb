@@ -1,47 +1,46 @@
-<div>
-  <p *ngIf="!servicos"><em>Carregando...</em></p>
-</div>
-<div [hidden]="!servicos">
+<div >
   <mat-card>
     <div>
       <mat-card-header>
         <mat-label>Lista de servicos</mat-label>
       </mat-card-header>
     </div>
-    <div>
-      <mat-card-content>
-        <mat-form-field [hidden]="!servicos">
-          <input
-            matInput
-            (keyup)="listarServicos($event.target.value)"
-            placeholder="Pesquisar por nome (ou parte dele)..."
-          />
-        </mat-form-field>
+    <mat-card-content>
+      <mat-form-field>
+        <input
+          matInput
+          (keyup)="listarServicos($event.target.value)"
+          placeholder="Pesquisar por nome (ou parte dele)..."
+        />
+      </mat-form-field>
 
-        <div
-          class="commands text-right"
-          style="margin-top: 5px"
-          *ngIf="servicos"
+      <div
+        class="commands text-right"
+        style="margin-top: 5px"
+      >
+        <button
+          mat-raised-button
+          color="primary"
+          [routerLink]="['servico-novo']"
         >
-          <button
-            mat-raised-button
-            color="primary"
-            [routerLink]="['servico-novo']"
+          Novo &nbsp;<i class="material-icons right">add</i>
+        </button>
+      </div>
+      <br />
+      <div>
+        <p *ngIf="!servicos" style="text-align: cente;width: 100%;"><em>Não foi encontrado serviços cadastrados.</em></p>
+      </div>
+      <div [hidden]="!servicos">
+          <table
+            mat-table
+            [dataSource]="servicos"
+            class="mat-elevation-z8"
+            [hidden]="!servicos"
+            matSort
+            (matSortChange)="listarServicos()"
+            matSortActive="{{ defaultSortColumn }}"
+            matSortDirection="{{ defaultSortOrder }}"
           >
-            Novo &nbsp;<i class="material-icons right">add</i>
-          </button>
-        </div>
-
-        <table
-          mat-table
-          [dataSource]="servicos"
-          class="mat-elevation-z8"
-          [hidden]="!servicos"
-          matSort
-          (matSortChange)="listarServicos()"
-          matSortActive="{{ defaultSortColumn }}"
-          matSortDirection="{{ defaultSortOrder }}"
-        >
           <ng-container matColumnDef="codigo">
             <mat-header-cell *matHeaderCellDef mat-sort-header
               >C&oacute;digo</mat-header-cell
@@ -133,8 +132,9 @@
           [pageSizeOptions]="[5, 10, 20, 50]"
           showFirstLastButtons
         >
-        </mat-paginator>
-      </mat-card-content>
-    </div>
+            
+      </mat-paginator> 
+      </div>  
+    </mat-card-content>   
   </mat-card>
 </div>

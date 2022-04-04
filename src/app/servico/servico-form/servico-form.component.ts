@@ -1,5 +1,5 @@
 import { TipoServicoService } from './../../tipo-servico/tipo-servico.service';
-import { Subscription } from 'rxjs';
+import { EMPTY, empty, Subscription } from 'rxjs';
 import { ServicosService } from './../servicos.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -49,7 +49,12 @@ export class ServicoFormComponent extends BaseFormComponent
       .subscribe(result => this.tipoServicos = result,
         error => {
           console.error(error);
-          this.handlerErro("Ocorreu um erro na tentativa de recuperar a lista de tipos de servico.");
+          if (error.status !== 404){
+            this.handlerErro("Ocorreu um erro na tentativa de recuperar a lista de tipos de servico.");
+          }else{
+            return EMPTY;
+          }
+          
         }
       );
       this.HabilitarBotaoApagar = this.formulario.get('codigo').value != null ? true : false;
@@ -96,6 +101,7 @@ export class ServicoFormComponent extends BaseFormComponent
     this.inscricaoTipo$ =
       this.tipoServicoService.list<TipoServico[]>()
         .subscribe(result => this.tipoServicos
+        
         );
   }
   handlerErro(msg: string) {
@@ -150,7 +156,12 @@ export class ServicoFormComponent extends BaseFormComponent
       },
         error => {
           console.error(error);
-          this.handlerErro('Erro ao validar nome e tipo de serviço.');
+          if (error.status !== 404){
+            this.handlerErro('Erro ao validar nome e tipo de serviço.');
+          }else{
+            return EMPTY;
+          }
+          
         });
 
 

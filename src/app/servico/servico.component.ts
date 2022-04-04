@@ -117,10 +117,15 @@ export class ServicoComponent implements OnInit, OnDestroy{
                     }, error=>
                     {
                       console.error(error);
-                      this.handleError('Erro ao carregar a lista de serviços. Tente novamente mais tarde.');
-                      {
+                      if (error.status!== 404){
+                        this.handleError('Erro ao carregar a lista de serviços. Tente novamente mais tarde.');
+                        
+                        
+                        
+                      }else{
                         return EMPTY;
-                      };
+                      }
+                      
                     });
 
   }
