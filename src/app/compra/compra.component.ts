@@ -95,10 +95,14 @@ export class CompraComponent implements OnInit, OnDestroy {
                     }, error=>
                     {
                       console.error(error);
-                      this.handleError()
-                      {
+                      if (error.status!== 404){
+                        this.handleError();
+                      }else{
                         return EMPTY;
-                      };
+                      }
+                       
+                       
+                      
                     });
   }
 

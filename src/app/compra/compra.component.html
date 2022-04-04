@@ -1,29 +1,28 @@
 
-<div>
-    <p *ngIf="!compras"><em>Carregando...</em></p>
-  
-  </div>
-  <div [hidden]="!compras">
+  <div>
     <mat-card>
       <div>
         <mat-card-header>
           <mat-label>Lista de Compras - efetuadas</mat-label>
         </mat-card-header>
       </div>
-      <div>
+      <div *ngIf="!compras" style="text-align: center;">
+        <h3>Não há compras efetuadas</h3>
+      </div>
+      <div >
        <mat-card-content>
-        <mat-form-field [hidden]="!compras">
+        <mat-form-field [hidden]="!compras" style="width: 100%">
           <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por compra (ou parte dele)..." />
         </mat-form-field>
   
-        <div class="commands text-right" style="margin-top: 5px;" *ngIf="compras">
+        <div class="commands text-right" style="margin-top: 5px;" >
           <button mat-raised-button
                   color="primary"
                   [routerLink]="['compra-novo']" >
             Registrar nova compra &nbsp;<i class="material-icons right">add</i>
           </button>
         </div>         
-        <div style="width: 100%;">
+        <div  [hidden]="!compras" style="width: 100%;">
           <table mat-table [dataSource]="compras" class="mat-elevation-z8" [hidden]="!compras" matSort
         
        
@@ -96,15 +95,13 @@
           <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
           <mat-row *matRowDef="let row; columns: colunas"></mat-row>
           </table>  
-        </div>
+        
         <mat-paginator [hidden]="!compras" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
           showFirstLastButtons>
         </mat-paginator>
-  
-      </mat-card-content>
       </div>
-  
-    </mat-card>
-  
+      </mat-card-content>
+      </div>  
+    </mat-card>  
   </div>
   

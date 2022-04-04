@@ -113,7 +113,10 @@ export class EstoqueComponent implements OnInit {
                     }, error=>
                     {
                       console.error(error);
-                      this.handleError()
+                      if(error.status !== 404){
+                        this.handleError();
+                      }
+                      else                      
                       {
                         return EMPTY;
                       };

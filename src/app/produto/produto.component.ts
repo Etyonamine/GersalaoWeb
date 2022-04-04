@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subscription } from 'rxjs';
+import { EMPTY, empty, Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
 import { Produto } from './produto';
@@ -78,7 +78,12 @@ export class ProdutoComponent implements OnInit {
              },
               error => {
                 console.log(error);
-                this.handleError('Ocorreu um erro na tentativa de listar os produtos');
+                if (error.status!= 404){
+                  this.handleError('Ocorreu um erro na tentativa de listar os produtos');
+                }else{
+                  return EMPTY;
+                }
+                
               });
   }
 

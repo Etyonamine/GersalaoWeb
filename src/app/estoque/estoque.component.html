@@ -1,7 +1,5 @@
-<div>
-    <p *ngIf="!estoques"><em>Carregando...</em></p>
-</div>
-<div [hidden]="!estoques">
+
+<div >
     <mat-card>
         <div>
           <mat-card-header>
@@ -10,10 +8,13 @@
         </div>
         <div>
          <mat-card-content>
-          <mat-form-field [hidden]="!estoques">
-            <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome do produto (ou parte dele)..." />
-          </mat-form-field>                  
-          <div style="width: 100%;">
+          <div style="text-align: center;">
+            <p *ngIf="!estoques"><em>Não foi encontrado registros!</em></p>
+          </div>                 
+          <div style="width: 100%;" [hidden]="!estoques">
+            <mat-form-field [hidden]="!estoques">
+              <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome do produto (ou parte dele)..." />
+            </mat-form-field> 
             <table mat-table [dataSource]="estoques" class="mat-elevation-z8" [hidden]="!estoques" matSort         
             (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
             <ng-container matColumnDef="codigo">
@@ -48,11 +49,11 @@
             </ng-container>  -->   
             <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
             <mat-row *matRowDef="let row; columns: colunas"></mat-row>
-            </table>  
+            </table>
+            <mat-paginator [hidden]="!estoques" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+              showFirstLastButtons>
+            </mat-paginator>    
           </div>
-          <mat-paginator [hidden]="!estoques" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
-            showFirstLastButtons>
-          </mat-paginator>    
         </mat-card-content>
         </div>    
       </mat-card>

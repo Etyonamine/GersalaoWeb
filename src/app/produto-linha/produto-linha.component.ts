@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
 import { ProdutoLinha } from './produto-linha';
@@ -82,7 +82,12 @@ export class ProdutoLinhaComponent implements OnInit, OnDestroy {
              },
               error => {
                 console.log(error);
-                this.handleError('Ocorreu um erro na tentativa de listar os tipos de produtos');
+                if(error.status!== 404){
+                  this.handleError('Ocorreu um erro na tentativa de listar os tipos de produtos'); 
+                }else{
+                  return EMPTY;
+                }
+               
               });
     /* this.inscricao$ = this.produtoLinhaService.list<ProdutoLinha[]>()
     .subscribe(result =>{

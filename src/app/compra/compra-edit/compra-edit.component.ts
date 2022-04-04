@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, Subscription } from 'rxjs';
+import { EMPTY, of, Subscription } from 'rxjs';
 import { concatMap, map } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { CompraDetalhe } from 'src/app/compra-detalhe/compra-detalhe';
@@ -246,7 +246,12 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     },
     error=>{
       console.log(error);
-      this.handleError('Ocorreu um erro na recuperação da lista de produtos');
+      if (error.status !==404){
+        this.handleError('Ocorreu um erro na recuperação da lista de produtos');
+      }
+      else{
+        return EMPTY;
+      }
     })
   }
   adicionarProduto()
