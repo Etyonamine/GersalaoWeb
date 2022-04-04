@@ -85,7 +85,14 @@ export class EstoqueComponent implements OnInit {
                       
                         resultado.data.forEach(reg=>{
                                               this.inscricaoProduto$ = this.produtoService.get<Produto>(reg.codigoProduto)
-                                                                    .subscribe(produto=>{reg.produto = produto});
+                                                                    .subscribe(produto=>{reg.produto = produto}, error=>
+                                                                      {
+                                                                        console.error(error);
+                                                                        this.handleError()
+                                                                        {
+                                                                          return EMPTY;
+                                                                        };
+                                                                      });
                         });
 
                       return of (resultado);
