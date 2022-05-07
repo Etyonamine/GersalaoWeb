@@ -19,4 +19,5 @@ export class ProfissionalService extends BaseService<Profissional>{
   Atualizar(recurso: Profissional){
     return this.http.put(this.url, recurso).pipe(take(1));
   }
+  
 }

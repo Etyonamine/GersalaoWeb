@@ -11,7 +11,7 @@ import { ProfissionalEndereco } from '../profissional-endereco/profissional-ende
 import { ProfissionalContato } from '../profissional-contato/profissional-contato';
 import { ProfissionalDocumento } from '../profissional-documento/profissional-documento';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { concatMap, map } from 'rxjs/operators';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,6 +25,16 @@ import { ContatoFormComponent } from 'src/app/contato/contato-form/contato-form.
 import { Contato } from 'src/app/contato/contato';
 import { DocumentoFormComponent } from 'src/app/documento/documento-form/documento-form.component';
 import { ProfissionalTipoServico } from '../profissional-tipo-servico/profissional-tipo-servico';
+import { AgendaServicosService } from 'src/app/agenda-servicos/agenda-servicos.service';
+import { ProfissionalDocumentoService } from '../profissional-documento/profissional-documento.service';
+import { ProfissionalContatoService } from '../profissional-contato/profissional-contato.service';
+import { ContatoService } from 'src/app/contato/contato.service';
+import { DocumentoService } from 'src/app/documento/documento.service';
+import { ProfissionalEnderecoService } from '../profissional-endereco/profissional-endereco.service';
+import { EnderecoService } from 'src/app/endereco/endereco.service';
+import { ProfissionalTipoServicoService } from '../profissional-tipo-servico/profissional-tipo-servico.service';
+import { ProfissionalServicoService } from '../profissional-servico/profissional-servico.service';
+
 
 @Component({
   selector: 'app-profissional-form',
@@ -51,6 +61,18 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   inscricaoMunicipio$: Subscription;
   inscricaoTipoServico$: Subscription;
   inscricaoAuthService$: Subscription;
+  inscricaoAgendaServicosService$: Subscription;
+  inscricaoProfissionalDocumentoService$: Subscription;
+  inscricaoProfissionalContatoService$: Subscription;
+  inscricaoDocumentoService$: Subscription;
+  inscricaoProfissionalEnderecoService$: Subscription;
+  inscricaoEnderecoService$: Subscription;
+  inscricaoProfissionalTipoServicoService$: Subscription;
+  inscricaoProfissionalServicoService$: Subscription;
+  inscricaoProfissionalService$: Subscription;
+
+  
+
   allChecked: boolean = false;
   habilitaApagar = false;
 
@@ -68,11 +90,21 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
   constructor(private formBuilder: FormBuilder,
               private profissionalService: ProfissionalService,
+              private profissionalContatoService: ProfissionalContatoService,
+              private contatoService: ContatoService,
+              private profissionalDocumentoService: ProfissionalDocumentoService,
+              private documentoService: DocumentoService,
+              private profissionalEnderecoService: ProfissionalEnderecoService,
+              private enderecoService: EnderecoService,
+              private profissionalTipoServicoService:ProfissionalTipoServicoService,
+              private profissionalServicoService: ProfissionalServicoService,              
+              private agendaServicoService: AgendaServicosService,
               private serviceAlert: AlertService,
               private router: Router,
               private route: ActivatedRoute,
               private tipoServicoService: TipoServicoService,
               private authService: AuthService,
+              private alertService: AlertService,
               public dialog: MatDialog    ) {
       super();
     }
@@ -106,6 +138,33 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     }
     if (this.inscricaoAuthService$) {
       this.inscricaoAuthService$.unsubscribe();
+    }
+    if(this.inscricaoAgendaServicosService$){
+      this.inscricaoAgendaServicosService$.unsubscribe();
+    }
+    if (this.inscricaoProfissionalContatoService$){
+      this.inscricaoProfissionalContatoService$.unsubscribe();
+    }
+    if (this.inscricaoProfissionalDocumentoService$){
+      this.inscricaoProfissionalDocumentoService$.unsubscribe();
+    }
+    if (this.inscricaoDocumentoService$){
+        this.inscricaoDocumentoService$.unsubscribe();
+    }
+    if(this.inscricaoProfissionalEnderecoService$){
+      this.inscricaoProfissionalEnderecoService$.unsubscribe();
+    }
+    if (this.inscricaoEnderecoService$){
+      this.inscricaoEnderecoService$.unsubscribe();
+    }
+    if (this.inscricaoProfissionalTipoServicoService$){
+      this.inscricaoProfissionalTipoServicoService$.unsubscribe();
+    }
+    if (this.inscricaoProfissionalServicoService$){
+      this.inscricaoProfissionalServicoService$.unsubscribe();      
+    }
+    if(this.inscricaoProfissionalService$){
+      this.inscricaoProfissionalService$.unsubscribe();
     }
   }
 
@@ -177,7 +236,119 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   handlerSuccess(msg: string) {
     this.serviceAlert.mensagemSucesso(msg);
   }
-  openConfirmExclusao() { }
+  openConfirmExclusao( ) {
+    //validar se o profissional possui agendamentos associados
+    this.inscricaoAgendaServicosService$ = this.agendaServicoService.quantidadePorProfissional(this.profissional.codigo).subscribe(
+        result=>{
+          if (result > 0 ){
+            this.handleError('Atenção!Existem agendamentos com este profissional!Não será possível excluir');
+            return ;
+          }
+          //tenta excluir
+          this.alertService.openConfirmModal('Tem certeza que deseja excluir?', 'Excluir - Cliente', (resposta: boolean) => {
+            if (resposta) {
+              //excluir documentos do profissional
+              let listaDocumentos : ProfissionalDocumento[] ;
+              let listaContatos : ProfissionalContato[] ;
+              let listaEnderecos: ProfissionalEndereco[];
+              let listaTipoServico: ProfissionalTipoServico[];
+
+              //documentos
+              this.inscricaoProfissionalDocumentoService$ = this.profissionalDocumentoService.ListaPorProfissional(this.profissional.codigo).subscribe(
+                result=>{
+                  listaDocumentos = result;
+                  this.profissionalDocumentoService.ExcluirTodosPorProfissional(listaDocumentos).subscribe(
+                    result=>{
+                      listaDocumentos.forEach(documento=>{
+                        this.inscricaoDocumentoService$ = this.documentoService.delete(documento.codigoDocumento).subscribe();
+                      })
+                    }
+                  )
+
+                } ,error=>
+                {
+                  console.log(error);
+                  this.handleError('Ocorreu um erro ao tentar excluir os documentos do profissional!');
+                }       
+              );
+
+              //contato  
+              this.inscricaoProfissionalContatoService$ = this.profissionalContatoService.ListaPorProfissional(this.profissional.codigo).subscribe(
+                result=>{
+                  listaContatos = result;
+                  //excluir os documentos do profissional
+                  this.profissionalContatoService.ExcluirTodos(listaContatos).subscribe(result=>{
+                      //excluir os contatos
+                      listaContatos.forEach(contato=>{
+                        this.contatoService.delete(contato.codigoContato).subscribe();
+                      });
+                    //  this.handlerSuccess('contatos excluidos com sucesso!')
+                  },
+                  error=>{
+                    console.log(error);              
+                  }
+                  );
+                },
+                error=>{
+                  console.log(error);
+                  this.handleError('Ocorreu um erro ao tentar excluir os contatos do profissional!');
+                }
+              );
+
+              //endereco
+              this.inscricaoProfissionalEnderecoService$ = this.profissionalEnderecoService.get<ProfissionalEndereco[]>(this.profissional.codigo).subscribe(                
+                result=>{
+                  listaEnderecos = result;
+                  //excluir o profissianal endereco e endereco
+                  listaEnderecos.forEach(endereco =>{
+                    this.profissionalEnderecoService.excluirTodos(endereco.codigoProfissional, endereco.codigoEndereco)
+                        .subscribe(result=>{},error=>{console.log(error);this.handleError('Ocorreu um erro ao excluir o endereço do profissional')});
+                    this.enderecoService.delete(endereco.codigoEndereco)                        
+                        .subscribe(result=>{},error=>{console.log(error);this.handleError('Ocorreu um erro ao excluir o endereço')});                    
+                  });                  
+
+                },
+                error=>{
+                  console.log(error);
+                  this.handleError('Ocorreu um erro ao excluir o endereço do profissional');
+                }
+              );
+              
+              //profissional
+              this.inscricaoProfissionalService$ = this.profissionalService.delete(this.profissional.codigo).subscribe(
+                result=>{
+                  this.handlerSuccess('Cadastro excluido com sucesso!')
+                  setTimeout(()=>{this.retornar();},3000);
+                  
+                },
+                error=>
+                {
+                  console.log(error);
+                  this.handleError('Ocorreu um erro ao excluir o cadastro do Profissional');
+
+                }
+              )
+
+            }
+          }, "Sim", "Não"
+          );
+        },
+        error=>{
+          console.log(error);
+          
+          if(error.status !== 404){
+            this.handleError('Profissional não existe para a exclusão!Por favor, verificar.');
+          }
+          else                      
+          {
+            this.handleError('Ocorreu um erro ao tentar excluir o profissional');
+          };
+          return;
+        }
+    )
+
+    
+   }
 
   // ** validar se existe*/
   isDupeProfissional(): AsyncValidatorFn {

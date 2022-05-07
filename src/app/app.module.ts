@@ -36,6 +36,8 @@ import { PedidoModule } from './pedido/pedido.module';
 
 import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
+import { AgendaComponent } from './agenda/agenda.component';
+import { AgendaServicosComponent } from './agenda-servicos/agenda-servicos.component';
 
 registerLocaleData(localePt);
 
@@ -46,7 +48,9 @@ registerLocaleData(localePt);
     LoginComponent,
     HomeComponent,
     PaginaNaoEncontradaComponent,
-    TwoDecimalNumberDirective
+    TwoDecimalNumberDirective,
+    AgendaComponent,
+    AgendaServicosComponent
    ],
   imports: [
     BrowserModule,
