@@ -78,6 +78,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
   // tslint:disable-next-line: ban-types
   optionSituacao: Array<Object> = [{ value: 1, name: 'Ativo' }, { value: 2, name: 'Inativo' }];
+  optionTipoServico: TipoServico[];
   estados: Array<UnidadeFederativa> = [];
   municipios: Array<Municipio> = [];
   tipoServicos: Array<TipoServico> = [];
@@ -85,6 +86,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
   dadosEndereco: Endereco;
   dadosContato: Contato;
   codigoUsuario: number;
+  codigoTipoServico: number;
 
   salvarRegistro$: Subscription;
 
@@ -95,10 +97,8 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
               private profissionalDocumentoService: ProfissionalDocumentoService,
               private documentoService: DocumentoService,
               private profissionalEnderecoService: ProfissionalEnderecoService,
-              private enderecoService: EnderecoService,
-              private profissionalTipoServicoService:ProfissionalTipoServicoService,
-              private profissionalServicoService: ProfissionalServicoService,              
-              private agendaServicoService: AgendaServicosService,
+              private enderecoService: EnderecoService,                     
+              private agendaServicoService: AgendaServicosService,              
               private serviceAlert: AlertService,
               private router: Router,
               private route: ActivatedRoute,
@@ -114,11 +114,12 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.codigo = (this.profissional.codigo !== null && this.profissional.codigo !== undefined) ? this.profissional.codigo : 0;
     this.tituloPagina = this.codigo === 0 ? 'Novo Registro' : 'Alterar o registro';
     this.habilitaApagar = this.codigo === 0 ? true : false;
+    this.listarTipoServico();
     this.criarFormulario();
     this.dadosEndereco =  {} as Endereco;
     this.authService.getUserData();
     this.codigoUsuario = this.authService.usuarioLogado.Codigo;
-
+    
   }
 
   ngOnDestroy(): void {
@@ -225,7 +226,8 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
       nome: [this.profissional.nome === undefined ? null : this.profissional.nome, [Validators.required, this.isDupeProfissional]],
       dataAniversario: [ dataAniversario === undefined ? null : dataAniversario, [Validators.pattern(patternDataAniversario)]],
       codigoSituacao: [this.profissional.codigoSituacao === undefined ? 1 : this.profissional.codigoSituacao, [Validators.required]],
-      observacao: [this.profissional.observacao === undefined ? null : this.profissional.observacao]
+      observacao: [this.profissional.observacao === undefined ? null : this.profissional.observacao],
+      codigoTipoServico: [this.profissional.codigoTipoServico == undefined ? null : this.profissional.codigoTipoServico]
     });
 
   }
@@ -368,6 +370,17 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     };
   }
 
+  listarTipoServico(){
+    this.tipoServicoService.list<TipoServico[]>().subscribe(
+      result=>{
+        this.optionTipoServico = result;
+      },
+      error=>{
+        console.log(error);
+        this.handleError('Ocorreu um erro ao listar o tipo de serviço');
+      }
+    )
+  }
   retornar() {
     this.router.navigate(['/profissional']);
   }
@@ -387,16 +400,16 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
     // atualizacao
     if (this.profissional.codigo > 0 ) {
-      this.profissional.codigousuarioalteracao =  this.codigoUsuario ;
+      this.profissional.codigoUsuarioAlteracao =  this.codigoUsuario ;
     } else {
-      this.profissional.codigousuariocadastro =  this.codigoUsuario ;
+      this.profissional.codigoUsuarioCadastro =  this.codigoUsuario ;
     }
 
     this.profissional.nome = valueSubmit.nome;
     if (dataNiver !== null) {
       this.profissional.dataAniversario = dataNiver;
     }
-
+    this.profissional.codigoTipoServico = valueSubmit.codigoTipoServico;
     this.profissional.codigoSituacao = valueSubmit.codigoSituacao;
     this.profissional.observacao = valueSubmit.observacao;
  

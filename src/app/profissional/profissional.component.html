@@ -72,6 +72,18 @@
               profissional.nome
               }}</a></mat-cell>
         </ng-container>        
+        <ng-container matColumnDef="tiposervico">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+          <mat-cell *matCellDef="let profissional"><a >{{
+              profissional.TipoServico.descricao
+              }}</a></mat-cell>
+        </ng-container> 
+        <ng-container matColumnDef="situacao">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+          <mat-cell *matCellDef="let profissional"><a >{{
+              profissional.Situacao.descricao
+              }}</a></mat-cell>
+        </ng-container>        
         <ng-container matColumnDef="datacadastro">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Cadastro</mat-header-cell>
           <mat-cell *matCellDef="let profissional">{{

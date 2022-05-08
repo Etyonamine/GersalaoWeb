@@ -7,6 +7,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Component, OnDestroy, OnInit,  ViewChild } from '@angular/core';
 import { Profissional } from './professional';
 import { ApiResult } from '../shared/base.service';
+import { TipoServicoResolveGuard } from '../tipo-servico/guard/tipo-servico-resolver.guard';
+import { TipoServicoService } from '../tipo-servico/tipo-servico.service';
 
 
 @Component({
@@ -22,7 +24,7 @@ export class ProfissionalComponent implements OnInit, OnDestroy {
   inscricao$  : Subscription;
 
 
-  public colunas: string[]=["codigo","nome", "datacadastro","dataalteracao", "acao"];
+  public colunas: string[]=["codigo","nome", "tiposervico", "situacao","datacadastro","dataalteracao", "acao"];
 
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
@@ -37,6 +39,7 @@ export class ProfissionalComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort) sort:MatSort;
 
   constructor(private service: ProfissionalService,
+              private tipoServicoService : TipoServicoService,
               private serviceAlert : AlertService) { }
 
   ngOnInit(): void {
@@ -62,7 +65,7 @@ export class ProfissionalComponent implements OnInit, OnDestroy {
     this.getData(pageEvent);
 
   }
-
+  
   getData(event:PageEvent)
   {
     var sortColumn = (this.sort)?this.sort.active:this.defaultSortColumn;

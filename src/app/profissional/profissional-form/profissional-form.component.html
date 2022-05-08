@@ -64,7 +64,30 @@
         ></textarea>
       </mat-form-field>
     </div>
-
+    <!--  *ngIf="optionTipoServico" 
+      style="width: 150px"
+    -->
+    <div class="form-group mat-container">
+      <mat-form-field
+      
+      appearance="fill"
+      
+    >
+      <mat-label>Selecione da lista</mat-label>
+      <mat-select
+        formControlName="codigoTipoServico"
+        matTooltip="Tipo de serviço do Profissional"
+        required
+      >
+        <mat-option
+          *ngFor="let option of optionTipoServico"
+          [value]="option.codigo"
+        >
+          {{ option.descricao }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    </div>
     <div>
       <app-msg-error
         [mostrarErro]="
@@ -82,6 +105,7 @@
         [mostrarErro]="formulario.get('dataAniversario').hasError('pattern')"
         mensagemErro="A data está com formato incorreto!"
       ></app-msg-error>
+      
     </div>
     <div>
     </div>
