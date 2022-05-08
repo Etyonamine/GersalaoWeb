@@ -1,14 +1,15 @@
-import { ProfissionalTipoServico } from './profissional-tipo-servico/profissional-tipo-servico';
-import { TipoServico } from '../tipo-servico/tipo-servico';
 import { ProfissionalContato } from './profissional-contato/profissional-contato';
 import { ProfissionalDocumento } from './profissional-documento/profissional-documento';
 import { ProfissionalEndereco } from './profissional-endereco/profissional-endereco';
+import { TipoServico } from '../tipo-servico/tipo-servico';
+import { Situacao } from '../situacao/situacao';
 
 export interface Profissional{
   codigo: number;
-  codigousuariocadastro: number;
-  codigousuarioalteracao: number;
+  codigoUsuarioCadastro: number;
+  codigoUsuarioAlteracao: number;
   codigoSituacao: number;
+  codigoTipoServico: number;
   nome: string;
   dataAniversario: Date;
   dataAlteracao: Date;
@@ -17,5 +18,6 @@ export interface Profissional{
   profissionalContato: ProfissionalContato;
   profissionalDocumento: ProfissionalDocumento;
   profissionalEndereco: ProfissionalEndereco;    
-  listatiposervico: Array<ProfissionalTipoServico>;
+  TipoServico: Array<TipoServico>;
+  Situacao: Situacao;
 }
