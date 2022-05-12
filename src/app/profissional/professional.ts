@@ -21,3 +21,4 @@ export interface Profissional{
   TipoServico: Array<TipoServico>;
   Situacao: Situacao;
 }
+ 
