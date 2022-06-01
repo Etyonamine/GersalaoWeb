@@ -1,3 +1,4 @@
+import { Fornecedor } from "../fornecedor/fornecedor";
 import { Situacao } from "../situacao/situacao";
 import { TipoProduto } from "../tipo-produto/tipo-produto";
 
@@ -12,5 +13,6 @@ export interface Produto{
     observacao: string;
     tipoProduto: TipoProduto;
     situacao: Situacao;    
+    fornecedor: Fornecedor;
     
 }

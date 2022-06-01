@@ -4,6 +4,8 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { Fornecedor } from 'src/app/fornecedor/fornecedor';
+import { FornecedorService } from 'src/app/fornecedor/fornecedor.service';
 import { ProdutoLinha } from 'src/app/produto-linha/produto-linha';
 import { ProdutoLinhaService } from 'src/app/produto-linha/produto-linha.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -26,8 +28,10 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   codigo: number;
   codigoSituacao: number;
   tipos: Array<TipoProduto> =[];
+  fornecedores: Array<Fornecedor>=[];
   linhas: Array<ProdutoLinha>=[];
   produto: Produto;
+  inscricaoFornecedor$: Subscription;
   inscricaoTipo$: Subscription;
   inscricaoLinhas$: Subscription;
   inscricaoProduto$: Subscription;
@@ -37,6 +41,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   constructor(
       private formBuilder:FormBuilder,
       private alertService: AlertService,
+      private fornecedorService: FornecedorService,
       private tipoProdutoService: TipoProdutoService,
       private linhaProdutoService:ProdutoLinhaService,
       private produtoService: ProdutoService,
@@ -60,6 +65,9 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     if(this.inscricaoLinhas$){
       this.inscricaoLinhas$.unsubscribe();
     }
+    if (this.inscricaoFornecedor$){
+      this.inscricaoFornecedor$.unsubscribe();
+    }
   }
   criarFormulario(){
     
@@ -70,9 +78,15 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
       linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
       codigoFornecedor:[(this.codigo==0?null:this.data.codigoFornecedor)],
+      fornecedor: [(this.codigo ==0?null: this.data.fornecedor.codigo)],
       situacao : [this.codigoSituacao.toString(),Validators.required],
       valorComissao : [ this.data.valorComissao]
     });
+  }
+  listarFornecedor(){
+    this.inscricaoFornecedor$ = this.fornecedorService.list<Fornecedor[]>().subscribe(result=>{
+      this.fornecedores = result;
+    })
   }
   carregarTipos(){
     this.inscricaoTipo$ = this.tipoProdutoService.getData<ApiResult<TipoProduto>>(
