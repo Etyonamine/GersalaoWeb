@@ -4,6 +4,8 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { Fornecedor } from 'src/app/fornecedor/fornecedor';
+import { FornecedorService } from 'src/app/fornecedor/fornecedor.service';
 import { ProdutoLinha } from 'src/app/produto-linha/produto-linha';
 import { ProdutoLinhaService } from 'src/app/produto-linha/produto-linha.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -26,8 +28,10 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   codigo: number;
   codigoSituacao: number;
   tipos: Array<TipoProduto> =[];
+  fornecedores: Array<Fornecedor>=[];
   linhas: Array<ProdutoLinha>=[];
   produto: Produto;
+  inscricaoFornecedor$: Subscription;
   inscricaoTipo$: Subscription;
   inscricaoLinhas$: Subscription;
   inscricaoProduto$: Subscription;
@@ -37,6 +41,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   constructor(
       private formBuilder:FormBuilder,
       private alertService: AlertService,
+      private fornecedorService: FornecedorService,
       private tipoProdutoService: TipoProdutoService,
       private linhaProdutoService:ProdutoLinhaService,
       private produtoService: ProdutoService,
@@ -47,6 +52,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   ngOnInit(): void {
     this.codigo = this.data.codigo;//codigo do produto    
     this.codigoSituacao = this.codigo ==0?1:this.data.codigoSituacao;
+    this.listarFornecedor();
     this.carregarTipos();
     this.carregarLinhas();
     this.criarFormulario();
@@ -60,6 +66,9 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     if(this.inscricaoLinhas$){
       this.inscricaoLinhas$.unsubscribe();
     }
+    if (this.inscricaoFornecedor$){
+      this.inscricaoFornecedor$.unsubscribe();
+    }
   }
   criarFormulario(){
     
@@ -69,10 +78,19 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       observacao: [(this.codigo==0?null:this.data.observacao)], 
       tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
       linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
-      codigoFornecedor:[(this.codigo==0?null:this.data.codigoFornecedor)],
+      codigoChaveFornecedor:[(this.codigo==0?null:this.data.codigoChaveFornecedor)],      
+      codigoFornecedor: [(this.codigo ==0?null: this.data.codigoFornecedor),Validators.required],
       situacao : [this.codigoSituacao.toString(),Validators.required],
       valorComissao : [ this.data.valorComissao]
     });
+  }
+  listarFornecedor(){
+    this.inscricaoFornecedor$ = this.fornecedorService.listar().subscribe(result=>{
+      this.fornecedores = result;
+    }, error=>{
+      console.log(error);
+      this.handleError('Ocorreu um erro ao listar o fornecedor');
+    })
   }
   carregarTipos(){
     this.inscricaoTipo$ = this.tipoProdutoService.getData<ApiResult<TipoProduto>>(
@@ -141,6 +159,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     this.produto = {
       codigo: this.codigo,
       nome :   this.formulario.get("nome").value,
+      codigoChaveFornecedor : this.formulario.get("codigoChaveFornecedor").value !== null ?this.formulario.get("codigoChaveFornecedor").value:null ,
       codigoFornecedor : this.formulario.get("codigoFornecedor").value !== null ?this.formulario.get("codigoFornecedor").value:0 ,
       codigoTipoProduto : this.formulario.get("tipo").value,
       codigoSituacao : this.formulario.get("situacao").value,

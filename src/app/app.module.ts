@@ -38,6 +38,7 @@ import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
 import { AgendaComponent } from './agenda/agenda.component';
 import { AgendaServicosComponent } from './agenda-servicos/agenda-servicos.component';
+import { FornecedorComponent } from './fornecedor/fornecedor.component';
 
 registerLocaleData(localePt);
 
@@ -50,7 +51,8 @@ registerLocaleData(localePt);
     PaginaNaoEncontradaComponent,
     TwoDecimalNumberDirective,
     AgendaComponent,
-    AgendaServicosComponent
+    AgendaServicosComponent,
+    FornecedorComponent
    ],
   imports: [
     BrowserModule,
