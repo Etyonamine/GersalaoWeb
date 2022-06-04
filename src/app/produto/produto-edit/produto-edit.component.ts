@@ -52,6 +52,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   ngOnInit(): void {
     this.codigo = this.data.codigo;//codigo do produto    
     this.codigoSituacao = this.codigo ==0?1:this.data.codigoSituacao;
+    this.listarFornecedor();
     this.carregarTipos();
     this.carregarLinhas();
     this.criarFormulario();
@@ -77,15 +78,18 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
       observacao: [(this.codigo==0?null:this.data.observacao)], 
       tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
       linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
-      codigoFornecedor:[(this.codigo==0?null:this.data.codigoFornecedor)],
-      fornecedor: [(this.codigo ==0?null: this.data.fornecedor.codigo)],
+      codigoChaveFornecedor:[(this.codigo==0?null:this.data.codigoChaveFornecedor)],      
+      codigoFornecedor: [(this.codigo ==0?null: this.data.codigoFornecedor),Validators.required],
       situacao : [this.codigoSituacao.toString(),Validators.required],
       valorComissao : [ this.data.valorComissao]
     });
   }
   listarFornecedor(){
-    this.inscricaoFornecedor$ = this.fornecedorService.list<Fornecedor[]>().subscribe(result=>{
+    this.inscricaoFornecedor$ = this.fornecedorService.listar().subscribe(result=>{
       this.fornecedores = result;
+    }, error=>{
+      console.log(error);
+      this.handleError('Ocorreu um erro ao listar o fornecedor');
     })
   }
   carregarTipos(){
@@ -155,6 +159,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     this.produto = {
       codigo: this.codigo,
       nome :   this.formulario.get("nome").value,
+      codigoChaveFornecedor : this.formulario.get("codigoChaveFornecedor").value !== null ?this.formulario.get("codigoChaveFornecedor").value:null ,
       codigoFornecedor : this.formulario.get("codigoFornecedor").value !== null ?this.formulario.get("codigoFornecedor").value:0 ,
       codigoTipoProduto : this.formulario.get("tipo").value,
       codigoSituacao : this.formulario.get("situacao").value,

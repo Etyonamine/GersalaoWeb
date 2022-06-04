@@ -18,7 +18,7 @@ import { ProdutoService } from './produto.service';
 export class ProdutoComponent implements OnInit {
   produto: Produto;
   produtos: MatTableDataSource<Produto>;
-  colunas: string[] =["codigo","tipo","nome", "acao"];
+  colunas: string[] =["codigo","tipo","nome","fornecedor", "acao"];
 
   
   public defaultSortColumn:string = "nome";

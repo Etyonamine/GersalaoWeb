@@ -5,6 +5,7 @@ import { TipoProduto } from "../tipo-produto/tipo-produto";
 export interface Produto{
     codigo: number;
     codigoFornecedor: number;
+    codigoChaveFornecedor: string;
     codigoTipoProduto: number;
     codigoSituacao: number;
     codigoLinha: number;

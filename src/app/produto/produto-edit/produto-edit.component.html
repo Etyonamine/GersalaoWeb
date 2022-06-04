@@ -50,7 +50,7 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-              <mat-form-field>
+              <mat-form-field appearance="fill">
                 <mat-label>% Comiss&aacute;o</mat-label>
                 <input matInput 
                     [(ngModel)] ="valorComissaoField"
@@ -82,14 +82,14 @@
 
               </mat-form-field>
               <mat-form-field appearance="fill" style="width: 200px">
-                <mat-label>Código do Fornecedor</mat-label>
-                <input matInput formControlName="codigoFornecedor" readonly />
+                <mat-label>Código no Fornecedor</mat-label>
+                <input matInput formControlName="codigoChaveFornecedor" readonly />
               </mat-form-field>    
               <!-- Fornecedor -->        
-              <mat-form-field>
-                <mat-label>Tipo</mat-label>
+              <mat-form-field appearance="fill">
+                <mat-label>Fornecedor</mat-label>
                 <mat-select
-                  formControlName="fornecedor"
+                  formControlName="codigoFornecedor"
                   matTooltip="Fornecedor"
                   required
                 >
