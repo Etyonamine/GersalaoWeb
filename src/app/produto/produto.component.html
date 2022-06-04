@@ -32,6 +32,10 @@
               <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
               <mat-cell *matCellDef="let produto"> {{ produto.nome }} </mat-cell>
             </ng-container>
+            <ng-container matColumnDef="fornecedor">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+              <mat-cell *matCellDef="let produto"> {{ produto.fornecedor.nome }} </mat-cell>
+            </ng-container>
             <ng-container matColumnDef="acao">              
               <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
             <mat-cell *matCellDef="let produtos">
