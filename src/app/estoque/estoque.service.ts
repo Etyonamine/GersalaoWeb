@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { $ } from 'protractor';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { BaseService } from '../shared/base.service';
 import { Estoque } from './estoque';
 
