@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { BaseService } from 'src/app/shared/base.service';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { PedidoItem } from './pedido-item';
 
 @Injectable({

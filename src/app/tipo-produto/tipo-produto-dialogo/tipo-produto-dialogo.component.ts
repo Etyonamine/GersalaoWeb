@@ -6,7 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
-import { environment } from 'src/environments/environment.prod';
+import { environment } from 'src/environments/environment';
 import { TipoProduto } from '../tipo-produto';
 import { TipoProdutoService } from '../tipo-produto.service';
 
