@@ -3,7 +3,7 @@ import { decimalDigest } from '@angular/compiler/src/i18n/digest';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
 import { Fornecedor } from 'src/app/fornecedor/fornecedor';
 import { FornecedorService } from 'src/app/fornecedor/fornecedor.service';
 import { ProdutoLinha } from 'src/app/produto-linha/produto-linha';
@@ -88,8 +88,13 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     this.inscricaoFornecedor$ = this.fornecedorService.listar().subscribe(result=>{
       this.fornecedores = result;
     }, error=>{
-      console.log(error);
-      this.handleError('Ocorreu um erro ao listar o fornecedor');
+      if (error.status !== 404) {
+        console.log(error);
+        this.handleError('Ocorreu um erro ao listar o fornecedor');
+      } else {
+        return EMPTY;
+      }
+     
     })
   }
   carregarTipos(){
@@ -106,11 +111,17 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
         });        
             
     },error=>{
-      console.log(error);
-      this.handleError('Ocorreu erro ao listar os tipos');
+      if (error.status !== 404) {
+        console.log(error);
+        this.handleError('Ocorreu erro ao listar os tipos');
+      } else {
+        return EMPTY;
+      }
+     
     });
   }
   carregarLinhas(){
+    this.linhas = [];
     this.inscricaoLinhas$ = this.linhaProdutoService.getData<ApiResult<ProdutoLinha>>(
       0,
       100,
@@ -124,8 +135,13 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
         });        
             
     },error=>{
-      console.log(error);
-      this.handleError('Ocorreu erro ao listar as linhas de produto');
+      if (error.status !== 404) {
+        console.log(error);
+        this.handleError('Ocorreu erro ao listar as linhas de produto');
+      } else {
+        return EMPTY;
+      }
+    
     });
   }
   openConfirmExclusao(){

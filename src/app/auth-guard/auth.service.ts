@@ -4,7 +4,6 @@ import { LoginService } from './../login/login.service';
 import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from './../login/login';
-import { NullTemplateVisitor } from '@angular/compiler';
 
 
 @Injectable({

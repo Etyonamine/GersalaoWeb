@@ -1,6 +1,5 @@
 import { AlertService } from './../shared/alert/alert.service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { AuthService } from '../auth-guard/auth.service';
 import { Login } from './login';
 
