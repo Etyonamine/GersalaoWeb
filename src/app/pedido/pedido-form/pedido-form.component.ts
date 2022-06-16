@@ -158,10 +158,10 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       numeroPedido: [ this.pedido!= null ||this.pedido!=undefined ? this.pedido.numeroPedido : "0"],
       codigoCliente: [this.codigoCliente,[Validators.required]] ,            
       situacao: [ this.situacao ],
-      observacao: [{value:observParam == null ?null: observParam, disabled: (this.dataFechto != null || this.pedido.dataCancelamento!=null )? true:false}] ,
+      observacao: [{value:observParam == null ?null: observParam, disabled: (this.dataFechto != null  )? true:false}] ,
       codigoProdutoSelecionado: [{value: null, disabled: this.pedido!= undefined && this.pedido.dataFechamento != null?true:false}],
       motivoCancelamento: this.motivoCancelamento,
-      dataCancelamento: this.pedido.dataCancelamento != null ? this.pedido.dataCancelamento : null
+      dataCancelamento: (this.pedido != null && this.pedido.dataCancelamento != null )? this.pedido.dataCancelamento : null
         
     });
   }
@@ -488,15 +488,23 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   {
     let codigoStatus: number = 0;
     //status
-    if (this.pedido.dataCancelamento == null){
-       codigoStatus = this.dataFechto != null ? 1: 0;
-    }else{
-       codigoStatus = 2;
+    if (this.pedido != null ){
+
+      codigoStatus = this.dataFechto != null ? 1: 0;
+
+      if (this.pedido.dataCancelamento == null){
+        codigoStatus = 2;
+      }    
     }   
 
     //criando o objeto que será gravado
     let pedidoGravar = this.pedido !=null ? this.pedido: { codigo : 0 , codigoCliente : this.codigoCliente} as Pedido;
-    let itensPedidoGravar = this.itensPedidos2;
+    let itensPedidoGravar : Array<PedidoItem> = [];
+    this.itensPedidos2.forEach( item=>{
+        itensPedidoGravar.push(item);
+      }      
+    )
+    
 
     pedidoGravar.codigoStatus  = codigoStatus;
 
@@ -569,7 +577,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                 });
               }
 
-              this.handlerSuccess('Registro salvo com sucesso!');        
+              this.handlerSuccess('Registro salvo com sucesso!');  
+              setTimeout(() => { this.retornar(); }, 3000);      
             }
           });
         

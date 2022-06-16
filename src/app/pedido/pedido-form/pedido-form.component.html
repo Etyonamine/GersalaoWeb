@@ -75,7 +75,9 @@
     <div class="container">
       <mat-form-field appearance="fill" >
         <mat-label>Cancelamento em:</mat-label>
-        <input matInput readonly [value] = "pedido.dataCancelamento | date : 'dd/MM/yyyy HH:mm:ss'"       />
+        <input matInput 
+          readonly 
+          formControlName = "dataCancelamento"    />
       </mat-form-field>      
     </div>
     
