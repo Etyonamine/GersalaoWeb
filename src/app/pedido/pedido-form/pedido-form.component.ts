@@ -1,21 +1,18 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { timeStamp } from 'console';
-import { now } from 'moment';
-import { EMPTY, of, Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Cliente } from 'src/app/cliente/cliente';
 import { ClienteService } from 'src/app/cliente/cliente.service';
 import { Estoque } from 'src/app/estoque/estoque';
 import { EstoqueService } from 'src/app/estoque/estoque.service';
+import { ProdutoLinhaEditDialogComponent } from 'src/app/produto-linha/produto-linha-edit-dialog/produto-linha-edit-dialog.component';
 import { Produto } from 'src/app/produto/produto';
-import { ProdutoService } from 'src/app/produto/produto.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
@@ -53,10 +50,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   dataPedido: string;
   valorTotal: number;
   quantidadeTotal:number;
-  dataFechto: Date;
-  dataCancelamento: string;
-  motivoCancelamento:string;
-
+   mostraListaProduto : boolean;
 
   situacao: string;
   quantidadeProdutoSel: number;
@@ -74,13 +68,16 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   tituloPagina:string;
   formulario: FormGroup;
   inscricao$: Subscription;
-  inscricaoItem$: Subscription;
-  inscricaoProduto$:Subscription;
+  inscricaoPedido$:Subscription;
+  inscricaoItem$: Subscription;  
   inscricaoEstoque$:Subscription;
+  inscricaoProduto$:Subscription;
+
   inscricaoErroGravar$:Subscription;
   inscricaoDelete$: Subscription;
   inscricaoAdicionarEstoque$: Subscription;
   inscricaoValorCusto$: Subscription;
+
 
   constructor(private route: ActivatedRoute,
               private formBuilder: FormBuilder,
@@ -101,14 +98,15 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.codigoCliente = this.pedido != null?this.pedido.codigoCliente:null;
     this.codigoPedido = this.pedido != null?this.pedido.codigo:0;
     this.tituloPagina = this.pedido != null?"Editar":"Novo";
-    this.dataPedido = this.pedido != null?this.pedido.dataPedido.toString():new Date().toString();
+    this.dataPedido = this.pedido != null?this.pedido.dataPedido.toString():this.dataHoraAtualSemTimeZone().toString();
     this.valorTotal = this.pedido != null?this.pedido.valorTotal:0;
     this.quantidadeTotal = this.pedido != null?this.pedido.quantidadeTotal:0;
-    
-    this.motivoCancelamento = this.pedido!= null ? this.pedido.motivoCancelamento: null;
+
+    this.mostraListaProduto = false;
+     
 
     if (this.pedido != undefined){
-      this.dataFechto = this.pedido.dataFechamento != null?this.pedido.dataFechamento:null;  
+      
       if (this.pedido.dataCancelamento != null){
         this.situacao ="Cancelado";
       }else{
@@ -116,7 +114,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       }
       
     }else{
-      this.dataFechto = null;
+       
       this.situacao = "Aberto";
     }
     
@@ -147,6 +145,9 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     {
       this.inscricaoAdicionarEstoque$.unsubscribe();
     }
+    if (this.inscricaoPedido$){
+      this.inscricaoPedido$.unsubscribe();
+    }
   }
   criarFormulario(){
     let observParam : string;
@@ -158,11 +159,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       numeroPedido: [ this.pedido!= null ||this.pedido!=undefined ? this.pedido.numeroPedido : "0"],
       codigoCliente: [this.codigoCliente,[Validators.required]] ,            
       situacao: [ this.situacao ],
-      observacao: [{value:observParam == null ?null: observParam, disabled: (this.dataFechto != null  )? true:false}] ,
-      codigoProdutoSelecionado: [{value: null, disabled: this.pedido!= undefined && this.pedido.dataFechamento != null?true:false}],
-      motivoCancelamento: this.motivoCancelamento,
-      dataCancelamento: (this.pedido != null && this.pedido.dataCancelamento != null )? this.pedido.dataCancelamento : null
-        
+      observacao: [{value:observParam == null ?null: observParam, disabled: (this.situacao!='Aberto' )? true:false}] ,
+      codigoProdutoSelecionado: [ null ]       
     });
   }
   listarClientes(){
@@ -197,6 +195,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     var filterColumn =(this.filterQuery)?this.defaultFilterColumn:null;
     var filterQuery=(this.filterQuery)?this.filterQuery:null;
 
+    this.mostraListaProduto = false;
+
     this.inscricaoItem$ =  this.pedidoItemService.getDataCodigo<ApiResult<PedidoItem>>(
                       this.codigoCliente,
                       this.codigoPedido,
@@ -212,6 +212,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                         this.itensPedidos2.forEach(item=>{
                           this.quantidadeTotal += item.quantidade;
                         });
+                        this.mostraListaProduto = true;
                       }
                      /*  this.itensPedido = new MatTableDataSource<PedidoItem>(result.data);                      
                       this.paginator.length=result.totalCount;
@@ -299,19 +300,24 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                           produto: this.produtos.find(x=>x.codigo==this.codigoProdutoSelecionado)
                         } as PedidoItem; */
     
+    let codigoItem : number ;
+    codigoItem = 1;
+    if (this.itensPedidos2.length !== 0){
+      codigoItem =  (Math.max.apply(Math, this.itensPedidos2.map(function(o) { return o.codigo; }))) + 1;
+    }
+    //let codigoItem  = this.itensPedidos2.length === 0 ? 1 : 
+    
     
     this.itensPedidos2.push({
-                            codigo : 0,
+                            codigo : codigoItem,
                             valorCusto : this.valorCusto,
-                            pedido : null,
-                            cliente : null, 
-                            codigoPedido : this.codigoPedido,
-                            codigoCliente : this.codigoCliente,
+                            pedido : null,                            
+                            codigoPedido : this.codigoPedido,                            
                             codigoProduto : this.codigoProdutoSelecionado,
                             quantidade : this.quantidadeProdutoSel,
                             valorVenda : this.valorProdutoSel, 
                             dataAlteracao : null,
-                            dataCadastro : new Date(),
+                            dataCadastro : this.dataHoraAtualSemTimeZone(),
                             numeroPedido : '0000',
                             produto: this.produtos.find(x=>x.codigo == this.codigoProdutoSelecionado)} );
   //somando o valor total
@@ -323,7 +329,10 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
    this.valorProdutoSel  = 0;
    this.quantidadeProdutoSel = 1;
    this.formulario.controls['codigoProdutoSelecionado'].setValue('0');
-   
+
+   if (this.itensPedidos2.length === 1){
+    this.mostraListaProduto = true;
+   }
 
   }
   removeListaItem(codigoProduto:number){
@@ -345,8 +354,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       if(this.itensPedidos2[indexExcluir].codigo > 0 ){
         //excluindo o item da tabela pedido_item
         this.inscricaoDelete$ = this.pedidoItemService.excluirItem(this.itensPedidos2[indexExcluir].codigo,
-                                                                   this.itensPedidos2[indexExcluir].codigoPedido, 
-                                                                   this.itensPedidos2[indexExcluir].codigoCliente)
+                                                                   this.itensPedidos2[indexExcluir].codigoPedido)
                                                        .pipe(
                                                           concatMap(result=>{
                                                             if (result){
@@ -412,11 +420,17 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     })
   }
   preencherValorProdutoSelecionado(codigoProduto){
+     
     this.codigoProdutoSelecionado = codigoProduto;
     this.valorCusto =0;
     this.valorProdutoSel = 0;
 
     let indexProduto = this.produtos.findIndex(x=>x.codigo == codigoProduto);
+
+    if(indexProduto ===-1)
+    {
+      return ;
+    }
     this.percentualComissao = ((this.produtos[indexProduto].valorComissao / 100) + 1);     
     
 
@@ -455,14 +469,13 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     const dialogRef = this.dialog.open(PedidoBaixaPagtoComponent,
       {width: '450px' , height: '400px;',
         data : {
-                  dataFechto : this.dataFechto ,
+                  dataFechto : new Date(this.dataPedido) ,
                   dataCadastro : new Date(this.dataPedido)
                 }
       }
     );
     dialogRef.afterClosed().subscribe(result => {
-      if (result !== undefined){
-        this.dataFechto =  new Date(result);
+      if (result !== undefined){        
         this.pedido.dataFechamento = new Date(result);
         this.situacao = result == undefined? "Aberto": "Fechado";
         this.submit();
@@ -487,27 +500,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   submit() 
   {
     let codigoStatus: number = 0;
-    //status
-    if (this.pedido != null ){
-
-      codigoStatus = this.dataFechto != null ? 1: 0;
-
-      if (this.pedido.dataCancelamento == null){
-        codigoStatus = 2;
-      }    
-    }   
-
-    //criando o objeto que será gravado
-    let pedidoGravar = this.pedido !=null ? this.pedido: { codigo : 0 , codigoCliente : this.codigoCliente} as Pedido;
-    let itensPedidoGravar : Array<PedidoItem> = [];
-    this.itensPedidos2.forEach( item=>{
-        itensPedidoGravar.push(item);
-      }      
-    )
     
-
-    pedidoGravar.codigoStatus  = codigoStatus;
-
+    
     //confirmando que deseja salvar o registro.
     this.serviceAlert.openConfirmModal('Tem certeza que deseja salvar este pedido?', 'Salvar - Pedido', (answer: boolean) => 
     {
@@ -516,136 +510,150 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
         return false;
       }
       else
-      {
-        let listaParaBaixaEstoque : Array<PedidoItem>=[];
+      {      
+        //status
+        if (this.pedido != null && this.pedido.dataFechamento != null  ){
+          codigoStatus =  1;      
+        }
+
+        //criando o objeto que será gravado
+        let pedidoGravar = this.pedido !=null ? this.pedido : { codigo : 0 , codigoCliente : this.codigoCliente} as Pedido;
+        let itensPedidoGravar : Array<PedidoItem> = this.itensPedidos2;        
+        
+        itensPedidoGravar.forEach(item=>{
+          item.produto = null;
+          item.pedido = null;
+        })
+
+        pedidoGravar.listaPedidoItem = itensPedidoGravar;//adicionando a lista de itens do pedido.
+        pedidoGravar.codigoStatus  = codigoStatus;
 
         //complementando as informações
         pedidoGravar.valorTotal = this.valorTotal;
         pedidoGravar.observacao = this.formulario.get('observacao').value;
         pedidoGravar.cliente = null;
         pedidoGravar.listaPedidoItem = null;
-    
-        if (pedidoGravar.codigo == 0 )//alteração;
+     
+        pedidoGravar.dataPedido = pedidoGravar.codigo === 0 ? this.dataHoraAtualSemTimeZone() : this.pedido.dataPedido;             
+        pedidoGravar.codigoCliente = this.formulario.get('codigoCliente').value;
+          
+            //recuperando o proximo ID do pedido
+        if (pedidoGravar.codigo === 0 ){
+          
+            this.inscricaoPedido$ = this.pedidoService.getProximoID()
+                                                    .pipe(concatMap(result=>
+                                                        {
+                                                          pedidoGravar.codigo = result;
+
+                                                          //gravando 
+                                                          this.inscricao$  = this.pedidoService.salvarNovoRegistro(pedidoGravar)
+                                                                                               .pipe(concatMap(resultadoPedido=>{
+                                                                                                  this.pedido = resultadoPedido;
+
+                                                                                                  //atribuindo o valor correto do numero do pedido
+                                                                                                  itensPedidoGravar.forEach( item=>{
+                                                                                                    item.codigoPedido = pedidoGravar.codigo; 
+                                                                                                    item.dataCadastro = this.dataHoraAtualSemTimeZone();
+
+                                                                                                    this.pedidoItemService.salvarNovoRegistro(item)
+                                                                                                                          .subscribe(resultadoItem=>{
+
+                                                                                                                          },error=>{                                                                                                                            
+                                                                                                                            console.log(error);
+                                                                                                                            return of (false);
+                                                                                                                          });                                                                                                                                                                                  
+                                                                                                    }                                                            
+                                                                                                );     
+                                                                                                return of (true);
+                                                                                               }))
+                                                                                               .subscribe(resultado=>{
+                                                                                                  return of(true);
+                                                                                                  
+                                                                                                },error=>{
+                                                                                                  console.log(error);
+                                                                                                  this.handleError('Ocorreu um erro ao gravar o novo pedido.');
+                                                                                                    //exclui o item do pedido e pedido,pois pode ter ocorrido erro de incluir algum item
+                                                                                                    this.itensPedidos2.forEach(itemExcluir=>{
+                                                                                                      this.inscricaoItem$ = this.pedidoItemService.delete(itemExcluir.codigo)
+                                                                                                                                                  .subscribe();
+                                                                                                    });
+                                                                                                    
+                                                                                                    this.inscricao$ = this.pedidoService.delete(pedidoGravar.codigo)
+                                                                                                                                        .subscribe();
+                                                                                                  
+                                                                                                  return of (false);
+                                                                                                });
+                                                          return of(true);
+                                                        }                                                      
+                                                    ))
+                                                    .subscribe(resultadoFinal =>{
+                                                      
+                                                      if (resultadoFinal)
+                                                      {
+                                                        this.handlerSuccess ('Registro salvo com sucesso!');
+                                                        setTimeout(() => { this.limparCampos(); }, 3000);
+                                                      }else{
+                                                        
+                                                        
+                                                        this.handleError('Ocorreu um erro ao tentar salvar o novo registro.');
+                                                      }                                                      
+                                                      
+                                                    },
+                                                    error=>{
+                                                      console.log(error);
+                                                      this.handleError('Ocorreu erro ao recuperar o próximo numero de ID');
+                                                      return;
+                                                    });
+            } 
+        else
         {
-          pedidoGravar.dataPedido = new Date();             
-          pedidoGravar.codigoCliente = this.formulario.get('codigoCliente').value;
+          pedidoGravar.dataAlteracao = this.dataHoraAtualSemTimeZone();
+          
+          //atualizando o pedido
+          
+          this.inscricao$  = this.pedidoService.save(pedidoGravar)
+                                               .pipe(concatMap(atualizaItem=>{
 
-          this.inscricao$ = this.pedidoService.savePkDuplo(pedidoGravar, pedidoGravar.codigo, pedidoGravar.codigoCliente).pipe(concatMap(result=>{
-              if (result){
-                this.codigoPedido = result.codigo;
-                this.pedido = result;
-
-                if (itensPedidoGravar.length > 0){
-                  itensPedidoGravar.forEach(item=>{
-                    item.codigoPedido = result.codigo;
-                    item.codigoCliente = result.codigoCliente;
-                    item.produto = null;
-                    this.inscricaoItem$ = this.pedidoItemService.save(item).subscribe(itemGravado=>{
-
-                      if (itemGravado){
-                        //adicionando a lista para baixar.                        
-                        this.baixaEstoque( itemGravado.codigoProduto,itemGravado.quantidade );
-                      }                      
-
-                    },error=>{
-                      console.log(error);
-                      
-                      //apagar registro ja criado.
-                      this.inscricaoErroGravar$ = this.pedidoService.deletePkDuplo(pedidoGravar.codigoCliente, pedidoGravar.codigo).subscribe(result=>{
-                        if (result){
-                          this.handleError('Ocorreu um erro na gravação do Pedido e seus itens!');
-                        }else{
-                          console.log('rollback : Ocorreu um erro ao tentar excluir o pedido criado.')
-                        }                        
-                      },error=>{
-                        console.log('rollback : Ocorreu um erro ao tentar excluir o pedido criado.')
-                      });
-                    })   
-                  });            
-                }
-                return of(true);          
-              }
-            }      
-          )
-          ).subscribe(gravaItem =>{
-            if (gravaItem)
-            {
-              //executar baixa de estoque
-              if(!listaParaBaixaEstoque && listaParaBaixaEstoque.length > 0 ){
-                listaParaBaixaEstoque.forEach(item=>{
-                   
-                });
-              }
-
-              this.handlerSuccess('Registro salvo com sucesso!');  
-              setTimeout(() => { this.retornar(); }, 3000);      
-            }
+                                                    // atualizando os itens do pedido
+                                                    itensPedidoGravar.forEach(itemAtualizar=>{
+                                                        itemAtualizar.dataAlteracao = this.dataHoraAtualSemTimeZone();
+                                                        
+                                                        this.inscricaoItem$= this.pedidoItemService.atualizarRegistro(itemAtualizar).subscribe(result=>{},error=>{
+                                                          console.error(error);
+                                                          this.handleError('Ocorreu erro ao tentar atualizar o item - código = ' + itemAtualizar.codigo.toString());
+                                                        })
+                                                    })
+                                                    return of (true);
+                                               }))
+                                               .subscribe(result=>{
+                                                if (result){
+                                                  this.handlerSuccess ('Registro atualizado com sucesso!');
+                                                  setTimeout(() => { this.retornar(); }, 3000);
+                                                }else{
+                                                  this.handleError('Ocorreu um erro ao tentar atualizar o pedido ');
+                                                }
+            
+          },error=>{
+            console.log(error);
+            this.handleError('Ocorreu um erro ao gravar o novo pedido.');
           });
-        
-        }      
-        else //Editando o registro
-        {
-          this.inscricao$ = this.pedidoService
-                                .savePkDuplo(pedidoGravar, pedidoGravar.codigo.toString(), pedidoGravar.codigoCliente.toString())
-                                .pipe(
-                                  concatMap(atualizado=>{
-                                    if (atualizado != null){
-                                      if (itensPedidoGravar.length > 0){
-                                        itensPedidoGravar.forEach(item=>
-                                          {
-                                            if (item.codigo == 0)
-                                            {
-                                                item.codigoPedido = pedidoGravar.codigo;
-                                                item.codigoCliente = pedidoGravar.codigoCliente;
-                                                item.produto = null;      
-      
-                                                this.inscricaoItem$ = this.pedidoItemService.save(item)
-                                                                                            .subscribe(gravacaoItem=>
-                                                                                              {
-                                                                                                if(gravacaoItem){
-                                                                                                  this.listaProdutoEstoque();
-                                                                                              
-                                                                                                      this.baixaEstoque( item.codigoProduto,item.quantidade );
-                                                                                                }                                                                                                
-                                                                                              },error=>{
-                                                                                                          console.log(error);
-                                                                                                          this.handleError('Ocorreu um erro na gravação do itens de pedido');
-                                                                                              });                                             
-                                            }
-                                          });
-                                      }
-                                    }                                                                    
-                                    return of(true);  
-                                  }
-                                  )
-                                )
-                                .subscribe(result=>{
-                                    if(result){                                                                            
-                                      this.handlerSuccess('Registro atualizado com sucesso!');
-                                      setTimeout(() => { this.retornar(); }, 3000);
-                                    }
-                                }, error=>{
-                                  console.log(error);
-                                  this.handleError('Ocorreu um erro ao tentar gravar o pedido.');
-                                });
         }
-      }},
-     "Sim", "Não"
-    );
+      }
+    },
+    "Sim", "Não");
 
   }
 
   limparCampos(){
-    
 
-    this.formulario.patchValue({
-      codigoCliente :  null,
-      observacao: null
-    });;
     this.codigoCliente = 0;
-    
-
+    this.valorTotal = 0;
+    this.quantidadeTotal = 0;
+    this.itensPedidos2 =  [];    
+    this.pedido = <Pedido>{codigo : 0 };    
+    this.formulario.reset();
   }
+
   baixaEstoque(codigoProduto :number, quantidade:number){
     this.inscricao$ = this.serviceEstoque.baixarEstoque(codigoProduto,quantidade)
     .subscribe(result=>{

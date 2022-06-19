@@ -8,19 +8,19 @@
         <mat-label>Lista de Pedidos</mat-label>
       </mat-card-header>
     </div>
-    <div  >      
+   <!--  <div  >      
         <mat-form-field [hidden]="!pedidos"style="width: 100%;" >
           <input matInput (keyup)="loadData($event.target.value)" 
-                 placeholder="Pesquisar por nome do cliente (ou parte dele)..."
+                 placeholder="Pesquisar por Cliente (ou parte dele)..."
                  />
         </mat-form-field>
-    </div>
+    </div> -->
     
     <div class="commands text-right" style="margin-top: 5px;" >
       <button mat-raised-button
             color="primary"
             [routerLink]="['pedido-form']" >
-      Registrar nova compra &nbsp;<i class="material-icons right">add</i>
+      Novo Pedido &nbsp;<i class="material-icons right">add</i>
       </button>
     </div>  
     <div>
@@ -73,7 +73,7 @@
               <mat-cell *matCellDef="let pedido">
                 <button mat-mini-fab color="primary" aria-label="Editar o pedido"
                   matTooltip="Editar o pedido"
-                  [routerLink]="['/pedido', pedido.codigoCliente, pedido.codigo]">
+                  [routerLink]="['/pedido', pedido.codigo]">
 
                   <mat-icon>edit</mat-icon>
                 </button>
@@ -83,26 +83,12 @@
                   matTooltip="Cancelar todo o pedido"
                   color="warn"
                   [disabled] = "pedido.dataCancelamento != null"
-                  [routerLink]="['pedido-cancelar', pedido.codigoCliente, pedido.codigo]"
+                  [routerLink]="['pedido-cancelar', pedido.codigo]"
                 >
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-cell>
-            </ng-container>
-            <!-- <ng-container matColumnDef="acao">
-              <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
-              <mat-cell *matCellDef="let pedido">
-                
-                  <button
-                    mat-mini-fab
-                    color="primary"
-                    aria-label="consultar detalhe"                   
-                    [routerLink]="['/pedido', pedido.codigoProduto]"
-                    >                                            
-                    <mat-icon>view_comfy</mat-icon>
-                  </button>
-              </mat-cell>
-            </ng-container>  -->
+            </ng-container>            
             <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
             <mat-row *matRowDef="let row; columns: colunas"></mat-row>
           </table>

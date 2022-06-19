@@ -20,20 +20,25 @@
         
           <table mat-table [dataSource]="produtos" class="mat-elevation-z8" [hidden]="!produtos"  matSort
           (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
-            <ng-container matColumnDef="codigo">
+            <ng-container matColumnDef="codigo"  >
               <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
               <mat-cell *matCellDef="let produto"> {{ produto.codigo }} </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="tipo">
-                <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
-                <mat-cell *matCellDef="let produto"> {{ produto.tipoProduto.nome }} </mat-cell>
-              </ng-container>
-            <ng-container matColumnDef="nome">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
-              <mat-cell *matCellDef="let produto"> {{ produto.nome }} </mat-cell>
+           
+            <ng-container matColumnDef="nome"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header >Nome</mat-header-cell>
+              <mat-cell *matCellDef="let produto"  > {{ produto.nome }} </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="fornecedor">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+            <ng-container matColumnDef="valorComissao"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Comiss&atilde;o(%)</mat-header-cell>
+              <mat-cell *matCellDef="let produto"> {{ produto.valorComissao |  number : '1.2-2' }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="tipo"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</mat-header-cell>
+              <mat-cell *matCellDef="let produto"> {{ produto.tipoProduto.nome }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="fornecedor"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Fornecedor</mat-header-cell>
               <mat-cell *matCellDef="let produto"> {{ produto.fornecedor.nome }} </mat-cell>
             </ng-container>
             <ng-container matColumnDef="acao">              

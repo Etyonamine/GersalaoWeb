@@ -75,5 +75,14 @@ export abstract class BaseFormComponent implements OnInit {
   getCampo(campo: string){
     return this.formulario.get(campo);
   }  
+  dataHoraAtualSemTimeZone(){
+    const hj = new Date();
 
+    return new Date( `${hj.getFullYear()}/${(`"0"+ ${hj.getMonth() + 1}`).slice(-2)}/${("0"+(hj.getDate())).slice(-2)} ${("0"+(hj.getHours())).slice(-2)}:${("0"+(hj.getMinutes())).slice(-2)}:${("0"+(hj.getSeconds())).slice(-2)} -00:00`);
+    
+  }
+
+  pad(value) {
+    return value.toString().padStart(2, 0);
+  }
 }

@@ -76,14 +76,16 @@ export class PedidoCancelarComponent extends BaseFormComponent implements OnInit
     //criar objeto de gravacao.
     let pedidoGravar = this.pedido;
     pedidoGravar.motivoCancelamento = this.formulario.get('motivoCancelamento').value;
-    pedidoGravar.dataCancelamento = new Date();
+    let hj = new Date();
+    //pedidoGravar.dataCancelamento = new Date( `${hj.getFullYear()}/${("0"+(hj.getMonth())).slice(-2)}/${("0"+(hj.getDate())).slice(-2)} ${("0"+(hj.getHours())).slice(-2)}:${("0"+(hj.getMinutes())).slice(-2)}:${("0"+(hj.getSeconds())).slice(-2)} -00:00`);
+    pedidoGravar.dataCancelamento = this.dataHoraAtualSemTimeZone();
     pedidoGravar.codigoStatus = 2;
     pedidoGravar.cliente = null;
     pedidoGravar.listaPedidoItem = null;
     
     this.alertService.openConfirmModal('Tem certeza que deseja cancelar este pedido?', 'Cancelar pedido' , (answer: boolean) => {
       if (answer) {
-        this.inscricao$ = this.pedidoService.savePkDuplo(pedidoGravar,pedidoGravar.codigo, pedidoGravar.codigoCliente)
+        this.inscricao$ = this.pedidoService.save(pedidoGravar)
                                         .subscribe(result=>{
                                           if(result!=null){
                                             this.pedido =result;

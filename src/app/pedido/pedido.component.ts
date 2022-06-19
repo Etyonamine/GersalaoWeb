@@ -26,7 +26,7 @@ export class PedidoComponent implements OnInit {
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
 
-  public defaultSortColumn:string = "dataPedido";
+  public defaultSortColumn:string = "numeroPedido";
   public defaultSortOrder:string = "desc";
 
   defaultFilterColumn: string= "NomeCliente";
@@ -56,7 +56,7 @@ export class PedidoComponent implements OnInit {
     var pageEvent = new PageEvent();
     pageEvent.pageIndex= this.defaultPageIndex;
     pageEvent.pageSize=this.defaultPageSize;
-
+    
     if (query){
       this.filterQuery=query;
     }
@@ -98,8 +98,5 @@ export class PedidoComponent implements OnInit {
   {
     this.serviceAlert.mensagemErro('Erro ao carregar a lista de pedidos. Tente novamente mais tarde.');
   }
-  openConfirmExclusao(codigoPedido:number, codigoCliente:number)
-  {
 
-  }
 }
