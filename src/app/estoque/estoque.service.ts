@@ -93,4 +93,21 @@ export class EstoqueService extends BaseService<Estoque>{
     
     return this.http.post<Estoque[]>(urlAdcionarPorProdutoEstoque,null).pipe(take(1));
   }
+  quantidadeEstoqueDisponivelPorProduto(codigoProduto:number){
+    let urlquantidadeEstoque= this.url + "/QuantidadeDisponivelPorProduto?codigoProduto=" + codigoProduto  ;
+    
+    return this.http.post<number>(urlquantidadeEstoque,null).pipe(take(1));
+  }
+  estoqueProdutosQuantidadeTotal(){
+    let urlquantidadeEstoque= this.url + "/estoqueProdutosQuantidadeTotal";
+    
+    return this.http.post<Estoque[]>(urlquantidadeEstoque,null).pipe(take(1));
+  }
+
+  estoqueListaProdutosQuantidadeTotal(lista : Array<number>){
+    //EstoqueListaProdutosQuantidadeTotal
+    let urlListaquantidadeEstoque= this.url + "/EstoqueListaProdutosQuantidadeTotal";
+    
+    return this.http.post<Estoque[]>(urlListaquantidadeEstoque,lista).pipe(take(1));
+  }
 }
