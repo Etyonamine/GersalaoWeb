@@ -570,7 +570,27 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                                                                                       }                                                            
                                                                                                   );     
                                                                                                   return of (true);
-                                                                                                }))
+                                                                                                }),
+                                                                                                  concatMap(resultadoSalvarItem=>{
+                                                                                                    //fazer baixa
+                                                                                                    itensPedidoGravar.forEach(item=>{
+                                                                                                      let estoqueBaixar = { 
+                                                                                                                            codigoProduto : item.codigoProduto,
+                                                                                                                            quantidadeEstoque : item.quantidade,
+                                                                                                                            valorUnitario : item.valorCusto
+                                                                                                                          } as Estoque;
+                                                                                                      this.inscricaoEstoque$ = this.serviceEstoque
+                                                                                                                                   .baixarEstoque(estoqueBaixar)
+                                                                                                                                   .subscribe(result=>{
+
+                                                                                                                                   },error=>{
+                                                                                                                                    console.log(error);
+                                                                                                                                    this.handleError('Erro ao executar a baixa');
+                                                                                                                                    return of (false);
+                                                                                                                                   });
+                                                                                                    })
+                                                                                                    return of (true);
+                                                                                                  }))
                                                                                                 .subscribe(resultado=>{
                                                                                                     return of(true);
                                                                                                     
@@ -590,11 +610,12 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                                                                                   });
                                                             return of(true);
                                                           }                                                      
-                                                      ))
+                                                      ))                                                      
                                                       .subscribe(resultadoFinal =>{
                                                         
                                                         if (resultadoFinal)
                                                         {
+                                                          
                                                           this.handlerSuccess ('Registro salvo com sucesso!');
                                                           setTimeout(() => { this.limparCampos(); }, 3000);
                                                         }else{
@@ -678,7 +699,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
                                                     if (this.semEstoque){
                                                       return of (false);
-                                                    }
+                                                    } 
+                                                    return of(true);
                                                   }else{
                                                     return of (false)
                                                   }                                                  
@@ -695,7 +717,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                                       this.handleError('Erro ao salvar!');  
                                                     }                                                    
                                                   }else{
-                                                    this.handlerSuccess('Salvo com sucesso!');
+                                                    //this.handlerSuccess('Salvo com sucesso!');
+                                                    this.salvarRegistro();
                                                   }
                                                 
                                                 },error=>{
@@ -722,14 +745,6 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.formulario.controls["situacao"].setValue(this.situacao);
   }
 
-  baixaEstoque(codigoProduto :number, quantidade:number){
-    this.inscricao$ = this.serviceEstoque.baixarEstoque(codigoProduto,quantidade)
-    .subscribe(result=>{
-
-    },error=>{
-       console.log(error);
-       this.handleError('Ocorreu um erro ao baixar o estoque!');                                                            
-    }) ;
-  }
+   
  
 }

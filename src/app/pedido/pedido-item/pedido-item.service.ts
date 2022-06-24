@@ -44,9 +44,11 @@ export class PedidoItemService extends BaseService<PedidoItem>{
   
   
   }
+
   salvarNovoRegistro(item:PedidoItem){    
     return this.http.post<PedidoItem>(this.url,item).pipe(take(1));
   }
+
   atualizarRegistro (item: PedidoItem)
   {
     let urlAtualiza = this.url + `/${item.codigoPedido}/${item.codigo}`;
@@ -56,5 +58,11 @@ export class PedidoItemService extends BaseService<PedidoItem>{
   excluirItem(codigoItem:number, codigoPedido:number  ){
     let urlDelete = this.url + `/${codigoPedido}/${codigoItem}`;
     return this.http.delete(urlDelete).pipe(take(1));
+  }
+
+  listaPorPedido(codigoPedido : number){
+    let urllista = this.url + `/ListaPorPedido?codigoPedido = ` + codigoPedido;
+    return this.http.get<PedidoItem[]>(urllista).pipe(take(1));
+    
   }
 }
