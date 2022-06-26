@@ -70,6 +70,7 @@ export class TipoServicoFormComponent extends BaseFormComponent implements OnIni
     this.tipoServico.descricao = this.formulario.get('descricao').value;
     this.tipoServico.codigo = this.formulario.get('codigo').value;
     this.tipoServico.codigoSituacao = codigoSituacao;
+    this.tipoServico.dataCadastro = new Date();
 
     this.salvarRegistro$ = this.tipoServicoService.save(this.tipoServico)
       .subscribe(sucesso => {

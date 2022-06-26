@@ -15,25 +15,32 @@
   <span class="example-spacer"></span>
   <div *ngIf="mostrarMenu">
 
-    <button mat-button [routerLink]="['home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>    
-    <button mat-button [matMenuTriggerFor]="cadastro" > &nbsp; <i class ="material-icons right">app_registration</i>Cadastro</button>
+    <button mat-button [routerLink]="['Home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>    
+    <button mat-button [matMenuTriggerFor]="Cadastro" > &nbsp; <i class ="material-icons right">app_registration</i>Cadastro-Geral</button>
+    <button mat-button [matMenuTriggerFor]="Agenda" > &nbsp; <i class ="material-icons right">calendar_month</i>Agenda</button>
     <button mat-button [matMenuTriggerFor]="Venda" > &nbsp; <i class ="material-icons right">point_of_sale</i>Venda</button>
     
 
+    <mat-menu #Agenda="matMenu">
+      <button mat-menu-item><i class ="material-icons right">event_note</i> Agendamento</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button>
+    </mat-menu>
 
     <mat-menu #Venda="matMenu">
       <button mat-menu-item [routerLink]="['pedido']" ><i class ="material-icons right">point_of_sale</i>Pedido</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item [matMenuTriggerFor]="compra" ><i class ="material-icons right">inventory</i>Compra</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item [matMenuTriggerFor]="estoque" ><i class ="material-icons right">storage</i>Estoque</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item [matMenuTriggerFor]="produto" ><i class ="material-icons right">qr_code</i>Produto</button>
     </mat-menu>
 
-    <mat-menu #cadastro="matMenu">
-      <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>
-      <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item [matMenuTriggerFor]="compra" ><i class ="material-icons right">inventory</i> Compra</button>
-      <button mat-menu-item [matMenuTriggerFor]="estoque" ><i class ="material-icons right">storage</i> Estoque</button>
-      <button mat-menu-item [matMenuTriggerFor]="produto" ><i class ="material-icons right">qr_code</i> Produto</button>
+    <mat-menu #Cadastro="matMenu">
+      <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>           
       <!-- <button mat-menu-item [routerLink]="['servico']">Serviço</button> -->       
     </mat-menu>
 

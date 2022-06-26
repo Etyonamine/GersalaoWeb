@@ -101,14 +101,14 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     }
   }
   criacaoFormulario(){
-    let hoje =this.dataHoraAtualSemTimeZone();
-
+    let dataBoleto = new Date();
+    dataBoleto.setDate(dataBoleto.getDate()+30);
     //formulario cliente
     this.formulario = this.formBuilder.group({
       codigo: [this.compra.codigo],
       valor: [this.compra.valor,[Validators.required,Validators.min(1), Validators.max(9999)]],
       dataCompra: [this.compra.dataCompra === null? new Date() : this.compra.dataCompra, [Validators.required,this.dataCompraHoje]],      
-      dataVenctoBoleto:[this.compra.dataVenctoBoleto === null?null: this.compra.dataVenctoBoleto,[Validators.required]],
+      dataVenctoBoleto:[this.compra.dataVenctoBoleto === null ? dataBoleto : this.compra.dataVenctoBoleto,[Validators.required]],
       dataPagtoBoleto:[this.compra.dataPagtoBoleto!== null ? this.compra.dataPagtoBoleto : null],
       observacao:[this.compra.observacao]
     });
