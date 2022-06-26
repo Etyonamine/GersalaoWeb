@@ -15,7 +15,7 @@ import { PedidoService } from './pedido.service';
   styleUrls: ['./pedido.component.scss']
 })
 export class PedidoComponent implements OnInit {
-  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal", "dataCancelamento","situacao","acao"];
+  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal","dataFechto", "dataCancelamento","situacao","acao"];
   pedidos: MatTableDataSource<Pedido>;
   inscricao$: Subscription;
   codigoPedido: number;
@@ -57,8 +57,10 @@ export class PedidoComponent implements OnInit {
     pageEvent.pageIndex= this.defaultPageIndex;
     pageEvent.pageSize=this.defaultPageSize;
     
-    if (query){
+    if (query!== null && query.toString().trim()!== ''){
       this.filterQuery=query;
+    }else{
+      this.filterQuery = null;
     }
 
     this.getData(pageEvent);

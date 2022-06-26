@@ -53,8 +53,9 @@ export class ClienteComponent implements OnInit, OnDestroy {
     var pageEvent = new PageEvent();
     pageEvent.pageIndex= this.defaultPageIndex;
     pageEvent.pageSize=this.defaultPageSize;
+    this.filterQuery = null;
 
-    if (query){
+    if (query!== null && query.toString().trim()!==''){
       this.filterQuery=query;
     }
 

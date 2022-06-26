@@ -81,8 +81,16 @@ export abstract class BaseFormComponent implements OnInit {
     return new Date( `${hj.getFullYear()}/${(`"0"+ ${hj.getMonth() + 1}`).slice(-2)}/${("0"+(hj.getDate())).slice(-2)} ${("0"+(hj.getHours())).slice(-2)}:${("0"+(hj.getMinutes())).slice(-2)}:${("0"+(hj.getSeconds())).slice(-2)} -00:00`);
     
   }
-
+  converteDataHoraSemTimeZone(data : Date){
+    return new Date( `${data.getFullYear()}/${(`"0"+ ${data.getMonth() + 1}`).slice(-2)}/${("0"+(data.getDate())).slice(-2)} ${("0"+(data.getHours())).slice(-2)}:${("0"+(data.getMinutes())).slice(-2)}:${("0"+(data.getSeconds())).slice(-2)} -00:00`);
+  }
   pad(value) {
     return value.toString().padStart(2, 0);
+  }
+
+  DateWithoutTime(data : Date) { 
+    let dataTransformada  = new Date(data.toLocaleDateString('en-US') );  
+    dataTransformada.setHours(0, 0, 0, 0);
+    return dataTransformada;
   }
 }

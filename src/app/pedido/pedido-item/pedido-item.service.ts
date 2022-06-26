@@ -61,7 +61,7 @@ export class PedidoItemService extends BaseService<PedidoItem>{
   }
 
   listaPorPedido(codigoPedido : number){
-    let urllista = this.url + `/ListaPorPedido?codigoPedido = ` + codigoPedido;
+    let urllista = this.url + `/ListaPorPedido/` + codigoPedido;
     return this.http.get<PedidoItem[]>(urllista).pipe(take(1));
     
   }

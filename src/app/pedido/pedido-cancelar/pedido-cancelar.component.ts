@@ -106,7 +106,7 @@ export class PedidoCancelarComponent extends BaseFormComponent implements OnInit
     pedidoGravar.dataCancelamento = this.dataHoraAtualSemTimeZone();
     pedidoGravar.codigoStatus = 2;
     pedidoGravar.cliente = null;
-    pedidoGravar.listaPedidoItem = null;
+    
     
     this.alertService.openConfirmModal('Tem certeza que deseja cancelar este pedido?', 'Cancelar pedido' , (answer: boolean) => {
       if (answer) {

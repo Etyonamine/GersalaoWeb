@@ -32,7 +32,7 @@ export class EstoqueComponent implements OnInit {
   public defaultSortColumn:string = "codigoProduto";
   public defaultSortOrder:string = "asc";
 
-  defaultFilterColumn: string= "codigoProduto";
+  defaultFilterColumn: string= "NomeProduto";
   filterQuery:string=null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -59,8 +59,10 @@ export class EstoqueComponent implements OnInit {
     pageEvent.pageIndex= this.defaultPageIndex;
     pageEvent.pageSize=this.defaultPageSize;
 
-    if (query){
+    if (query !== null && query.toString().trim()!==''){
       this.filterQuery=query;
+    }else{
+      this.filterQuery = null;
     }
 
     this.getData(pageEvent);

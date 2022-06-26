@@ -481,12 +481,24 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
       if (result !== undefined){        
         this.pedido.dataFechamento = new Date(result);
         this.situacao = result == undefined? "Aberto": "Fechado";
-        this.submit();
+        this.pedido.codigoStatus = this.pedido.dataFechamento !== null ? 1 : this.pedido.codigoStatus;
+        this.baixaPagamento (this.pedido);
+        //this.submit();
       }
       
       
     });
 
+  }
+  baixaPagamento(pedido:Pedido){
+    pedido.cliente = null;
+    this.inscricao$ = this.pedidoService.save(pedido)
+                                        .subscribe(result=>{
+                                          if(result){
+                                            this.handlerSuccess ('Baixa efetuado com sucesso!');
+                                            setTimeout(() => { this.retornar(); }, 3000);
+                                          }
+                                        })
   }
   retornar(){
     this.router.navigate(['/pedido']);

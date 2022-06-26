@@ -17,7 +17,8 @@
             <input matInput  
                   [matDatepicker]="picker3" 
                   formControlName="dataCompra"    
-                  [max] = "dataMaximaCompra"             
+                  [max] = "dataMaximaCompra"  
+                  (dateChange)="calcularDataBoleto()"           
                   required >
             <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
             <mat-datepicker #picker3></mat-datepicker>
@@ -34,6 +35,7 @@
               placeholder="0.000,00"                   
               [readonly]="true"              
               value="{{ valorTotalProdutoAdd | currency:'BRL':'symbol':'1.2-2':'pt'}}"  
+             
               readonly                          
             />
             <!-- <span matPrefix>R$&nbsp;</span> -->
@@ -59,7 +61,7 @@
                     >
           </mat-form-field> -->
           <mat-form-field appearance="fill">
-            <mat-label>Data Vencimento Boleto</mat-label>
+            <mat-label>Data Pagamento do Boleto</mat-label>
             <input matInput [matDatepicker]="picker5" 
                   formControlName="dataPagtoBoleto" 
                   matTooltip="Informar a data de pagamento de boleto"

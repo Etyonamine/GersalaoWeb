@@ -11,8 +11,8 @@
           <div style="text-align: center;">
             <p *ngIf="!estoques"><em>Não foi encontrado registros!</em></p>
           </div>                 
-          <div style="width: 100%;" [hidden]="!estoques">
-            <mat-form-field [hidden]="!estoques">
+          <div    [hidden]="!estoques">
+            <mat-form-field [hidden]="!estoques" style="width: 100%;">
               <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome do produto (ou parte dele)..." />
             </mat-form-field> 
             <table mat-table [dataSource]="estoques" class="mat-elevation-z8" [hidden]="!estoques" matSort         
