@@ -1,4 +1,3 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
@@ -117,10 +116,9 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 		const charCode = e.which ? e.which : e.keyCode;
 		if (charCode !== 190 && charCode !== 46 && charCode!==44){
       if (charCode > 31  && (charCode < 48 || charCode > 57)) {
-        this.handleError("Por favor, informar apenas numeros e casas decimais");
+        this.handleError("Por favor, informar apenas numeros e casas decimais");        
       }
-    }
-		
+    }	 
 	}
   submit() {
      

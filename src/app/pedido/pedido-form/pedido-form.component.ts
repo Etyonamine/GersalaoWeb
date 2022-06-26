@@ -1,5 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -52,6 +53,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   valorTotal: number;
   quantidadeTotal:number;
   mostraListaProduto : boolean;
+  dataFechamento : Date;
+  codigoStatus : number;
 
   semEstoque : boolean = false;
   mensagemSemEstoque : string = '';
@@ -106,19 +109,20 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.quantidadeTotal = this.pedido != null?this.pedido.quantidadeTotal:0;
 
     this.mostraListaProduto = false;
-     
+    this.codigoStatus = 0; 
 
     if (this.pedido != undefined){
-      
+      this.codigoStatus = this.pedido.codigoStatus;
+
       if (this.pedido.dataCancelamento != null){
         this.situacao ="Cancelado";
       }else{
-        this.situacao = this.pedido.dataFechamento != null?"Fechado":"Aberto";
+        this.situacao = this.pedido.dataFechamento != null?"Pago":"Pendente";
       }
       
     }else{
        
-      this.situacao = "Aberto";
+      this.situacao = "Pendente";
     }
     
     this.criarFormulario();
@@ -160,9 +164,10 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     }
     this.formulario = this.formBuilder.group({
       numeroPedido: [ this.pedido!= null ||this.pedido!=undefined ? this.pedido.numeroPedido : "0"],
+      dataPedido: [this.pedido!= null || this.pedido!=undefined ? this.pedido.dataPedido : new Date()],
       codigoCliente: [this.codigoCliente,[Validators.required]] ,            
       situacao: [ this.situacao ],
-      observacao: [{value:observParam == null ?null: observParam, disabled: (this.situacao!='Aberto' )? true:false}] ,
+      observacao: [{value:observParam == null ?null: observParam, disabled: (this.situacao!='Pendente' )? true:false}] ,
       codigoProdutoSelecionado: [ null ]       
     });
   }
@@ -285,7 +290,8 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     if (Number(this.valorProdutoSel) == NaN ||this.valorProdutoSel == undefined){
       this.handleError('Por favor, informar um valor de venda válido!');
       return false;
-    }
+    } 
+
     if (this.quantidadeProdutoSel == 0 || this.quantidadeProdutoSel == undefined ){
       this.handleError('Por favor, informar a quantidade de itens do produto!');
       return false;
@@ -304,6 +310,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                         } as PedidoItem; */
     
     let codigoItem : number ;
+    let valorUnitarioParam = parseFloat(this.valorProdutoSel.toString().replace('.','').replace(',','.'));
     codigoItem = 1;
     if (this.itensPedidos2.length !== 0){
       codigoItem =  (Math.max.apply(Math, this.itensPedidos2.map(function(o) { return o.codigo; }))) + 1;
@@ -318,18 +325,18 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                             codigoPedido : this.codigoPedido,                            
                             codigoProduto : this.codigoProdutoSelecionado,
                             quantidade : this.quantidadeProdutoSel,
-                            valorVenda : this.valorProdutoSel, 
+                            valorVenda : valorUnitarioParam, 
                             dataAlteracao : null,
                             dataCadastro : this.dataHoraAtualSemTimeZone(),
                             numeroPedido : '0000',
                             produto: this.produtos.find(x=>x.codigo == this.codigoProdutoSelecionado)} );
   //somando o valor total
-  this.valorTotal = this.valorTotal + (this.valorProdutoSel * this.quantidadeProdutoSel);
+  this.valorTotal = this.valorTotal + (valorUnitarioParam * this.quantidadeProdutoSel);
   this.quantidadeTotal = this.quantidadeTotal + this.quantidadeProdutoSel ;
 
    //limpando as selecões   
    this.codigoProdutoSelecionado = 0 ;
-   this.valorProdutoSel  = 0;
+   this.valorProdutoSel  = null;
    this.quantidadeProdutoSel = 1;
    this.formulario.controls['codigoProdutoSelecionado'].setValue('0');
 
@@ -439,11 +446,10 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
     this.inscricaoEstoque$ = this.serviceEstoque.valorVenda(codigoProduto)  
                                                 .pipe(concatMap(valorVendaEncontrado=>{
-                                                  if (valorVendaEncontrado!= null ) {                                                   
-                                                                                                        
-                                                    this.valorProdutoSel = (Number(valorVendaEncontrado) * this.percentualComissao);
-                                                    this.valorProdutoSel = Number(this.valorProdutoSel.toFixed(2));                                                    
- 
+                                                  if (valorVendaEncontrado!= null ) {                                                                                                                                                           
+                                                    
+                                                    this.valorProdutoSel = null;
+                                                    
                                                   }else{
                                                     this.handlerExclamation('Não existe estoque para este produto!');
                                                   }
@@ -469,26 +475,28 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   }
   dialogBaixaPagto()
   {
+    let dataPedidoCorrente = new Date(this.formulario.get("dataPedido").value);
+    this.dataFechamento = null;
+    this.codigoStatus = 0;
+
     const dialogRef = this.dialog.open(PedidoBaixaPagtoComponent,
       {width: '450px' , height: '400px;',
         data : {
                   dataFechto : new Date(this.dataPedido) ,
-                  dataCadastro : new Date(this.dataPedido)
+                  dataCadastro : dataPedidoCorrente
                 }
       }
     );
     dialogRef.afterClosed().subscribe(result => {
-      if (result !== undefined){        
-        this.pedido.dataFechamento = new Date(result);
-        this.situacao = result == undefined? "Aberto": "Fechado";
-        this.pedido.codigoStatus = this.pedido.dataFechamento !== null ? 1 : this.pedido.codigoStatus;
-        this.baixaPagamento (this.pedido);
-        //this.submit();
-      }
-      
-      
+      if (result !== undefined){    
+        this.dataFechamento = new Date(result.toDateString());
+        
+        this.situacao = result == undefined? "Pendente": "Pago";
+        this.codigoStatus =  1 ;
+        this.submit();
+        
+      }      
     });
-
   }
   baixaPagamento(pedido:Pedido){
     pedido.cliente = null;
@@ -515,7 +523,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
   salvarRegistro()
   {
-    let codigoStatus: number = 0;
+    
       //confirmando que deseja salvar o registro.
       this.serviceAlert.openConfirmModal('Tem certeza que deseja salvar este pedido?', 'Salvar - Pedido', (answer: boolean) => 
       {         
@@ -527,10 +535,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
         else
         {      
           //status
-          if (this.pedido != null && this.pedido.dataFechamento != null  ){
-            codigoStatus =  1;      
-          }
-
+          
           //criando o objeto que será gravado
           let pedidoGravar = this.pedido !=null ? this.pedido : { codigo : 0 , codigoCliente : this.codigoCliente} as Pedido;
           let itensPedidoGravar : Array<PedidoItem> = this.itensPedidos2;        
@@ -543,15 +548,15 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
           
           pedidoGravar.listaPedidoItem = itensPedidoGravar;//adicionando a lista de itens do pedido.
-          pedidoGravar.codigoStatus  = codigoStatus;
-
+          pedidoGravar.codigoStatus  = this.codigoStatus;
+          pedidoGravar.dataFechamento = this.dataFechamento;
           //complementando as informações
           pedidoGravar.valorTotal = this.valorTotal;
           pedidoGravar.observacao = this.formulario.get('observacao').value;
           pedidoGravar.cliente = null;
           pedidoGravar.listaPedidoItem = null;
       
-          pedidoGravar.dataPedido = pedidoGravar.codigo === 0 ? this.dataHoraAtualSemTimeZone() : this.pedido.dataPedido;             
+          pedidoGravar.dataPedido = pedidoGravar.codigo === 0 ? new Date(this.formulario.get("dataPedido").value) : this.pedido.dataPedido;             
           pedidoGravar.codigoCliente = this.formulario.get('codigoCliente').value;
             
               //recuperando o proximo ID do pedido
@@ -753,10 +758,18 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.itensPedidos2 =  [];    
     this.pedido = <Pedido>{codigo : 0 };    
     this.formulario.reset();    
-    this.situacao = "Aberto";
+    this.situacao = "Pendente";
     this.formulario.controls["situacao"].setValue(this.situacao);
+    this.listaProdutoEstoque();
   }
+  allowNumericDigitsOnlyOnKeyUp(e) {		
+		const charCode = e.which ? e.which : e.keyCode;
+		if (charCode !== 190 && charCode !== 46 && charCode!==44){
+      if (charCode > 31  && (charCode < 48 || charCode > 57)) {
+        this.handleError("Por favor, informar apenas numeros e casas decimais");        
+      }
+    }	 
+	}
 
-   
- 
+  
 }

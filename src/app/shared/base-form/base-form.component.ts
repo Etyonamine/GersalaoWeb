@@ -93,4 +93,6 @@ export abstract class BaseFormComponent implements OnInit {
     dataTransformada.setHours(0, 0, 0, 0);
     return dataTransformada;
   }
+
+  
 }

@@ -9,19 +9,28 @@
       <mat-form-field appearance="fill" style="width: 10%;margin-top :5px;">
         <mat-label>N&uacute;mero</mat-label>
         <input matInput formControlName="numeroPedido" readonly />
+      </mat-form-field>     
+      <mat-form-field appearance="fill" style="width: 29%">
+        <mat-label>Data Vencimento Boleto</mat-label>
+        <input matInput [matDatepicker]="picker4" 
+              formControlName="dataPedido" 
+              matTooltip="Informar a data de pedido"
+              matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"                
+               />
+        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+        <mat-datepicker #picker4></mat-datepicker>
       </mat-form-field>
-     
-      <mat-form-field appearance="fill" style="width: 30%">
-        <mat-label>Data-Pedido</mat-label>
-        <input matInput readonly [value]=" dataPedido | date:'dd/MM/yyyy HH:mm:ss' " />
-      </mat-form-field >
       <mat-form-field appearance="fill" style="width: 30%">
         <mat-label>Quantidade - Total</mat-label>
         <input matInput readonly [value] = " quantidadeTotal "/>
       </mat-form-field >
-      <mat-form-field appearance="fill" style="width: 29%">
+      <mat-form-field appearance="fill" style="width: 14%">
         <mat-label>Valor - Total</mat-label>
-        <input matInput readonly [value] = "valorTotal  | currency:'BRL':'symbol':'1.2-2':'pt' "/>
+        <input matInput readonly [value] = "valorTotal  | currency:'BRL':'symbol':'1.2-2':'pt' " />
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 15%">
+        <mat-label>Situação</mat-label>
+        <input matInput readonly [value] = "situacao" />
       </mat-form-field>
      
     </div>
@@ -62,7 +71,8 @@
               [ngModelOptions]="{standalone: true}"
               placeholder="Valor do produto" 
               placeholder="0.000,00" 
-              [disabled]="codigoPedido > 0" />
+              [disabled]="codigoPedido > 0"
+              (keypress)="allowNumericDigitsOnlyOnKeyUp($event)" />
         <!-- <span matPrefix>R$&nbsp;</span> -->
         <!-- <span matSuffix>,00</span> -->
       </mat-form-field>
@@ -70,7 +80,7 @@
         <mat-label>Quantidade</mat-label>
         <input [(ngModel)]="quantidadeProdutoSel" [ngModelOptions]="{standalone: true}" matInput type="number" step="1"
           min="0" autocomplete="off" class="right-align" placeholder="Digite a quantidade total a adicionar"
-          matTooltip="Quantidade de produto(s)" [disabled]="formulario.get('situacao').value !='Aberto'" />
+          matTooltip="Quantidade de produto(s)" [disabled]="formulario.get('situacao').value !='Pendente'" />
         <!-- <span matSuffix>,00</span> -->
       </mat-form-field>
       &nbsp;
@@ -117,7 +127,7 @@
                   <!-- <button mat-mini-fab 
                   color="warn" 
                   aria-label="apagar item do pedido" 
-                                    [disabled]="formulario.get('situacao').value !='Aberto'"
+                                    [disabled]="formulario.get('situacao').value !='Pendente'"
                   
                   >
                     <mat-icon>delete</mat-icon>
@@ -172,13 +182,13 @@
             </button>              
             &nbsp;
             <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
-              [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid || quantidadeTotal == 0 || itensPedidos2 === null || itensPedidos2.length === 0"
+              [disabled]="formulario.get('situacao').value !='Pendente' || !formulario.valid || quantidadeTotal == 0 || itensPedidos2 === null || itensPedidos2.length === 0"
               type="button">
               Baixar pagamento &nbsp;<i class="material-icons right">paid</i>
             </button>
             &nbsp;
             <button mat-raised-button color="accent" (click)="limparCampos()"
-            [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid || codigoCliente > 0"
+            [disabled]="formulario.get('situacao').value !='Pendente' || !formulario.valid || codigoCliente > 0"
             >
               Limpar Campos &nbsp;<i class="material-icons right">backspace</i>
             </button>            
