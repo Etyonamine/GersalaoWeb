@@ -278,8 +278,8 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
    // this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
     //limpando os campos
     this.codigoProdutoAdd = 0;
-    this.quantidadeProdutoAdd = null;
-    this.valorUnitarioAdd = null;  
+    this.quantidadeProdutoAdd = 1;
+    this.valorUnitarioAdd = 0;  
   }
 
   adicionarLista(){

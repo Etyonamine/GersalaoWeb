@@ -50,7 +50,7 @@
             <ng-container matColumnDef="valorTotal">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Valor-total</mat-header-cell>
               <mat-cell *matCellDef="let pedido"><a>{{
-                  pedido.valorTotal
+                  pedido.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt'
                   }}</a></mat-cell>
             </ng-container>
             <ng-container matColumnDef="dataFechto">
