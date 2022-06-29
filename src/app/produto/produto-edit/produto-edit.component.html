@@ -115,7 +115,7 @@
                 ></textarea>
               </mat-form-field>
             </div>
-           
+          
             <div>
               
               <app-msg-error
@@ -126,8 +126,8 @@
                 mensagemErro="Por favor, digite o nome completo! "
               ></app-msg-error>
               <app-msg-error
-                [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
-                mensagemErro="O nome digitado já existe cadastrado!"
+                  [mostrarErro]="formulario.invalid && formulario.get('nome').errors?.isDupe"
+                  mensagemErro="O tipo digitado já existe no cadastrado!"
               ></app-msg-error>
               <app-msg-error
                 [mostrarErro]="isSubmitted && formulario.get('linha').hasError('required') "

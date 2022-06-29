@@ -1,9 +1,10 @@
 import { NumberSymbol } from '@angular/common';
 import { decimalDigest } from '@angular/compiler/src/i18n/digest';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EMPTY, Subscription } from 'rxjs';
+import { EMPTY, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Fornecedor } from 'src/app/fornecedor/fornecedor';
 import { FornecedorService } from 'src/app/fornecedor/fornecedor.service';
 import { ProdutoLinha } from 'src/app/produto-linha/produto-linha';
@@ -56,7 +57,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     this.carregarTipos();
     this.carregarLinhas();
     this.criarFormulario();
-    this.valorComissaoField =  this.data.valorComissao != null?this.data.valorComissao.toString().replace('.',','): null;
+    this.valorComissaoField =  this.data.valorComissao != null?this.data.valorComissao.toString().replace('.',','): "0,00";
 
   }
   ngOnDestroy(): void{
@@ -74,7 +75,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     
     this.formulario = this.formBuilder.group({
       codigo:[this.codigo],
-      nome: [(this.codigo==0?null:this.data.nome), Validators.required],
+      nome: [(this.codigo==0?null:this.data.nome), Validators.required, this.isDupe()],
       observacao: [(this.codigo==0?null:this.data.observacao)], 
       tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
       linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
@@ -147,8 +148,20 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   openConfirmExclusao(){
 
   }
-  isDupe(){
+  isDupe():AsyncValidatorFn{
+    return(control:AbstractControl):Observable<{[key:string]:any}| null>=>{      
 
+      const produtoValidar = {
+        codigo: this.codigo,
+        nome: this.formulario === undefined ? this.produto.nome: this.formulario.get('nome').value
+      } as Produto;
+     
+      return  this.produtoService.isDupe(produtoValidar)
+                  .pipe(map(result=>{
+                        return (result ? {isDupe:true} : null);
+      }));
+    }
+ 
   }
   submit() {
     this.isSubmitted = true;
