@@ -3,6 +3,7 @@ import { decimalDigest } from '@angular/compiler/src/i18n/digest';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { timeStamp } from 'console';
 import { EMPTY, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Fornecedor } from 'src/app/fornecedor/fornecedor';
@@ -38,7 +39,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   inscricaoProduto$: Subscription;
   isSubmitted = false;
   valorComissaoField : string;
-
+  
   constructor(
       private formBuilder:FormBuilder,
       private alertService: AlertService,
@@ -75,9 +76,9 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     
     this.formulario = this.formBuilder.group({
       codigo:[this.codigo],
-      nome: [(this.codigo==0?null:this.data.nome), Validators.required, this.isDupe()],
+      nome: [(this.codigo==0?null:this.data.nome), Validators.required ],
       observacao: [(this.codigo==0?null:this.data.observacao)], 
-      tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
+      tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),Validators.required],
       linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
       codigoChaveFornecedor:[(this.codigo==0?null:this.data.codigoChaveFornecedor)],      
       codigoFornecedor: [(this.codigo ==0?null: this.data.codigoFornecedor),Validators.required],
@@ -153,7 +154,8 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
 
       const produtoValidar = {
         codigo: this.codigo,
-        nome: this.formulario === undefined ? this.produto.nome: this.formulario.get('nome').value
+        nome: this.formulario === undefined ? this.produto.nome: this.formulario.get('nome').value,
+        codigoTipoProduto : this.formulario === undefined || this.formulario.get('tipo').value === null || this.formulario.get('tipo').value === undefined? 0 : this.formulario.get('tipo').value
       } as Produto;
      
       return  this.produtoService.isDupe(produtoValidar)
@@ -166,6 +168,10 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   submit() {
     this.isSubmitted = true;
     if (!this.formulario.valid) {
+      return false;
+    }
+    if (this.isDupe()){
+      this.handleError('O nome do produto e tipo já existe cadastrado!');
       return false;
     }
     if (this.valorComissaoField == null || this.valorComissaoField == undefined){

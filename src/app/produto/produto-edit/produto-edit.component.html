@@ -126,9 +126,15 @@
                 mensagemErro="Por favor, digite o nome completo! "
               ></app-msg-error>
               <app-msg-error
-                  [mostrarErro]="formulario.invalid && formulario.get('nome').errors?.isDupe"
-                  mensagemErro="O tipo digitado já existe no cadastrado!"
+                  [mostrarErro]="formulario.invalid && formulario.get('nome').errors?.isDupe "
+                  mensagemErro="O nome do produto digitado já existe no cadastrado!"
               ></app-msg-error>
+
+              <app-msg-error
+                  [mostrarErro]="formulario.invalid && formulario.get('tipo').errors?.isDupe && formulario.get('nome').errors?.isDupe"
+                  mensagemErro="O nome do produto com o tipo digitado já existe no cadastrado!"
+              ></app-msg-error>
+
               <app-msg-error
                 [mostrarErro]="isSubmitted && formulario.get('linha').hasError('required') "
                 mensagemErro="Por favor, informar a linha de produto">
