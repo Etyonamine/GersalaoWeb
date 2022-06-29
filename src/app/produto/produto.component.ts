@@ -98,7 +98,8 @@ export class ProdutoComponent implements OnInit {
       codigoSituacao : 1,
       codigoLinha : 0 ,
       situacao : null, 
-      tipoProduto : null
+      tipoProduto : null,
+      valorComissao : null
     } as Produto;
 
     // montando o dialogo
