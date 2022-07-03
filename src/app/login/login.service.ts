@@ -11,14 +11,14 @@ import { AlertService } from '../shared/alert/alert.service';
 })
 export class LoginService extends BaseService<Login>{
 
+  url: string = `${environment.API}usuarios`;
 
   constructor(protected http: HttpClient,
               private alertService: AlertService) {
     super(http, `${environment.API}usuarios`);
   }
-  validarLogin(login: Login){
-    var url: string = `${environment.API}usuarios`;
-    
-    return this.http.post<Login>(url, login).pipe(take(1));        
+  validarLogin(login: Login){ 
+    let urlValidar = this.url + '?login=' + login.login + '&senha=' + login.senha;   
+    return this.http.post<boolean>(urlValidar, null).pipe(take(1));        
   }
 }

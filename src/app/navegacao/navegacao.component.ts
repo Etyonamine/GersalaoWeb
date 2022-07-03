@@ -8,7 +8,6 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class NavegacaoComponent implements OnInit {
   mostrarMenu = false;
-  codigoUsuario = 0;
   loginUsuario: string;
 
 
@@ -34,9 +33,8 @@ export class NavegacaoComponent implements OnInit {
   }
   getUserLogged() {
 
-    this.authService.getUserData();
-    this.codigoUsuario = this.authService.usuarioLogado.Codigo;
-    this.loginUsuario = this.authService.usuarioLogado.Login;
+    this.authService.getUserData();    
+    this.loginUsuario = this.authService.usuarioLogado.login;
 
   }
 

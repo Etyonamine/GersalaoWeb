@@ -224,7 +224,7 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
 
     this.rotulos_modos_operacao();
 
-    this.codigoLogin = this.authService.usuarioLogado.Codigo;
+    this.codigoLogin = this.authService.usuarioLogado.codigo;
   }
 
   ngOnDestroy(): void {

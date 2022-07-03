@@ -118,7 +118,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.criarFormulario();
     this.dadosEndereco =  {} as Endereco;
     this.authService.getUserData();
-    this.codigoUsuario = this.authService.usuarioLogado.Codigo;
+    this.codigoUsuario = this.authService.usuarioLogado.codigo;
     
   }
 

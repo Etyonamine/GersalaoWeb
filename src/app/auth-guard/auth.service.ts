@@ -4,6 +4,10 @@ import { LoginService } from './../login/login.service';
 import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from './../login/login';
+import { concatMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { UsuarioService } from '../usuario/usuario.service';
+import { Logged } from '../login/logged.component';
 
 
 @Injectable({
@@ -11,17 +15,18 @@ import { Login } from './../login/login';
 })
 export class AuthService {
   usuarioPesquisado: Login;
-  usuarioLogado: Usuario = {
-    Codigo: 0, Login: '',
-    Nome: ''
+  usuarioLogado: Logged = {
+    codigo : 0,
+    login: ''
   };
   usuarioAutenticado = false;
   mostrarMenuEmitter = new EventEmitter<boolean>();
-
+  Codigo : number; 
 
   constructor(
     private router: Router,
     private loginService: LoginService,
+    private usuarioService: UsuarioService,
     private alertService: AlertService
   ) {}
 
@@ -29,28 +34,46 @@ export class AuthService {
   fazerLogin(usuario: Login) {
 
     const login: Login =  { login: usuario.nome, senha: usuario.senha , Autenticado : usuario.Autenticado} as Login;
-
+    let usuarioEncontrado = {} as Usuario;
+    this.mostrarMenuEmitter.emit(false);
     // pesquisando na base de dados
-    this.loginService.validarLogin(login).subscribe(
-      (httpLogin) => {
-        if (httpLogin) {
-
-          this.usuarioLogado =  {} as Usuario;
-
-          this.usuarioLogado.Codigo = httpLogin.codigo;
-          this.usuarioLogado.Nome = httpLogin.nome;
-          this.usuarioLogado.Login = httpLogin.login;
-
-
-          localStorage.setItem('user_logged', JSON.stringify(this.usuarioLogado));
-          this.usuarioPesquisado = httpLogin;
-          this.usuarioAutenticado = true;
-          this.mostrarMenuEmitter.emit(true);
-          // this.router.navigate(['/home']);
-
-          this.router.navigate(['/home']);
-        } else {
-          this.alertService.mensagemErro('Usuário ou senha inválido!');
+    this.loginService.validarLogin(login)
+                     .pipe(concatMap(retorno =>
+      {
+      
+        let usuarioEncontrado = {} as Usuario;
+        if (retorno)
+        {
+          this.usuarioService.get<Usuario>(login.login)
+                             .subscribe(usuario=>{
+                                        usuarioEncontrado = usuario;
+                                        let usuarioLogged = { 
+                                                              codigo : usuarioEncontrado.codigo,                                  
+                                                              login : usuarioEncontrado.login }  as Logged;
+                                        
+                                        localStorage.setItem('user_logged', JSON.stringify(usuarioLogged));          
+                                        this.mostrarMenuEmitter.emit(true);
+                                        this.router.navigate(['/home']);
+              
+          }, error=>{
+            console.log(error);
+            this.alertService.mensagemErro('Erro ao recuperar as informações do usuário!');
+            return of (false);
+          });                
+          return of (true);
+        }        
+        else{
+          return of (false);
+        }        
+      
+    })).subscribe(
+      (retorno) => {
+        if (!retorno) {                 
+          this.alertService.mensagemErro('Usuário ou senha inválido!');  
+          return false;
+        }else{
+          
+              return true;
         }
       },
       (error) => {
@@ -71,14 +94,30 @@ export class AuthService {
   }
 
   fazerLogout() {
+    localStorage.removeItem('user_logged');
     this.usuarioAutenticado = false;
+    this.usuarioLogado = {} as Login;
     this.mostrarMenuEmitter.emit(false);
     this.router.navigate(['/login']);
+    
   }
 
   getUserData() {
 
-    this.usuarioLogado = JSON.parse(localStorage.getItem('user_logged'));
-    this.usuarioAutenticado = this.usuarioLogado != null;
+    let usuarioLogged  = { 
+      codigo : 0,
+      login : ''
+    } as Logged;
+
+    usuarioLogged = JSON.parse(localStorage.getItem('user_logged'));
+    if (usuarioLogged!=null){
+      this.usuarioAutenticado = usuarioLogged.codigo > 0 ;
+      //recuperando o codigo do usuario.
+      
+      this.usuarioLogado.codigo = usuarioLogged.codigo ;
+      this.usuarioLogado.login = usuarioLogged.login;
+    }
+    
+    
  }
 }
