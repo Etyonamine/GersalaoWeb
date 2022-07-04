@@ -1,0 +1,69 @@
+<div class="container">
+    <mat-card>
+      <mat-card-title> Alterar a senha </mat-card-title>
+      
+      <mat-card-content>
+        <form [formGroup]="formulario" (ngSubmit)="onSubmit()">         
+            <div class="example-container">
+              <mat-form-field appearance="fill">
+                <mat-label>Nova Senha </mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" formControlName="novaSenha"   >
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+              </mat-form-field>           
+            </div>
+            <div>
+                <mat-form-field appearance="fill">
+                    <mat-label>Repetir Senha</mat-label>
+                    <input matInput [type]="hide ? 'password' : 'text'" formControlName="repetirSenha" 
+                    >
+                    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+              </mat-form-field>             
+            </div>
+           
+           
+           <!--  <div>
+                <mat-divider></mat-divider>                
+            </div> -->
+           
+          
+          
+            
+          <!-- botoes *********************************************************************************************************-->
+      <!--     <div style="margin-top: 10px">
+            <table>
+              <tr>              
+                <td  style="text-align: left;">
+                    <button
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    [disabled]="!formulario.valid || codigo > 0 "
+                  >
+                    Salvar &nbsp;<i class="material-icons right">save</i>
+                  </button>   
+                           
+                  
+                  &nbsp;
+                  <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
+                    [disabled]="(formulario.get('dataPagtoBoleto').value != null && codigo > 0) ||(codigo == 0 || codigo == null )"
+                    type="button">
+                    Baixa de Pagamento &nbsp;<i class="material-icons right">paid</i>
+                  </button>
+                  
+                  &nbsp;
+                  <button mat-raised-button color="primary" (click)="retornar()">
+                    Retornar &nbsp;<i class="material-icons right">reply</i>
+                  </button>            
+                </td>
+              </tr>
+            </table>
+          </div> -->
+           
+        </form>  
+      </mat-card-content>    
+    </mat-card>     
+</div>

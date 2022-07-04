@@ -79,6 +79,13 @@ const routes: Routes = [
       canLoad: [AuthGuard]
 
   },
+  {
+    path: 'usuario',
+      loadChildren: () => import('./usuario/usuario.module').then(mod => mod.UsuarioModule),
+      canActivate:[AuthGuard],
+      canLoad: [AuthGuard]
+
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PaginaNaoEncontradaComponent }
 ];
