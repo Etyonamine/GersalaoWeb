@@ -5,6 +5,7 @@ import { BaseService } from './../shared/base.service';
 import { Injectable } from '@angular/core';
 import { Login } from './login';
 import { AlertService } from '../shared/alert/alert.service';
+import { Usuario } from '../usuario/usuario';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,6 @@ export class LoginService extends BaseService<Login>{
   }
   validarLogin(login: Login){ 
     let urlValidar = this.url + '?login=' + login.login + '&senha=' + login.senha;   
-    return this.http.post<boolean>(urlValidar, null).pipe(take(1));        
+    return this.http.post<Usuario>(urlValidar, null).pipe(take(1));        
   }
 }

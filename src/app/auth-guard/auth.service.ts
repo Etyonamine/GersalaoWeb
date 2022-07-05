@@ -19,6 +19,10 @@ export class AuthService {
     codigo : 0,
     login: ''
   };
+
+  tokenStorage: string ='tokenAuthentic';
+  loginStorage: string = 'loginAuthentic';
+
   usuarioAutenticado = false;
   mostrarMenuEmitter = new EventEmitter<boolean>();
   Codigo : number; 
@@ -38,55 +42,31 @@ export class AuthService {
     this.mostrarMenuEmitter.emit(false);
     // pesquisando na base de dados
     this.loginService.validarLogin(login)
-                     .pipe(concatMap(retorno =>
-      {
-      
-        let usuarioEncontrado = {} as Usuario;
-        if (retorno)
-        {
-          this.usuarioService.get<Usuario>(login.login)
-                             .subscribe(usuario=>{
-                                        usuarioEncontrado = usuario;
-                                        let usuarioLogged = { 
-                                                              codigo : usuarioEncontrado.codigo,                                  
-                                                              login : usuarioEncontrado.login }  as Logged;
-                                        
-                                        localStorage.setItem('user_logged', JSON.stringify(usuarioLogged));          
-                                        this.mostrarMenuEmitter.emit(true);
-                                        this.router.navigate(['/home']);
-              
-          }, error=>{
-            console.log(error);
-            this.alertService.mensagemErro('Erro ao recuperar as informações do usuário!');
-            return of (false);
-          });                
-          return of (true);
-        }        
-        else{
-          return of (false);
-        }        
-      
-    })).subscribe(
-      (retorno) => {
-        if (!retorno) {                 
-          this.alertService.mensagemErro('Usuário ou senha inválido!');  
-          return false;
-        }else{
-          
-              return true;
-        }
-      },
-      (error) => {
-        console.error(error.error);
-        if (error.status = "404"){
-          this.alertService.mensagemExclamation('Usuario ou senha inválido!');
-        }else{
-          this.alertService.mensagemErro('Ocorreu um erro ao tentar validar o seu acesso!');
-        }
-        
-        return;
-      }
-    );
+                      .subscribe(resposta => {
+                                  if (resposta.tokenAutenticado !=='')
+                                  {          
+                                      var usuarioLogged ={ codigo : resposta.codigo, login : resposta.login } as Logged;
+
+                                      localStorage.setItem(this.tokenStorage, JSON.stringify(resposta.tokenAutenticado));                                      
+                                      localStorage.setItem(this.loginStorage, JSON.stringify(usuarioLogged));          
+                                       
+                                      this.mostrarMenuEmitter.emit(true);
+                                      this.usuarioAutenticado = true;
+                                      this.router.navigate(['/home']); 
+                                  }else{
+                                    this.alertService.mensagemExclamation('Usuario ou senha inválido!');
+                                  }     
+                                }, error => {
+                                    console.error(error.error);
+                                    if (error.status = "404"){
+                                      this.alertService.mensagemExclamation('Usuario ou senha inválido!');
+                                    }else{
+                                      this.alertService.mensagemErro('Ocorreu um erro ao tentar validar o seu acesso!');
+                                    }
+                                    
+                                    return;
+                                  }
+                                );
   }
 
   usuarioEstaAutenticado() {
@@ -94,7 +74,8 @@ export class AuthService {
   }
 
   fazerLogout() {
-    localStorage.removeItem('user_logged');
+    localStorage.removeItem(this.loginStorage);
+    localStorage.removeItem(this.tokenStorage);
     this.usuarioAutenticado = false;
     this.usuarioLogado = {} as Login;
     this.mostrarMenuEmitter.emit(false);
@@ -109,7 +90,7 @@ export class AuthService {
       login : ''
     } as Logged;
 
-    usuarioLogged = JSON.parse(localStorage.getItem('user_logged'));
+    usuarioLogged = JSON.parse(localStorage.getItem(this.loginStorage));
     if (usuarioLogged!=null){
       this.usuarioAutenticado = usuarioLogged.codigo > 0 ;
       //recuperando o codigo do usuario.

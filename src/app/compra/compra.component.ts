@@ -50,8 +50,7 @@ export class CompraComponent implements OnInit, OnDestroy {
               private serviceAlert: AlertService,
               public dialog: MatDialog              ) { }
 
-  ngOnInit(): void {
-     
+  ngOnInit(): void {     
     this.loadData();
   }
 
