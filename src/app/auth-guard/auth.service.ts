@@ -16,7 +16,7 @@ import { Logged } from '../login/logged.component';
 export class AuthService {
   usuarioPesquisado: Login;
   usuarioLogado: Logged = {
-    codigo : 0,
+    codigo : "0",
     login: ''
   };
 
@@ -26,6 +26,7 @@ export class AuthService {
   usuarioAutenticado = false;
   mostrarMenuEmitter = new EventEmitter<boolean>();
   Codigo : number; 
+  token : string;
 
   constructor(
     private router: Router,
@@ -37,18 +38,21 @@ export class AuthService {
 
   fazerLogin(usuario: Login) {
 
-    const login: Login =  { login: usuario.nome, senha: usuario.senha , Autenticado : usuario.Autenticado} as Login;
+    const login =  { login: usuario.login, senha: usuario.senha , Autenticado : usuario.Autenticado} as Login;
     let usuarioEncontrado = {} as Usuario;
     this.mostrarMenuEmitter.emit(false);
     // pesquisando na base de dados
     this.loginService.validarLogin(login)
                       .subscribe(resposta => {
-                                  if (resposta.tokenAutenticado !=='')
-                                  {          
-                                      var usuarioLogged ={ codigo : resposta.codigo, login : resposta.login } as Logged;
+                                  if (resposta!== null)
+                                  {   
+                                      let usuarioStorage = {
+                                                            codigo : resposta.codigo,
+                                                            login : resposta.login
+                                                          } as Logged;
 
-                                      localStorage.setItem(this.tokenStorage, JSON.stringify(resposta.tokenAutenticado));                                      
-                                      localStorage.setItem(this.loginStorage, JSON.stringify(usuarioLogged));          
+                                      localStorage.setItem(this.tokenStorage, JSON.stringify(resposta.tokenAutorizacao));                                      
+                                      localStorage.setItem(this.loginStorage, JSON.stringify(usuarioStorage));          
                                        
                                       this.mostrarMenuEmitter.emit(true);
                                       this.usuarioAutenticado = true;
@@ -77,7 +81,7 @@ export class AuthService {
     localStorage.removeItem(this.loginStorage);
     localStorage.removeItem(this.tokenStorage);
     this.usuarioAutenticado = false;
-    this.usuarioLogado = {} as Login;
+    this.usuarioLogado = {} as Logged;
     this.mostrarMenuEmitter.emit(false);
     this.router.navigate(['/login']);
     
@@ -85,20 +89,21 @@ export class AuthService {
 
   getUserData() {
 
-    let usuarioLogged  = { 
-      codigo : 0,
-      login : ''
-    } as Logged;
-
-    usuarioLogged = JSON.parse(localStorage.getItem(this.loginStorage));
-    if (usuarioLogged!=null){
-      this.usuarioAutenticado = usuarioLogged.codigo > 0 ;
-      //recuperando o codigo do usuario.
-      
-      this.usuarioLogado.codigo = usuarioLogged.codigo ;
-      this.usuarioLogado.login = usuarioLogged.login;
-    }
     
-    
+    let loginStorage : Login = localStorage.getItem(this.loginStorage)?
+                          JSON.parse(localStorage.getItem(this.loginStorage)):null;
+    if (loginStorage!=null){
+      this.usuarioAutenticado = this.getObterTokenUsuario() ;      
+      this.usuarioLogado.login = atob(loginStorage.login);      
+      this.usuarioLogado.codigo = atob(loginStorage.codigo);
+    }    
+ }
+ getObterTokenUsuario()
+ {
+    return localStorage.getItem(this.tokenStorage) ? true : false;
+ }
+ recuperarToken(){
+  this.token = localStorage.getItem(this.tokenStorage) ? JSON.parse(atob(localStorage.getItem(this.tokenStorage)))  : null;
+  
  }
 }

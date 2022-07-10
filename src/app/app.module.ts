@@ -1,7 +1,7 @@
 import { MaterialModule } from './material/material.module';
 import { SituacaoModule } from './situacao/situacao/situacao.module';
 import { SharedModule } from './shared/shared.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
 import { LOCALE_ID } from '@angular/core';
@@ -39,6 +39,9 @@ import { registerLocaleData } from '@angular/common';
 import { AgendaComponent } from './agenda/agenda.component';
 import { AgendaServicosComponent } from './agenda-servicos/agenda-servicos.component';
 import { FornecedorComponent } from './fornecedor/fornecedor.component';
+
+import { TokenInterceptor } from './auth-guard/interceptor/token.interceptor';
+
 
 registerLocaleData(localePt);
 
@@ -87,7 +90,8 @@ registerLocaleData(localePt);
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
     ,
     { provide: LOCALE_ID, useValue: 'pt' },
-    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },    
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },      
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

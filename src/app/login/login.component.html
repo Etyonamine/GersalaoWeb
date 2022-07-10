@@ -2,7 +2,7 @@
   <mat-card-title>Login</mat-card-title>
   <mat-card-content >    
     <div style="text-align: center;">
-      <mat-form-field appearance="fill" style="width: 300px;">
+      <!-- <mat-form-field appearance="fill" style="width: 300px;">
         <mat-label>login</mat-label>
         <input matInput [(ngModel)]="login.nome">
       </mat-form-field>
@@ -14,11 +14,34 @@
           [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
-      </mat-form-field>
+      </mat-form-field> -->
+
+      <form [formGroup]="formulario" (ngSubmit)="onSubmit()" class="form-container">         
+        <div class="example-container">
+          <mat-form-field appearance="fill" style="width: 300px;">
+            <mat-label>Login </mat-label>
+            <input matInput  formControlName="login"   >            
+          </mat-form-field>           
+        </div>
+        <div>
+            <mat-form-field appearance="fill" style="width: 300px;">
+                <mat-label>Senha</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" formControlName="senha" 
+                >
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+          </mat-form-field>             
+        </div>           
+        <div>
+            <mat-divider></mat-divider>                
+        </div>     
+        <mat-card-actions class = "example-card" align='start'>
+          <button mat-raised-button color="primary" [disabled] = "!formulario.valid">Enviar <i class="material-icons right">send</i>
+          </button>
+        </mat-card-actions>   
+      </form>  
     </div>
   </mat-card-content>
-  <mat-card-actions class = "example-card" align='start'>
-    <button mat-raised-button color="primary" (click)="fazerLogin()">Enviar <i class="material-icons right">send</i>
-    </button>
-  </mat-card-actions>
+  
 </mat-card>

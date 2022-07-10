@@ -1,81 +1,99 @@
- <mat-toolbar color="primary">
-  <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <span>My App</span>
-  <span class="example-spacer"></span>
-  <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-    <mat-icon>favorite</mat-icon>
-  </button>
-  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-    <mat-icon>share</mat-icon>
-  </button> -->
-  <span>Portal Gersalão</span>
+<div>
+  <table style="width:100%;">
+    <tr>
+      <td style="width:8%">
+          <img src ="../assets/images/logo2.png" >
+      </td>
+      <td style="text-align:left;width: 100%;font-size: x-large;">
+        <mat-toolbar color="primary"> 
+          <b>Portal Gersalão</b>
+          <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+            <mat-icon>menu</mat-icon>
+          </button>
+          <span>My App</span>
+          <span class="example-spacer"></span>
+          <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+            <mat-icon>favorite</mat-icon>
+          </button>
+          <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+            <mat-icon>share</mat-icon>
+          </button> -->
+          <!-- <span style="text-align:center;width: 100%;">Portal Gersalão</span>   -->
+          
+          <span class="example-spacer"></span>
+          
+          <div *ngIf="mostrarMenu">
+        
+            <button mat-button [routerLink]="['/home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>    
+            <button mat-button [matMenuTriggerFor]="Cadastro" > &nbsp; <i class ="material-icons right">app_registration</i>Cadastro-Geral</button>
+            <button mat-button [matMenuTriggerFor]="Agenda" > &nbsp; <i class ="material-icons right">calendar_month</i>Agenda</button>
+            <button mat-button [matMenuTriggerFor]="Venda" > &nbsp; <i class ="material-icons right">point_of_sale</i>Vendas</button>
+            
+        
+            <mat-menu #Agenda="matMenu">
+              <button mat-menu-item><i class ="material-icons right">event_note</i> Agendamento</button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button>
+            </mat-menu>
+        
+            <mat-menu #Venda="matMenu">
+              <button mat-menu-item [routerLink]="['pedido']" ><i class ="material-icons right">point_of_sale</i>Pedido</button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item [matMenuTriggerFor]="compra" ><i class ="material-icons right">inventory</i>Compra</button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item [matMenuTriggerFor]="estoque" ><i class ="material-icons right">storage</i>Estoque</button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item [matMenuTriggerFor]="produto" ><i class ="material-icons right">qr_code</i>Produto</button>
+            </mat-menu>
+        
+            <mat-menu #Cadastro="matMenu">
+              <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>           
+              <!-- <button mat-menu-item [routerLink]="['servico']">Serviço</button> -->       
+            </mat-menu>
+        
+            <mat-menu #servicos="matMenu">
+              <button mat-menu-item [routerLink]="['servico']"> <i class ="material-icons right">app_registration</i> Cadastro</button>
+              <button mat-menu-item [routerLink]="['tipo-servico']"> <i class ="material-icons right">category</i> Tipo</button>
+            </mat-menu>
+        
+            <mat-menu #compra="matMenu">
+              <button mat-menu-item [routerLink]="['compra']"> <i class ="material-icons right">inventory</i> Cadastro</button>           
+            </mat-menu>
+        
+            <mat-menu #estoque="matMenu">
+              <button mat-menu-item [routerLink]="['estoque']"> <i class ="material-icons right">search</i> Consultar</button>           
+            </mat-menu>
+        
+           
+        
+            <mat-menu #produto="matMenu">
+              <button mat-menu-item [routerLink]="['produto']"> <i class ="material-icons right">app_registration</i> Cadastro</button>
+              <button mat-menu-item [routerLink]="['tipo-produto']"><i class ="material-icons right">category</i> Tipo</button>
+              <button mat-menu-item [routerLink]="['produto-linha']"><i class ="material-icons right">line_style</i> Linha</button>
+            </mat-menu>
+            
+            <button mat-button [matMenuTriggerFor]="Login" >&nbsp;<i class="material-icons right">account_circle</i>{{loginUsuario}}</button>
+        
+            <mat-menu #Login = "matMenu">
+              <button mat-menu-item [routerLink]="['/usuario', loginUsuario]" >&nbsp;<i class="material-icons right">key</i>Alterar Senha</button>
+            </mat-menu>
+        
+            <button mat-button (click)="logout()"> &nbsp;<i class="material-icons right">logout</i> Logout</button>
+          </div>
+        
+        
+        
+        
+        </mat-toolbar>
+      </td>
+    </tr>
+  </table>
+  
+</div>
+<div>
 
-  <span class="example-spacer"></span>
-  <div *ngIf="mostrarMenu">
 
-    <button mat-button [routerLink]="['/home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>    
-    <button mat-button [matMenuTriggerFor]="Cadastro" > &nbsp; <i class ="material-icons right">app_registration</i>Cadastro-Geral</button>
-    <button mat-button [matMenuTriggerFor]="Agenda" > &nbsp; <i class ="material-icons right">calendar_month</i>Agenda</button>
-    <button mat-button [matMenuTriggerFor]="Venda" > &nbsp; <i class ="material-icons right">point_of_sale</i>Vendas</button>
-    
-
-    <mat-menu #Agenda="matMenu">
-      <button mat-menu-item><i class ="material-icons right">event_note</i> Agendamento</button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button>
-    </mat-menu>
-
-    <mat-menu #Venda="matMenu">
-      <button mat-menu-item [routerLink]="['pedido']" ><i class ="material-icons right">point_of_sale</i>Pedido</button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item [matMenuTriggerFor]="compra" ><i class ="material-icons right">inventory</i>Compra</button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item [matMenuTriggerFor]="estoque" ><i class ="material-icons right">storage</i>Estoque</button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item [matMenuTriggerFor]="produto" ><i class ="material-icons right">qr_code</i>Produto</button>
-    </mat-menu>
-
-    <mat-menu #Cadastro="matMenu">
-      <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>           
-      <!-- <button mat-menu-item [routerLink]="['servico']">Serviço</button> -->       
-    </mat-menu>
-
-    <mat-menu #servicos="matMenu">
-      <button mat-menu-item [routerLink]="['servico']"> <i class ="material-icons right">app_registration</i> Cadastro</button>
-      <button mat-menu-item [routerLink]="['tipo-servico']"> <i class ="material-icons right">category</i> Tipo</button>
-    </mat-menu>
-
-    <mat-menu #compra="matMenu">
-      <button mat-menu-item [routerLink]="['compra']"> <i class ="material-icons right">inventory</i> Cadastro</button>           
-    </mat-menu>
-
-    <mat-menu #estoque="matMenu">
-      <button mat-menu-item [routerLink]="['estoque']"> <i class ="material-icons right">search</i> Consultar</button>           
-    </mat-menu>
-
-   
-
-    <mat-menu #produto="matMenu">
-      <button mat-menu-item [routerLink]="['produto']"> <i class ="material-icons right">app_registration</i> Cadastro</button>
-      <button mat-menu-item [routerLink]="['tipo-produto']"><i class ="material-icons right">category</i> Tipo</button>
-      <button mat-menu-item [routerLink]="['produto-linha']"><i class ="material-icons right">line_style</i> Linha</button>
-    </mat-menu>
-    
-    <button mat-button [matMenuTriggerFor]="Login" >&nbsp;<i class="material-icons right">account_circle</i>{{loginUsuario}}</button>
-
-    <mat-menu #Login = "matMenu">
-      <button mat-menu-item [routerLink]="['/usuario', loginUsuario]" >&nbsp;<i class="material-icons right">key</i>Alterar Senha</button>
-    </mat-menu>
-
-    <button mat-button (click)="logout()"> &nbsp;<i class="material-icons right">logout</i> Logout</button>
-  </div>
-
-
-
-
-</mat-toolbar>
+</div>
 

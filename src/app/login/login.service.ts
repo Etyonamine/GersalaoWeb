@@ -1,6 +1,6 @@
 import { subscribeOn, take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BaseService } from './../shared/base.service';
 import { Injectable } from '@angular/core';
 import { Login } from './login';
@@ -19,7 +19,15 @@ export class LoginService extends BaseService<Login>{
     super(http, `${environment.API}usuarios`);
   }
   validarLogin(login: Login){ 
-    let urlValidar = this.url + '?login=' + login.login + '&senha=' + login.senha;   
-    return this.http.post<Usuario>(urlValidar, null).pipe(take(1));        
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+
+    let loginCriptoGrafado = btoa(login.login); 
+    let SenhaCriptoGrafado = btoa(login.senha); 
+    let objLoginCriptografado = {login : loginCriptoGrafado , senha:SenhaCriptoGrafado} as Login;
+
+    let urlValidar = this.url ;  
+    return this.http.post<Login>(urlValidar,objLoginCriptografado,httpOptions ).pipe(take(1));        
   }
 }

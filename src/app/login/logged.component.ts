@@ -1,4 +1,4 @@
 export class Logged {
-    codigo : number;
+    codigo : string;
     login : string;
 }
