@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { of, Subscription } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth-guard/auth.service';
+import { Login } from 'src/app/login/login';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { Usuario } from '../usuario';
+import { UsuarioService } from '../usuario.service';
 
 @Component({
   selector: 'app-usuario-alterar-senha',
@@ -11,20 +16,33 @@ import { Usuario } from '../usuario';
   styleUrls: ['./usuario-alterar-senha.component.scss']
 })
 export class UsuarioAlterarSenhaComponent extends BaseFormComponent implements OnInit {
-  submit() {
-    this.alterar();
-  }
+  
   usuario : Usuario ;
   formulario:FormGroup;
   hide = true;
+  hideRepetir = true;
+
+  inscricao$ : Subscription;
+  inscricaoAuthService: Subscription;
   
   constructor(private route: ActivatedRoute,
               private formBuilder: FormBuilder,
-              private serviceAlert: AlertService) { super(); }
+              private serviceAlert: AlertService,
+              private authService: AuthService,
+              private usuarioService:UsuarioService,
+              private router: Router,) { super(); }
   
   ngOnInit(): void {
     this.usuario = this.route.snapshot.data['usuario'];
     this.criacaoFormulario();
+  }
+  ngOnDestroy():void{
+    if (this.inscricao$){
+      this.inscricao$.unsubscribe();
+    }
+    if (this.inscricaoAuthService){
+      this.inscricaoAuthService.unsubscribe();
+    }
   }
   criacaoFormulario(){
     
@@ -34,14 +52,33 @@ export class UsuarioAlterarSenhaComponent extends BaseFormComponent implements O
       repetirSenha: [null, Validators.required]
     });
   }
-  alterar(){
+   
+  submit() {
     if (this.formulario.get('novaSenha').value !== this.formulario.get('repetirSenha').value){
       this.handleError('As senhas digitadas são diferentes!');
       return false;
     }else{
-      this.handlerSucesso('Senha informada corretamente!');
-    }
+      if (!this.usuarioService.verificarSenhaForte(this.formulario.get('novaSenha').value)){
+        this.handleError('Senha informada não está no padrão seguro!');
+      }else{
+        let codigo = this.authService.usuarioLogado.codigo;
+        let senha = this.formulario.get('novaSenha').value;
 
+        this.inscricao$ = this.usuarioService.alterarSenha(codigo,senha).subscribe(result=>{
+          if (result){
+            this.handlerSucesso('Senha alterada com sucesso!');
+            setTimeout(() => {
+              this.router.navigate(['/home']);
+            }, 3000);            
+          }else{
+            this.handleError('Não foi alterado a senha!');
+          }
+        },error=>{
+          console.log(error);
+          this.handleError('Ocorreu erro ao tentar salvar a alteração de senha.');
+        });
+      }      
+    }
   }
   handlerSucesso(mensagem:string)
   {
