@@ -86,13 +86,13 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
   gravarDadosContatos: boolean = false;
   gravarDadosDocumentos: boolean = false;
   location: any;
-
+  
+  
   constructor(
     private formBuilder: FormBuilder,    
     private clienteService: ClienteService,
     private unidadeFederativaService: UnidadeFederativaService,
-    private municipioService: MunicipioService,
-    private serviceAlert: AlertService,
+    private municipioService: MunicipioService,  
     private validarCpf: ValidaCpfService,
     private clienteEnderecoService: ClienteEnderecoService,
     private clienteContatoService: ClienteContatoService,
@@ -100,12 +100,12 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
     private contatoService: ContatoService,
     private documentoService: DocumentoService,
     private enderecoService: EnderecoService,
+    private serviceAlert: AlertService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog ,
     private authService: AuthService 
   ) {
-     
     super();
   }
 
@@ -947,3 +947,7 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
     );
   }
 }
+function _serviceAlert(_serviceAlert: any) {
+  throw new Error('Function not implemented.');
+}
+

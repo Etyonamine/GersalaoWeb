@@ -34,6 +34,7 @@ import { ProfissionalEnderecoService } from '../profissional-endereco/profission
 import { EnderecoService } from 'src/app/endereco/endereco.service';
 import { ProfissionalTipoServicoService } from '../profissional-tipo-servico/profissional-tipo-servico.service';
 import { ProfissionalServicoService } from '../profissional-servico/profissional-servico.service';
+import { ProfissionalFinanceiroComponent } from '../profissional-financeiro/profissional-financeiro.component';
 
 
 @Component({
@@ -463,6 +464,18 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
        height: '600px;',
        data : { origemChamada: 2, codigoProfissional: this.codigo, codigoUsuario : this.codigoUsuario} }
     );
+  }
+  openDialogFinanceiro(){
+    const dialogRef = this.dialog.open(ProfissionalFinanceiroComponent,
+      { width: '450px' ,
+       height: '600px;',
+       data : { codigoProfissional: this.codigo, codigoUsuario : this.codigoUsuario, valorComissao : this.profissional.valorComissao} }
+    );
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== '' && (this.profissional.valorComissao.toFixed(2) !== Number.parseFloat(result).toFixed(2))) {
+        this.profissional.valorComissao = Number.parseFloat(result);
+      }
+    });
   }
   openDialogTipoServico() {
     const dialogRef = this.dialog.open(ProfissionalTipoServicoComponent,

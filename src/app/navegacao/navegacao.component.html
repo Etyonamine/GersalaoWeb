@@ -32,10 +32,7 @@
         
             <mat-menu #Agenda="matMenu">
               <button mat-menu-item><i class ="material-icons right">event_note</i> Agendamento</button>
-              <mat-divider></mat-divider>
-              <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>
-              <mat-divider></mat-divider>
-              <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button>
+            
             </mat-menu>
         
             <mat-menu #Venda="matMenu">
@@ -49,7 +46,11 @@
             </mat-menu>
         
             <mat-menu #Cadastro="matMenu">
-              <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>           
+              <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>     
+              <mat-divider></mat-divider>
+              <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>                    
+              <mat-divider></mat-divider>
+              <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button> 
               <!-- <button mat-menu-item [routerLink]="['servico']">Serviço</button> -->       
             </mat-menu>
         

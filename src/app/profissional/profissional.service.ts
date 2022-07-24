@@ -1,7 +1,7 @@
 import { Profissional } from './professional';
 import { environment } from 'src/environments/environment';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BaseService } from './../shared/base.service';
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
@@ -19,5 +19,16 @@ export class ProfissionalService extends BaseService<Profissional>{
   Atualizar(recurso: Profissional){
     return this.http.put(this.url, recurso).pipe(take(1));
   }
-  
+  AtualizarValorComissao(valor: number, codigoProfissional: number){
+
+    let urlComissao = this.url + '/AtualizarComissao';  
+    let codigoProfisssionalCripto = btoa(codigoProfissional.toString()) 
+    let valorComissaoCripto = btoa(valor.toString());
+
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
+
+    return this.http.post<boolean>(urlComissao,{codigo : codigoProfisssionalCripto, valor: valorComissaoCripto},httpOptions ).pipe(take(1)); 
+  }
 }

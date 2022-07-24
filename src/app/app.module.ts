@@ -85,6 +85,7 @@ registerLocaleData(localePt);
     CompraDetalheModule,
     EstoqueModule,
     PedidoModule
+    
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},

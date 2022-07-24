@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
  
+ 
 
 @Component({
   selector: 'app-base-form',
@@ -93,6 +94,8 @@ export abstract class BaseFormComponent implements OnInit {
     dataTransformada.setHours(0, 0, 0, 0);
     return dataTransformada;
   }
-
-  
+  formatarNumeroComVirgula($event) {
+    $event.target.value = parseFloat($event.target.value).toFixed(2);
+  }
+   
 }

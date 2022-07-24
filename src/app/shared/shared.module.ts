@@ -18,7 +18,7 @@ import { AlertConfirmComponent } from './alert/alert-confirm/alert-confirm.compo
   ],
   imports: [
     CommonModule,
-    MaterialModule
+    MaterialModule     
   ],
   exports: [
     MaterialModule,
