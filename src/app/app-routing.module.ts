@@ -86,6 +86,12 @@ const routes: Routes = [
       canLoad: [AuthGuard]
 
   },
+  {
+    path: 'agenda',
+    loadChildren: () => import('./agenda/agenda.module').then(mod => mod.AgendaModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PaginaNaoEncontradaComponent }
 ];

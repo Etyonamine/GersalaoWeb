@@ -33,14 +33,15 @@ import { TwoDecimalNumberDirective } from './two-decimal-number.directive';
 import { CompraDetalheModule } from './compra-detalhe/compra-detalhe.module';
 import { EstoqueModule } from './estoque/estoque.module';
 import { PedidoModule } from './pedido/pedido.module';
+import { AgendaModule } from './agenda/agenda.module';
 
 import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
-import { AgendaComponent } from './agenda/agenda.component';
-import { AgendaServicosComponent } from './agenda-servicos/agenda-servicos.component';
 import { FornecedorComponent } from './fornecedor/fornecedor.component';
 
+
 import { TokenInterceptor } from './auth-guard/interceptor/token.interceptor';
+import { EmpresaComponent } from './empresa/empresa.component';
 
 
 registerLocaleData(localePt);
@@ -52,10 +53,8 @@ registerLocaleData(localePt);
     LoginComponent,
     HomeComponent,
     PaginaNaoEncontradaComponent,
-    TwoDecimalNumberDirective,
-    AgendaComponent,
-    AgendaServicosComponent,
-    FornecedorComponent
+    TwoDecimalNumberDirective,        
+    FornecedorComponent, EmpresaComponent
    ],
   imports: [
     BrowserModule,
@@ -84,7 +83,8 @@ registerLocaleData(localePt);
     CompraModule,
     CompraDetalheModule,
     EstoqueModule,
-    PedidoModule
+    PedidoModule,
+    AgendaModule
     
   ],
   providers: [
