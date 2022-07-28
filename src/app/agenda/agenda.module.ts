@@ -3,15 +3,20 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { AgendaComponent } from './agenda.component';
 import { AgendaRoutingModule } from './agenda-routing.module';
+import { AgendaFormComponent } from './agenda-form/agenda-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
-    AgendaComponent
+    AgendaComponent,
+    AgendaFormComponent
   ],
   imports: [
     CommonModule,
     AgendaRoutingModule,
-    SharedModule
+    SharedModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class AgendaModule { }

@@ -1,30 +1,36 @@
 <div>
     <mat-card>
-        <mat-card-title style="text-align: center;">
+        <mat-card-title style="text-align: left;">
             <h2>Agendamento de Serviços</h2>
         </mat-card-title>
         <mat-card-content>            
             <table>
                 <tr>
-                    <td colspan="2">
-                        <input type="time"/>
+                    <td style="width:10%">                       
+                        <button mat-raised-button
+                                color="primary"                                
+                                [routerLink]="['agenda-novo']"
+                                >
+                                Novo Agendamento &nbsp;<i class="material-icons right">add</i>
+                        </button>
                     </td>
+                   <td >
+                     <label><b>Data Selecionada:</b></label><b> {{selected | date: 'dd/MM/yyyy' }}</b>
+                   </td>
                 </tr>
                 <tr>
-                    <td style="width:10%">
+                    <td style="width:10%" >
                         <mat-calendar class="demo-inline-calendar-card" [(selected)]="selected"></mat-calendar>
                     </td>
                     <td style="vertical-align: top;">
                         <table [class.mat-elevation-z8]="true">
-                            <thead>
-                                <tr>
-                                    <td colspan="2" class="dataSelecionada" >
-                                        <h3><b> Data Selecionada : {{selected | date: 'dd/MM/yyyy' }}</b></h3>
-                                    </td>
-                                </tr>
-                                <tr>                        
-                                    <th style="width:5%;">Horário</th>
-                                    <th>Nardo</th>
+                            <thead  >                    
+                                <tr>                                    
+                                    <th colspan="2" >Lista de Horários - Agendados</th>
+                                </tr>            
+                                <tr >                        
+                                    <th style="width:5%;" class="titulo_lista" >Horário</th>
+                                    <th  class="titulo_lista">Nardo</th>
                                 </tr>
                             </thead>
                             <tbody>

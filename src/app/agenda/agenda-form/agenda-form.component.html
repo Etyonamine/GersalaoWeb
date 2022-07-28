@@ -1,0 +1,55 @@
+<mat-card>
+    <mat-card-title class="titulo">
+        Agendar - Serviço
+    </mat-card-title>
+    <mat-card-content>
+        <div class="container">
+            <form [formGroup]="formulario" (ngSubmit)="submit()">
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Data</mat-label>
+                        <input matInput formControlName="dataSelecionado">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>In&iacute;cio</mat-label>
+                        <input matInput type="time" formControlName="horaInicio">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>T&eacute;rmino</mat-label>
+                        <input matInput type="time" formControlName="horaFim">
+                    </mat-form-field>
+                </div>
+                <div class="container">
+                    <mat-form-field *ngIf="optionProfissional" appearance="fill">
+                        <mat-label>Selecione o profissional</mat-label>
+                        <mat-select formControlName="codigoProfissional" matTooltip="Profissional" required>
+                            <mat-option *ngFor="let option of optionProfissional" [value]="option.value">
+                                {{ option.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field *ngIf="optionServicos" appearance="fill">
+                        <mat-label>Selecione o servi&ccedil;o</mat-label>
+                        <mat-select formControlName="codigoServico" matTooltip="Selecione um servi&Cedilla;o" required>
+                            <mat-option *ngFor="let option of optionServicos" [value]="option.value">
+                                {{ option.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                </div>
+                <div class="container">
+                    <mat-card-actions align="end">
+                        <button mat-button color="primary" class="full" align="end"
+                            [disabled]="!formulario.valid">Alterar &nbsp;<i
+                                class="material-icons right">save</i></button>
+                        <button mat-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Cancelar
+                            &nbsp;<i class="material-icons right">cancel</i></button>
+                    </mat-card-actions>
+                </div>
+
+            </form>
+        </div>
+    </mat-card-content>
+</mat-card>

@@ -16,17 +16,13 @@ export class AgendaResolveGuard implements Resolve<Agenda>{
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Agenda | Observable<Agenda> | Promise<Agenda> {
-    /* if (route.params && route.params['codigo']) {         
-         
-        return this.compraService.get<Agenda>(route.params['codigo']);
-        
-        
-      
+
+    let agenda = {} as Agenda;
+
+    if (route.params && route.params['dataSelecionada']) {                  
+        agenda.data = route.params['dataSelecionada'];        
     }
-    
-    return of (this.compra); */
-    let agenda = {} as Agenda
-    return (agenda);
+    return of (agenda);
   }
 
 }

@@ -212,7 +212,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   } 
   retornar()
   {
-    this.router.navigate(['/compra']);    
+    this.router.navigate(['compra']);    
   }
   handleError(msg:string)
   {
@@ -351,9 +351,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
                                                 let objCompra = result; 
                                                 i : Number;
                                                 objCompra.listaCompraDetalhe.forEach(detalhe=>{
-                                                  let index = this.produtos.findIndex(x=>x.codigo == detalhe.codigoProduto);                                 
-                                                  detalhe.produto = this.produtos[index];
-
+                                                  detalhe.produto = this.produtos.find(x=>x.codigo == detalhe.codigoProduto);
                                                  })
                                                /*  for ( let i=0; i <= (itotal-1);i++){
                                                     
@@ -395,10 +393,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
       }
     );
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-      
-      this.inscricao$ = this.compraService.get<Compra>(this.codigo).subscribe(result=>{
-        
+      this.inscricao$ = this.compraService.get<Compra>(this.codigo).subscribe(result=>{        
         this.formulario.controls['dataPagtoBoleto'].setValue( result.dataPagtoBoleto);
       },error=>{
         console.log(error);

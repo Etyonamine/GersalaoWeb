@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Empresa } from '../empresa/empresa';
 import { EmpresaService } from '../empresa/empresa.service';
@@ -16,7 +17,8 @@ export class AgendaComponent implements OnInit {
 
   inscricaoEmpresa$:Subscription;
 
-  constructor(private empresaService : EmpresaService) { 
+  constructor(private empresaService : EmpresaService,
+              private router: Router) { 
    
   }
  
@@ -24,7 +26,8 @@ export class AgendaComponent implements OnInit {
   ngOnInit(): void {
       this.selected = new Date();
       this.recuperarDadosEmpresa();
-
+      this.empresa = {}as Empresa;
+       
   }
   ngOnDestroy():void{
     if (this.inscricaoEmpresa$){
@@ -33,20 +36,22 @@ export class AgendaComponent implements OnInit {
   }
   
   recuperarDadosEmpresa(){
+
     this.inscricaoEmpresa$ = this.empresaService.recuperarDadosEmpresa()
-                                                .subscribe(result=>{
-                                    let empresaCriptografada = {
-                                      codigo : atob(result.codigo),
-                                      horaInicio: atob(result.horaInicio),
-                                      horaTermino: atob(result.horaTermino),
-                                      quantidadeMinutosServico: atob(result.quantidadeMinutosServico)
-                                    } as Empresa;
-                                    this.empresa = result;              
+                                                .subscribe(result=>{                                  
+                                    this.empresa.codigo = atob(result.codigo);              
+                                    this.empresa.horaInicial = atob(result.horaInicial);              
+                                    this.empresa.horaFim = atob(result.horaFim);              
+                                    this.empresa.quantidadeMinutosServico = atob(result.quantidadeMinutosServico);              
+
+                                   
+                                  
     },error=>{
       console.log(error);
 
     });
-  }  
+  }
+   
 }
 
 
