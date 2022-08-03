@@ -2,7 +2,7 @@
     width: 100%;
   }
 .container{
-  text-align: center;
+  text-align: left;
 }
 .container .mat-form-field + .mat-form-field {
   margin-left: 5px;
@@ -13,4 +13,21 @@
   color: white;
   text-size-adjust: auto;
   font-size:medium;
+}
+.example-form-field {
+  margin-right: 20px;
+}
+.camposHorarios{
+  width: 150px;
+}
+.demo-inline-calendar-card {
+  width: 200px;
+}
+
+.example-full-width {
+  width: 100%;
+}
+ul {
+  list-style-type: none;
+  margin-top: 4px;
 }

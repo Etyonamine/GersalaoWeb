@@ -24,7 +24,7 @@ import { MatDividerModule} from '@angular/material/divider';
 import { MatGridListModule} from '@angular/material/grid-list';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
-
+ 
 @NgModule({
   declarations: [],
   imports: [
@@ -54,7 +54,7 @@ import {MatListModule} from '@angular/material/list';
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule 
   ]
 })
 export class MaterialModule { }

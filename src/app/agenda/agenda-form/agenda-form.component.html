@@ -4,39 +4,68 @@
     </mat-card-title>
     <mat-card-content>
         <div class="container">
-            <form [formGroup]="formulario" (ngSubmit)="submit()">
-                <div>
-                    <mat-form-field appearance="fill">
-                        <mat-label>Data</mat-label>
-                        <input matInput formControlName="dataSelecionado">
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>In&iacute;cio</mat-label>
-                        <input matInput type="time" formControlName="horaInicio">
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                        <mat-label>T&eacute;rmino</mat-label>
-                        <input matInput type="time" formControlName="horaFim">
-                    </mat-form-field>
-                </div>
-                <div class="container">
-                    <mat-form-field *ngIf="optionProfissional" appearance="fill">
-                        <mat-label>Selecione o profissional</mat-label>
-                        <mat-select formControlName="codigoProfissional" matTooltip="Profissional" required>
-                            <mat-option *ngFor="let option of optionProfissional" [value]="option.value">
-                                {{ option.name }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-
-                    <mat-form-field *ngIf="optionServicos" appearance="fill">
-                        <mat-label>Selecione o servi&ccedil;o</mat-label>
-                        <mat-select formControlName="codigoServico" matTooltip="Selecione um servi&Cedilla;o" required>
-                            <mat-option *ngFor="let option of optionServicos" [value]="option.value">
-                                {{ option.name }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+            <form [formGroup]="formulario" (ngSubmit)="submit()">                
+                <div>     
+                    <table class="example-full-width">
+                        <td style="width:20%">
+                            <mat-calendar class="demo-inline-calendar-card" [(selected)]="dataSelecionada"></mat-calendar>
+                            <div>
+                                <mat-form-field appearance="fill" class="camposHorarios">
+                                    <mat-label>In&iacute;cio</mat-label>
+                                    <input matInput type="time" formControlName="horaInicio">
+                                </mat-form-field>
+                                <mat-form-field appearance="fill" class="camposHorarios">
+                                    <mat-label>T&eacute;rmino</mat-label>
+                                    <input matInput type="time" formControlName="horaFim">
+                                </mat-form-field>                 
+                            </div>     
+                        </td>
+                        <td style="width:30%">
+                            <div>
+                                <mat-form-field *ngIf="optionClientes" appearance="fill" >
+                                    <mat-label>Selecione o Cliente</mat-label>
+                                    <mat-select formControlName="codigoCliente" matTooltip="Selecione um cliente" required>
+                                        <mat-option *ngFor="let cliente of optionClientes" [value]="cliente.codigo">
+                                            {{ cliente.nome }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>                           
+                                
+                                <mat-form-field *ngIf="optionProfissional" appearance="fill">
+                                    <mat-label>Selecione o profissional</mat-label>
+                                    <mat-select formControlName="codigoProfissional" matTooltip="Profissional" required
+                                    (selectionChange)="listaServicos($event)">
+                                        <mat-option *ngFor="let option of optionProfissional" [value]="option.codigo">
+                                            {{ option.nome }}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>          
+                                
+                            </div>    
+                            <div>
+                                <mat-form-field class="example-full-width" appearance="fill">
+                                    <mat-label>Observa&ccedil;&aacute;o</mat-label>
+                                    <input matInput #message maxlength="256" 
+                                           placeholder="Digite uma observação">
+                                    <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong> </mat-hint>
+                                    <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
+                                  </mat-form-field>
+                            </div>                        
+                        </td>
+                        <td>
+                            <h4>Lista de Servi&ccedil;os</h4>
+                            <span class="example-list-section">
+                                <ul>
+                                  <li *ngFor="let servico of optionServicos">
+                                    <mat-checkbox >
+                                      {{servico.descricao}}
+                                    </mat-checkbox>
+                                  </li>
+                                </ul>
+                              </span>                         
+                        </td>
+                    </table>
+                   
 
                 </div>
                 <div class="container">
@@ -44,7 +73,7 @@
                         <button mat-button color="primary" class="full" align="end"
                             [disabled]="!formulario.valid">Alterar &nbsp;<i
                                 class="material-icons right">save</i></button>
-                        <button mat-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Cancelar
+                        <button mat-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar
                             &nbsp;<i class="material-icons right">cancel</i></button>
                     </mat-card-actions>
                 </div>

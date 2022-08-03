@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BaseService } from './../shared/base.service';
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
+import { ProfissionalViewModel } from './profissionalViewModel';
 
 @Injectable({
   providedIn: 'root'
@@ -30,5 +31,9 @@ export class ProfissionalService extends BaseService<Profissional>{
     };
 
     return this.http.post<boolean>(urlComissao,{codigo : codigoProfisssionalCripto, valor: valorComissaoCripto},httpOptions ).pipe(take(1)); 
+  }
+  ListarProfissionais(){
+    let urlListar = this.url + '/listarProfissional';
+    return this.http.post<ProfissionalViewModel[]>(urlListar, null).pipe(take(1));
   }
 }

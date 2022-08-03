@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
+import { defaultFormat } from 'moment';
  
  
 
@@ -78,11 +79,18 @@ export abstract class BaseFormComponent implements OnInit {
   }  
   dataHoraAtualSemTimeZone(){
     const hj = new Date();
+    
 
     return new Date( `${hj.getFullYear()}/${(`"0"+ ${hj.getMonth() + 1}`).slice(-2)}/${("0"+(hj.getDate())).slice(-2)} ${("0"+(hj.getHours())).slice(-2)}:${("0"+(hj.getMinutes())).slice(-2)}:${("0"+(hj.getSeconds())).slice(-2)} -00:00`);
     
   }
-  converteDataHoraSemTimeZone(data : Date){
+  dataHoraSemTimeZoneString(){
+    let dataHora = new Date().toLocaleString('BRL');
+    let dataHoraFmt = dataHora.substring(6,10) + '-' + dataHora.substring(3,5) +  '-'+ dataHora.substring(0,2) + dataHora.substring(10,19);
+    return dataHoraFmt;
+    
+  }
+  converteDataHoraSemTimeZone(data : Date){    
     return new Date( `${data.getFullYear()}/${(`"0"+ ${data.getMonth() + 1}`).slice(-2)}/${("0"+(data.getDate())).slice(-2)} ${("0"+(data.getHours())).slice(-2)}:${("0"+(data.getMinutes())).slice(-2)}:${("0"+(data.getSeconds())).slice(-2)} -00:00`);
   }
   pad(value) {

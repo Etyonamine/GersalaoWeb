@@ -44,7 +44,7 @@ import { TokenInterceptor } from './auth-guard/interceptor/token.interceptor';
 import { EmpresaComponent } from './empresa/empresa.component';
 
 
-registerLocaleData(localePt);
+registerLocaleData(localePt,'pt');
 
 @NgModule({
   declarations: [

@@ -9,6 +9,8 @@ import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component'
 import { Servico } from '../servico';
 import { TipoServico } from 'src/app/tipo-servico/tipo-servico';
 import { take } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth-guard/auth.service';
+import { ServicoGravar } from '../servicoGravar';
 
 @Component({
   selector: 'app-servico-form',
@@ -24,15 +26,20 @@ export class ServicoFormComponent extends BaseFormComponent
   codigoStatus: string = "1";
 
   inscricaoTipo$: Subscription;
+  inscricaoAuthService$: Subscription;
   HabilitarBotaoApagar: boolean = false;
   registroExiste: boolean = false;
+
+  //auditoria
+  codigoUsuario : string;
 
   constructor(private formBuilder: FormBuilder,
     private servicoService: ServicosService,
     private tipoServicoService: TipoServicoService,
     private router: Router,
     private route: ActivatedRoute,
-    private alertService: AlertService) {
+    private alertService: AlertService,
+    private authService : AuthService) {
     super();
   }
 
@@ -58,6 +65,7 @@ export class ServicoFormComponent extends BaseFormComponent
         }
       );
       this.HabilitarBotaoApagar = this.formulario.get('codigo').value != null ? true : false;
+      this.codigoUsuario = this.authService.usuarioLogado.codigo;
   }
 
   ngOnDestroy(): void {
@@ -65,6 +73,9 @@ export class ServicoFormComponent extends BaseFormComponent
     // Add 'implements OnDestroy' to the class.
     if (this.inscricaoTipo$) {
       this.inscricaoTipo$.unsubscribe;
+    }
+    if (this.inscricaoAuthService$){
+      this.inscricaoAuthService$.unsubscribe();
     }
   }
   submit() {
@@ -77,17 +88,34 @@ export class ServicoFormComponent extends BaseFormComponent
     let msgSucess = 'Cliente cadastrado com sucesso!';
     let msgError = 'Erro ao cadastrar outro cliente!';
     var codigoSituacao: number = +this.codigoStatus;
-
+    
     let valueSubmitted = Object.assign({}, this.formulario.value);
-    this.servico.codigo = valueSubmitted.codigo == null?0:valueSubmitted.codigo;
-    this.servico.codigoSituacao = codigoSituacao;
-    this.servico.codigoTipoServico = valueSubmitted.codigoTipoServico;
-    this.servico.descricao = valueSubmitted.descricao.trim();
-    this.servico.valor = valueSubmitted.valor;
-    this.servico.codigoUsuarioCadastro = 1;
-
-
-    this.servicoService.save(this.servico)
+    let tipoOperacao: number = valueSubmitted.codigo == null? 1 : 2;
+    let servicoGravar = {
+      codigo : (valueSubmitted.codigo == null ? "0": this.servico.codigo.toString()),
+      codigoSituacao : codigoSituacao.toString() ,
+      codigoTipoServico : valueSubmitted.codigoTipoServico,
+      descricao : valueSubmitted.descricao.trim(),
+      valor : valueSubmitted.valor,
+      codigoUsuarioCadastro : valueSubmitted.codigo == null?  this.codigoUsuario : this.servico.codigoUsuarioCadastro.toString(),
+      dataCadastro : valueSubmitted.codigo == null ? this.dataHoraSemTimeZoneString() : this.servico.dataCadastro.toLocaleString('BRL') ,
+      codigoUsuarioAlteracao : valueSubmitted.codigo == null?null: this.codigoUsuario,
+      dataAlteracao : valueSubmitted.codigo == null? null : this.dataHoraSemTimeZoneString()
+    } as ServicoGravar;
+    
+    if (tipoOperacao == 1)// novo
+    {
+      this.servicoService.salvarRegistroComCripto(servicoGravar)
+      .subscribe(sucesso => {
+       this.handlerSuccess(msgSucess);
+       setTimeout(() => { this.retornar(); }, 3000);
+     },
+       error => {
+         console.error(error);
+         this.handlerErro("Ocorreu um erro na tentativa de salvar o cadastro.");
+       });
+    }else{
+      this.servicoService.atualizarRegistro(servicoGravar)
                        .subscribe(sucesso => {
                         this.handlerSuccess(msgSucess);
                         setTimeout(() => { this.retornar(); }, 3000);
@@ -96,6 +124,8 @@ export class ServicoFormComponent extends BaseFormComponent
                           console.error(error);
                           this.handlerErro("Ocorreu um erro na tentativa de salvar o cadastro.");
                         });
+    }
+    
   }
   listaTipos() {
     this.inscricaoTipo$ =

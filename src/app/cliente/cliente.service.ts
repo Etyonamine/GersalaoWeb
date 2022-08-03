@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { ClienteViewModel } from './clienteViewModel';
 
 @Injectable({
   providedIn: 'root'
@@ -28,4 +29,16 @@ export class ClienteService extends BaseService<Cliente>{
     let ulrLista  = this.url +'/Lista';
     return this.http.get<Cliente[]>(ulrLista).pipe(take(1));
   }
+  listaClientes(){
+    let urllistaclientes = this.url + '/ListaClientes';
+    return this.http.get<ClienteViewModel[]>(urllistaclientes).pipe(take(1));
+  }
+  ConverterListaCriptografadaCliente(lista : ClienteViewModel[]){
+    let listaDescriptografada : Array<ClienteViewModel> = [];
+    lista.forEach(cliente=>{
+      listaDescriptografada.push({codigo : atob(cliente.codigo), nome : atob(cliente.nome)});
+    });
+    return listaDescriptografada;
+  }
+  
 }
