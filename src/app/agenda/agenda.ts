@@ -1,3 +1,6 @@
+import { Cliente } from "../cliente/cliente";
+import { Servico } from "../servico/servico";
+
 export class Agenda{
     codigo : number;
     codigoCliente: number;
@@ -15,4 +18,6 @@ export class Agenda{
     codigoUsuarioCadastro : number;
     dataUsuarioAlteracao : Date;
     codigoUsuarioAlteracao: number;
+    servico: Servico;
+    cliente: Cliente;
 }

@@ -20,25 +20,24 @@
                 </tr>
                 <tr>
                     <td style="width:10%" >
-                        <mat-calendar class="demo-inline-calendar-card" [(selected)]="selected"></mat-calendar>
+                        <mat-calendar class="demo-inline-calendar-card" [(selected)]="selected" (selectedChange)="obterAgendas()"></mat-calendar>
                     </td>
                     <td style="vertical-align: top;">
                         <table [class.mat-elevation-z8]="true">
                             <thead  >                    
-                                <tr>                                    
-                                    <th colspan="2" >Lista de Horários - Agendados</th>
+                                <tr class="titulo_lista">                                    
+                                    <th [attr.colspan]="qtdeColunasProfissionais">Lista de Horários - Agenda</th>
                                 </tr>            
-                                <tr >                        
-                                    <th style="width:5%;" class="titulo_lista" >Horário</th>
-                                    <th  class="titulo_lista">Nardo</th>
+                                <tr>                                                            
+                                    <th *ngFor="let profissional of listaProfissionais" class="titulo_lista">{{profissional.nome}}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let hora of horarios">                         
-                                    <td>
-                                        {{ hora }}
+                                <tr>                         
+                                    <td  *ngFor="let links of listaLinksAgenda" class="celulasAgenda">
+                                        {{ links }}
                                     </td>
-                                </tr>
+                                </tr> 
                             </tbody>
                         </table>
                     </td>

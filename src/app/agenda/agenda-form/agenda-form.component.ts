@@ -4,7 +4,8 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ThemePalette } from '@angular/material/core';
 import { ActivatedRoute } from '@angular/router';
 import { timeStamp } from 'console';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
+import { concatMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { ClienteService } from 'src/app/cliente/cliente.service';
 import { ClienteViewModel } from 'src/app/cliente/clienteViewModel';
@@ -85,10 +86,25 @@ super();
     } as Agenda;
     
     //valida se já existe a agenda cadstrada
-    this.inscricaoAgenda$ = this.agendaService.isDupe(agendaGravar).subscribe(result=>{
-      if (result){
-        this.handlerExclamacao("Esta agenda já existe!");
-        return ;
+    this.inscricaoAgenda$ = this.agendaService.isDupe(agendaGravar).pipe(concatMap(result=>{
+      return of (result);
+    })).subscribe(retorno=>{
+      if (!retorno){
+            //gravando no banco de dados.
+            this.inscricaoAgenda$ = this.agendaService.save(agendaGravar)
+            .subscribe(result=>{
+              if (result){
+                this.handlerSucesso('Gravado com sucesso!');
+              }else{
+                this.handleError('Não foi gravado a agenda.');
+              }
+            },error=>{
+              console.log(error);
+              this.handleError('Ocorreu um erro ao tentar gravar a agenda.');
+            })
+        
+      }else{
+        this.handlerExclamacao("Esta agenda já existe!");        
       }
     },error=>{
       console.log (error);
@@ -96,18 +112,7 @@ super();
       return;
     });
 
-    //gravando no banco de dados.
-    this.inscricaoAgenda$ = this.agendaService.save(agendaGravar)
-                                              .subscribe(result=>{
-                                                if (result){
-                                                  this.handlerSucesso('Gravado com sucesso!');
-                                                }else{
-                                                  this.handleError('Não foi gravado a agenda.');
-                                                }
-                                              },error=>{
-                                                console.log(error);
-                                                this.handleError('Ocorreu um erro ao tentar gravar a agenda.');
-                                              })
+    
     
   }
 
