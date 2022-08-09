@@ -1,4 +1,3 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -12,6 +11,10 @@ import { ApiResult } from '../shared/base.service';
 import { Agenda } from './agenda';
 import { AgendaService } from './agenda.service';
 
+export interface AgendaDia{
+  codigoProfissional:number;
+  listaAgenda: Array<Agenda>;
+}
 @Component({
   selector: 'app-agenda',
   templateUrl: './agenda.component.html',
@@ -29,6 +32,7 @@ export class AgendaComponent implements OnInit {
   qtdeAgendas : number;
 
   listaLinksAgenda:Array<string>=[];
+  listaAgendasDia: Array<AgendaDia>=[];
 
   inscricaoAngenda$: Subscription;
   inscricaoEmpresa$: Subscription;
@@ -95,7 +99,7 @@ export class AgendaComponent implements OnInit {
                                                .subscribe(result=>{
                                                   this.listaAgenda =  new MatTableDataSource<Agenda>(result.data);
                                                   this.qtdeAgendas = result.totalCount;
-                                                  this.montarLinks();
+                                                  this.montarAgendaDia();
                                                },error=>{
                                                 console.log(error);
                                                 this.handleError('ocorreum erro ao tentar recuperar as agendas!');
@@ -123,35 +127,30 @@ export class AgendaComponent implements OnInit {
   handleError(mensagem: string) {
         this.alertService.mensagemErro(mensagem);
       }
-  montarLinks(){
-    //modelo padrao. 
-     this.listaLinksAgenda = ['Nenhum agendamento','Nenhum agendamento', 'Nenhum agendamento'];     
+  montarAgendaDia(){
+    //limpando a lista
+    this.listaAgendasDia.splice(0,this.qtdeColunasProfissionais); 
+
+    /* this.listaLinksAgenda = ['Nenhum agendamento','Nenhum agendamento', 'Nenhum agendamento'];  */    
+
      let strLinks : string;          
      let contadorAgenda: number;
+     
      //montando
      if (this.qtdeAgendas > 0 && this.listaAgenda.data.length > 0  ){
-        this.listaLinksAgenda.splice(0,3);
+        this.listaLinksAgenda =[];
+
        //percorrendo a lista de profissionais
         this.listaProfissionais.forEach(profi=>{
           strLinks ='Nenhum agendamento';
-          contadorAgenda = 1;
+          
+          let agendas = this.listaAgenda.data.filter(x=>x.codigoProfissional === profi.codigo);
 
-          this.listaAgenda.data.filter(x=>x.codigoProfissional === profi.codigo).forEach(agenda=>{
-            if (contadorAgenda == 1){
-              strLinks ='<a>' +  contadorAgenda.toString().padStart(2,'0') +' - ' +               agenda.data.toString().substring(11,16)  +  ' - ' +               agenda.cliente.nome + '</a><br />';
-            }else{
-              strLinks +='<a [routerLink]=[agenda-novo,'  + agenda.codigo.toString() + ']>' +
-                      contadorAgenda.toString().padStart(2,'0') +' - ' + 
-                      agenda.data.toString().substring(11,16) +  ' - ' + 
-                      agenda.cliente.nome + '</a><br />'
-            }
-            
-                      
-            contadorAgenda++;
-          });         
-          this.listaLinksAgenda.push(strLinks) ;
-          console.log(strLinks);
+          this.listaAgendasDia.push({codigoProfissional : profi.codigo, listaAgenda : agendas});
+          
         });
+
+       /*  console.log(this.listaAgendasDia); */
      }      
   }
 }

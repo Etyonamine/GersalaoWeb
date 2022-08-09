@@ -14,7 +14,7 @@
                                 Novo Agendamento &nbsp;<i class="material-icons right">add</i>
                         </button>
                     </td>
-                   <td >
+                   <td class="titulo_lilsta">
                      <label><b>Data Selecionada:</b></label><b> {{selected | date: 'dd/MM/yyyy' }}</b>
                    </td>
                 </tr>
@@ -23,7 +23,7 @@
                         <mat-calendar class="demo-inline-calendar-card" [(selected)]="selected" (selectedChange)="obterAgendas()"></mat-calendar>
                     </td>
                     <td style="vertical-align: top;">
-                        <table [class.mat-elevation-z8]="true">
+                        <table>
                             <thead  >                    
                                 <tr class="titulo_lista">                                    
                                     <th [attr.colspan]="qtdeColunasProfissionais">Lista de Horários - Agenda</th>
@@ -34,8 +34,16 @@
                             </thead>
                             <tbody>
                                 <tr>                         
-                                    <td  *ngFor="let links of listaLinksAgenda" class="celulasAgenda">
-                                        {{ links }}
+                                    <td  *ngFor="let agendaProfissional of listaAgendasDia" class="celulasAgenda">
+                                        <table>
+                                            <tr *ngFor="let agenda of agendaProfissional.listaAgenda">
+                                                <td>
+                                                    <a  mat-stroked-button [routerLink]="['agenda-novo',agenda.codigo]"  color="primary">
+                                                        {{ agenda.data | date: 'HH:mm' }} - {{ agenda.cliente.nome}}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>                                         
                                     </td>
                                 </tr> 
                             </tbody>
