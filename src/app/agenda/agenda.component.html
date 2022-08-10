@@ -14,7 +14,7 @@
                                 Novo Agendamento &nbsp;<i class="material-icons right">add</i>
                         </button>
                     </td>
-                   <td class="titulo_lilsta">
+                   <td class="titulo_dia_selecionado">
                      <label><b>Data Selecionada:</b></label><b> {{selected | date: 'dd/MM/yyyy' }}</b>
                    </td>
                 </tr>
@@ -38,7 +38,7 @@
                                         <table>
                                             <tr *ngFor="let agenda of agendaProfissional.listaAgenda">
                                                 <td>
-                                                    <a  mat-stroked-button [routerLink]="['agenda-novo',agenda.codigo]"  color="primary">
+                                                    <a  mat-stroked-button [routerLink]="['/agenda', agenda.codigo]"  class="botao_hora_agendada">
                                                         {{ agenda.data | date: 'HH:mm' }} - {{ agenda.cliente.nome}}
                                                     </a>
                                                 </td>

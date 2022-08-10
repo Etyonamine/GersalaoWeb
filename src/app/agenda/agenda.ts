@@ -10,6 +10,7 @@ export class Agenda{
     valorComissaoPercentual: number;
     observacao : string;
     data : Date;    
+    dataAgendaString:string;
     horaInicial : string;
     horaTermino : string;
     codigoSituacaoServico:number;

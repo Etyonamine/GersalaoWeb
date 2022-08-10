@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -138,20 +139,18 @@ export class AgendaComponent implements OnInit {
      
      //montando
      if (this.qtdeAgendas > 0 && this.listaAgenda.data.length > 0  ){
-        this.listaLinksAgenda =[];
-
+       
        //percorrendo a lista de profissionais
-        this.listaProfissionais.forEach(profi=>{
-          strLinks ='Nenhum agendamento';
+        this.listaProfissionais.forEach(profi=>{           
           
           let agendas = this.listaAgenda.data.filter(x=>x.codigoProfissional === profi.codigo);
+            agendas.sort(function(a,b){return new Date(a.dataAgendaString).getDate() - new Date(b.dataAgendaString).getDate()});
+                                              
 
-          this.listaAgendasDia.push({codigoProfissional : profi.codigo, listaAgenda : agendas});
-          
-        });
-
-       /*  console.log(this.listaAgendasDia); */
-     }      
+          this.listaAgendasDia.push({codigoProfissional : profi.codigo, listaAgenda : agendas });
+                        
+      });
+    }      
   }
 }
 
