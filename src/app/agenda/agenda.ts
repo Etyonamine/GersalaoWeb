@@ -1,4 +1,5 @@
 import { Cliente } from "../cliente/cliente";
+import { Profissional } from "../profissional/professional";
 import { Servico } from "../servico/servico";
 
 export class Agenda{
@@ -7,10 +8,14 @@ export class Agenda{
     codigoProfissional : number;
     codigoServico: number;
     valorServico: number;
+    valorDesconto: number;
+    valorAcrescimo: number;
     valorComissaoPercentual: number;
     observacao : string;
+    observacaoBaixa : string;
     data : Date;    
     dataAgendaString:string;
+    horaAgendaString:string;
     horaInicial : string;
     horaTermino : string;
     codigoSituacaoServico:number;
@@ -21,4 +26,5 @@ export class Agenda{
     codigoUsuarioAlteracao: number;
     servico: Servico;
     cliente: Cliente;
+    profissional: Profissional
 }

@@ -1,15 +1,11 @@
-import { validateHorizontalPosition } from '@angular/cdk/overlay';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ThemePalette } from '@angular/material/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { timeStamp } from 'console';
 import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { ClienteService } from 'src/app/cliente/cliente.service';
 import { ClienteViewModel } from 'src/app/cliente/clienteViewModel';
-import { Empresa } from 'src/app/empresa/empresa';
 import { EmpresaService } from 'src/app/empresa/empresa.service';
 import { Profissional } from 'src/app/profissional/professional';
 import { ProfissionalService } from 'src/app/profissional/profissional.service';

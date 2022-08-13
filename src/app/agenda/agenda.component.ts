@@ -1,8 +1,12 @@
+import { removeSummaryDuplicates } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { unwatchFile } from 'fs';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../auth-guard/auth.service';
 import { Empresa } from '../empresa/empresa';
 import { EmpresaService } from '../empresa/empresa.service';
 import { Profissional } from '../profissional/professional';
@@ -10,6 +14,8 @@ import { ProfissionalService } from '../profissional/profissional.service';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
 import { Agenda } from './agenda';
+import { AgendaBaixa } from './agenda-baixa';
+import { AgendaBaixaComponent } from './agenda-baixa/agenda-baixa.component';
 import { AgendaService } from './agenda.service';
 
 export interface AgendaDia{
@@ -22,11 +28,11 @@ export interface AgendaDia{
   styleUrls: ['./agenda.component.scss']
 })
 export class AgendaComponent implements OnInit {
-
+  codigoUsuario: number;
   selected: Date | null;
   empresa: Empresa;
   horarios: Array<string> = ["08:00", "08:30", "09:00", "09:30"];
-
+  
   listaProfissionais: Array<Profissional>=[];
   listaAgenda: MatTableDataSource<Agenda>;
   qtdeColunasProfissionais: number;
@@ -43,20 +49,24 @@ export class AgendaComponent implements OnInit {
     private agendaService: AgendaService,
     private empresaService: EmpresaService,
     private profissionalService: ProfissionalService,
+    private authService:AuthService,
     private alertService: AlertService,
-    private router: Router) {
+    public dialog: MatDialog    
+    ) {
 
   }
 
 
   ngOnInit(): void {
-    this.selected = new Date();
+   
+    this.selected =  new Date();
     this.recuperarDadosEmpresa();
     this.empresa = {} as Empresa;
     this.obterProfissionais();
     this.qtdeColunasProfissionais = 1;
     this.qtdeAgendas = 0;
     this.obterAgendas();
+    this.codigoUsuario = Number.parseInt(this.authService.usuarioLogado.codigo);
   }
   ngOnDestroy(): void {
     if (this.inscricaoEmpresa$) {
@@ -151,6 +161,58 @@ export class AgendaComponent implements OnInit {
                         
       });
     }      
+  }
+  openDialogBaixa(codigo:number){
+    this.inscricaoAngenda$ = this.agendaService.get<Agenda>(codigo)
+                                               .subscribe(result=>{
+                                                if (result){
+                                                  
+                                                  let agendaBaixa = {
+                                                    codigo : result.codigo,
+                                                    data : result.data,
+                                                    dataString: result.dataAgendaString,
+                                                    hora : result.horaAgendaString,                                                    
+                                                    nomeCliente : result.cliente.nome,
+                                                    nomeProfissional : result.profissional.nome,
+                                                    descricaoServico : result.servico.descricao,
+                                                    valorServico : result.valorServico,
+                                                    valorDesconto: result.valorDesconto, 
+                                                    valorAcrescimo: result.valorAcrescimo,
+                                                    valorComissao: result.valorComissaoPercentual,
+                                                    observacao: result.observacao,
+                                                    observacaoBaixa: result.observacaoBaixa                                                   ,
+                                                    codigoUsuarioAlteracao: this.codigoUsuario,
+                                                    situacaoBaixado : result.codigoSituacaoBaixa === 5 ? false:true
+                                                  
+                                                    
+                                                  } as AgendaBaixa;
+
+                                                  const dialogRef = this.dialog.open(AgendaBaixaComponent,
+                                                    { width: '800px' ,
+                                                      height: '900px;',
+                                                      data : agendaBaixa }
+                                                  );
+
+                                                  dialogRef.afterClosed().subscribe(retornoDialog => {
+      
+                                                    this.obterAgendas();
+                                                  });
+                                                 
+                                                }else{
+                                                  this.handleError('Não foi encontrado este agendamento!');
+                                                  return ;
+                                                }
+                                               }, error=>{
+                                                console.log(error);
+                                                this.handleError('Ocorreu um erro ao recuperar o agendamento.');
+                                               });
+
+     
+    
+ 
+    
+                                                
+                                               
   }
 }
 

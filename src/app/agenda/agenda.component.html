@@ -37,11 +37,19 @@
                                     <td  *ngFor="let agendaProfissional of listaAgendasDia" class="celulasAgenda">
                                         <table>
                                             <tr *ngFor="let agenda of agendaProfissional.listaAgenda">
-                                                <td>
-                                                    <a  mat-stroked-button [routerLink]="['/agenda', agenda.codigo]"  class="botao_hora_agendada">
+                                                <td *ngIf="(agenda.codigoSituacaoBaixa == 5) ; then naoBaixado ; else baixado">                                                    
+                                                    
+                                                </td>
+                                                <ng-template #baixado>
+                                                    <a  mat-stroked-button (click)="openDialogBaixa(agenda.codigo)"  class="botao_hora_agendada_baixado" >
                                                         {{ agenda.data | date: 'HH:mm' }} - {{ agenda.cliente.nome}}
                                                     </a>
-                                                </td>
+                                                </ng-template>
+                                                <ng-template #naoBaixado> 
+                                                    <a  mat-stroked-button (click)="openDialogBaixa(agenda.codigo)"  class="botao_hora_agendada_nao_baixado" >
+                                                        {{ agenda.data | date: 'HH:mm' }} - {{ agenda.cliente.nome}}
+                                                    </a>
+                                                </ng-template>
                                             </tr>
                                         </table>                                         
                                     </td>

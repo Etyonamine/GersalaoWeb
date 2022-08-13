@@ -17,20 +17,13 @@ export class AgendaResolveGuard implements Resolve<Agenda>{
 
   resolve(
     route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Agenda | Observable<Agenda> | Promise<Agenda> {
-
-    let agenda = {} as Agenda;
+    state: RouterStateSnapshot): Agenda | Observable<Agenda> | Promise<Agenda> {    
 
     if (route.params && route.params['codigo']) {                  
         let codigo = route.params['codigo'];
-        this.agendaService.get<Agenda>(codigo).subscribe(result=>{
-          this.agenda = result;
-          return of (this.agenda)
-        },error=>{
-          console.log(error);          
-        })
+        return this.agendaService.get<Agenda>(codigo);                   
     }
-    return of (agenda);
+    return null;
   }
 
 }

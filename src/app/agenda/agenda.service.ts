@@ -4,6 +4,7 @@ import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { BaseService } from '../shared/base.service';
 import { Agenda } from './agenda';
+import { AgendaBaixa } from './agenda-baixa';
 
 @Injectable({
   providedIn: 'root'
@@ -14,5 +15,8 @@ export class AgendaService extends BaseService<Agenda>{
 
   url : string = `${environment.API}agendas`;
 
-
+  baixaAgendamento(agendaBaixa:AgendaBaixa){
+    let urlBaixa = this.url + '/BaixaAgendamento';
+    return this.http.post<boolean>(urlBaixa, agendaBaixa).pipe(take(1));
+  }
 }

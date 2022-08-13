@@ -26,9 +26,15 @@
     color:white;
     font-size: medium;
   }
-  .botao_hora_agendada{
-    background-color: yellow;
-    font-weight: bold;
+  .botao_hora_agendada_nao_baixado{
+    background-color: #3f51b5;
+    color:white;
+    /* font-weight: bold; */
+  }
+  .botao_hora_agendada_baixado{
+    background-color: green;
+    color:white;
+    /* font-weight: bold; */
   }
   .titulo_dia_selecionado{
     text-align: center;
