@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { BaseService } from '../shared/base.service';
 import { Agenda } from './agenda';
 import { AgendaBaixa } from './agenda-baixa';
+import { AgendaCancelar } from './agenda-cancelar';
 
 @Injectable({
   providedIn: 'root'
@@ -18,5 +19,9 @@ export class AgendaService extends BaseService<Agenda>{
   baixaAgendamento(agendaBaixa:AgendaBaixa){
     let urlBaixa = this.url + '/BaixaAgendamento';
     return this.http.post<boolean>(urlBaixa, agendaBaixa).pipe(take(1));
+  }
+  cancelarAgendamento(agendaCancelamento: AgendaCancelar){
+    let urlBaixa = this.url + '/CancelarAgendamento';
+    return this.http.put<boolean>(urlBaixa, agendaCancelamento).pipe(take(1));
   }
 }

@@ -26,13 +26,18 @@
     color:white;
     font-size: medium;
   }
-  .botao_hora_agendada_nao_baixado{
+  .hora_agendada_pendente{
     background-color: #3f51b5;
     color:white;
     /* font-weight: bold; */
   }
-  .botao_hora_agendada_baixado{
+  .hora_agendada_concluido{
     background-color: green;
+    color:white;
+    /* font-weight: bold; */
+  }
+  .hora_agendada_cancelado{
+    background-color: red;
     color:white;
     /* font-weight: bold; */
   }
@@ -40,7 +45,10 @@
     text-align: center;
     font-size: medium;
   }
-
+  .legenda_horarios{
+    text-align: right;
+    width: 100%;
+  }
   table {
     width: 100%;
   }

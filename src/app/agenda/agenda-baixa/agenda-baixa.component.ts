@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
+import { ValidaNumeroService } from 'src/app/shared/service/valida-numero.service';
 import { AgendaBaixa } from '../agenda-baixa';
 import { AgendaService } from '../agenda.service';
 
@@ -15,24 +16,45 @@ export class AgendaBaixaComponent  extends BaseFormComponent implements OnInit,O
   submit() {
     throw new Error('Method not implemented.');
   }
-
+  situacaoAgendamento: string;
   statusBaixado:boolean;
   agenda: AgendaBaixa;
   inscricaoAgenda$: Subscription;
 
+  saldoFinal: number;
+
+
     constructor(@Inject(MAT_DIALOG_DATA) public data: AgendaBaixa,               
              private dialogRef: MatDialogRef<AgendaBaixaComponent>,
              private alertService: AlertService,
-             private agendaService: AgendaService) { super(); }
+             private agendaService: AgendaService,
+             private validaNumeroService: ValidaNumeroService) { super(); }
 
   ngOnInit(): void {
     this.agenda = this.data;     
     this.statusBaixado = this.agenda.situacaoBaixado;
+    this.calcularSaldo();
+    this.IdentificarSituacaoAgendamento();
   }  
+
+  IdentificarSituacaoAgendamento(){
+    this.situacaoAgendamento = 'Pendente';
+    if (this.agenda.situacaoBaixado){
+      this.situacaoAgendamento = 'Concluído';
+    }
+  }
+
   ngOnDestroy():void{
     if(this.inscricaoAgenda$){
       this.inscricaoAgenda$.unsubscribe();
     }
+  }
+  calcularSaldo(){
+    let valorServico = Number.parseFloat(this.agenda.valorServico.toString());
+    let valorAcrescimo =Number.parseFloat(this.agenda.valorAcrescimo.toString());
+    let valorDesconto =Number.parseFloat(this.agenda.valorDesconto.toString());
+
+    this.saldoFinal  = ((valorServico + valorAcrescimo)-valorDesconto);
   }
   baixar(){
 
@@ -43,15 +65,29 @@ export class AgendaBaixaComponent  extends BaseFormComponent implements OnInit,O
       this.handleError('Por favor, verifique o campo de valor de desconto está vazio!');
       return;
     } else{
+      if (!this.validaNumeroService.somenteNumeroEVirgulaEPonto(this.agenda.valorDesconto.toString().replace(',','.'))){
+        this.handleError('Valor de desconto inválido!')
+        return ;
+      }
       this.agenda.valorDesconto = Number.parseFloat(this.agenda.valorDesconto.toString().replace(',','.'));
     }
     if (this.agenda.valorAcrescimo.toString().trim()===''||this.agenda.valorAcrescimo === null){
       this.handleError('Por favor, verifique o campo de valor de acréscimo está vazio!');
       return;
     }else{
+      if (!this.validaNumeroService.somenteNumeroEVirgulaEPonto(this.agenda.valorAcrescimo.toString().replace(',','.'))){
+        this.handleError('Valor de acréscimo inválido!')
+        return ;
+      }
       this.agenda.valorAcrescimo = Number.parseFloat(this.agenda.valorAcrescimo.toString().replace(',','.'));
     }
     
+    // valida valores preenchidos.
+    if (((this.agenda.valorServico + this.agenda.valorAcrescimo)-(this.agenda.valorDesconto))<0){
+      this.handleError('O saldo final dos valores (serviço + acréscimo - desconto) ficou negativo! Não é possível continuar.');
+      return ;
+    }
+
     let dataCorrente = new Date();
     //validar dia de baixa vs data de agenda.
     if ( new Date(this.agenda.data.toString().substring(0,10))> dataCorrente){
@@ -85,17 +121,22 @@ export class AgendaBaixaComponent  extends BaseFormComponent implements OnInit,O
   handlerSucesso(mensagem: string) {
     this.alertService.mensagemSucesso(mensagem);
   }
- handleError(mensagem: string) {
+  handleError(mensagem: string) {
     this.alertService.mensagemErro(mensagem);
   }
   allowNumericDigitsOnlyOnKeyUp(e) {		
-  
+    if(this.statusBaixado){
+      return;
+    }
 		const charCode = e.which ? e.which : e.keyCode;
 		if (charCode !== 190 && charCode !== 46 && charCode!==44){
       if (charCode > 31  && (charCode < 48 || charCode > 57)) {
         this.handleError("Por favor, informar apenas numeros e casas decimais");        
+        return;
       }
+      this.calcularSaldo();
     }	 
+     
 	}
   onNoClick(): void {
     this.dialogRef.close();

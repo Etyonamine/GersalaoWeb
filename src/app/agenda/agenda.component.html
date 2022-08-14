@@ -17,12 +17,18 @@
                    <td class="titulo_dia_selecionado">
                      <label><b>Data Selecionada:</b></label><b> {{selected | date: 'dd/MM/yyyy' }}</b>
                    </td>
+                   <td style="text-align:right;">
+                        <b>Legendas dos hor&aacute;rios:</b>&nbsp;
+                        <a  mat-stroked-button class ="hora_agendada_pendente"> Pendente</a>
+                        <a  mat-stroked-button class ="hora_agendada_concluido"> Concluido </a> 
+                        <a  mat-stroked-button class ="hora_agendada_cancelado"> Cancelado </a>
+                   </td>
                 </tr>
                 <tr>
                     <td style="width:10%" >
                         <mat-calendar class="demo-inline-calendar-card" [(selected)]="selected" (selectedChange)="obterAgendas()"></mat-calendar>
                     </td>
-                    <td style="vertical-align: top;">
+                    <td  colspan="2" style="vertical-align: top;">
                         <table>
                             <thead  >                    
                                 <tr class="titulo_lista">                                    
@@ -37,7 +43,11 @@
                                     <td  *ngFor="let agendaProfissional of listaAgendasDia" class="celulasAgenda">
                                         <table>
                                             <tr *ngFor="let agenda of agendaProfissional.listaAgenda">
-                                                <td *ngIf="(agenda.codigoSituacaoBaixa == 5) ; then naoBaixado ; else baixado">                                                    
+                                                <!-- <a  mat-stroked-button (click)="openDialogBaixa(agenda.codigo)"  [class]="agenda.css" > -->
+                                                <a mat-stroked-button (click) = 'openDialogOperacao(agenda)' [class]="agenda.css" >
+                                                    {{ agenda.data | date: 'HH:mm' }} - {{ agenda.cliente.nome}}
+                                                </a>
+                                               <!--  <td *ngIf="(agenda.codigoSituacaoBaixa == 5) ; then naoBaixado ; else baixado">                                                    
                                                     
                                                 </td>
                                                 <ng-template #baixado>
@@ -49,15 +59,17 @@
                                                     <a  mat-stroked-button (click)="openDialogBaixa(agenda.codigo)"  class="botao_hora_agendada_nao_baixado" >
                                                         {{ agenda.data | date: 'HH:mm' }} - {{ agenda.cliente.nome}}
                                                     </a>
-                                                </ng-template>
+                                                </ng-template> -->
                                             </tr>
                                         </table>                                         
                                     </td>
-                                </tr> 
+                                </tr>                                
                             </tbody>
+                         
                         </table>
-                    </td>
+                    </td>                    
                 </tr>
+               
             </table>
             
             

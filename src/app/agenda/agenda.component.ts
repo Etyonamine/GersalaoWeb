@@ -13,9 +13,14 @@ import { Profissional } from '../profissional/professional';
 import { ProfissionalService } from '../profissional/profissional.service';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
+import { Usuario } from '../usuario/usuario';
+import { UsuarioService } from '../usuario/usuario.service';
 import { Agenda } from './agenda';
+import { AgendaAlertBaixaCancelamentoComponent, ModalConfirmData } from './agenda-alert-baixa-cancelamento/agenda-alert-baixa-cancelamento.component';
 import { AgendaBaixa } from './agenda-baixa';
 import { AgendaBaixaComponent } from './agenda-baixa/agenda-baixa.component';
+import { AgendaCancelamentoComponent } from './agenda-cancelamento/agenda-cancelamento.component';
+import { AgendaCancelar } from './agenda-cancelar';
 import { AgendaService } from './agenda.service';
 
 export interface AgendaDia{
@@ -33,6 +38,8 @@ export class AgendaComponent implements OnInit {
   empresa: Empresa;
   horarios: Array<string> = ["08:00", "08:30", "09:00", "09:30"];
   
+  usuarios : MatTableDataSource<Usuario>;
+
   listaProfissionais: Array<Profissional>=[];
   listaAgenda: MatTableDataSource<Agenda>;
   qtdeColunasProfissionais: number;
@@ -44,6 +51,7 @@ export class AgendaComponent implements OnInit {
   inscricaoAngenda$: Subscription;
   inscricaoEmpresa$: Subscription;
   inscricaoProfissional$: Subscription;
+  inscricaoUsuario$: Subscription;
 
   constructor(
     private agendaService: AgendaService,
@@ -51,7 +59,8 @@ export class AgendaComponent implements OnInit {
     private profissionalService: ProfissionalService,
     private authService:AuthService,
     private alertService: AlertService,
-    public dialog: MatDialog    
+    public dialog: MatDialog ,
+    private usuarioService: UsuarioService   
     ) {
 
   }
@@ -67,6 +76,7 @@ export class AgendaComponent implements OnInit {
     this.qtdeAgendas = 0;
     this.obterAgendas();
     this.codigoUsuario = Number.parseInt(this.authService.usuarioLogado.codigo);
+    //this.listarUsuarios();
   }
   ngOnDestroy(): void {
     if (this.inscricaoEmpresa$) {
@@ -77,6 +87,9 @@ export class AgendaComponent implements OnInit {
     }
     if (this.inscricaoAngenda$){
       this.inscricaoAngenda$.unsubscribe();
+    }
+    if (this.inscricaoUsuario$){
+      this.inscricaoUsuario$.unsubscribe();
     }
   }
   obterProfissionais() {
@@ -142,6 +155,8 @@ export class AgendaComponent implements OnInit {
     //limpando a lista
     this.listaAgendasDia.splice(0,this.qtdeColunasProfissionais); 
 
+    let cssHora : Array<String> = ["hora_agendada_pendente", "hora_agendada_concluido", "hora_agendada_cancelado"];
+
     /* this.listaLinksAgenda = ['Nenhum agendamento','Nenhum agendamento', 'Nenhum agendamento'];  */    
 
      let strLinks : string;          
@@ -155,7 +170,19 @@ export class AgendaComponent implements OnInit {
           
           let agendas = this.listaAgenda.data.filter(x=>x.codigoProfissional === profi.codigo);
             agendas.sort(function(a,b){return new Date(a.dataAgendaString).getDate() - new Date(b.dataAgendaString).getDate()});
-                                              
+            agendas.forEach(agenda=>{
+              switch (agenda.codigoSituacaoServico){
+                case 4: // concluido
+                  agenda.css = cssHora[1].toString();
+                  break;
+                case 7 ://cancelado
+                  agenda.css = cssHora[2].toString();
+                  break;
+                default:
+                  agenda.css = cssHora[0].toString();
+                  break;
+              }
+            })                                  
 
           this.listaAgendasDia.push({codigoProfissional : profi.codigo, listaAgenda : agendas });
                         
@@ -183,7 +210,8 @@ export class AgendaComponent implements OnInit {
                                                     observacaoBaixa: result.observacaoBaixa                                                   ,
                                                     codigoUsuarioAlteracao: this.codigoUsuario,
                                                     situacaoBaixado : result.codigoSituacaoBaixa === 5 ? false:true
-                                                  
+                                                    
+                                                    
                                                     
                                                   } as AgendaBaixa;
 
@@ -213,6 +241,82 @@ export class AgendaComponent implements OnInit {
     
                                                 
                                                
+  }
+  openDialogOperacao(agenda:Agenda){
+    const dialogRef = this.dialog.open(AgendaAlertBaixaCancelamentoComponent, {
+      width: '600px',
+      data: new ModalConfirmData({
+        title: " Operação",
+        content: "Por favor, selecione a operação que deseja?",
+        baixaButtonLabel: 'Baixa de agendamento',
+        cancelarButtonLabel: 'Cancelar agendamento',
+        closeButtonLabel:  'Retornar' ,
+        agenda: agenda
+      })
+    });
+
+    dialogRef.afterClosed().subscribe(result =>{
+      let retorno = result;
+      if (retorno === 'B'){
+        this.openDialogBaixa(agenda.codigo);
+      }else if (retorno ==='C'){
+        this.openCancelarAgendmento(agenda.codigo);
+      }
+    });
+  }
+  listarUsuarios(){
+    this.inscricaoUsuario$ = this.usuarioService.getData<ApiResult<any>>(0,20,'nome','asc',null, null)
+                                                .subscribe(result=>{
+                                                  this.usuarios = new MatTableDataSource<Usuario>(result.data);
+                                                },error=>{
+                                                  console.log(error);
+                                                  this.handleError('Ocorreu o erro ao tentar recuperar a lista de usuarios.');
+                                                })    
+  }
+  openCancelarAgendmento(codigo:number){
+   
+    
+
+    this.inscricaoAngenda$ = this.agendaService.get<Agenda>(codigo)
+    .subscribe(result=>{
+     if (result){
+     // let usuario = this.usuarios.data.find(x=>x.codigo === result.codigoUsuarioCancelamento);
+
+       let agendaCancelar = {
+         codigo : result.codigo,
+         data: result.data,
+         codigoUsuarioCancelamento: this.codigoUsuario ,
+         dataCancelamento : result.dataUsuarioCancelamento,
+         campoNomeCliente : result.cliente.nome,
+         dataString : result.dataAgendaString,  
+         motivoCancelamento : result.motivoCancelamento,
+         codigoSituacao: result.codigoSituacaoServico,
+         nomeUsuarioCancelamento: 'teste',
+         situacao: result.codigoSituacaoServico == 7?true:false
+       } as AgendaCancelar;
+
+       const dialogCancelarRef = this.dialog.open(AgendaCancelamentoComponent,         
+         { width: '600px' ,
+           height: '900px;',
+           data : agendaCancelar }
+       );
+
+       dialogCancelarRef.afterClosed().subscribe(retornoDialog => {
+
+         this.obterAgendas();
+       });
+      
+     }else{
+       this.handleError('Não foi encontrado este agendamento!');
+       return ;
+     }
+    }, error=>{
+     console.log(error);
+     this.handleError('Ocorreu um erro ao recuperar o agendamento.');
+    });
+
+    
+       
   }
 }
 
