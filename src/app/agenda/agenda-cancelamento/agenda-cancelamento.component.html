@@ -18,14 +18,17 @@
     <div>
         <mat-divider></mat-divider>
     </div>
+    <div *ngIf="statusCancelamento">
         <mat-form-field appearance="fill" class="dataCancelamento">
             <mat-label>Data Cancelamento</mat-label>
-            <input matInput [ngModel]="agenda.dataCancelamento" readonly>
+            <input matInput [ngModel]="agenda.dataCancelamento | date : 'dd/MM/yyyy  HH:mm':'pt'" readonly>
         </mat-form-field>
         <mat-form-field appearance="fill" class="usuarioCancelamento">
             <mat-label>Usuario</mat-label>
             <input matInput [ngModel]="agenda.nomeUsuarioCancelamento" readonly>
         </mat-form-field>
+    </div>
+        
     <div>
 
         <mat-form-field appearance="fill" class="campoObservacao" >

@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Login } from '../login/login';
 import { BaseService } from '../shared/base.service';
@@ -33,5 +34,9 @@ export class UsuarioService extends BaseService<Usuario> {
     let objLoginCriptografado = {codigo : codigoCriptografada , senha:senhaCriptografada} as Login;
 
     return this.http.put<boolean>(urlAlterar,objLoginCriptografado,httpOptions);
+  }
+  listarTodos(){
+    let urlTodos = this.url + '/All';
+    return this.http.get<Usuario[]>(urlTodos).pipe(take(1));
   }
 }

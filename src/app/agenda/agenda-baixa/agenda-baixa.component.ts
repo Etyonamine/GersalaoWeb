@@ -18,6 +18,8 @@ export class AgendaBaixaComponent  extends BaseFormComponent implements OnInit,O
   }
   situacaoAgendamento: string;
   statusBaixado:boolean;
+  statusPendente : boolean;
+
   agenda: AgendaBaixa;
   inscricaoAgenda$: Subscription;
 
@@ -33,8 +35,10 @@ export class AgendaBaixaComponent  extends BaseFormComponent implements OnInit,O
   ngOnInit(): void {
     this.agenda = this.data;     
     this.statusBaixado = this.agenda.situacaoBaixado;
+    this.statusPendente = this.agenda.situacaoCancelado  || this.agenda.situacaoBaixado ? false:true;
     this.calcularSaldo();
     this.IdentificarSituacaoAgendamento();
+
   }  
 
   IdentificarSituacaoAgendamento(){

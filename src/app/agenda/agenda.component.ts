@@ -38,7 +38,7 @@ export class AgendaComponent implements OnInit {
   empresa: Empresa;
   horarios: Array<string> = ["08:00", "08:30", "09:00", "09:30"];
   
-  usuarios : MatTableDataSource<Usuario>;
+  usuarios : Usuario[];
 
   listaProfissionais: Array<Profissional>=[];
   listaAgenda: MatTableDataSource<Agenda>;
@@ -190,14 +190,18 @@ export class AgendaComponent implements OnInit {
     }      
   }
   openDialogBaixa(codigo:number){
+    this.listarUsuarios();
+     
     this.inscricaoAngenda$ = this.agendaService.get<Agenda>(codigo)
                                                .subscribe(result=>{
                                                 if (result){
-                                                  
+
+                                                  let usuarioBaixa = result.codigoUsuarioAlteracao!==null ? this.usuarios.find(x=>x.codigo == result.codigoUsuarioAlteracao ): null;
                                                   let agendaBaixa = {
                                                     codigo : result.codigo,
                                                     data : result.data,
                                                     dataString: result.dataAgendaString,
+                                                    dataBaixa : result.codigoSituacaoServico === 4 ? result.dataUsuarioAlteracao: null,
                                                     hora : result.horaAgendaString,                                                    
                                                     nomeCliente : result.cliente.nome,
                                                     nomeProfissional : result.profissional.nome,
@@ -209,7 +213,9 @@ export class AgendaComponent implements OnInit {
                                                     observacao: result.observacao,
                                                     observacaoBaixa: result.observacaoBaixa                                                   ,
                                                     codigoUsuarioAlteracao: this.codigoUsuario,
-                                                    situacaoBaixado : result.codigoSituacaoBaixa === 5 ? false:true
+                                                    situacaoBaixado : result.codigoSituacaoServico === 4 ? true:false,
+                                                    situacaoCancelado : result.codigoSituacaoServico === 7 ?true: false,
+                                                    nomeUsuarioBaixa : usuarioBaixa != null ? usuarioBaixa.nome:null
                                                     
                                                     
                                                     
@@ -265,9 +271,9 @@ export class AgendaComponent implements OnInit {
     });
   }
   listarUsuarios(){
-    this.inscricaoUsuario$ = this.usuarioService.getData<ApiResult<any>>(0,20,'nome','asc',null, null)
+    this.inscricaoUsuario$ = this.usuarioService.listarTodos()
                                                 .subscribe(result=>{
-                                                  this.usuarios = new MatTableDataSource<Usuario>(result.data);
+                                                  this.usuarios = result;
                                                 },error=>{
                                                   console.log(error);
                                                   this.handleError('Ocorreu o erro ao tentar recuperar a lista de usuarios.');
@@ -275,12 +281,13 @@ export class AgendaComponent implements OnInit {
   }
   openCancelarAgendmento(codigo:number){
    
+    this.listarUsuarios();
     
 
     this.inscricaoAngenda$ = this.agendaService.get<Agenda>(codigo)
     .subscribe(result=>{
      if (result){
-     // let usuario = this.usuarios.data.find(x=>x.codigo === result.codigoUsuarioCancelamento);
+      let usuario = result.codigoUsuarioCancelamento!== null ? this.usuarios.find(x=>x.codigo === result.codigoUsuarioCancelamento):null;
 
        let agendaCancelar = {
          codigo : result.codigo,
@@ -291,7 +298,7 @@ export class AgendaComponent implements OnInit {
          dataString : result.dataAgendaString,  
          motivoCancelamento : result.motivoCancelamento,
          codigoSituacao: result.codigoSituacaoServico,
-         nomeUsuarioCancelamento: 'teste',
+         nomeUsuarioCancelamento:usuario!==null? usuario.nome: null,
          situacao: result.codigoSituacaoServico == 7?true:false
        } as AgendaCancelar;
 

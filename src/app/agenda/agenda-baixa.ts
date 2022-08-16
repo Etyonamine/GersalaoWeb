@@ -2,6 +2,7 @@ export class AgendaBaixa {
     codigo : number;
     data: Date;
     dataString: string;
+    dataBaixa: Date;
     hora: string;
     nomeCliente: string;
     nomeProfissional: string;
@@ -14,6 +15,8 @@ export class AgendaBaixa {
     observacaoBaixa: string;
     codigoUsuarioAlteracao:number;
     dataUsuarioAlteracao:Date;
+    nomeUsuarioBaixa: string;
     situacaoBaixado: boolean;
+    situacaoCancelado: boolean;
 
 }

@@ -43,6 +43,17 @@
             </mat-form-field>
         </div>
         <mat-divider></mat-divider>
+        <div *ngIf="statusBaixado">
+            <mat-form-field appearance="fill" class="campo-data-hora-baixa">
+                <mat-label>Data-Baixa</mat-label>
+                <input matInput [ngModel]="agenda.dataBaixa | date:'dd/MM/yyyy HH:mm':'pt'" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="fill" class="campo-usuario-baixa">
+                <mat-label>Usu&aacute;rio-Baixa</mat-label>
+                <input matInput [ngModel]="agenda.nomeUsuarioBaixa" readonly>
+            </mat-form-field>
+        </div>
+        <mat-divider></mat-divider>
         <h3  mat-dialog-title class="titulo_valores">Valores</h3>
         <div class="container">           
             <mat-form-field appearance="fill" class="campoValores">
@@ -101,5 +112,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-raised-button color="primary" mat-dialog-close>Retornar</button>
-    <button mat-raised-button color="primary" class ="botaoBaixar" [disabled] = "statusBaixado" (click)="baixar()" cdkFocusInitial>Baixar</button>
+    <button mat-raised-button color="primary" class ="botaoBaixar" [disabled] = "!statusPendente" (click)="baixar()" cdkFocusInitial>Baixar</button>
 </mat-dialog-actions>
