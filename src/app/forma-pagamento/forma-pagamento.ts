@@ -1,4 +1,4 @@
-export interface FormaPagamento{
+export class FormaPagamento{
     codigo: number;
     descricao: string;
 }

@@ -1,5 +1,6 @@
 export class AgendaBaixa {
     codigo : number;
+    codigoFormaPagamento:number;
     data: Date;
     dataString: string;
     dataBaixa: Date;

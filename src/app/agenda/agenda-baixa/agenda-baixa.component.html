@@ -55,6 +55,7 @@
         </div>
         <mat-divider></mat-divider>
         <h3  mat-dialog-title class="titulo_valores">Valores</h3>
+        
         <div class="container">           
             <mat-form-field appearance="fill" class="campoValores">
                 <mat-label>Valor do Servi&ccedil;o</mat-label>
@@ -98,7 +99,15 @@
                     placeholder="0.000,00"                     
                     (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"
                     [readonly]="statusBaixado">                
-            </mat-form-field>    
+            </mat-form-field>  
+            <mat-form-field *ngIf="optionFormaPagamento" appearance="fill" class="campoFormaPagamento">
+                <mat-label>Selecione a forma de pagamento</mat-label>
+                <mat-select [(ngModel)]="agenda.codigoFormaPagamento" matTooltip="Selecione uma forma de pagamento" required>
+                    <mat-option *ngFor="let forma of optionFormaPagamento" [value]="forma.codigoFormaPagto">
+                        {{ forma.descricaoFormaPagto }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>  
             <mat-form-field appearance="fill" class="campoObservacaoBaixa" >
                 <mat-label>Observa&ccedil;&atilde;o</mat-label>
                 <textarea matInput #message maxlength="300" placeholder="Se precisar informar uma observação de baixa" cdkTextareaAutosize

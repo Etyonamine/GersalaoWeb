@@ -96,11 +96,17 @@ export class AgendaComponent implements OnInit {
 
     this.inscricaoProfissional$ = this.profissionalService.ListarProfissionais()
       .subscribe(result => {
+        
         result.forEach(profi => {
           this.listaProfissionais.push({
             codigo: Number.parseInt(atob(profi.codigo)),
             nome: atob(profi.nome)         
           } as Profissional);
+
+          if (result.length > 0 ){
+            this.montarAgendaDia();
+            this.qtdeColunasProfissionais = result.length;
+          }
           
         }, error => {
           console.log(error);
@@ -199,6 +205,7 @@ export class AgendaComponent implements OnInit {
                                                   let usuarioBaixa = result.codigoUsuarioAlteracao!==null ? this.usuarios.find(x=>x.codigo == result.codigoUsuarioAlteracao ): null;
                                                   let agendaBaixa = {
                                                     codigo : result.codigo,
+                                                    codigoFormaPagamento: result.codigoFormaPagamento,
                                                     data : result.data,
                                                     dataString: result.dataAgendaString,
                                                     dataBaixa : result.codigoSituacaoServico === 4 ? result.dataUsuarioAlteracao: null,
@@ -223,7 +230,7 @@ export class AgendaComponent implements OnInit {
 
                                                   const dialogRef = this.dialog.open(AgendaBaixaComponent,
                                                     { width: '800px' ,
-                                                      height: '900px;',
+                                                      height: '1080px;',
                                                       data : agendaBaixa }
                                                   );
 
