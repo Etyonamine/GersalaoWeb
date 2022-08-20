@@ -6,6 +6,7 @@ import { BaseService } from './../shared/base.service';
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { ProfissionalViewModel } from './profissionalViewModel';
+import { ProfissionalApuracaoPendente } from '../profissional-apuracao/profissional-apuracao-pendente';
 
 @Injectable({
   providedIn: 'root'
@@ -35,5 +36,10 @@ export class ProfissionalService extends BaseService<Profissional>{
   ListarProfissionais(){
     let urlListar = this.url + '/listarProfissional';
     return this.http.post<ProfissionalViewModel[]>(urlListar, null).pipe(take(1));
+  }
+  ListarProfissionaisPendentes(inicioPeriodoPar:Date,fimPeriodoPar:Date){
+
+    let urlListaPendenteApuracao = this.url+ '/ListarProfissionalApurar?inicioPeriodo=' + inicioPeriodoPar.toDateString() + '&fimPeriodo=' + fimPeriodoPar.toDateString();
+    return this.http.get<ProfissionalApuracaoPendente[]>(urlListaPendenteApuracao).pipe(take(1));
   }
 }

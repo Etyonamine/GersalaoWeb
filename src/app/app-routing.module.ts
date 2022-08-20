@@ -60,6 +60,12 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
+    path: 'profissional-apuracao',
+    loadChildren: () => import ('./profissional-apuracao/profissional-apuracao.module').then(mod => mod.ProfissionalApuracaoModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+  },
+  {
     path: 'servico',
       loadChildren: () => import('./servico/servico.module').then(mod => mod.ServicoModule),
       canActivate : [AuthGuard],

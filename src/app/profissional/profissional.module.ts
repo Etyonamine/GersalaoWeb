@@ -10,8 +10,12 @@ import { RouterModule } from '@angular/router';
 import { ProfissionalTipoServicoComponent } from './profissional-tipo-servico/profissional-tipo-servico.component';
 import { ProfissionalFinanceiroComponent } from './profissional-financeiro/profissional-financeiro.component';
 
+
 @NgModule({
-  declarations: [ProfissionalComponent, ProfissionalFormComponent, ProfissionalTipoServicoComponent, ProfissionalFinanceiroComponent],
+  declarations: [ProfissionalComponent, 
+                ProfissionalFormComponent,
+                ProfissionalTipoServicoComponent, 
+                ProfissionalFinanceiroComponent],
   imports: [
     CommonModule,
     FormsModule,

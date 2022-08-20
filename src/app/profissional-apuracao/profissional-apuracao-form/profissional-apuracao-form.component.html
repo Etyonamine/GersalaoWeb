@@ -1,0 +1,30 @@
+<div class="container">
+<mat-card>
+    <mat-card-header>Apuração do profissional</mat-card-header>
+    <mat-card-content>
+        <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+            <mat-form-field appearance="fill">
+                <mat-label>Profissional</mat-label>
+                <mat-select formControlName="codigoProfissional"  matTooltip="Profissional a ser efetuado a apuração"
+                required>
+                  <mat-option *ngFor="let profissional of optionProfissionais" [value]="profissional.codigo">
+                    {{profissional.nome}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>In&igrave;cio</mat-label>
+                <input formControlName = "inicioPeriodo" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field class="example-full-width" appearance="fill">
+                <mat-label>T&eacute;rmino</mat-label>
+                <input formControlName = "fimPeriodo" matInput [min]="minDate" [max]="maxDate" [matDatepicker]="picker" required>
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+        </form>
+    </mat-card-content>
+</mat-card>
+</div>

@@ -34,6 +34,7 @@ import { CompraDetalheModule } from './compra-detalhe/compra-detalhe.module';
 import { EstoqueModule } from './estoque/estoque.module';
 import { PedidoModule } from './pedido/pedido.module';
 import { AgendaModule } from './agenda/agenda.module';
+import { ProfissionalApuracaoModule } from './profissional-apuracao/profissional-apuracao.module';
 
 import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
@@ -42,6 +43,7 @@ import { FornecedorComponent } from './fornecedor/fornecedor.component';
 
 import { TokenInterceptor } from './auth-guard/interceptor/token.interceptor';
 import { EmpresaComponent } from './empresa/empresa.component';
+import { ProfissionalApuracaoComponent } from './profissional-apuracao/profissional-apuracao.component';
 
 
 registerLocaleData(localePt,'pt');
@@ -54,7 +56,7 @@ registerLocaleData(localePt,'pt');
     HomeComponent,
     PaginaNaoEncontradaComponent,
     TwoDecimalNumberDirective,        
-    FornecedorComponent, EmpresaComponent
+    FornecedorComponent, EmpresaComponent, ProfissionalApuracaoComponent
    ],
   imports: [
     BrowserModule,
@@ -84,7 +86,8 @@ registerLocaleData(localePt,'pt');
     CompraDetalheModule,
     EstoqueModule,
     PedidoModule,
-    AgendaModule
+    AgendaModule,
+    ProfissionalApuracaoModule
     
   ],
   providers: [

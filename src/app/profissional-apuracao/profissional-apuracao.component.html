@@ -1,0 +1,39 @@
+<mat-card>
+    <mat-card-header>
+        Lista de Apurações de Profissionais
+    </mat-card-header>
+    <mat-card-content>
+        <div>
+            <button 
+            mat-raised-button
+            color="primary"
+            (click)="clearDate($event)">
+              Limpar
+          </button> 
+          &nbsp;&nbsp;
+          <mat-form-field [hidden]="!listaApuracoes" style="width: 15%">          
+           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+           <mat-datepicker #picker (change) ="loadData($event.target.value)"  ></mat-datepicker>
+            <mat-label>Pesquisa por período</mat-label>
+            <input matInput [matDatepicker]="picker" 
+                  (dateChange) ="loadData($event.target.value)" 
+                  readonly 
+                  [(ngModel)]="dataPesquisa" >                   
+          </mat-form-field>
+        </div>
+        <div class="commands text-right" style="margin-top: 5px;" >
+            <button mat-raised-button
+                    color="primary"
+                    [routerLink]="['apuracao-novo']" >
+              Nova apura&ccedil;&atilde;o &nbsp;<i class="material-icons right">add</i>
+            </button>
+          </div>         
+        <div  [hidden]="!listaApuracoes" style="width: 100%;">
+
+        </div>
+        <div *ngIf="!listaApuracoes" style="text-align: center;">
+            <h3>Não há apurações efetuadas</h3>
+          </div>
+    </mat-card-content>
+</mat-card>
+

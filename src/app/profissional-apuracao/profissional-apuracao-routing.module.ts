@@ -1,20 +1,20 @@
-import { ProfissionalFormComponent } from './profissional-form/profissional-form.component';
-import { ProfissionalComponent } from './profissional.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { ProfissionalResolveGuard } from './guard/profissional-resolver.guard';
+import { ProfissionalApuracaoComponent } from './profissional-apuracao.component';
+import { ProfissionalApuracaoFormComponent } from './profissional-apuracao-form/profissional-apuracao-form.component';
 
 
 const rotas: Routes = [
-  {path:'', component: ProfissionalComponent}  , 
-  {path:'profissional-novo',
+  {path:'', component: ProfissionalApuracaoComponent}  , 
+  {path:'apuracao-novo', component: ProfissionalApuracaoFormComponent}
+  /* {path:'profissional-apuracao-novo',
         component:ProfissionalFormComponent},  
   {path:':codigo',
         component:ProfissionalFormComponent,
      resolve:{
         profissional: ProfissionalResolveGuard
-      }}
+      }} */
  
 ];
 
@@ -26,4 +26,4 @@ const rotas: Routes = [
   ],
   exports:[RouterModule]
 })
-export class ProfissionalRoutingModule { }
+export class ProfissionalApuracaoRoutingModule { }

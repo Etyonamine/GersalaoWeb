@@ -32,6 +32,7 @@
         
             <mat-menu #Agenda="matMenu">
               <button mat-menu-item [routerLink]="['agenda']"><i class ="material-icons right">event_note</i> Agendamento</button>
+              
             
             </mat-menu>
         
@@ -48,7 +49,8 @@
             <mat-menu #Cadastro="matMenu">
               <button mat-menu-item [routerLink]="['cliente']" ><i class ="material-icons right">people</i> Cliente</button>     
               <mat-divider></mat-divider>
-              <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>                    
+                    
+              <button mat-menu-item  [matMenuTriggerFor]="profissional"><i class ="material-icons right">work</i> Profissional</button>
               <mat-divider></mat-divider>
               <button mat-menu-item [matMenuTriggerFor]="servicos" ><i class ="material-icons right">design_services</i> Servi&ccedil;os</button> 
               <!-- <button mat-menu-item [routerLink]="['servico']">Serviço</button> -->       
@@ -65,14 +67,18 @@
         
             <mat-menu #estoque="matMenu">
               <button mat-menu-item [routerLink]="['estoque']"> <i class ="material-icons right">search</i> Consultar</button>           
-            </mat-menu>
-        
-           
+            </mat-menu>          
         
             <mat-menu #produto="matMenu">
               <button mat-menu-item [routerLink]="['produto']"> <i class ="material-icons right">app_registration</i> Cadastro</button>
               <button mat-menu-item [routerLink]="['tipo-produto']"><i class ="material-icons right">category</i> Tipo</button>
               <button mat-menu-item [routerLink]="['produto-linha']"><i class ="material-icons right">line_style</i> Linha</button>
+            </mat-menu>
+            
+            <mat-menu #profissional="matMenu">
+              <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>
+              <mat-divider></mat-divider>
+              <button mat-menu-item [routerLink]="['profissional-apuracao']"><i class ="material-icons right">calculate</i> Apura&ccedil;&aacute;o</button>              
             </mat-menu>
             
             <button mat-button [matMenuTriggerFor]="Login" >&nbsp;<i class="material-icons right">account_circle</i>{{loginUsuario}}</button>
