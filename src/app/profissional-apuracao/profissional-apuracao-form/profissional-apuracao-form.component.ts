@@ -1,11 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { subscribeOn } from 'rxjs/operators';
+import { Agenda } from 'src/app/agenda/agenda';
+import { AgendaApurar } from 'src/app/agenda/agenda-apurar';
+import { AgendaService } from 'src/app/agenda/agenda.service';
 import { ProfissionalService } from 'src/app/profissional/profissional.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
+import { ApiResult } from 'src/app/shared/base.service';
 import { ProfissionalApuracaoPendente } from '../profissional-apuracao-pendente';
 
 @Component({
@@ -13,18 +21,41 @@ import { ProfissionalApuracaoPendente } from '../profissional-apuracao-pendente'
   templateUrl: './profissional-apuracao-form.component.html',
   styleUrls: ['./profissional-apuracao-form.component.scss']
 })
-export class ProfissionalApuracaoFormComponent extends BaseFormComponent implements OnInit {
+export class ProfissionalApuracaoFormComponent extends BaseFormComponent implements OnInit,OnDestroy {
   
   formulario: FormGroup;
   inscricaoProfissional$: Subscription;
+  inscricaoAgendaPendente$: Subscription;
+
+  
+
   minDate:Date;
   maxDate:Date;
+  
+  //variaveis da tabela e paginacao
+  agendas : MatTableDataSource<AgendaApurar>;
 
+  colunas:string[] = ["data" , "cliente", "servico", "valor"];
+
+  defaultPageIndex :number = 0 ;
+  defaultPageSize:number = 10;
+
+  public defaultSortColumn:string = "data";
+  public defaultSortOrder:string = "asc";
+
+  defaultFilterColumn: string= null;
+  filterQuery:string=null;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort:MatSort;
+  
   optionProfissionais: ProfissionalApuracaoPendente[];
 
   constructor(private formBuilder: FormBuilder,
               private profissionalService : ProfissionalService ,
-              private alertService: AlertService) {
+              private alertService: AlertService,
+              private agendaService: AgendaService,
+              private router: Router,) {
     super();
   }
 
@@ -34,6 +65,10 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
     this.minDate = new Date();
     this.minDate.setMonth(this.minDate.getMonth()-6);
     this.maxDate = new Date();
+  }
+  ngOnDestroy(): void{
+    if (this.inscricaoProfissional$){this.inscricaoProfissional$.unsubscribe();}
+    if (this.inscricaoAgendaPendente$){this.inscricaoAgendaPendente$.unsubscribe();}
   }
   criacaoFormulario(){
     this.formulario = this.formBuilder.group({
@@ -57,7 +92,55 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
                                                             this.handlerError('Ocorreu um erro ao recuperar a lista de profissionais.');
                                                         });
   }
+   
+  loadData(query:string = null){
+    var pageEvent = new PageEvent();
+    pageEvent.pageIndex= this.defaultPageIndex;
+    pageEvent.pageSize=this.defaultPageSize;
+    this.filterQuery = null;
+
+    if (query!== null && query.toString().trim()!==''){
+      this.filterQuery=query;
+    }
+
+    this.getData(pageEvent);
+  }
+  getData(event:PageEvent){
+    
+    let codigoProfissional = this.formulario.get("codigoProfissional").value;
+    let inicioPeriodoPar = this.formulario.get("inicioPeriodo").value;
+    let fimPeriodoPar = this.formulario.get("fimPeriodo").value;
+    var sortColumn = (this.sort)?this.sort.active:this.defaultSortColumn;
+    var sortOrder = (this.sort)?this.sort.direction:this.defaultSortOrder;
+    var filterColumn =(this.filterQuery)?this.defaultFilterColumn:null;
+    var filterQuery=(this.filterQuery)?this.filterQuery:null;
+    
+    this.inscricaoAgendaPendente$ = this.agendaService.listarAgendasPendentesApuracaoPorProfissional<ApiResult<any>>(codigoProfissional,
+                                                                                inicioPeriodoPar,
+                                                                                fimPeriodoPar,
+                                                                                event.pageIndex,
+                                                                                event.pageSize,
+                                                                                sortColumn,
+                                                                                sortOrder,
+                                                                                filterColumn,
+                                                                                filterQuery)
+                                                      .subscribe(result=>{
+                                                        this.agendas = new MatTableDataSource<AgendaApurar>(result.data);
+                                                         this.paginator.length = result.totalCount; 
+                                                        this.paginator.pageIndex = result.pageIndex;
+                                                        this.paginator.pageSize = result.pageSize;
+                                                      }, error=>{
+                                                        console.log(error);
+                                                        
+                                                      })
+  }
   handlerError(mensagem:string){
     this.alertService.mensagemErro(mensagem);
   }
+  retornar(){
+    
+      this.router.navigate(['/profissional-apuracao']);
+    
+  }
+
 }

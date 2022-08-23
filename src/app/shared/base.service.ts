@@ -32,7 +32,7 @@ export class BaseService<T> {
         }
     return this.http.get<ApiResult>(this.API_URL, { params }).pipe(take(1));
   }
-
+   
   list<T>(): Observable<T>{
     return this.http.get<T>(this.API_URL).pipe(take(1));
   }

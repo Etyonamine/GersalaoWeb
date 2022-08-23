@@ -79,7 +79,7 @@ export class ClienteComponent implements OnInit, OnDestroy {
                       filterQuery
                     ).subscribe(result=>{
                       this.clientes = new MatTableDataSource<Cliente>(result.data);
-                      this.paginator.length=result.totalCount;
+                      this.paginator.length = result.totalCount;
                       this.paginator.pageIndex=result.pageIndex;
                       this.paginator.pageSize=result.pageSize;
                       if (this.clientes == null){
