@@ -11,6 +11,7 @@ import { TipoServico } from 'src/app/tipo-servico/tipo-servico';
 import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { ServicoGravar } from '../servicoGravar';
+import validator from 'cpf-cnpj-validator';
 
 @Component({
   selector: 'app-servico-form',
@@ -50,6 +51,7 @@ export class ServicoFormComponent extends BaseFormComponent
       codigo: [this.servico.codigo],
       descricao: [this.servico.descricao, [Validators.required]],
       valor: [this.servico.valor, [Validators.required, Validators.min(1)]],
+      valorComissao: [this.servico.valorComissaoPercentual,[Validators.required,Validators.min(0), Validators.max(100)]],
       codigoTipoServico: [this.servico.codigoTipoServico, [Validators.required]]
     });
     this.inscricaoTipo$ = this.tipoServicoService.list<TipoServico[]>()
@@ -97,6 +99,7 @@ export class ServicoFormComponent extends BaseFormComponent
       codigoTipoServico : valueSubmitted.codigoTipoServico,
       descricao : valueSubmitted.descricao.trim(),
       valor : valueSubmitted.valor,
+      valorComissao : valueSubmitted.valorComissao,
       codigoUsuarioCadastro : valueSubmitted.codigo == null?  this.codigoUsuario : this.servico.codigoUsuarioCadastro.toString(),
       dataCadastro : valueSubmitted.codigo == null ? this.dataHoraSemTimeZoneString() : this.servico.dataCadastro.toLocaleString('BRL') ,
       codigoUsuarioAlteracao : valueSubmitted.codigo == null?null: this.codigoUsuario,

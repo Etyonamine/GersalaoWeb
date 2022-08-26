@@ -27,7 +27,9 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
   inscricaoProfissional$: Subscription;
   inscricaoAgendaPendente$: Subscription;
 
-  
+  valorServicoTotal : number;
+  valorComissaoTotal: number;
+
 
   minDate:Date;
   maxDate:Date;
@@ -35,7 +37,7 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
   //variaveis da tabela e paginacao
   agendas : MatTableDataSource<AgendaApurar>;
 
-  colunas:string[] = ["data" , "cliente", "servico", "valor"];
+  colunas:string[] = ["data" , "cliente", "servico", "valor", "percentual","comissao"];
 
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
@@ -106,7 +108,9 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
     this.getData(pageEvent);
   }
   getData(event:PageEvent){
-    
+    this.valorServicoTotal = 0;
+    this.valorComissaoTotal = 0;
+
     let codigoProfissional = this.formulario.get("codigoProfissional").value;
     let inicioPeriodoPar = this.formulario.get("inicioPeriodo").value;
     let fimPeriodoPar = this.formulario.get("fimPeriodo").value;
@@ -125,10 +129,14 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
                                                                                 filterColumn,
                                                                                 filterQuery)
                                                       .subscribe(result=>{
-                                                        this.agendas = new MatTableDataSource<AgendaApurar>(result.data);
+                                                        this.agendas = new MatTableDataSource<AgendaApurar>(result.data);                                                        
                                                          this.paginator.length = result.totalCount; 
                                                         this.paginator.pageIndex = result.pageIndex;
                                                         this.paginator.pageSize = result.pageSize;
+                                                        if (result.totalCount > 0 ){
+                                                          this.valorServicoTotal = result.data.reduce((sum,current)=>sum + current.valor,0);
+                                                          this.valorComissaoTotal = result.data.reduce((sum,current)=>sum + (current.valor * (current.valorComissaoPercentual/100)),0);
+                                                        }
                                                       }, error=>{
                                                         console.log(error);
                                                         

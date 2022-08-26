@@ -6,6 +6,7 @@ export class AgendaApurar{
     codigoProfissional: number;
     data: Date;
     valor: number;
+    valorComissaoPercentual:number;
     observcaoBaixa: string;
     cliente: Cliente;    
     servico: Servico;

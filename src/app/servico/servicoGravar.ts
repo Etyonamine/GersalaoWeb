@@ -4,6 +4,7 @@ export interface ServicoGravar{
     codigoSituacao : string;
     descricao : string;
     valor : string ;
+    valorComissao: string;
     dataCadastro : string;
     codigoUsuarioCadastro : string;
     dataAlteracao : string;

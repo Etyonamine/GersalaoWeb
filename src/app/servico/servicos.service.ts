@@ -40,6 +40,7 @@ export class ServicosService extends BaseService<Servico>{
       codigoSituacao : btoa(servicoGravar.codigoSituacao),
       descricao : btoa(servicoGravar.descricao),
       valor : btoa(servicoGravar.valor),
+      valorComissao : btoa(servicoGravar.valorComissao),
       dataCadastro : btoa(servicoGravar.dataCadastro),
       codigoUsuarioCadastro : btoa(servicoGravar.codigoUsuarioCadastro),
       dataAlteracao : servicoGravar.dataAlteracao !== null ? btoa(servicoGravar.dataAlteracao) : null,

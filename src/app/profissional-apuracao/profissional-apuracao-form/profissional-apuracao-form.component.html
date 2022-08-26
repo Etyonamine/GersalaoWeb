@@ -30,8 +30,19 @@
                 Pr&eacute;via &nbsp;<i class="material-icons right">preview</i>
               </button>              
               <div >
-                <mat-divider> </mat-divider>
-                <h3>Prévia da apura&ccedil;&atilde;o</h3>
+               
+                <div *ngIf="agendas"> 
+                  <mat-divider> </mat-divider>
+                  <h3 class="tituloPrevia">Prévia da apura&ccedil;&atilde;o</h3>
+                  <mat-form-field apperance = "fill" class="camposValoresTotais">
+                    <mat-label>Valor Total Servi&ccedil;o</mat-label> 
+                    <input matInput readonly value="{{ valorServicoTotal | currency }}">
+                  </mat-form-field>
+                  <mat-form-field apperance = "fill" class="camposValoresTotais">
+                    <mat-label>Valor Total Comiss&atilde;o</mat-label> 
+                    <input matInput readonly value="{{ valorComissaoTotal | currency }}">
+                  </mat-form-field>
+                </div>
                 <table mat-table [dataSource]="agendas" class="mat-elevation-z8" [hidden]="!agendas"
                                 matSort   
                                 (matSortChange)="loadData()" 
@@ -51,8 +62,16 @@
                     <mat-cell *matCellDef="let agenda"> {{ agenda.servico.descricao }} </mat-cell>
                   </ng-container>
                   <ng-container matColumnDef="valor">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Valor</mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Servi&ccedil;o</mat-header-cell>
                     <mat-cell *matCellDef="let agenda"> {{ agenda.valor | currency }} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="percentual">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Comiss&atilde;o(%)</mat-header-cell>
+                    <mat-cell *matCellDef="let agenda"> {{ agenda.valorComissaoPercentual | number : '1.2-2' }} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="comissao">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Comiss&atilde;o</mat-header-cell>
+                    <mat-cell *matCellDef="let agenda"> {{ ((agenda.valorComissaoPercentual/100) * agenda.valor) | currency }} </mat-cell>
                   </ng-container>
                   <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
                   <mat-row *matRowDef="let row; columns: colunas"></mat-row>

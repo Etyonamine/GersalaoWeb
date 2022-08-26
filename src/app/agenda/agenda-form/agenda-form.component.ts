@@ -65,6 +65,7 @@ super();
                                                            + this.formulario.get("horaAgenda").value);
 
     let valueSubmit = Object.assign({}, this.formulario.value);
+    
 
     let agendaGravar = {
       codigo: 0,
@@ -111,8 +112,6 @@ super();
     
     
   }
-
-
   ngOnInit(): void {
     this.tomorrow = new Date();
 
@@ -201,7 +200,8 @@ super();
                                                           this.optionServicos.push({
                                                             codigo : Number.parseInt(atob(servico.codigo)),
                                                             descricao : atob(servico.descricao),
-                                                            valor : Number.parseFloat(atob(servico.valor).replace(',','.'))
+                                                            valor : Number.parseFloat(atob(servico.valor).replace(',','.')),
+                                                            valorComissaoPercentual: Number.parseFloat(atob(servico.valorComissao).replace(',','.'))
                                                         } as Servico)
                                                         });                                                      
                                                     }
