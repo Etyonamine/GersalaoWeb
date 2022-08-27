@@ -99,7 +99,7 @@ export class ServicoFormComponent extends BaseFormComponent
       codigoTipoServico : valueSubmitted.codigoTipoServico,
       descricao : valueSubmitted.descricao.trim(),
       valor : valueSubmitted.valor,
-      valorComissao : valueSubmitted.valorComissao,
+      valorComissaoPercentual : valueSubmitted.valorComissao,
       codigoUsuarioCadastro : valueSubmitted.codigo == null?  this.codigoUsuario : this.servico.codigoUsuarioCadastro.toString(),
       dataCadastro : valueSubmitted.codigo == null ? this.dataHoraSemTimeZoneString() : this.servico.dataCadastro.toLocaleString('BRL') ,
       codigoUsuarioAlteracao : valueSubmitted.codigo == null?null: this.codigoUsuario,
