@@ -7,7 +7,7 @@ export class Agenda{
     codigoCliente: number;
     codigoProfissional : number;
     codigoServico: number;
-    codigoFormaPagamento:number;
+    codigoFormaPagamento:number;    
     valorServico: number;
     valorDesconto: number;
     valorAcrescimo: number;
@@ -22,6 +22,7 @@ export class Agenda{
     horaTermino : string;
     codigoSituacaoServico:number;
     codigoSituacaoBaixa: number;
+    codigoSituacaoApuracao:number;
     dataUsuarioCadastro : Date;
     codigoUsuarioCadastro : number;
     dataUsuarioAlteracao : Date;

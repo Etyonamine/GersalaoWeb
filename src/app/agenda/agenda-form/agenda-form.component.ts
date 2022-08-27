@@ -61,8 +61,10 @@ super();
     if (this.validadorHoraInformado()== false){
       return ;
     }
-    let dataHoraSelecionada = new Date(this.formulario.get("dataAgenda").value + ' ' 
-                                                           + this.formulario.get("horaAgenda").value);
+    let dataForm = new Date(this.formulario.get("dataAgenda").value);
+    let horaForm = this.formulario.get("horaAgenda").value;
+
+    let dataHoraSelecionada = new Date(this.formulario.get("dataAgenda").value + ' ' + this.formulario.get('horaAgenda').value) ;
 
     let valueSubmit = Object.assign({}, this.formulario.value);
     
@@ -78,7 +80,8 @@ super();
       observacao : valueSubmit.observacao,
       codigoUsuarioCadastro : this.codigoUsuario,      
       codigoSituacaoServico : 3,
-      codigoSituacaoBaixa : 5,
+      codigoSituacaoBaixa : 5,   
+      codigoSituacaoApuracao : 8 ,    
       dataUsuarioCadastro : this.dataHoraAtualSemTimeZone()
     } as Agenda;
     
