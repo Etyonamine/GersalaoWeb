@@ -84,36 +84,37 @@ super();
       codigoSituacaoApuracao : 8 ,    
       dataUsuarioCadastro : this.dataHoraAtualSemTimeZone()
     } as Agenda;
-    
-    //valida se já existe a agenda cadstrada
-    this.inscricaoAgenda$ = this.agendaService.isDupe(agendaGravar).pipe(concatMap(result=>{
-      return of (result);
-    })).subscribe(retorno=>{
-      if (!retorno){
-            //gravando no banco de dados.
-            this.inscricaoAgenda$ = this.agendaService.save(agendaGravar)
-            .subscribe(result=>{
-              if (result){
-                this.handlerSucesso('Gravado com sucesso!');
-              }else{
-                this.handleError('Não foi gravado a agenda.');
-              }
-            },error=>{
-              console.log(error);
-              this.handleError('Ocorreu um erro ao tentar gravar a agenda.');
-            })
-        
-      }else{
-        this.handlerExclamacao("Esta agenda já existe!");        
-      }
-    },error=>{
-      console.log (error);
-      this.handleError('Ocorreu um erro ao validar a existência da agenda.');
-      return;
-    });
+    this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar com o agendamento?', 'Agendar - Cliente', (resposta: boolean) => {
+      if (resposta) {
 
-    
-    
+          //valida se já existe a agenda cadstrada
+          this.inscricaoAgenda$ = this.agendaService.isDupe(agendaGravar).pipe(concatMap(result=>{
+            return of (result);
+          })).subscribe(retorno=>{
+            if (!retorno){
+                  //gravando no banco de dados.
+                  this.inscricaoAgenda$ = this.agendaService.save(agendaGravar)
+                  .subscribe(result=>{
+                    if (result){
+                      this.handlerSucesso('Gravado com sucesso!');
+                    }else{
+                      this.handleError('Não foi gravado a agenda.');
+                    }
+                  },error=>{
+                    console.log(error);
+                    this.handleError('Ocorreu um erro ao tentar gravar a agenda.');
+                  })
+              
+            }else{
+              this.handlerExclamacao("Esta agenda já existe!");        
+            }
+          },error=>{
+            console.log (error);
+            this.handleError('Ocorreu um erro ao validar a existência da agenda.');
+            return;
+          });
+      }}, 'Sim', 'Não'
+    );
   }
   ngOnInit(): void {
     this.tomorrow = new Date();

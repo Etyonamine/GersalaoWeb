@@ -15,16 +15,16 @@ import { ProfissionalApuracaoService } from './profissional-apuracao.service';
 })
 export class ProfissionalApuracaoComponent implements OnInit {
 
-  colunas: string[]=["codigo","dataCompra", "valor","dataVenctoBoleto","dataPagtoBoleto","datacadastro","acao"];
+  colunas: string[]=["nome","codigo","data", "valor","inicio","fim","total","dataBaixa"];
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
   inscricao$:Subscription;
   dataPesquisa:Date;
 
-  public defaultSortColumn:string = "dataCompra";
+  public defaultSortColumn:string = "CodigoProfissional";
   public defaultSortOrder:string = "desc";
 
-  defaultFilterColumn: string= "dataCompra";
+  defaultFilterColumn: string= "CodigoProfissional";
   filterQuery:string=null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -36,7 +36,7 @@ export class ProfissionalApuracaoComponent implements OnInit {
               private profissionalApuracaoService: ProfissionalApuracaoService) { }
 
   ngOnInit(): void {
-
+    this.loadData();
   }
   ngOnDestroy(): void{
     if (this.inscricao$){
