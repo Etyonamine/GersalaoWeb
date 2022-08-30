@@ -32,6 +32,19 @@
           <table mat-table [dataSource]="listaApuracoes" class="mat-elevation-z8"   matSort
           (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}"
           matSortDirection="{{ defaultSortOrder }}">
+          <ng-container matColumnDef="acao">
+            <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+            <mat-cell *matCellDef="let apuracao">            
+               
+              <button mat-button                     
+                      aria-label="Detalhes da apuração"
+                      color="primary"
+                      [routerLink] ="['/profissional-apuracao', apuracao.codigo]">
+                      <!-- <mat-icon>info</mat-icon> -->
+                      Detalhes 
+              </button>
+            </mat-cell>
+          </ng-container>
           <ng-container matColumnDef="nome">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Profissional</mat-header-cell>
             <mat-cell *matCellDef="let apuracao">{{ apuracao.profissional.nome}} </mat-cell>

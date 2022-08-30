@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { EMPTY, Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
@@ -15,7 +16,7 @@ import { ProfissionalApuracaoService } from './profissional-apuracao.service';
 })
 export class ProfissionalApuracaoComponent implements OnInit {
 
-  colunas: string[]=["nome","codigo","data", "valor","inicio","fim","total","dataBaixa"];
+  colunas: string[]=["nome","codigo","data", "valor","inicio","fim","total","dataBaixa","acao"];
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
   inscricao$:Subscription;
@@ -101,6 +102,7 @@ export class ProfissionalApuracaoComponent implements OnInit {
   {
     this.serviceAlert.mensagemErro('Erro ao carregar a lista de compras. Tente novamente mais tarde.');
   }
+ 
 
 
 }
