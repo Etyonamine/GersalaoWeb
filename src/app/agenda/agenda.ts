@@ -12,6 +12,7 @@ export class Agenda{
     valorDesconto: number;
     valorAcrescimo: number;
     valorComissaoPercentual: number;
+    codigoComissaoOrigem: number;
     observacao : string;
     observacaoBaixa : string;
     motivoCancelamento: string;

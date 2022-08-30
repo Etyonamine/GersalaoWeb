@@ -18,12 +18,15 @@ import { ProfissionalApuracaoDetalheService } from './profissional-apuracao-deta
 export class ProfissionalApuracaoDetalheComponent implements OnInit {
 
   
-   colunas: string[]=["codigo","data","cliente","servico", "valorServico","valorComissaoPercentual","valorComissao"]; 
+   colunas: string[]=["codigo","data","cliente","servico", "valorServico","valorComissaoPercentual","valorComissao", "origemComissao"]; 
   codigoProfissionalApuracao: number;  
   valorTotal : number;
   dataApuracao: Date;
   quantidadeTotal: number;
   nomeUsuarioCadastro: string;
+  inicioPeriodo: Date;
+  fimPeriodo: Date;
+  situacaoBaixa : string;
 
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
@@ -106,6 +109,9 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
     this.valorTotal = profissionalApuracao[0].profissionalApuracao.valorTotal;
     this.quantidadeTotal = profissionalApuracao[0].profissionalApuracao.quantidadeTotal;
     this.nomeUsuarioCadastro = profissionalApuracao[0].profissionalApuracao.usuarioCadastro.nome;
+    this.inicioPeriodo = profissionalApuracao[0].profissionalApuracao.dataInicio;
+    this.fimPeriodo = profissionalApuracao[0].profissionalApuracao.dataFim;
+    this.situacaoBaixa = profissionalApuracao[0].profissionalApuracao.dataBaixa == null? "Pendente": "Baixado";
   }
   handleError(mensagem:string)
   {
