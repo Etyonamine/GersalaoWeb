@@ -18,6 +18,7 @@ import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component'
 import { ApiResult } from 'src/app/shared/base.service';
 import { threadId } from 'worker_threads';
 import { ProfissionalApuracao } from '../profissional-apuracao';
+import { ProfissionalApuracaoDetalheService } from '../profissional-apuracao-detalhe/profissional-apuracao-detalhe.service';
 import { ProfissionalApuracaoPendente } from '../profissional-apuracao-pendente';
 import { ProfissionalApuracaoService } from '../profissional-apuracao.service';
 
@@ -95,22 +96,22 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
       return false;
     }    
     let apuracaoGravar = {
-      Codigo: 0,
-      CodigoProfissional: this.formulario.get('codigoProfissional').value,
-      CodigoUsuarioCadastro: this.codigoUsuario,
-      DataInicio: new Date(this.formulario.get('inicioPeriodo').value),
-      DataFim: new Date(this.formulario.get('fimPeriodo').value),
-      DataApuracao : this.dataHoraAtualSemTimeZone(),     
-      QuantidadeTotal : 0 
+      codigo: 0,
+      codigoProfissional: this.formulario.get('codigoProfissional').value,
+      codigoUsuarioCadastro: this.codigoUsuario,
+      dataInicio: new Date(this.formulario.get('inicioPeriodo').value),
+      dataFim: new Date(this.formulario.get('fimPeriodo').value),
+      dataApuracao : this.dataHoraAtualSemTimeZone(),     
+      quantidadeTotal : 0 
     } as ProfissionalApuracao;
 
     this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar com a apuração?', 'Apuração - Profissional', (resposta: boolean) => {
       if (resposta) {
 
 
-      this.inscricaoProfissionalApuracao$ = this.profissionalApuracaoService.salvar(apuracaoGravar).pipe(concatMap(result => {
+      this.inscricaoProfissionalApuracao$ = this.profissionalApuracaoService.salvar(apuracaoGravar).subscribe(result => {
         if (result > 0) {
-
+         
           //baixa da na agenda - codigo apuracao igual a 9 .
           this.inscricaoAgendaPendente$ = this.agendaService.baixaApuracao(result).subscribe(baixar => {
             if (baixar) {
@@ -129,10 +130,6 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
           })
         } else {
           return of(false);
-        }
-      })).subscribe(conclusao=>{
-        if (!conclusao){
-          this.handlerAtencao('Não existe agendas a serem processadas.');
         }
       }, error => {
         console.log(error);

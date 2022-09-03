@@ -43,6 +43,14 @@
                       <!-- <mat-icon>info</mat-icon> -->
                       Detalhes 
               </button>
+              <button mat-button                     
+                      aria-label="Apagar a apuração"
+                      color="primary"
+                      (click)="apagarApuracao(apuracao.codigo)"
+                      [disabled]="apuracao.dataBaixa == null ? false : true"
+                      >
+                      Apagar
+              </button>
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="nome">
@@ -75,7 +83,7 @@
           </ng-container>      
           <ng-container matColumnDef="dataBaixa">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Baixa</mat-header-cell>
-            <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.dataBaixa | date :  "dd/MM/yyyy"}} </mat-cell>
+            <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.dataBaixa | date :  "dd/MM/yyyy HH:mm:ss"}} </mat-cell>
           </ng-container>       
           <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
           <mat-row *matRowDef="let row; columns: colunas"></mat-row>

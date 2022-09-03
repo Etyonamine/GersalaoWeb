@@ -28,6 +28,10 @@ export class AgendaService extends BaseService<Agenda>{
     let urlBaixaApuracao = this.url + '/BaixaApuracao?codigoApuracao=' + codigoApuracao;
     return this.http.put<boolean>(urlBaixaApuracao, null).pipe(take(1));
   }
+  alterarStatusPendenteApuracao(lista:Array<number>){
+   let urlAlterarStatus = this.url + '/AlterarStatusPendenteApuracaoLote';
+   return this.http.put<boolean>(urlAlterarStatus, lista).pipe(take(1));
+  }
   cancelarAgendamento(agendaCancelamento: AgendaCancelar){
     let urlBaixa = this.url + '/CancelarAgendamento';
     return this.http.put<boolean>(urlBaixa, agendaCancelamento).pipe(take(1));

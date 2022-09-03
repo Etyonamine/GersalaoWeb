@@ -1,7 +1,7 @@
 import { Profissional } from "../profissional/professional";
 import { ProfissionalApuracaoDetalhe } from "./profissional-apuracao-detalhe/profissional-apuracao-detalhe";
 
-export class ProfissionalApuracao{
+export class ProfissionalApuracaoApagar{
     codigo : number;
     codigoProfissional : number;
     dataApuracao : Date;
