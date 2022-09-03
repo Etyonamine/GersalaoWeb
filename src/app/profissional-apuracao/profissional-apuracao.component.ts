@@ -211,7 +211,10 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   }
   getReport(col: any[], rowD: any[], title: any, profissionalApuracao: ProfissionalApuracao) {
     const totalPagesExp = "{total_pages_count_string}";        
-    let pdf = new jsPDF('p', 'pt', 'A4');
+    let pdf = new jsPDF('p', 'pt', 'a4');
+    let colResumo = ['','','','','','']
+    let rowDResumo : any[] = []
+    let rowResumo : any[] = []
     pdf.setTextColor(51, 156, 255);          
     pdf.text("" + title, 250,20);  //
     pdf.setLineWidth(1.5);
@@ -229,19 +232,25 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
         var pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
         pdf.text(str, data.settings.margin.left, pageHeight - 10); // showing current page number
     };
-    pdf.text("Codigo = ",10,40)
-    pdf.text(profissionalApuracao.codigo.toString(),40,40)
-    pdf.text("Data = ",60,40)
-    pdf.text(profissionalApuracao.dataApuracao,80,40)
-    pdf.text("Início = ",120,40)
-    pdf.text(profissionalApuracao.dataInicio,130,40)
-    pdf.text("Fim = ",150,40)
-    pdf.text(profissionalApuracao.dataFim,160,40)
+    pdf.setFontSize(12);    
+  
+    rowResumo.push("Codigo");
+    rowResumo.push(profissionalApuracao.codigo.toString());
+    rowResumo.push("Início");
+    rowResumo.push(profissionalApuracao.dataInicio,200,100);
+    rowResumo.push("Fim");
+    rowResumo.push(profissionalApuracao.dataFim,200,100);
+    rowDResumo.push(rowResumo);
 
+    pdf.autoTable(colResumo, rowDResumo,
+      {
+         
+          margin: { top: 110 },
+      });
     pdf.autoTable(col, rowD,
         {
             addPageContent: pageContent,
-            margin: { top: 110 },
+            margin: { top: 310 },
         });
 
     //for adding total number of pages // i.e 10 etc

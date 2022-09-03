@@ -12,15 +12,7 @@ const rotas: Routes = [
   {path:'apuracao-novo', component: ProfissionalApuracaoFormComponent},
   {path:':codigo', 
           component:ProfissionalApuracaoDetalheComponent,
-          resolve:{codigoApuracao: ProfissionalApuracaoDetalheResolveGuard}}
-  /* {path:'profissional-apuracao-novo',
-        component:ProfissionalFormComponent},  
-  {path:':codigo',
-        component:ProfissionalFormComponent,
-     resolve:{
-        profissional: ProfissionalResolveGuard
-      }} */
- 
+          resolve:{codigoApuracao: ProfissionalApuracaoDetalheResolveGuard}}, 
 ];
 
 @NgModule({
