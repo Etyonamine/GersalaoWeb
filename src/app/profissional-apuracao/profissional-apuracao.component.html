@@ -51,6 +51,13 @@
                       >
                       Apagar
               </button>
+              <button mat-button                     
+                      aria-label="Gerar o extrato"
+                      color="primary"
+                      (click)="DownloadReport(apuracao.codigo)"                       
+                      >
+                      Extrato
+              </button>
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="nome">

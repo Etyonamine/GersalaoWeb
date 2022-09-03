@@ -1,9 +1,11 @@
+import { CurrencyPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { concat, EMPTY, of, Subscription } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import jsPDF from "jspdf";
+import 'jspdf-autotable'
+import { EMPTY, of, Subscription } from 'rxjs';
 import { AgendaService } from '../agenda/agenda.service';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
@@ -11,6 +13,7 @@ import { ProfissionalApuracao } from './profissional-apuracao';
 import { ProfissionalApuracaoDetalhe } from './profissional-apuracao-detalhe/profissional-apuracao-detalhe';
 import { ProfissionalApuracaoDetalheService } from './profissional-apuracao-detalhe/profissional-apuracao-detalhe.service';
 import { ProfissionalApuracaoService } from './profissional-apuracao.service';
+
 
 @Component({
   selector: 'app-profissional-apuracao',
@@ -43,10 +46,13 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   constructor(private serviceAlert: AlertService,
     private profissionalApuracaoService: ProfissionalApuracaoService,
     private profisionalApuracaoDetalheService: ProfissionalApuracaoDetalheService,
-    private agendaService: AgendaService) { }
+    private agendaService: AgendaService
+    ) { }
 
   ngOnInit(): void {
     this.loadData();
+    
+
   }
   ngOnDestroy(): void {
     if (this.inscricao$) { this.inscricao$.unsubscribe(); }
@@ -173,7 +179,77 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   handleError(mensagem: string) {
     this.serviceAlert.mensagemErro('Erro ao carregar a lista de compras. Tente novamente mais tarde.');
   }
+  DownloadReport(codigoApuracao: number){
+    let row : any[] = []
+    let rowD : any[] = []
+    let col=['profissional','data','valor-Servico','comissão(%)', 'valor-Comissão', 'Origem-Comissâo']; // initialization for headers
+    let title = "Extrato - Apuração" // title of report
+    
+    let apuracao = this.listaApuracoes.data.find(x=>x.codigo);
+    this.profisionalApuracaoDetalheService.get<Array<ProfissionalApuracaoDetalhe>>(codigoApuracao)
+                                          .subscribe(agendas=>{
+        //linhas da tabela
+        for(let a=0; a < agendas.length;a++){
+          let valorComissao = (agendas[a].agenda.valorComissaoPercentual/100) * agendas[a].agenda.valorServico;
+          let dataApuracao = agendas[a].agenda.data.toLocaleString('BRL');
+          dataApuracao = dataApuracao.substring(8,10) + dataApuracao.substring(4,8) + dataApuracao.substring(0,4)  + ' ' +  dataApuracao.substring(11,19) ;
+          row.push(agendas[a].profissionalApuracao.profissional.nome)
+          row.push(dataApuracao)
+          row.push(agendas[a].agenda.valorServico.toFixed(2))      
+          row.push(agendas[a].agenda.valorComissaoPercentual.toFixed(2))      
+          row.push(valorComissao.toFixed(2))
+          row.push(agendas[a].agenda.codigoComissaoOrigem == 1 ? "Profissional": "Serviço")      
+          rowD.push(row);
+          row =[];
+        }
+        this.getReport(col , rowD , title, apuracao );
+    },error=>{
+      console.log(error);
+      this.handleError('Ocorreu erro ao gerar o extrato.');
+    });
+   
+  }
+  getReport(col: any[], rowD: any[], title: any, profissionalApuracao: ProfissionalApuracao) {
+    const totalPagesExp = "{total_pages_count_string}";        
+    let pdf = new jsPDF('p', 'pt', 'A4');
+    pdf.setTextColor(51, 156, 255);          
+    pdf.text("" + title, 250,20);  //
+    pdf.setLineWidth(1.5);
+    pdf.line(5, 25, 995, 25)
+    var pageContent = function (data) {
+        // HEADER
+       
+        // FOOTER
+        var str = "Page " + data.pageCount;
+        // Total page number plugin only available in jspdf v1.0+
+        if (typeof pdf.putTotalPages === 'function') {
+            str = str + " of " + totalPagesExp;
+        }
+        pdf.setFontSize(10);
+        var pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
+        pdf.text(str, data.settings.margin.left, pageHeight - 10); // showing current page number
+    };
+    pdf.text("Codigo = ",10,40)
+    pdf.text(profissionalApuracao.codigo.toString(),40,40)
+    pdf.text("Data = ",60,40)
+    pdf.text(profissionalApuracao.dataApuracao,80,40)
+    pdf.text("Início = ",120,40)
+    pdf.text(profissionalApuracao.dataInicio,130,40)
+    pdf.text("Fim = ",150,40)
+    pdf.text(profissionalApuracao.dataFim,160,40)
 
+    pdf.autoTable(col, rowD,
+        {
+            addPageContent: pageContent,
+            margin: { top: 110 },
+        });
 
+    //for adding total number of pages // i.e 10 etc
+    if (typeof pdf.putTotalPages === 'function') {
+        pdf.putTotalPages(totalPagesExp);
+    }
+
+    pdf.save(title + '.pdf');
+}
 
 }
