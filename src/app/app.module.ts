@@ -44,7 +44,7 @@ import { FornecedorComponent } from './fornecedor/fornecedor.component';
 import { TokenInterceptor } from './auth-guard/interceptor/token.interceptor';
 import { EmpresaComponent } from './empresa/empresa.component';
 import { ProfissionalApuracaoComponent } from './profissional-apuracao/profissional-apuracao.component';
-
+import { ResetSenhaModule } from './reset-senha/reset-senha.module';
 
 registerLocaleData(localePt,'pt');
 
@@ -87,8 +87,8 @@ registerLocaleData(localePt,'pt');
     EstoqueModule,
     PedidoModule,
     AgendaModule,
-    ProfissionalApuracaoModule
-    
+    ProfissionalApuracaoModule,
+    ResetSenhaModule    
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
