@@ -98,6 +98,11 @@ const routes: Routes = [
     canActivate:[AuthGuard],
     canLoad: [AuthGuard]
   },
+  {
+    path:'reset-senha',
+    loadChildren:()=>import('./reset-senha/reset-senha.module').then(mod=>mod.ResetSenhaModule)
+  
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PaginaNaoEncontradaComponent }
 ];

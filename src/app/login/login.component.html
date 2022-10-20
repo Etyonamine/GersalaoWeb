@@ -32,10 +32,10 @@
                 <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                   <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>                         
-          </mat-form-field>  &nbsp;                                                       
+          </mat-form-field>                                                    
         </div>                   
         <div>
-          <a mat-button href="https://www.google.com/" target="_blank">Esqueci a senha</a> 
+          <a mat-button [routerLink]="['/reset-senha']" >Esqueci a senha</a> 
         </div>
         <div>
             <mat-divider></mat-divider>                
