@@ -4,9 +4,11 @@ import { ResetSenhaRoutingModule } from './reset-senha-routing.module';
 import { ResetSenhaComponent } from './reset-senha.component';
 import { SharedModule } from './../shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ResetSenhaAlterarComponent } from './reset-senha-alterar/reset-senha-alterar.component';
 @NgModule({
   declarations: [
-    ResetSenhaComponent
+    ResetSenhaComponent,
+    ResetSenhaAlterarComponent
   ],
   imports: [
     CommonModule,

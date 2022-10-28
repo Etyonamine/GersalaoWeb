@@ -127,7 +127,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     let dataBoletoParam = new Date(this.formulario.get('dataVenctoBoleto').value);
     let valorTotalParam = this.formulario.get('valor').value;
        
-    if ( dataCompraParam.getDate() > dataBoletoParam.getDate()){
+    if ( dataCompraParam.getTime() > dataBoletoParam.getTime()){
       this.handleError('Por favor, verificar se a data de boleto está correta');
       return false;
     }

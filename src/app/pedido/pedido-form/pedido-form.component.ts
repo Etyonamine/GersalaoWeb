@@ -448,7 +448,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
                                                 .pipe(concatMap(valorVendaEncontrado=>{
                                                   if (valorVendaEncontrado!= null ) {                                                                                                                                                           
                                                     
-                                                    this.valorProdutoSel = null;
+                                                    this.valorProdutoSel = Number.parseFloat(valorVendaEncontrado.toString());
                                                     
                                                   }else{
                                                     this.handlerExclamation('Não existe estoque para este produto!');

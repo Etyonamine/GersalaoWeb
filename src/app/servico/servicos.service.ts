@@ -40,7 +40,7 @@ export class ServicosService extends BaseService<Servico>{
       codigoSituacao : btoa(servicoGravar.codigoSituacao),
       descricao : btoa(servicoGravar.descricao),
       valor : btoa(servicoGravar.valor),
-      valorComissaoPercentual : btoa(servicoGravar.valorComissaoPercentual),
+      valorComissao : btoa(servicoGravar.valorComissao),
       dataCadastro : btoa(servicoGravar.dataCadastro),
       codigoUsuarioCadastro : btoa(servicoGravar.codigoUsuarioCadastro),
       dataAlteracao : servicoGravar.dataAlteracao !== null ? btoa(servicoGravar.dataAlteracao) : null,
@@ -52,7 +52,7 @@ export class ServicosService extends BaseService<Servico>{
   salvarRegistroComCripto(servicoGravar:ServicoGravar)
   {
     let servicoGravarPost = this.servicoGravarCriptografado(servicoGravar);
-    return this.http.post<ServicoGravar>(this.url, servicoGravar).pipe(take(1));
+    return this.http.post<ServicoGravar>(this.url, servicoGravarPost).pipe(take(1));
   }
   atualizarRegistro(servicoGravar: ServicoGravar){
     let servicoGravarPut = this.servicoGravarCriptografado(servicoGravar);

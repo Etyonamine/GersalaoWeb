@@ -2,8 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { timeStamp } from 'console';
 import { Subscription } from 'rxjs';
+import { AlertService } from '../shared/alert/alert.service';
 import { BaseFormComponent } from '../shared/base-form/base-form.component';
 import { UsuarioService } from '../usuario/usuario.service';
+import { ResetSenhaService } from './reset-senha.service';
 
 @Component({
   selector: 'app-reset-senha',
@@ -11,16 +13,28 @@ import { UsuarioService } from '../usuario/usuario.service';
   styleUrls: ['./reset-senha.component.scss']
 })
 export class ResetSenhaComponent extends BaseFormComponent  implements OnInit, OnDestroy {
-  
+  value!: string;
+
   submit() {
-    throw new Error('Method not implemented.');
+    let email = this.formulario.get("email").value;
+    this.inscricao$ = this.resetSenhaService.solicitarReset(email).subscribe(result=>{
+      if(result){
+        this.handlerSucesso("Sua solicitação foi efetuado com sucesso!");        
+      }else{
+        this.handleError("Ocorreu algum problema no envio da sua solicitação.");
+      }
+    },error=>{
+      console.log(error);
+      this.handleError("Ocorreu algum erro sistêmico!");
+    });
   }
   
   formulario:FormGroup;
-  inscricaoUsuarioService$: Subscription;
+  inscricao$: Subscription;
 
   constructor(private formBuilder: FormBuilder,
-              private usuarioService: UsuarioService
+              private resetSenhaService: ResetSenhaService,
+              private serviceAlert : AlertService
               ) {
     super();
    }
@@ -30,22 +44,28 @@ export class ResetSenhaComponent extends BaseFormComponent  implements OnInit, O
   }
 
   ngOnDestroy():void{
-    if (this.inscricaoUsuarioService$)
+    if (this.inscricao$)
     {
-      this.inscricaoUsuarioService$.unsubscribe();
+      this.inscricao$.unsubscribe();
     }
   }
 
   criarFormulario(){
     //formulario cliente
     this.formulario = this.formBuilder.group({
-      email: [null, [Validators.required,Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]]    
+      email: [null, [Validators.required,Validators.pattern("^[A-Za-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]]    
     });
   }
-  validarSenhaCadastro(){
-    var email = this.formulario.get("email").value;
-    //pesquisar na base de dados na tabela do usuario.
+  handlerSucesso(message:string){
+    this.serviceAlert.mensagemSucesso(message);
+  }
+  handleError(message:string)
+  {
+    this.serviceAlert.mensagemErro(message);
+  }
+  
+  change(value: string) {
+    this.value = value;
     
-
   }
 }

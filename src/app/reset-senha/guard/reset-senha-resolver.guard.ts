@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { ResetSenha } from '../reset-senha';
+import { ResetSenhaService } from '../reset-senha.service';
 
 
 
@@ -10,15 +11,23 @@ import { ResetSenha } from '../reset-senha';
     providedIn: 'root'
   })
 
-  export class ProfissionalResolveGuard implements Resolve<ResetSenha>{    
+  export class ResetSenhaResolveGuard implements Resolve<string>{    
+
     resetSenha : ResetSenha;
-    constructor(    
+    inscricao$ : Subscription;
+
+    constructor( private passwordChangeRequestsService : ResetSenhaService   
     ) { }
   
     resolve(
       route: ActivatedRouteSnapshot,
-      state: RouterStateSnapshot): ResetSenha | Observable<ResetSenha> | Promise<ResetSenha> {
-       
-      return of (this.resetSenha);
+      state: RouterStateSnapshot):  | Observable<string> | Promise<string> {
+      if (route.params && route.params['idGuid']) {
+        
+              return route.params['idGuid'];
+           
+      } 
+      return of ("");
+           
     }  
   }

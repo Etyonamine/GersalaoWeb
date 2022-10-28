@@ -96,10 +96,10 @@ export class ServicoFormComponent extends BaseFormComponent
     let servicoGravar = {
       codigo : (valueSubmitted.codigo == null ? "0": this.servico.codigo.toString()),
       codigoSituacao : codigoSituacao.toString() ,
-      codigoTipoServico : valueSubmitted.codigoTipoServico,
+      codigoTipoServico : valueSubmitted.codigoTipoServico.toString(),
       descricao : valueSubmitted.descricao.trim(),
-      valor : valueSubmitted.valor,
-      valorComissaoPercentual : valueSubmitted.valorComissao,
+      valor : valueSubmitted.valor.toString(),
+      valorComissao : valueSubmitted.valorComissao.toString(),
       codigoUsuarioCadastro : valueSubmitted.codigo == null?  this.codigoUsuario : this.servico.codigoUsuarioCadastro.toString(),
       dataCadastro : valueSubmitted.codigo == null ? this.dataHoraSemTimeZoneString() : this.servico.dataCadastro.toLocaleString('BRL') ,
       codigoUsuarioAlteracao : valueSubmitted.codigo == null?null: this.codigoUsuario,

@@ -205,7 +205,7 @@ super();
                                                             codigo : Number.parseInt(atob(servico.codigo)),
                                                             descricao : atob(servico.descricao),
                                                             valor : Number.parseFloat(atob(servico.valor).replace(',','.')),
-                                                            valorComissaoPercentual: Number.parseFloat(atob(servico.valorComissaoPercentual).replace(',','.'))
+                                                            valorComissaoPercentual: Number.parseFloat(atob(servico.valorComissao).replace(',','.'))
                                                         } as Servico)
                                                         });                                                      
                                                     }

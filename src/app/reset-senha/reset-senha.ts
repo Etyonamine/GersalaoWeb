@@ -1,4 +1,7 @@
 export class ResetSenha{
-    des_email : string;
+    idGuid : string;
+    codigoUsuario : number;
+    dataExpiracao : Date;
+    expirado : boolean;
     
 }
