@@ -1,3 +1,54 @@
-<p>reset-senha-alterar works!</p>
-
-id = {{param1}}
+<mat-card-content class="container"> 
+    <mat-card class="card-login">
+      <mat-card-title> &nbsp; Alterar a senha </mat-card-title>
+      
+      
+          <form [formGroup]="formulario" (ngSubmit)="onSubmit()" class="form-container">   
+            <div style="text-align:center">                 
+              <mat-form-field appearance="fill" style="width: 300px;">
+                <mat-label>Nova Senha </mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" 
+                       formControlName="novaSenha"   >
+                <button mat-icon-button matSuffix (click)="hide = !hide"
+                      [attr.aria-label]="'Hide password'" 
+                      [attr.aria-pressed]="hide">
+                  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+              </mat-form-field>           
+              <mat-form-field appearance="fill" style="width: 300px;">
+                    <mat-label>Repetir Senha</mat-label>
+                    <input matInput [type]="hideRepetir ? 'password' : 'text'" formControlName="repetirSenha" 
+                    >
+                    <button mat-icon-button 
+                            matSuffix (click)="hideRepetir = !hideRepetir" 
+                            [attr.aria-label]="'hideRepetir password'"
+                            [attr.aria-pressed]="hideRepetir">
+                      <mat-icon>{{hideRepetir ? 'visibility_off' : 'visibility'}}</mat-icon>
+                    </button>
+              </mat-form-field>                         
+            <div>
+                <mat-divider></mat-divider>                
+            </div>
+           </div>
+            <div style="font-size: smaller;">
+              <label>A senha deve ser no padrão abaixo:</label>
+              <ul>
+                <li>Deve conter ao menos 8 dos caracteres mencionados.</li>
+                <li>Deve conter ao menos um n&uacute;mero.</li>
+                <li>Deve conter ao menos uma letra min&uacute;scula</li>
+                <li>Deve conter ao menos uma letra mai&uacute;scula</li>
+                <li>Deve conter ao menos um destes simbolos = $*&@#</li>                
+              </ul>              
+            </div>
+            <div>
+              <mat-divider></mat-divider>                
+            </div>
+          
+            <mat-card-actions align="end">
+              <button mat-button color="primary" class="full" align="end"   [disabled]="!formulario.valid">Alterar &nbsp;<i class="material-icons right">save</i></button>
+              <button mat-button color="primary" class="full" align="end"   [routerLink]="['/home']">Cancelar &nbsp;<i class="material-icons right">cancel</i></button>
+            </mat-card-actions>
+        </form>  
+     
+    </mat-card>     
+  </mat-card-content>    

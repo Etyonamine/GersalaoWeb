@@ -3,5 +3,6 @@ export class ResetSenha{
     codigoUsuario : number;
     dataExpiracao : Date;
     expirado : boolean;
+    situacao : number;
     
 }

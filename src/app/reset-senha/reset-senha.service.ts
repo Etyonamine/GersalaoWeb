@@ -24,4 +24,8 @@ export class ResetSenhaService extends BaseService<ResetSenha>{
     let urlGet = this.url + "?idGuid=" + idGuid;
     return this.http.get<ResetSenha>(urlGet).pipe(take(1));
   }
+  atualizarSituacaoParaExecutado(idGuid:string){
+    let urlPut  = this.url + "/AtualizarStatusReset?idGuid=" + idGuid;
+    return this.http.put<boolean>(urlPut,null).pipe(take(1));
+  }
 }
