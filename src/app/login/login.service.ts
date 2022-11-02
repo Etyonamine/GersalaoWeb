@@ -25,7 +25,7 @@ export class LoginService extends BaseService<Login>{
 
     let loginCriptoGrafado = btoa(login.login); 
     let SenhaCriptoGrafado = btoa(login.senha); 
-    let objLoginCriptografado = {login : loginCriptoGrafado , senha:SenhaCriptoGrafado} as Login;
+    let objLoginCriptografado = { nome : '' ,codigo: '', tokenAutorizacao: '', codigoUsuarioPerfil: '', login: loginCriptoGrafado, senha: SenhaCriptoGrafado } as unknown as Login;
 
     let urlValidar = this.url ;  
     return this.http.post<Login>(urlValidar,objLoginCriptografado,httpOptions ).pipe(take(1));        
