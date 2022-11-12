@@ -103,6 +103,19 @@ const routes: Routes = [
     loadChildren:()=>import('./reset-senha/reset-senha.module').then(mod=>mod.ResetSenhaModule)
   
   },
+  {
+    path: 'reports',
+    loadChildren:()=>import('./reports/reports.module').then(mod=>mod.ReportsModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+
+  },
+  {
+    path: 'empresa',
+      loadChildren:()=>import('./empresa/empresa.module').then(mod=>mod.EmpresaModule),
+      canActivate:[AuthGuard],
+      canLoad: [AuthGuard]
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PaginaNaoEncontradaComponent }
 ];

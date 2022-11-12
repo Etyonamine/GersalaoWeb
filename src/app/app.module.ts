@@ -42,9 +42,11 @@ import { FornecedorComponent } from './fornecedor/fornecedor.component';
 
 
 import { TokenInterceptor } from './auth-guard/interceptor/token.interceptor';
-import { EmpresaComponent } from './empresa/empresa.component';
+import { EmpresaModule } from './empresa/empresa.module';
 import { ProfissionalApuracaoComponent } from './profissional-apuracao/profissional-apuracao.component';
 import { ResetSenhaModule } from './reset-senha/reset-senha.module';
+import { ReportsModule } from './reports/reports.module';
+
 
 registerLocaleData(localePt,'pt');
 
@@ -56,7 +58,7 @@ registerLocaleData(localePt,'pt');
     HomeComponent,
     PaginaNaoEncontradaComponent,
     TwoDecimalNumberDirective,        
-    FornecedorComponent, EmpresaComponent, ProfissionalApuracaoComponent
+    FornecedorComponent, ProfissionalApuracaoComponent
    ],
   imports: [
     BrowserModule,
@@ -88,7 +90,9 @@ registerLocaleData(localePt,'pt');
     PedidoModule,
     AgendaModule,
     ProfissionalApuracaoModule,
-    ResetSenhaModule    
+    ResetSenhaModule    ,
+    ReportsModule ,
+    EmpresaModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},

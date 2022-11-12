@@ -127,8 +127,6 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
       };
       //endereco
       this.criarObjetoEndereco();
-
-
     }
 
     this.codigo = this.cliente !== undefined ? this.cliente.codigo : 0;
@@ -189,19 +187,6 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
             } else {
               return EMPTY;
             }
-
-            // if estadoId && estadoId !== undefined ?
-
-            // this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(
-            //   estadoId,
-            //   0,
-            //   1000,
-            //   "descricao",
-            //   "ASC",
-            //   null,
-            //   null,
-            // );
-            // : EMPTY
           }
         )
       ).subscribe(result => { this.municipios = result.data; });

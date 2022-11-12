@@ -1,18 +1,11 @@
-.container .mat-form-field + .mat-form-field {
-  margin-left: 5px;
-  margin-top: 5px;
-}
-.container{
-  text-align: center;
-}
-
-  .campoHora{
-    width: 100px;
+table{
+    margin-top:10px;
+    width:100%;
+    border: 1px solid black;
+    border-collapse: collapse;
   }
-  .mat-form-field + .mat-form-field {
-    margin-left: 5px;
-    margin-top: 5px;        
-  } 
+  
+  
   th, td {
     padding: 5px;
     border : 1px solid black;
