@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { defaultFormat } from 'moment';
  
  
@@ -11,7 +11,7 @@ import { defaultFormat } from 'moment';
 })
 export abstract class BaseFormComponent implements OnInit {
 
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   
   
 
@@ -33,7 +33,7 @@ export abstract class BaseFormComponent implements OnInit {
     }
   }
 
-  verificaValidacoesFormulario(formGroup: FormGroup | FormArray)
+  verificaValidacoesFormulario(formGroup: UntypedFormGroup | UntypedFormArray)
   {
 
     Object.keys(formGroup.controls).forEach(campo => {
@@ -41,7 +41,7 @@ export abstract class BaseFormComponent implements OnInit {
         const controle = formGroup.get(campo);
         controle.markAsDirty();
         controle.markAsTouched();
-        if (controle instanceof FormGroup || controle instanceof FormArray){
+        if (controle instanceof UntypedFormGroup || controle instanceof UntypedFormArray){
           this.verificaValidacoesFormulario(controle);
         }
      });

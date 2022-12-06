@@ -15,7 +15,7 @@ import { AlertService } from './../../shared/alert/alert.service';
 import { UnidadeFederativaService } from './../../shared/service/unidade-federativa.service';
 import { ClienteService } from './../cliente.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { EMPTY, Observable, of, Subscription } from 'rxjs';
 import { Cliente } from '../cliente';
 import { concatMap, map, switchMap, take } from 'rxjs/operators';
@@ -44,7 +44,7 @@ import { AuthService } from 'src/app/auth-guard/auth.service';
 export class ClienteFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
   codigoLogin: number;
   login: Login;
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
 
   cliente: Cliente;
   clienteEnderecos: Array<ClienteEndereco> = [];
@@ -89,7 +89,7 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
   
   
   constructor(
-    private formBuilder: FormBuilder,    
+    private formBuilder: UntypedFormBuilder,    
     private clienteService: ClienteService,
     private unidadeFederativaService: UnidadeFederativaService,
     private municipioService: MunicipioService,  

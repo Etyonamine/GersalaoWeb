@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
@@ -22,8 +22,8 @@ import { AgendaService } from '../agenda.service';
   styleUrls: ['./agenda-form.component.scss']
 })
 export class AgendaFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
-  formulario: FormGroup;
-  formServicos: FormGroup;
+  formulario: UntypedFormGroup;
+  formServicos: UntypedFormGroup;
   agenda: Agenda;
   dataSelecionada: Date | null;
   tomorrow:Date;
@@ -44,7 +44,7 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   allComplete: boolean = false;
 
 
-  constructor(private formBuilder: FormBuilder, 
+  constructor(private formBuilder: UntypedFormBuilder, 
     private alertService: AlertService,
     private profissionalService: ProfissionalService,
     private servicoService: ServicosService,

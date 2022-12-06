@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { Cliente } from 'src/app/cliente/cliente';
@@ -18,7 +18,7 @@ export interface DialogPedidoItem {
   styleUrls: ['./pedido-item.component.scss']
 })
 export class PedidoItemComponent extends BaseFormComponent implements OnInit, OnDestroy {
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   nomeCliente : string ;
   codigoCliente : number;
   codigoPedido : number;
@@ -32,7 +32,7 @@ export class PedidoItemComponent extends BaseFormComponent implements OnInit, On
   produtos: Array<Produto>;
 
   constructor(
-        private formBuilder: FormBuilder,
+        private formBuilder: UntypedFormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: DialogPedidoItem,
         private clienteService : ClienteService,
         private produtoService : ProdutoService

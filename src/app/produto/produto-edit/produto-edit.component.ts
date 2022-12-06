@@ -1,7 +1,7 @@
 import { NumberSymbol } from '@angular/common';
 import { decimalDigest } from '@angular/compiler/src/i18n/digest';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { timeStamp } from 'console';
 import { EMPTY, Observable, Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ import { ProdutoService } from '../produto.service';
 })
 export class ProdutoEditComponent extends BaseFormComponent implements OnInit, OnDestroy {
   
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   tituloPagina: string;
   codigo: number;
   codigoSituacao: number;
@@ -41,7 +41,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   valorComissaoField : string;
   
   constructor(
-      private formBuilder:FormBuilder,
+      private formBuilder:UntypedFormBuilder,
       private alertService: AlertService,
       private fornecedorService: FornecedorService,
       private tipoProdutoService: TipoProdutoService,

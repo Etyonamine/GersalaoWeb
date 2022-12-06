@@ -1,6 +1,6 @@
 import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -29,7 +29,7 @@ import { ProfissionalApuracaoService } from '../profissional-apuracao.service';
 })
 export class ProfissionalApuracaoFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
 
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   inscricaoProfissional$: Subscription;
   inscricaoAgendaPendente$: Subscription;
   inscricaoProfissionalApuracao$: Subscription;
@@ -59,7 +59,7 @@ export class ProfissionalApuracaoFormComponent extends BaseFormComponent impleme
 
   optionProfissionais: ProfissionalApuracaoPendente[];
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: UntypedFormBuilder,
     private profissionalService: ProfissionalService,
     private alertService: AlertService,
     private agendaService: AgendaService,

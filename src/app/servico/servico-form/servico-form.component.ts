@@ -2,7 +2,7 @@ import { TipoServicoService } from './../../tipo-servico/tipo-servico.service';
 import { EMPTY, empty, Subscription } from 'rxjs';
 import { ServicosService } from './../servicos.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
@@ -23,7 +23,7 @@ export class ServicoFormComponent extends BaseFormComponent
 
   servico: Servico;
   tipoServicos: Array<TipoServico> = [];
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   codigoStatus: string = "1";
 
   inscricaoTipo$: Subscription;
@@ -34,7 +34,7 @@ export class ServicoFormComponent extends BaseFormComponent
   //auditoria
   codigoUsuario : string;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: UntypedFormBuilder,
     private servicoService: ServicosService,
     private tipoServicoService: TipoServicoService,
     private router: Router,

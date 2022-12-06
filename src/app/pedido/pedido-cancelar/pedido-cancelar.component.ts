@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { ActivatedRoute, Router } from '@angular/router';
 import { timeStamp } from 'console';
@@ -24,7 +24,7 @@ export class PedidoCancelarComponent extends BaseFormComponent implements OnInit
   }
 
   constructor(private route: ActivatedRoute,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private pedidoService : PedidoService, 
               private pedidoItemService: PedidoItemService,
               private estoqueService : EstoqueService,
@@ -33,7 +33,7 @@ export class PedidoCancelarComponent extends BaseFormComponent implements OnInit
               { 
                 super();
               }
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   pedido: Pedido;
 
   quantidadeTotalCorrente: number;

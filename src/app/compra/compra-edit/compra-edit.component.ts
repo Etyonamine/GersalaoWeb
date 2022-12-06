@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,7 +26,7 @@ import { CompraServiceService } from '../compra-service.service';
 })
 export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   compra: Compra;
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   codigo: number;
   tituloPagina:string;
   habilitaApagar:boolean;
@@ -47,16 +47,16 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
   events: string[] = [];
   dataMaximaCompra : Date = new Date(new Date().toDateString());
-  dataCompraHoje = (c:FormControl)=>{
+  dataCompraHoje = (c:UntypedFormControl)=>{
     let valor = new Date(c.value);
 
     return (valor.getDate() <= this.dataMaximaCompra.getDate()) ? true:false;    
   }
 
-  date = new FormControl(new Date());
-  serializedDate = new FormControl(new Date().toISOString());
+  date = new UntypedFormControl(new Date());
+  serializedDate = new UntypedFormControl(new Date().toISOString());
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,

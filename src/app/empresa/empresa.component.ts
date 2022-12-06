@@ -1,6 +1,6 @@
 import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { EMPTY, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Endereco } from '../endereco/endereco';
@@ -24,13 +24,13 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
   constructor(private empresaService:EmpresaService,
               private municipioService: MunicipioService,
               private unidadeFederativaService: UnidadeFederativaService,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private alertService: AlertService
               ) {
     super();
   }
 
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   empresa : Empresa;
   endereco : Endereco;
   inscricaoMunicipio$:Subscription;

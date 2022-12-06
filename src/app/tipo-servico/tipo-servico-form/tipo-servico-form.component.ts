@@ -1,6 +1,6 @@
 import { AlertService } from './../../shared/alert/alert.service';
 import { TipoServicoService } from './../tipo-servico.service';
-import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { Observable, of, Subscription } from 'rxjs';
@@ -16,13 +16,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class TipoServicoFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
 
   codigo: number = 0;
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   codigoStatus: string = "1";
   HabilitarBotaoApagar: boolean = false;
   tipoServico: TipoServico;
   salvarRegistro$: Subscription;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: UntypedFormBuilder,
     private tipoServicoService: TipoServicoService,
     private route: ActivatedRoute,
     private router: Router,
