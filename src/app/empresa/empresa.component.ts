@@ -1,3 +1,4 @@
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EMPTY, Subscription } from 'rxjs';
@@ -95,15 +96,27 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
     this.formulario.controls["nome"].setValue(this.empresa.nome);
     this.formulario.controls["horaInicial"].setValue(this.empresa.horaInicial);
     this.formulario.controls["horaFinal"].setValue(this.empresa.horaFim);
-    if (this.empresa.empresaEndereco.endereco == undefined  ){
+    
+    if (this.endereco == undefined  ){
       this.codigoMunicipio =0 ;
       this.codigoUnidadeFederativa =0;      
     }else{
-      this.codigoMunicipio = this.empresa.empresaEndereco.endereco.codigoMunicipio ;
-      this.codigoUnidadeFederativa =this.empresa.empresaEndereco.endereco.codigoUnidadeFederativa;      
+      this.codigoMunicipio = this.endereco.codigoMunicipio ;
+      this.codigoUnidadeFederativa =this.endereco.codigoUnidadeFederativa;    
+      this.montaMunicipios(this.codigoUnidadeFederativa);
+
+      this.formulario.controls["endereco"].setValue(this.endereco.descricao);
+      this.formulario.controls["numero"].setValue(this.endereco.numero);
+      if(this.endereco.complemento!==null){
+        this.formulario.controls["Complemento"].setValue(this.endereco.complemento);
+      }      
+      this.formulario.controls["bairro"].setValue(this.endereco.bairro);
+      this.formulario.controls["cep"].setValue(this.endereco.cep);
+
     }
-    this.formulario.controls["municipio"].setValue(this.codigoMunicipio);
+    
     this.formulario.controls["estado"].setValue(this.codigoUnidadeFederativa);
+    this.formulario.controls["municipio"].setValue(this.codigoMunicipio);
 
   }
   criarFormulario() {
@@ -147,8 +160,8 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
     this.inscricao$ = this.empresaService.recuperarDadosEmpresa()
     .subscribe(result=>{
       this.empresa =result;
-      if (result.empresaEndereco.endereco !== undefined){
-        this.endereco = result.empresaEndereco.endereco;
+      if (result.empresaEndereco !== undefined){
+        this.endereco = result.empresaEndereco[0].endereco;
       }
       this.empresa.codigo= atob(result.codigo);
       this.empresa.nome= atob(result.nome);
@@ -185,10 +198,10 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       return false;
     }
     //horario de funcionamento
-    if ((valueSubmit.horaInicial < valueSubmit.horaFinal)||(valueSubmit.horaInicial === valueSubmit.horaFinal)){
+    /* if ((valueSubmit.horaInicial < valueSubmit.horaFinal)||(valueSubmit.horaInicial === valueSubmit.horaFinal)){
       this.handlerError('Atenção!O período de funcionamento do estabelecimento está incorreto!');
       return false;
-    }
+    } */
     return true;
   }  
   handlerError(message:string)
@@ -206,6 +219,31 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
     if (!this.validacaoFormulario()){
       return ;
     }
-    this.handlerSucesso("enviado com sucesso!");
+
+    this.empresa.empresaEndereco.endereco = this.endereco;
+
+    this.empresaService.atualizar(this.empresa)
+                       .subscribe(result=>{
+                        this.handlerSucesso('Salvado com sucesso!');
+                       },error=>{
+                        console.log(error);
+                        this.handlerError('Ocorreu um erro!');
+                       });
+    
+  }
+  montaMunicipios(codigoUF : number){
+    this.inscricaoMunicipio$ = this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(codigoUF,
+                                                                                                0,
+                                                                                                1000,
+                                                                                                'descricao',
+                                                                                                'ASC',
+                                                                                                null,
+                                                                                                null)
+                                                    .subscribe(result=>{
+                                                      this.municipios = result.data;
+                                                    },error=>{
+                                                      console.log(error);
+                                                      this.handlerError('Ocorreu um erro ao tentar recuperar os municpios');
+                                                    });
   }
 }
