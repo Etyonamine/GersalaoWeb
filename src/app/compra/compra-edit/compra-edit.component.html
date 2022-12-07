@@ -5,7 +5,7 @@
       <mat-divider></mat-divider>
     </div>
     <mat-card-content>
-      <form [formGroup]="formulario" >
+      <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
         <div class="form-group mat-container">
           <mat-form-field appearance="fill" style="width: 70px">
             <mat-label>Código</mat-label>
@@ -17,8 +17,7 @@
             <input matInput  
                   [matDatepicker]="picker3" 
                   formControlName="dataCompra"    
-                  [max] = "dataMaximaCompra"  
-                  (dateChange)="calcularDataBoleto()"           
+                  [max] = "dataMaximaCompra"             
                   required >
             <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
             <mat-datepicker #picker3></mat-datepicker>
@@ -35,7 +34,6 @@
               placeholder="0.000,00"                   
               [readonly]="true"              
               value="{{ valorTotalProdutoAdd | currency:'BRL':'symbol':'1.2-2':'pt'}}"  
-             
               readonly                          
             />
             <!-- <span matPrefix>R$&nbsp;</span> -->
@@ -61,7 +59,7 @@
                     >
           </mat-form-field> -->
           <mat-form-field appearance="fill">
-            <mat-label>Data Pagamento do Boleto</mat-label>
+            <mat-label>Data Vencimento Boleto</mat-label>
             <input matInput [matDatepicker]="picker5" 
                   formControlName="dataPagtoBoleto" 
                   matTooltip="Informar a data de pagamento de boleto"
@@ -223,39 +221,42 @@
         </div>   
         <div>
           <mat-divider></mat-divider>
-        </div>         
-      </form> 
-       <!-- botoes *********************************************************************************************************-->
-       <div style="margin-top: 10px">
-        <table>
-          <tr>              
-            <td  style="text-align: left;">
-                <button
-                type="submit"
-                mat-raised-button
-                color="primary"
-                [disabled]="!formulario.valid || codigo > 0 "
-                (click)="submit()"
-              >
-                Salvar &nbsp;<i class="material-icons right">save</i>
-              </button>   
-                       
-              
-              &nbsp;
-              <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
-                [disabled]="(formulario.get('dataPagtoBoleto').value != null && codigo > 0) ||(codigo == 0 || codigo == null )"
-                type="button">
-                Baixa de Pagamento &nbsp;<i class="material-icons right">paid</i>
-              </button>
-              
-              &nbsp;
-              <button mat-raised-button color="primary" (click)="retornar()">
-                Retornar &nbsp;<i class="material-icons right">reply</i>
-              </button>            
-            </td>
-          </tr>
-        </table>
-      </div> 
+        </div>
+        
+        
+
+        <!-- botoes *********************************************************************************************************-->
+        <div style="margin-top: 10px">
+          <table>
+            <tr>              
+              <td  style="text-align: left;">
+                  <button
+                  type="submit"
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="!formulario.valid || codigo > 0 "
+                >
+                  Salvar &nbsp;<i class="material-icons right">save</i>
+                </button>   
+                         
+                
+                &nbsp;
+                <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
+                  [disabled]="(formulario.get('dataPagtoBoleto').value != null && codigo > 0) ||(codigo == 0 || codigo == null )"
+                  type="button">
+                  Baixa de Pagamento &nbsp;<i class="material-icons right">paid</i>
+                </button>
+                
+                &nbsp;
+                <button mat-raised-button color="primary" (click)="retornar()">
+                  Retornar &nbsp;<i class="material-icons right">reply</i>
+                </button>            
+              </td>
+            </tr>
+          </table>
+        </div>
+         
+      </form>  
     </mat-card-content>    
   </mat-card>
    

@@ -7,12 +7,16 @@ import { CompraEditComponent } from './compra-edit/compra-edit.component';
 
 const comprasRoutes: Routes = [
   {path:'', component: CompraComponent},
-  {path:'compra-novo',component:CompraEditComponent},
-  {path:':codigo',component:CompraEditComponent,
+  {path:'compra-novo',
+      component:CompraEditComponent},
+      {
+        path:':codigo',
+        component:CompraEditComponent,
         resolve:{
           compra: CompraResolveGuard
-        }
-  }    
+      }
+  }
+    
 ];
 
 @NgModule({

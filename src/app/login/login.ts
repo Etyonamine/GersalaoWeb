@@ -1,10 +1,8 @@
 export class Login {
-    codigo: string;
-    codigoUsuarioPerfil : string;
+    codigo: number;
     nome: string;
     senha: string;
     login: string;
     Autenticado: boolean;
-    tokenAutorizacao: string;
     userLogged: any = {};
 }

@@ -1,7 +1,7 @@
 import { MaterialModule } from './material/material.module';
 import { SituacaoModule } from './situacao/situacao/situacao.module';
 import { SharedModule } from './shared/shared.module';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
 import { LOCALE_ID } from '@angular/core';
@@ -33,22 +33,14 @@ import { TwoDecimalNumberDirective } from './two-decimal-number.directive';
 import { CompraDetalheModule } from './compra-detalhe/compra-detalhe.module';
 import { EstoqueModule } from './estoque/estoque.module';
 import { PedidoModule } from './pedido/pedido.module';
-import { AgendaModule } from './agenda/agenda.module';
-import { ProfissionalApuracaoModule } from './profissional-apuracao/profissional-apuracao.module';
 
 import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
+import { AgendaComponent } from './agenda/agenda.component';
+import { AgendaServicosComponent } from './agenda-servicos/agenda-servicos.component';
 import { FornecedorComponent } from './fornecedor/fornecedor.component';
 
-
-import { TokenInterceptor } from './auth-guard/interceptor/token.interceptor';
-import { EmpresaModule } from './empresa/empresa.module';
-import { ProfissionalApuracaoComponent } from './profissional-apuracao/profissional-apuracao.component';
-import { ResetSenhaModule } from './reset-senha/reset-senha.module';
-import { ReportsModule } from './reports/reports.module';
-
-
-registerLocaleData(localePt,'pt');
+registerLocaleData(localePt);
 
 @NgModule({
   declarations: [
@@ -57,8 +49,10 @@ registerLocaleData(localePt,'pt');
     LoginComponent,
     HomeComponent,
     PaginaNaoEncontradaComponent,
-    TwoDecimalNumberDirective,        
-    FornecedorComponent, ProfissionalApuracaoComponent
+    TwoDecimalNumberDirective,
+    AgendaComponent,
+    AgendaServicosComponent,
+    FornecedorComponent
    ],
   imports: [
     BrowserModule,
@@ -87,19 +81,13 @@ registerLocaleData(localePt,'pt');
     CompraModule,
     CompraDetalheModule,
     EstoqueModule,
-    PedidoModule,
-    AgendaModule,
-    ProfissionalApuracaoModule,
-    ResetSenhaModule    ,
-    ReportsModule ,
-    EmpresaModule
+    PedidoModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
     ,
     { provide: LOCALE_ID, useValue: 'pt' },
-    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },      
-    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },    
   ],
   bootstrap: [AppComponent]
 })

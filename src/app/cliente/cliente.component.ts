@@ -53,9 +53,8 @@ export class ClienteComponent implements OnInit, OnDestroy {
     var pageEvent = new PageEvent();
     pageEvent.pageIndex= this.defaultPageIndex;
     pageEvent.pageSize=this.defaultPageSize;
-    this.filterQuery = null;
 
-    if (query!== null && query.toString().trim()!==''){
+    if (query){
       this.filterQuery=query;
     }
 
@@ -79,7 +78,7 @@ export class ClienteComponent implements OnInit, OnDestroy {
                       filterQuery
                     ).subscribe(result=>{
                       this.clientes = new MatTableDataSource<Cliente>(result.data);
-                      this.paginator.length = result.totalCount;
+                      this.paginator.length=result.totalCount;
                       this.paginator.pageIndex=result.pageIndex;
                       this.paginator.pageSize=result.pageSize;
                       if (this.clientes == null){

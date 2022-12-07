@@ -19,11 +19,11 @@ export class PedidoResolveGuard implements Resolve<Pedido>{
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Pedido | Observable<Pedido> | Promise<Pedido> {
-    if (route.params && route.params['codigoPedido']) {         
+    if (route.params && route.params['codigoPedido'] && route.params['codigoCliente']) {         
         let codigoPedido = parseInt(route.params['codigoPedido']);
+        let codigoCliente = parseInt(route.params['codigoCliente']);
         
-        
-        return this.pedidoService.get(codigoPedido);
+        return this.pedidoService.getPedido(codigoCliente,codigoPedido);
               
     }
     return of (this.pedido);

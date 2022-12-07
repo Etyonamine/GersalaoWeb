@@ -11,24 +11,10 @@
       </div>
       <div >
        <mat-card-content>
-        <button 
-          mat-raised-button
-          color="primary"
-          (click)="clearDate($event)">
-            Limpar
-        </button> 
-        &nbsp;&nbsp;
-        <mat-form-field [hidden]="!compras" style="width: 15%">
-         <!-- <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por compra (ou parte dele)..." />-->
-         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-         <mat-datepicker #picker (change) ="loadData($event.target.value)"  ></mat-datepicker>
-          <mat-label>Pesquisa por data de compra</mat-label>
-          <input matInput [matDatepicker]="picker" 
-                (dateChange) ="loadData($event.target.value)" 
-                readonly 
-                [(ngModel)]="dataPesquisa" >                   
+        <mat-form-field [hidden]="!compras" style="width: 100%">
+          <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por compra (ou parte dele)..." />
         </mat-form-field>
-       
+  
         <div class="commands text-right" style="margin-top: 5px;" >
           <button mat-raised-button
                   color="primary"
@@ -60,7 +46,7 @@
           <ng-container matColumnDef="dataVenctoBoleto">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Dt. Boleto</mat-header-cell>
             <mat-cell *matCellDef="let compra">{{
-              compra.dataVenctoBoleto | date: "dd/MM/yyyy"
+              compra.dataVenctoBoleto | date: "dd/MM/yyyy HH:mm:ss"
               }}</mat-cell>
           </ng-container> 
           <ng-container matColumnDef="dataPagtoBoleto">

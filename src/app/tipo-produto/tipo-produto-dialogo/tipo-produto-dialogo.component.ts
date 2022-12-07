@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, FormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -24,9 +24,9 @@ export class TipoProdutoDialogoComponent extends BaseFormComponent implements On
   nome: string;
   inscricao$: Subscription;
   registroJaCadastrado: boolean = false; 
-  formulario: UntypedFormGroup;
+  formulario: FormGroup;
   
-  constructor( private formBuilder: UntypedFormBuilder,
+  constructor( private formBuilder: FormBuilder,
                private tipoProdutoService: TipoProdutoService,
                private http: HttpClient,
                @Inject(MAT_DIALOG_DATA) public data: TipoProduto,

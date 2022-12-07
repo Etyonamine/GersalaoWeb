@@ -15,7 +15,6 @@ export interface Profissional{
   dataAlteracao: Date;
   dataCadastro: Date;
   observacao: string;
-  valorComissao: number;
   profissionalContato: ProfissionalContato;
   profissionalDocumento: ProfissionalDocumento;
   profissionalEndereco: ProfissionalEndereco;    

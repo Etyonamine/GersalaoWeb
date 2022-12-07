@@ -15,7 +15,7 @@ import { AlertService } from './../../shared/alert/alert.service';
 import { UnidadeFederativaService } from './../../shared/service/unidade-federativa.service';
 import { ClienteService } from './../cliente.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { EMPTY, Observable, of, Subscription } from 'rxjs';
 import { Cliente } from '../cliente';
 import { concatMap, map, switchMap, take } from 'rxjs/operators';
@@ -44,7 +44,7 @@ import { AuthService } from 'src/app/auth-guard/auth.service';
 export class ClienteFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
   codigoLogin: number;
   login: Login;
-  formulario: UntypedFormGroup;
+  formulario: FormGroup;
 
   cliente: Cliente;
   clienteEnderecos: Array<ClienteEndereco> = [];
@@ -86,13 +86,13 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
   gravarDadosContatos: boolean = false;
   gravarDadosDocumentos: boolean = false;
   location: any;
-  
-  
+
   constructor(
-    private formBuilder: UntypedFormBuilder,    
+    private formBuilder: FormBuilder,    
     private clienteService: ClienteService,
     private unidadeFederativaService: UnidadeFederativaService,
-    private municipioService: MunicipioService,  
+    private municipioService: MunicipioService,
+    private serviceAlert: AlertService,
     private validarCpf: ValidaCpfService,
     private clienteEnderecoService: ClienteEnderecoService,
     private clienteContatoService: ClienteContatoService,
@@ -100,12 +100,12 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
     private contatoService: ContatoService,
     private documentoService: DocumentoService,
     private enderecoService: EnderecoService,
-    private serviceAlert: AlertService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: MatDialog ,
     private authService: AuthService 
   ) {
+     
     super();
   }
 
@@ -127,6 +127,8 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
       };
       //endereco
       this.criarObjetoEndereco();
+
+
     }
 
     this.codigo = this.cliente !== undefined ? this.cliente.codigo : 0;
@@ -187,6 +189,19 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
             } else {
               return EMPTY;
             }
+
+            // if estadoId && estadoId !== undefined ?
+
+            // this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(
+            //   estadoId,
+            //   0,
+            //   1000,
+            //   "descricao",
+            //   "ASC",
+            //   null,
+            //   null,
+            // );
+            // : EMPTY
           }
         )
       ).subscribe(result => { this.municipios = result.data; });
@@ -209,7 +224,7 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
 
     this.rotulos_modos_operacao();
 
-    this.codigoLogin = Number(this.authService.usuarioLogado.codigo);
+    this.codigoLogin = this.authService.usuarioLogado.Codigo;
   }
 
   ngOnDestroy(): void {
@@ -932,7 +947,3 @@ export class ClienteFormComponent extends BaseFormComponent implements OnInit, O
     );
   }
 }
-function _serviceAlert(_serviceAlert: any) {
-  throw new Error('Function not implemented.');
-}
-

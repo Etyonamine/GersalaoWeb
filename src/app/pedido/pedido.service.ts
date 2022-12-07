@@ -13,14 +13,11 @@ export class PedidoService extends BaseService<Pedido> {
   constructor(protected http: HttpClient) {
     super(http,`${environment.API}pedidos`);
   }  
- 
-  salvarNovoRegistro(pedido : Pedido){
-    return this.http.post<Pedido>(this.url, pedido).pipe(take(1));
-  }
-  getProximoID (){
-    let urlGetID = this.url + '/GetProximoID';
+
+  getPedido(codigoCliente:number, codigoPedido: number){
+    let urlGet = this.url + '/' + codigoCliente + '/' + codigoPedido;
      
-    return this.http.post<number>(urlGetID,null).pipe(take(1));
+    return this.http.get<Pedido>(urlGet).pipe(take(1));
   }
   
 }

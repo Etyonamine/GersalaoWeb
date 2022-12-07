@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { timeStamp } from 'console';
 import { EMPTY, of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Produto } from '../produto/produto';
@@ -19,9 +18,9 @@ import { EstoqueService } from './estoque.service';
 })
 export class EstoqueComponent implements OnInit {
   //colunas: string[]=["codigo","nome", "quantidade","acao"];
-  colunas: string[]=["codigo","nome", "quantidade", "valorSumarizado"];
+  colunas: string[]=["codigo","nome", "quantidade"];
   estoques: MatTableDataSource<Estoque>;
-  estoquesDados : Array<Estoque> = [];
+
   //incricao%
   inscricao$: Subscription;
   inscricaoProduto$: Subscription;
@@ -33,7 +32,7 @@ export class EstoqueComponent implements OnInit {
   public defaultSortColumn:string = "codigoProduto";
   public defaultSortOrder:string = "asc";
 
-  defaultFilterColumn: string= "NomeProduto";
+  defaultFilterColumn: string= "codigoProduto";
   filterQuery:string=null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -60,10 +59,8 @@ export class EstoqueComponent implements OnInit {
     pageEvent.pageIndex= this.defaultPageIndex;
     pageEvent.pageSize=this.defaultPageSize;
 
-    if (query !== null && query.toString().trim()!==''){
+    if (query){
       this.filterQuery=query;
-    }else{
-      this.filterQuery = null;
     }
 
     this.getData(pageEvent);
@@ -109,8 +106,7 @@ export class EstoqueComponent implements OnInit {
                       }
 
                       );
-                      this.estoques = new MatTableDataSource<Estoque>(result.data);      
-                      this.estoquesDados = result.data;                
+                      this.estoques = new MatTableDataSource<Estoque>(result.data);                      
                       this.paginator.length=result.totalCount;
                       this.paginator.pageIndex=result.pageIndex;
                       this.paginator.pageSize=result.pageSize;                      
@@ -129,16 +125,6 @@ export class EstoqueComponent implements OnInit {
   handleError()
   {
     this.serviceAlert.mensagemErro('Erro ao carregar a lista de estoques. Tente novamente mais tarde.');
-  }
-  getTotalQuantidade(){
-    let quantidades = this.estoquesDados; 
-    return this.estoquesDados.length > 0 ? quantidades.map(a=>a.quantidadeEstoque).reduce(function(a,b){return a + b}) : 0;
-  }
-  /** Gets the total cost of all transactions. */
-  getTotalCost() {
-    let lista = this.estoquesDados;
-    
-    return this.estoquesDados.length > 0 ? lista.map(a=>a.valorSumarizado).reduce(function(a,b){return a + b}) : 0;
   }
 
 }

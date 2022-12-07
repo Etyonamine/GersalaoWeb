@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -18,11 +18,11 @@ export class ProdutoLinhaEditDialogComponent extends BaseFormComponent  implemen
   titulo: string;
   linhaProduto: ProdutoLinha;
   inscricao$: Subscription;
-  formulario: UntypedFormGroup;
+  formulario: FormGroup;
   codigoSituacao: number;
   
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private produtoLinhaService: ProdutoLinhaService,            
     private alertService: AlertService,
     @Inject(MAT_DIALOG_DATA) public data: ProdutoLinha
