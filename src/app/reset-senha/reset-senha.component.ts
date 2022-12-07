@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { timeStamp } from 'console';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
@@ -29,10 +29,10 @@ export class ResetSenhaComponent extends BaseFormComponent  implements OnInit, O
     });
   }
   
-  formulario:FormGroup;
+  formulario:UntypedFormGroup;
   inscricao$: Subscription;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: UntypedFormBuilder,
               private resetSenhaService: ResetSenhaService,
               private serviceAlert : AlertService
               ) {

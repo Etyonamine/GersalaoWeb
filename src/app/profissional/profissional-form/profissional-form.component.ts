@@ -3,7 +3,7 @@ import { ProfissionalServico } from './../profissional-servico/profissional-serv
 import { ProfissionalService } from 'src/app/profissional/profissional.service';
 import { AuthService } from './../../auth-guard/auth.service';
 import { Municipio } from './../../shared/municipios/municipio';
-import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UnidadeFederativa } from 'src/app/shared/UnidadeFederativa/unidadeFederativa';
 import { Profissional } from '../professional';
@@ -47,7 +47,7 @@ import { ProfissionalFinanceiroComponent } from '../profissional-financeiro/prof
 })
 export class ProfissionalFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
   codigo = 0;
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
 
   profissional: Profissional;
   profissionalEnderecos: Array<ProfissionalEndereco> = [];
@@ -91,7 +91,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
   salvarRegistro$: Subscription;
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: UntypedFormBuilder,
               private profissionalService: ProfissionalService,
               private profissionalContatoService: ProfissionalContatoService,
               private contatoService: ContatoService,

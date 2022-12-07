@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -72,7 +72,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
   produtos: Array<Produto>;
   itensPedido: MatTableDataSource<PedidoItem>;
   tituloPagina:string;
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   inscricao$: Subscription;
   inscricaoPedido$:Subscription;
   inscricaoItem$: Subscription;  
@@ -86,7 +86,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
 
 
   constructor(private route: ActivatedRoute,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private clienteService: ClienteService,
               private pedidoService: PedidoService,
               private pedidoItemService: PedidoItemService,

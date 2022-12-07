@@ -1,10 +1,10 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup } from "@angular/forms";
 
 
 export class FormValidations {
 
   static requiredMinCheckbox(min = 1) {
-    const validator = (formArray: FormArray) => {
+    const validator = (formArray: UntypedFormArray) => {
       //const values = formArray.controls;
 
 
@@ -25,7 +25,7 @@ export class FormValidations {
     return validator;
   }
 
-  static cepValidator(control: FormControl) {
+  static cepValidator(control: UntypedFormControl) {
     const cep = control.value;
 
     if (cep && cep !== '') {
@@ -36,18 +36,18 @@ export class FormValidations {
   }
 
   static equalsTo(otherField: string) {
-    const validator = (formControl: FormControl) => {
+    const validator = (formControl: UntypedFormControl) => {
 
       if (otherField == null) {
         throw new Error('É necessário informar o campo')
       }
 
 
-      if (!formControl.root || !(<FormGroup>formControl.root).controls) {
+      if (!formControl.root || !(<UntypedFormGroup>formControl.root).controls) {
         return null;
       }
 
-      const field = (<FormGroup>formControl.root).get(otherField);
+      const field = (<UntypedFormGroup>formControl.root).get(otherField);
 
 
       if (!field) {
@@ -80,7 +80,7 @@ export class FormValidations {
     return config[validatorName];
   }
 
-  static validaTodosControlesNulosOuVazios(nomesCampos: string[], formulario: FormGroup) {
+  static validaTodosControlesNulosOuVazios(nomesCampos: string[], formulario: UntypedFormGroup) {
     if (nomesCampos.length > 0) {
 
       var iContador: number = 0;
@@ -101,7 +101,7 @@ export class FormValidations {
 
   }
 
-  static quantidadeControlesNulos(nomesCampos: string[], formulario: FormGroup) {
+  static quantidadeControlesNulos(nomesCampos: string[], formulario: UntypedFormGroup) {
     {
 
       var iContador: number = 0;
@@ -118,12 +118,12 @@ export class FormValidations {
     }
   }
 
-  static validateAllFormFields(formGroup: FormGroup) {         //{1}
+  static validateAllFormFields(formGroup: UntypedFormGroup) {         //{1}
     Object.keys(formGroup.controls).forEach(field => {  //{2}
       const control = formGroup.get(field);             //{3}
-      if (control instanceof FormControl) {             //{4}
+      if (control instanceof UntypedFormControl) {             //{4}
         control.markAsTouched({ onlySelf: true });
-      } else if (control instanceof FormGroup) {        //{5}
+      } else if (control instanceof UntypedFormGroup) {        //{5}
         this.validateAllFormFields(control);            //{6}
       }
     });

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -24,13 +24,13 @@ export class CompraBaixaPagtoComponent extends BaseFormComponent implements OnIn
   
   atualizadoDataPagto: boolean = false;
 
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
 
   inscricao$: Subscription;
 
   constructor( 
               @Inject(MAT_DIALOG_DATA) public data: DialogDataBaixaPagto,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private compraService: CompraServiceService,
               private serviceAlert: AlertService) {
     super();

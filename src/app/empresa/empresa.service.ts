@@ -17,6 +17,7 @@ export class EmpresaService extends BaseService<Empresa> {
   recuperarDadosEmpresa(){
     return this.http.get<Empresa>(this.url).pipe(take(1));
   }
+<<<<<<< HEAD
   atualizar(empresa:Empresa){
     //criptografar dados da empresa
     empresa.codigo = btoa(empresa.codigo);
@@ -27,4 +28,6 @@ export class EmpresaService extends BaseService<Empresa> {
     empresa.logo = null;
     return this.http.put<Empresa>(this.url,empresa).pipe(take(1));
   }
+=======
+>>>>>>> 89efc6d85d1447bd3d7a92b7c19551c29fc0db8d
 }

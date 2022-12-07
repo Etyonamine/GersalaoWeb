@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { ProfissionalFinanceiro } from './profissional-financeiro';
 })
 export class ProfissionalFinanceiroComponent extends BaseFormComponent implements OnInit,OnDestroy {
 
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   codigoProfissional: number;
   codigoUsuario: number;
   valorComissao: string;
@@ -43,7 +43,7 @@ export class ProfissionalFinanceiroComponent extends BaseFormComponent implement
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ProfissionalFinanceiro,
               public dialogRef: MatDialogRef<ProfissionalFinanceiroComponent>,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private alertService: AlertService,
               private profisssionalService: ProfissionalService,
               private router: Router

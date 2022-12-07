@@ -2,7 +2,7 @@ import { AlertService } from './../shared/alert/alert.service';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth-guard/auth.service';
 import { Login } from './login';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { BaseFormComponent } from '../shared/base-form/base-form.component';
 
 @Component({
@@ -15,10 +15,10 @@ export class LoginComponent extends BaseFormComponent implements OnInit {
 
   hide: boolean = true;
   login: Login = <Login>{};
-  formulario:FormGroup;
+  formulario:UntypedFormGroup;
 
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(private formBuilder: UntypedFormBuilder,
               private authService:AuthService,
               private alertService: AlertService) {
                 super();

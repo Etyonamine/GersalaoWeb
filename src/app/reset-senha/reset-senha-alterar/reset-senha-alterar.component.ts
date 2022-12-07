@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_MENU_SCROLL_STRATEGY } from '@angular/material/menu';
 import { ActivatedRoute, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { resourceUsage } from 'process';
@@ -25,7 +25,7 @@ export class ResetSenhaAlterarComponent extends BaseFormComponent implements OnI
   inscricao$:Subscription;
   inscricaoReset$:Subscription;
 
-  formulario:FormGroup;
+  formulario:UntypedFormGroup;
   hide = true;
   hideRepetir = true;
 
@@ -33,7 +33,7 @@ export class ResetSenhaAlterarComponent extends BaseFormComponent implements OnI
   inscricaoAuthService: Subscription;
 
   constructor(private route: ActivatedRoute,
-              private formBuilder: FormBuilder,
+              private formBuilder: UntypedFormBuilder,
               private usuarioService:UsuarioService,
               private resetSenhaService: ResetSenhaService,
               private router:Router,
