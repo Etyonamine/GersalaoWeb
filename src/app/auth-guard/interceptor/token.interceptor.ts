@@ -35,9 +35,11 @@ export class TokenInterceptor implements HttpInterceptor {
           else
             return throwError(error.message);
       }));
-    }
-    else {
-        return next.handle(request);
-    }
+  }
+  else {
+      return next.handle(request);
+  }
+
+    return next.handle(request);
   }
 }

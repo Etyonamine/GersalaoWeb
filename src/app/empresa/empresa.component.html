@@ -126,7 +126,8 @@
                   <mat-label>Município</mat-label>
                   <mat-select
                     formControlName="municipio"
-                    matTooltip="Municípios do Brasil"                     
+                    matTooltip="Municípios do Brasil"
+                    [(ngModel)]="codigoMunicipio"
                     required
                   >
                     <mat-option [value]="0"></mat-option>
