@@ -11,7 +11,10 @@ export class ValidaNumeroService {
     var reg = /^\d+$/;
     return reg.test(valor);
   }
-
+  somenteNumeroEVirgulaEPonto(valor:string){
+    var reg = /^[\d,.?!]+$/;
+    return reg.test(valor);
+  }
   quantidadeCaracteresValido(qtde:number, valor:string){    
     var valorValidar = valor.trim();
 

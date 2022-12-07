@@ -11,7 +11,7 @@
     <div  >      
         <mat-form-field [hidden]="!pedidos"style="width: 100%;" >
           <input matInput (keyup)="loadData($event.target.value)" 
-                 placeholder="Pesquisar por nome do cliente (ou parte dele)..."
+                 placeholder="Pesquisar por Cliente (ou parte dele)..."
                  />
         </mat-form-field>
     </div>
@@ -20,7 +20,7 @@
       <button mat-raised-button
             color="primary"
             [routerLink]="['pedido-form']" >
-      Registrar nova compra &nbsp;<i class="material-icons right">add</i>
+      Novo Pedido &nbsp;<i class="material-icons right">add</i>
       </button>
     </div>  
     <div>
@@ -50,8 +50,16 @@
             <ng-container matColumnDef="valorTotal">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Valor-total</mat-header-cell>
               <mat-cell *matCellDef="let pedido"><a>{{
-                  pedido.valorTotal
+                  pedido.valorTotal | currency:'BRL':'symbol':'1.2-2':'pt'
                   }}</a></mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="dataFechto">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Baixa</mat-header-cell>
+              <mat-cell *matCellDef="let pedido">
+                {{
+                  pedido.dataFechamento != null ? (pedido.dataFechamento | date : 'dd/MM/yyyy HH:mm:ss') : ''
+                }}
+              </mat-cell>
             </ng-container>
             <ng-container matColumnDef="dataCancelamento">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Cancelamento</mat-header-cell>
@@ -71,38 +79,24 @@
             <ng-container matColumnDef="acao">
               <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
               <mat-cell *matCellDef="let pedido">
-                <button mat-mini-fab color="primary" aria-label="Editar o pedido"
-                  matTooltip="Editar o pedido"
-                  [routerLink]="['/pedido', pedido.codigoCliente, pedido.codigo]">
+                <button mat-mini-fab color="primary" aria-label="consultar detalhe do pedido"
+                  matTooltip="detalhe do pedido"
+                  [routerLink]="['/pedido', pedido.codigo]">
 
-                  <mat-icon>edit</mat-icon>
+                  <mat-icon>description</mat-icon>
                 </button>
                 <button
                   mat-mini-fab color="accent"
                   aria-label="Cancelar o  pedido"                                    
                   matTooltip="Cancelar todo o pedido"
                   color="warn"
-                  [disabled] = "pedido.dataCancelamento != null"
-                  [routerLink]="['pedido-cancelar', pedido.codigoCliente, pedido.codigo]"
+                  [disabled] = "pedido.dataCancelamento != null || pedido.dataFechamento != null"
+                  [routerLink]="['pedido-cancelar', pedido.codigo]"
                 >
                   <mat-icon>close</mat-icon>
                 </button>
               </mat-cell>
-            </ng-container>
-            <!-- <ng-container matColumnDef="acao">
-              <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
-              <mat-cell *matCellDef="let pedido">
-                
-                  <button
-                    mat-mini-fab
-                    color="primary"
-                    aria-label="consultar detalhe"                   
-                    [routerLink]="['/pedido', pedido.codigoProduto]"
-                    >                                            
-                    <mat-icon>view_comfy</mat-icon>
-                  </button>
-              </mat-cell>
-            </ng-container>  -->
+            </ng-container>            
             <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
             <mat-row *matRowDef="let row; columns: colunas"></mat-row>
           </table>

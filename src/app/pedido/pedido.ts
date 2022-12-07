@@ -11,10 +11,11 @@ export class Pedido{
     observacao: string;
     dataFechamento: Date;
     dataCancelamento: Date;
+    dataAlteracao: Date;
     motivoCancelamento: string;
     numeroPedido: string;
     nomeCliente: string;
     situacao: string;
     cliente: Cliente;
-    listaPedidoItem: PedidoItem[];
+    listaPedidoItem: Array<PedidoItem> =[];
 }

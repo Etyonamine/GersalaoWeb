@@ -1,5 +1,6 @@
 import { AuthService } from './../auth-guard/auth.service';
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navegacao',
@@ -8,11 +9,11 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class NavegacaoComponent implements OnInit {
   mostrarMenu = false;
-  codigoUsuario = 0;
   loginUsuario: string;
 
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+              private router: Router,) { }
 
   ngOnInit(): void {
     this.authService.mostrarMenuEmitter
@@ -23,6 +24,7 @@ export class NavegacaoComponent implements OnInit {
 
             if (this.mostrarMenu) {
               this.getUserLogged();
+             
             }
           }
       );
@@ -34,9 +36,8 @@ export class NavegacaoComponent implements OnInit {
   }
   getUserLogged() {
 
-    this.authService.getUserData();
-    this.codigoUsuario = this.authService.usuarioLogado.Codigo;
-    this.loginUsuario = this.authService.usuarioLogado.Login;
+    this.authService.getUserData();    
+    this.loginUsuario = this.authService.usuarioLogado.login;
 
   }
 

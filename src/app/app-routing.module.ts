@@ -60,6 +60,12 @@ const routes: Routes = [
     canLoad: [AuthGuard]
   },
   {
+    path: 'profissional-apuracao',
+    loadChildren: () => import ('./profissional-apuracao/profissional-apuracao.module').then(mod => mod.ProfissionalApuracaoModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+  },
+  {
     path: 'servico',
       loadChildren: () => import('./servico/servico.module').then(mod => mod.ServicoModule),
       canActivate : [AuthGuard],
@@ -78,6 +84,37 @@ const routes: Routes = [
       canActivate:[AuthGuard],
       canLoad: [AuthGuard]
 
+  },
+  {
+    path: 'usuario',
+      loadChildren: () => import('./usuario/usuario.module').then(mod => mod.UsuarioModule),
+      canActivate:[AuthGuard],
+      canLoad: [AuthGuard]
+
+  },
+  {
+    path: 'agenda',
+    loadChildren: () => import('./agenda/agenda.module').then(mod => mod.AgendaModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+  },
+  {
+    path:'reset-senha',
+    loadChildren:()=>import('./reset-senha/reset-senha.module').then(mod=>mod.ResetSenhaModule)
+  
+  },
+  {
+    path: 'reports',
+    loadChildren:()=>import('./reports/reports.module').then(mod=>mod.ReportsModule),
+    canActivate:[AuthGuard],
+    canLoad: [AuthGuard]
+
+  },
+  {
+    path: 'empresa',
+      loadChildren:()=>import('./empresa/empresa.module').then(mod=>mod.EmpresaModule),
+      canActivate:[AuthGuard],
+      canLoad: [AuthGuard]
   },
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PaginaNaoEncontradaComponent }

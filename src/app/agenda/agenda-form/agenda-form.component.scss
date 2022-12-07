@@ -1,0 +1,44 @@
+.container{
+  width: 100%;
+  margin-left: 5px;
+  margin-top: 5px; 
+  text-align: center;
+}
+.mat-form-field + .mat-form-field {
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.titulo{
+  background-color: #3f51b5;
+  color: white;
+  text-size-adjust: auto;
+  font-size:medium;
+}
+.campo-DataHora{
+  width: 150px;
+}
+.campoHora{
+  width: 100px;
+}
+.combos{
+  width: 500px;
+}
+.comboProfissional{
+  width: 250px;
+} 
+.comboServico{
+  width: 500px;
+}
+.observacao{
+  width: 750px; 
+ 
+}
+.comboCliente{
+  width: 750px;
+}
+.mensagemFuncionamento{
+  width: 750px;
+  background-color: #3f51b5;
+  height: auto;
+  color: white;
+}
