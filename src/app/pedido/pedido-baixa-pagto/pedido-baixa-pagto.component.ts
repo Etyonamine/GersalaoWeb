@@ -1,7 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { now } from 'moment';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
@@ -23,7 +22,7 @@ export class PedidoBaixaPagtoComponent extends BaseFormComponent implements OnIn
     return this.formulario.get('dataPagtoCliente').value;
   }
 
-  formulario: UntypedFormGroup;
+  formulario: FormGroup;
   dataFechamento : Date;
   dataPedido: Date;
   dataHoje : Date;
@@ -31,7 +30,7 @@ export class PedidoBaixaPagtoComponent extends BaseFormComponent implements OnIn
   constructor(
               public dialogRef: MatDialogRef<PedidoBaixaPagtoComponent>,
               @Inject(MAT_DIALOG_DATA) public data: dataPagtoBaixa,
-              private formBuilder: UntypedFormBuilder) {
+              private formBuilder: FormBuilder) {
                 super();
                }
   
@@ -49,5 +48,5 @@ export class PedidoBaixaPagtoComponent extends BaseFormComponent implements OnIn
   }
   onNoClick(): void {
     this.dialogRef.close();
-  }  
+  }
 }

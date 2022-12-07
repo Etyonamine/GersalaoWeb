@@ -3,7 +3,6 @@ export class TipoServico {
   descricao: string;
   codigoSituacao: number;
   valorComissaoPerc: number;
-  dataCadastro : Date;
 }
 
 

@@ -1,6 +1,4 @@
-import { DatePipe } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -29,16 +27,14 @@ export class CompraComponent implements OnInit, OnDestroy {
   compras: MatTableDataSource<Compra>;
   inscricao$  : Subscription;
   colunas: string[]=["codigo","dataCompra", "valor","dataVenctoBoleto","dataPagtoBoleto","datacadastro","acao"];
-  dataPesquisa : Date;
-
-
+ 
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
 
-  public defaultSortColumn:string = "dataCompra";
+  public defaultSortColumn:string = "codigo";
   public defaultSortOrder:string = "desc";
 
-  defaultFilterColumn: string= "dataCompra";
+  defaultFilterColumn: string= "codigo";
   filterQuery:string=null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -50,7 +46,8 @@ export class CompraComponent implements OnInit, OnDestroy {
               private serviceAlert: AlertService,
               public dialog: MatDialog              ) { }
 
-  ngOnInit(): void {     
+  ngOnInit(): void {
+     
     this.loadData();
   }
 
@@ -66,24 +63,15 @@ export class CompraComponent implements OnInit, OnDestroy {
     var pageEvent = new PageEvent();
     pageEvent.pageIndex= this.defaultPageIndex;
     pageEvent.pageSize=this.defaultPageSize;
-    this.filterQuery = null;
 
-    if (query!== null && query.toString().trim()!==''){      
-      
-      let dataPesq = new Date(query).toLocaleDateString();
-      
-      let novaData = dataPesq.substring(6,10) + '-' +  dataPesq.substring(3,5) + '-' + dataPesq.substring(0,2);
-      this.filterQuery =   novaData;
+    if (query){
+      this.filterQuery=query;
     }
 
     this.getData(pageEvent);
 
   }
-  clearDate(event){
-    event.stopPropagation();
-    this.dataPesquisa = null;
-    this.loadData();
-  }
+
   getData(event:PageEvent)
   {
     var sortColumn = (this.sort)?this.sort.active:this.defaultSortColumn;

@@ -13,18 +13,40 @@
       </mat-form-field>
       <mat-form-field appearance="fill" style="width: 635px">
         <mat-label>Nome Completo</mat-label>
-        <input matInput placeholder="Digite o nome completo" id="nome" formControlName="nome"
-          matTooltip="Informar o nome completo do Profissional" required />
+        <input
+          matInput
+          placeholder="Digite o nome completo"
+          id="nome"
+          formControlName="nome"
+          matTooltip="Informar o nome completo do Profissional"
+          required
+        />
       </mat-form-field>
       <mat-form-field appearance="fill" style="width: 150px">
         <mat-label>Data de aniversário</mat-label>
-        <input matInput placeholder="Digite a data de aniversário" formControlName="dataAniversario" maxlength="10"
-          matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021" />
+        <input
+          matInput
+          placeholder="Digite a data de aniversário"
+          formControlName="dataAniversario"
+          maxlength="10"
+          matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
+        />
       </mat-form-field>
-      <mat-form-field *ngIf="optionSituacao" appearance="fill" style="width: 150px">
+      <mat-form-field
+        *ngIf="optionSituacao"
+        appearance="fill"
+        style="width: 150px"
+      >
         <mat-label>Selecione da lista</mat-label>
-        <mat-select formControlName="codigoSituacao" matTooltip="Situação do Profissional" required>
-          <mat-option *ngFor="let option of optionSituacao" [value]="option.value">
+        <mat-select
+          formControlName="codigoSituacao"
+          matTooltip="Situação do Profissional"
+          required
+        >
+          <mat-option
+            *ngFor="let option of optionSituacao"
+            [value]="option.value"
+          >
             {{ option.name }}
           </mat-option>
         </mat-select>
@@ -33,35 +55,57 @@
     <div class="form-group mat-container">
       <mat-form-field appearance="fill" class="observacao">
         <mat-label>Observação</mat-label>
-        <textarea matInput formControlName="observacao" maxlength="300"
+        <textarea
+          matInput
+          formControlName="observacao"
+          maxlength="300"
           placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
-          matTooltip="Digite aqui caso precise informar alguma observação do Profissional."></textarea>
+          matTooltip="Digite aqui caso precise informar alguma observação do Profissional."
+        ></textarea>
       </mat-form-field>
     </div>
     <!--  *ngIf="optionTipoServico" 
       style="width: 150px"
     -->
     <div class="form-group mat-container">
-      <mat-form-field appearance="fill">
-        <mat-label>Selecione da lista</mat-label>
-        <mat-select formControlName="codigoTipoServico" matTooltip="Tipo de serviço do Profissional" required>
-          <mat-option *ngFor="let option of optionTipoServico" [value]="option.codigo">
-            {{ option.descricao }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <mat-form-field
+      
+      appearance="fill"
+      
+    >
+      <mat-label>Selecione da lista</mat-label>
+      <mat-select
+        formControlName="codigoTipoServico"
+        matTooltip="Tipo de serviço do Profissional"
+        required
+      >
+        <mat-option
+          *ngFor="let option of optionTipoServico"
+          [value]="option.codigo"
+        >
+          {{ option.descricao }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     </div>
     <div>
-      <app-msg-error [mostrarErro]="
+      <app-msg-error
+        [mostrarErro]="
           formulario.get('nome').invalid &&
           formulario.get('nome').hasError('required') &&
           formulario.get('nome').touched
-        " mensagemErro="Por favor, digite o nome completo! "></app-msg-error>
-      <app-msg-error [mostrarErro]="formulario.get('nome').errors?.isDupeProfissional"
-        mensagemErro="O nome digitado já existe cadastrado!"></app-msg-error>
-      <app-msg-error [mostrarErro]="formulario.get('dataAniversario').hasError('pattern')"
-        mensagemErro="A data está com formato incorreto!"></app-msg-error>
-
+        "
+        mensagemErro="Por favor, digite o nome completo! "
+      ></app-msg-error>
+      <app-msg-error
+        [mostrarErro]="formulario.get('nome').errors?.isDupeProfissional"
+        mensagemErro="O nome digitado já existe cadastrado!"
+      ></app-msg-error>
+      <app-msg-error
+        [mostrarErro]="formulario.get('dataAniversario').hasError('pattern')"
+        mensagemErro="A data está com formato incorreto!"
+      ></app-msg-error>
+      
     </div>
     <div>
     </div>
@@ -69,40 +113,73 @@
     <table>
       <tr>
         <td style="width:25%; text-align: left;">
-          <button type="button" mat-raised-button color="accent" (click)="openDialogEndereco()"
-            [disabled]="codigo == 0">
-            Endereço
-          </button>
-          <button type="button" mat-raised-button color="accent" [disabled]="codigo == 0" (click)="openDialogContato()">
-            Contato
-          </button>
-          <button type="button" mat-raised-button color="accent" [disabled]="codigo == 0"
-            (click)="openDialogDocumento()">
-            Documento
-          </button>
-          <button type="button" mat-raised-button color="accent" [disabled]="codigo == 0"
-            (click)="openDialogFinanceiro()">
-            Financeiro
-          </button>
-          <button type="button" mat-raised-button color="accent" [disabled]="codigo == 0"
-            (click)="openDialogTipoServico()">
-          </button>
+          <button
+          type="button"
+          mat-raised-button
+          color="accent"
+          (click)="openDialogEndereco()"
+          [disabled]="codigo == 0"
+        >
+          Endereço
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="accent"
+          [disabled]="codigo == 0"
+          (click)="openDialogContato()"
+        >
+          Contato
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="accent"
+          [disabled]="codigo == 0"
+          (click)="openDialogDocumento()"
+        >
+          Documento
+        </button>
+        <button
+          type="button"
+          mat-raised-button
+          color="accent"
+          [disabled]="codigo == 0"
+          (click)="openDialogTipoServico()"
+        >
+
+        </button>
         </td>
         <td style="width:25%;text-align: right;">
-          <button type="submit" mat-raised-button color="primary" [disabled]="!formulario.valid">
-          </button>
+          <button
+          type="submit"
+          mat-raised-button
+          color="primary"
+          [disabled]="!formulario.valid"
+        >
+        </button>
 
-          <button type="submit" mat-raised-button color="primary" [disabled]="!formulario.valid">
-            Salvar &nbsp;<i class="material-icons right">save</i>
+        <button
+          type="submit"
+          mat-raised-button
+          color="primary"
+          [disabled]="!formulario.valid"
+        >
+          Salvar &nbsp;<i class="material-icons right">save</i>
           </button>
-          <button type="button" mat-raised-button color="warn" [disabled]="habilitaApagar"
-            (click)="openConfirmExclusao()">
+          <button
+            type="button"
+            mat-raised-button
+            color="warn"
+            [disabled]="habilitaApagar"
+            (click)="openConfirmExclusao()"
+          >
             Apagar &nbsp;<i class="material-icons right">delete_forever</i>
           </button>
 
-          <button mat-raised-button color="primary" (click)="retornar()">
-            Retornar &nbsp;<i class="material-icons right">reply</i>
-          </button>
+        <button mat-raised-button color="primary" (click)="retornar()">
+          Retornar &nbsp;<i class="material-icons right">reply</i>
+        </button>
         </td>
       </tr>
     </table>

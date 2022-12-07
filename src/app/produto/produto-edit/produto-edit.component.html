@@ -83,7 +83,7 @@
               </mat-form-field>
               <mat-form-field appearance="fill" style="width: 200px">
                 <mat-label>Código no Fornecedor</mat-label>
-                <input matInput formControlName="codigoChaveFornecedor"  />
+                <input matInput formControlName="codigoChaveFornecedor" readonly />
               </mat-form-field>    
               <!-- Fornecedor -->        
               <mat-form-field appearance="fill">
@@ -115,7 +115,7 @@
                 ></textarea>
               </mat-form-field>
             </div>
-          
+           
             <div>
               
               <app-msg-error
@@ -126,15 +126,9 @@
                 mensagemErro="Por favor, digite o nome completo! "
               ></app-msg-error>
               <app-msg-error
-                  [mostrarErro]="formulario.invalid && formulario.get('nome').errors?.isDupe "
-                  mensagemErro="O nome do produto digitado já existe no cadastrado!"
+                [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
+                mensagemErro="O nome digitado já existe cadastrado!"
               ></app-msg-error>
-
-              <app-msg-error
-                  [mostrarErro]="formulario.invalid && formulario.get('tipo').errors?.isDupe && formulario.get('nome').errors?.isDupe"
-                  mensagemErro="O nome do produto com o tipo digitado já existe no cadastrado!"
-              ></app-msg-error>
-
               <app-msg-error
                 [mostrarErro]="isSubmitted && formulario.get('linha').hasError('required') "
                 mensagemErro="Por favor, informar a linha de produto">

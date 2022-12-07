@@ -15,7 +15,7 @@ import { PedidoService } from './pedido.service';
   styleUrls: ['./pedido.component.scss']
 })
 export class PedidoComponent implements OnInit {
-  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal","dataFechto", "dataCancelamento","situacao","acao"];
+  colunas: string[]=["cliente","codigo","dataPedido", "valorTotal", "dataCancelamento","situacao","acao"];
   pedidos: MatTableDataSource<Pedido>;
   inscricao$: Subscription;
   codigoPedido: number;
@@ -26,7 +26,7 @@ export class PedidoComponent implements OnInit {
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
 
-  public defaultSortColumn:string = "numeroPedido";
+  public defaultSortColumn:string = "dataPedido";
   public defaultSortOrder:string = "desc";
 
   defaultFilterColumn: string= "NomeCliente";
@@ -56,11 +56,9 @@ export class PedidoComponent implements OnInit {
     var pageEvent = new PageEvent();
     pageEvent.pageIndex= this.defaultPageIndex;
     pageEvent.pageSize=this.defaultPageSize;
-    
-    if (query!== null && query.toString().trim()!== ''){
+
+    if (query){
       this.filterQuery=query;
-    }else{
-      this.filterQuery = null;
     }
 
     this.getData(pageEvent);
@@ -100,5 +98,8 @@ export class PedidoComponent implements OnInit {
   {
     this.serviceAlert.mensagemErro('Erro ao carregar a lista de pedidos. Tente novamente mais tarde.');
   }
+  openConfirmExclusao(codigoPedido:number, codigoCliente:number)
+  {
 
+  }
 }

@@ -9,12 +9,12 @@ import { PedidoCancelarComponent } from './pedido-cancelar/pedido-cancelar.compo
 const pedidoRoutes: Routes = [
   {path:'', component: PedidoComponent},  
   {path:'pedido-form',component:PedidoFormComponent},
-  {path:':codigoPedido',component:PedidoFormComponent,
+  {path:':codigoCliente/:codigoPedido',component:PedidoFormComponent,
         resolve:{
           pedido: PedidoResolveGuard
         },      
   },  
-  {path:'pedido-cancelar/:codigoPedido',component:PedidoCancelarComponent, 
+  {path:'pedido-cancelar/:codigoCliente/:codigoPedido',component:PedidoCancelarComponent, 
           resolve:{
                     pedido:PedidoResolveGuard
           },

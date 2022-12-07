@@ -9,20 +9,22 @@ import { AlertConfirmComponent } from './alert/alert-confirm/alert-confirm.compo
 
 
 @NgModule({
-    declarations: [
-        AlertComponent,
-        AlertConfirmComponent,
-        MsgErrorComponent,
-        FormDebugComponent
-    ],
-    imports: [
-        CommonModule,
-        MaterialModule
-    ],
-    exports: [
-        MaterialModule,
-        MsgErrorComponent,
-        FormDebugComponent
-    ]
+  declarations: [
+    AlertComponent,
+    AlertConfirmComponent,
+    MsgErrorComponent,
+    FormDebugComponent
+
+  ],
+  imports: [
+    CommonModule,
+    MaterialModule
+  ],
+  exports: [
+    MaterialModule,
+    MsgErrorComponent,
+    FormDebugComponent
+  ],
+  entryComponents: [AlertComponent, AlertConfirmComponent]
 })
 export class SharedModule { }

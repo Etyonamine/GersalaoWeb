@@ -5,129 +5,185 @@
   </div>
   <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
 
-    <div class="container" >
-      <mat-form-field appearance="fill" style="width: 10%;margin-top :5px;">
+    <div class="container">
+      <mat-form-field appearance="fill" style="width: 70px">
         <mat-label>N&uacute;mero</mat-label>
         <input matInput formControlName="numeroPedido" readonly />
-      </mat-form-field>     
-      <mat-form-field appearance="fill" style="width: 29%">
-        <mat-label>Data Vencimento Boleto</mat-label>
-        <input matInput [matDatepicker]="picker4" 
-              formControlName="dataPedido" 
-              matTooltip="Informar a data de pedido"
-              matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"                
-               />
-        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
-        <mat-datepicker #picker4></mat-datepicker>
       </mat-form-field>
-      <mat-form-field appearance="fill" style="width: 30%">
-        <mat-label>Quantidade - Total</mat-label>
-        <input matInput readonly [value] = " quantidadeTotal "/>
-      </mat-form-field >
-      <mat-form-field appearance="fill" style="width: 14%">
-        <mat-label>Valor - Total</mat-label>
-        <input matInput readonly [value] = "valorTotal  | currency:'BRL':'symbol':'1.2-2':'pt' " />
-      </mat-form-field>
-      <mat-form-field appearance="fill" style="width: 15%">
-        <mat-label>Situação</mat-label>
-        <input matInput readonly [value] = "situacao" />
-      </mat-form-field>
-     
-    </div>
-    <div class="container">
-      <!-- CLIENTE-->
-      <mat-form-field *ngIf="clientes" appearance="fill" style="width: 30%;margin-top: 5px;"
-      >
+      <mat-form-field *ngIf="clientes" appearance="fill" style="width: 300px">
         <mat-label>Selecione o cliente</mat-label>
-        <mat-select formControlName="codigoCliente" 
-                    matTooltip="codigo do cliente" 
-                    required 
-                    [disabled]="codigoPedido > 0 ">
-          <!--  <mat-option [value]="0"></mat-option> -->
+        <mat-select formControlName="codigoCliente" matTooltip="codigo do cliente" required>
+         <!--  <mat-option [value]="0"></mat-option> -->
           <mat-option *ngFor="let cliente of clientes" [value]="cliente.codigo">
             {{ cliente.codigo }} - {{ cliente.nome }}
           </mat-option>
         </mat-select>
-      </mat-form-field>    
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 250px">
+        <mat-label>Data-Pedido</mat-label>
+        <input matInput readonly [value]=" dataPedido | date:'dd/MM/yyyy HH:mm:ss' " />
+      </mat-form-field >
+      <mat-form-field appearance="fill">
+        <mat-label>Quantidade - Total</mat-label>
+        <input matInput readonly [value] = " quantidadeTotal "/>
+      </mat-form-field >
+      <mat-form-field appearance="fill">
+        <mat-label>Valor - Total</mat-label>
+        <input matInput readonly [value] = "valorTotal  | currency:'BRL':'symbol':'1.2-2':'pt' "/>
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 250px">
+        <mat-label>Data-Fechamento</mat-label>
+
+        <input matInput readonly
+             
+               [value]="dataFechto == null ? '' : dataFechto | date: 'dd/MM/YYYY'  " />
+
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 250px">
+        <mat-label>Situação</mat-label>
+        <input matInput formControlName="situacao" readonly
+          />
+      </mat-form-field>
+
+      <!--         <app-msg-error
+            [mostrarErro]="
+            formulario.get('nome').invalid &&
+            formulario.get('nome').hasError('required')
+            "
+            mensagemErro="Por favor, digite o nome completo! " >
+        </app-msg-error>
+ -->
+
+    </div>
     
-      <!--Adicionar novos itens-->
-      <!-- Produto-->
-      <mat-form-field appearance="fill" style="width: 30%;">
+    <div class="container">
+      <mat-form-field appearance="fill" class="observacao">
+        <mat-label>Observação</mat-label>
+        <textarea
+          matInput
+          formControlName="observacao"
+          maxlength="300"
+          placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
+          matTooltip="Digite aqui caso precise informar alguma observação do cliente."          
+        ></textarea>
+      </mat-form-field>
+    </div>
+    <div class="container">
+      <mat-divider></mat-divider>
+    </div>
+    <!-- Informações sobre o cancelamento-->
+    <div class="container">
+      <mat-form-field appearance="fill" >
+        <mat-label>Cancelamento em:</mat-label>
+        <input matInput readonly [value] = "pedido.dataCancelamento | date : 'dd/MM/yyyy HH:mm:ss'"       />
+      </mat-form-field>      
+    </div>
+    
+    <div class="container">
+      
+      <mat-form-field appearance="fill" class="motivoCancelamento" >
+        <mat-label>motivo do cancelamento</mat-label>
+        <textarea
+          matInput
+          formControlName="motivoCancelamento"
+          maxlength="300"          
+          placeholder="Informações sobre o cancelamento do pedido"
+          matTooltip="Detalhes do motivo do cancelamento do pedido"
+          readonly
+        ></textarea>
+      </mat-form-field>
+    </div>
+    <div class="container">
+      <mat-divider></mat-divider>
+    </div>
+    <!--Adicionar novos itens-->
+    <div class="container" disabled ="formulario.get('situacao').value !='Aberto'"  >
+      <mat-form-field  appearance="fill" style="width: 300px"
+      >
         <mat-label>Selecione um Produto</mat-label>
-        <mat-select [formControlName]="'codigoProdutoSelecionado'" matTooltip="lista de produtos"
-          (selectionChange)="preencherValorProdutoSelecionado($event.value)"
-          [disabled]="codigoPedido > 0 ">
+        <mat-select 
+                    [formControlName]="'codigoProdutoSelecionado'"
+                    matTooltip="lista de produtos"                     
+                    (selectionChange)="preencherValorProdutoSelecionado($event.value)">
           <mat-option [value]="0"></mat-option>
           <mat-option *ngFor="let produto of produtos" [value]="produto.codigo">
             {{ produto.nome }}
           </mat-option>
         </mat-select>
       </mat-form-field>
-    
-      <mat-form-field appearance="fill" style="width: 15%;">
-        <mat-label>Valor Produto</mat-label>
-        <input matInput class="right-align" 
-              [(ngModel)]="valorProdutoSel" 
-              [ngModelOptions]="{standalone: true}"
-              placeholder="Valor do produto" 
-              placeholder="0.000,00" 
-              [disabled]="codigoPedido > 0"
-              (keypress)="allowNumericDigitsOnlyOnKeyUp($event)" />
+
+      <mat-form-field appearance="fill">
+        <mat-label>Valor Produto</mat-label>             
+        <input
+          matInput                                       
+          class="right-align"                         
+          [(ngModel)] = "valorProdutoSel"    
+          [ngModelOptions]="{standalone: true}"          
+          placeholder="Valor do produto"
+          placeholder="0.000,00"                                       
+          [disabled]="formulario.get('situacao').value !='Aberto' "                            
+        />
         <!-- <span matPrefix>R$&nbsp;</span> -->
         <!-- <span matSuffix>,00</span> -->
-      </mat-form-field>
-      <mat-form-field appearance="fill" style="text-align: right;width: 15%;">
-        <mat-label>Quantidade</mat-label>
-        <input [(ngModel)]="quantidadeProdutoSel" [ngModelOptions]="{standalone: true}" matInput type="number" step="1"
-          min="0" autocomplete="off" class="right-align" placeholder="Digite a quantidade total a adicionar"
-          matTooltip="Quantidade de produto(s)" [disabled]="formulario.get('situacao').value !='Pendente'" />
+      </mat-form-field>  
+      <mat-form-field appearance="fill"  style="text-align: right;">
+        <mat-label>Quantidade</mat-label>             
+        <input 
+          [(ngModel)] = "quantidadeProdutoSel"   
+          [ngModelOptions]="{standalone: true}"
+          matInput                                       
+          type="number"
+          step="1"
+          min="0"
+          autocomplete="off"
+          class="right-align"               
+          placeholder="Digite a quantidade total a adicionar"  
+          matTooltip="Quantidade de produto(s)" 
+          [disabled]="formulario.get('situacao').value !='Aberto'"             
+        />                
         <!-- <span matSuffix>,00</span> -->
-      </mat-form-field>
+      </mat-form-field> 
       &nbsp;
-      <button mat-raised-button color="primary" id="btnAdicionarProduto"
-        [disabled]="codigoPedido > 0" 
-        (click)="adicionarListaItem()">
+      <button mat-raised-button color="primary" 
+            id="btnAdicionarProduto"
+            [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid "
+            (click)="adicionarListaItem()"              
+              >
         Adicionar Item &nbsp;<i class="material-icons right">add</i>
       </button>
-    
+      
     </div>
     <div class="container">
       <mat-divider></mat-divider>
     </div>
-    
-    <div class="container">
+    <div class="form-group mat-container">
       <div style="width: 100%;">
         <table class="mat-elevation-z8">
           <thead class = "itemPedidoTabela">
             <tr>
-              <th colspan="5" style="text-align: center;font-size:medium;">Lista de Itens do Pedido</th>
-            </tr>
-            <tr>
-              <th style="width:40% ">Produto</th>
-              <th style="width:20% ">Valor-Venda</th>
-              <th style="width:10%  ">Quantidade</th>
-              <th style="width:20% ">Valor-Total</th>
-              <th style="width:10%">Ações</th>
+              <th>Produto</th>
+              <th>Valor-Venda</th>
+              <th>Quantidade</th>
+              <th>Valor-Total</th>
+              <th>Ações</th>
             </tr>            
           </thead>          
-          
-          
-          <tbody style="text-align: center;" *ngIf="itensPedidos2.length > 0 "> 
-              <tr *ngFor="let item of itensPedidos2" >
-                <td style="width:40%;text-align: left;">{{item.produto !== null ?item.produto.nome : ' '}}</td>
-                <td style="width:20%">{{item.valorVenda | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>
-                <td style="width:20%">{{item.quantidade}}</td>                
-                <td style="width:20%">{{(item.valorVenda * item.quantidade)  | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>                
+          <tbody *ngIf="itensPedidos2" style="text-align: center;" > 
+              <tr  *ngFor="let item of  itensPedidos2" >
+                <td>{{item.produto.nome}}</td>
+                <td>{{item.valorVenda | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>
+                <td>{{item.quantidade}}</td>                
+                <td>{{(item.valorVenda * item.quantidade)  | currency:'BRL':'symbol':'1.2-2':'pt'}}</td>                
                 <td>
                   <button mat-raised-button color="warn"
-                    [disabled]="codigoPedido > 0"                    
+                    [disabled]="formulario.get('situacao').value !='Aberto'"                    
                     (click) = "removeListaItem(item.codigoProduto)"
                     >Remover Item &nbsp;<i class="material-icons right">remove</i>
                   </button>
                   <!-- <button mat-mini-fab 
                   color="warn" 
                   aria-label="apagar item do pedido" 
-                                    [disabled]="formulario.get('situacao').value !='Pendente'"
+                                    [disabled]="formulario.get('situacao').value !='Aberto'"
                   
                   >
                     <mat-icon>delete</mat-icon>
@@ -137,71 +193,41 @@
           </tbody>          
         </table>
       </div>
-    
-    </div>
-   
-    <div class="container">
-      <mat-divider></mat-divider>
-    </div>
-    <div class="container">
-      <mat-form-field appearance="fill" style="width: 100%;">
-        <mat-label>Observação</mat-label>
-        <textarea
-          matInput
-          formControlName="observacao"
-          maxlength="300"
-          placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
-          matTooltip="Digite aqui caso precise informar alguma observação do cliente."          
-          [disabled] = "codigoPedido > 0"
-        ></textarea>
-      </mat-form-field>
-    </div>
-    <div class="container">
-      <mat-divider></mat-divider>
-    </div>
-    <br />
-    <app-msg-error
-    [mostrarErro]="semEstoque"
-    [mensagemErro]="mensagemSemEstoque"
-  ></app-msg-error>
-
-    <!-- botoes *********************************************************************************************************-->        
-    <div class="container">
+      <!-- botoes *********************************************************************************************************-->
       <div style="margin-top: 10px">
-      <table>
-        <tr>              
-          <td  style="text-align: left;">
-              <button        
-              id="btnSalvar"                         
-              mat-raised-button
-              color="primary"
-              [disabled]="!formulario.valid || codigoPedido > 0 || itensPedidos2 === null || itensPedidos2.length === 0 "
-              (click)="submit()"
-            >
-              Salvar &nbsp;<i class="material-icons right">save</i>
-            </button>              
-            &nbsp;
-            <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
-              [disabled]="formulario.get('situacao').value !='Pendente' || !formulario.valid || quantidadeTotal == 0 || itensPedidos2 === null || itensPedidos2.length === 0"
-              type="button">
-              Baixar pagamento &nbsp;<i class="material-icons right">paid</i>
-            </button>
-            &nbsp;
-            <button mat-raised-button color="accent" (click)="limparCampos()"
-            [disabled]="formulario.get('situacao').value !='Pendente' || !formulario.valid || codigoCliente > 0"
-            >
-              Limpar Campos &nbsp;<i class="material-icons right">backspace</i>
-            </button>            
-            &nbsp;
-            <button mat-raised-button color="primary" (click)="retornar()">
-              Retornar &nbsp;<i class="material-icons right">reply</i>
-            </button>            
-          </td>
-        </tr>
-      </table>
+        <table>
+          <tr>              
+            <td  style="text-align: left;">
+                <button        
+                id="btnSalvar"                         
+                mat-raised-button
+                color="primary"
+                [disabled]="!formulario.valid || formulario.get('situacao').value !='Aberto'"
+                (click)="submit()"
+              >
+                Salvar &nbsp;<i class="material-icons right">save</i>
+              </button>              
+              &nbsp;
+              <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
+                [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid || quantidadeTotal == 0"
+                type="button">
+                Salvar e baixar pagamento &nbsp;<i class="material-icons right">paid</i>
+              </button>
+              &nbsp;
+              <button mat-raised-button color="accent" (click)="limparCampos()"
+              [disabled]="formulario.get('situacao').value !='Aberto' || !formulario.valid"
+              >
+                Limpar Campos &nbsp;<i class="material-icons right">backspace</i>
+              </button>            
+              &nbsp;
+              <button mat-raised-button color="primary" (click)="retornar()">
+                Retornar &nbsp;<i class="material-icons right">reply</i>
+              </button>            
+            </td>
+          </tr>
+        </table>
+      </div>   
     </div>
-    </div>
-    
   </form>
    
 </mat-card>

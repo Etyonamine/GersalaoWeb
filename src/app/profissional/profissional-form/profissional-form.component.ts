@@ -3,7 +3,7 @@ import { ProfissionalServico } from './../profissional-servico/profissional-serv
 import { ProfissionalService } from 'src/app/profissional/profissional.service';
 import { AuthService } from './../../auth-guard/auth.service';
 import { Municipio } from './../../shared/municipios/municipio';
-import { UntypedFormGroup, UntypedFormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { UnidadeFederativa } from 'src/app/shared/UnidadeFederativa/unidadeFederativa';
 import { Profissional } from '../professional';
@@ -34,7 +34,6 @@ import { ProfissionalEnderecoService } from '../profissional-endereco/profission
 import { EnderecoService } from 'src/app/endereco/endereco.service';
 import { ProfissionalTipoServicoService } from '../profissional-tipo-servico/profissional-tipo-servico.service';
 import { ProfissionalServicoService } from '../profissional-servico/profissional-servico.service';
-import { ProfissionalFinanceiroComponent } from '../profissional-financeiro/profissional-financeiro.component';
 
 
 @Component({
@@ -47,7 +46,7 @@ import { ProfissionalFinanceiroComponent } from '../profissional-financeiro/prof
 })
 export class ProfissionalFormComponent extends BaseFormComponent implements OnInit, OnDestroy {
   codigo = 0;
-  formulario: UntypedFormGroup;
+  formulario: FormGroup;
 
   profissional: Profissional;
   profissionalEnderecos: Array<ProfissionalEndereco> = [];
@@ -91,7 +90,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
 
   salvarRegistro$: Subscription;
 
-  constructor(private formBuilder: UntypedFormBuilder,
+  constructor(private formBuilder: FormBuilder,
               private profissionalService: ProfissionalService,
               private profissionalContatoService: ProfissionalContatoService,
               private contatoService: ContatoService,
@@ -119,7 +118,7 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     this.criarFormulario();
     this.dadosEndereco =  {} as Endereco;
     this.authService.getUserData();
-    this.codigoUsuario = Number(this.authService.usuarioLogado.codigo);
+    this.codigoUsuario = this.authService.usuarioLogado.Codigo;
     
   }
 
@@ -464,18 +463,6 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
        height: '600px;',
        data : { origemChamada: 2, codigoProfissional: this.codigo, codigoUsuario : this.codigoUsuario} }
     );
-  }
-  openDialogFinanceiro(){
-    const dialogRef = this.dialog.open(ProfissionalFinanceiroComponent,
-      { width: '450px' ,
-       height: '600px;',
-       data : { codigoProfissional: this.codigo, codigoUsuario : this.codigoUsuario, valorComissao : this.profissional.valorComissao} }
-    );
-    dialogRef.afterClosed().subscribe(result => {
-      if (result !== '' && (this.profissional.valorComissao.toFixed(2) !== Number.parseFloat(result).toFixed(2))) {
-        this.profissional.valorComissao = Number.parseFloat(result);
-      }
-    });
   }
   openDialogTipoServico() {
     const dialogRef = this.dialog.open(ProfissionalTipoServicoComponent,

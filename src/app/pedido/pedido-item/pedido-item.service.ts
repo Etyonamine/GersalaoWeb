@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { BaseService } from 'src/app/shared/base.service';
 import { environment } from 'src/environments/environment';
-import { Pedido } from '../pedido';
 import { PedidoItem } from './pedido-item';
 
 @Injectable({
@@ -45,24 +44,8 @@ export class PedidoItemService extends BaseService<PedidoItem>{
   
   }
 
-  salvarNovoRegistro(item:PedidoItem){    
-    return this.http.post<PedidoItem>(this.url,item).pipe(take(1));
-  }
-
-  atualizarRegistro (item: PedidoItem)
-  {
-    let urlAtualiza = this.url + `/${item.codigoPedido}/${item.codigo}`;
-    return this.http.put<PedidoItem>(urlAtualiza,item).pipe(take(1));
-  }
-  
-  excluirItem(codigoItem:number, codigoPedido:number  ){
-    let urlDelete = this.url + `/${codigoPedido}/${codigoItem}`;
+  excluirItem(codigoItem:number, codigoPedido:number , codigoCliente:number){
+    let urlDelete = this.url + `/${codigoCliente}/${codigoPedido}/${codigoItem}`;
     return this.http.delete(urlDelete).pipe(take(1));
-  }
-
-  listaPorPedido(codigoPedido : number){
-    let urllista = this.url + `/ListaPorPedido/` + codigoPedido;
-    return this.http.get<PedidoItem[]>(urllista).pipe(take(1));
-    
   }
 }
