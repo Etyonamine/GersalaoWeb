@@ -4,7 +4,10 @@ import { LoginService } from './../login/login.service';
 import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from './../login/login';
-import { NullTemplateVisitor } from '@angular/compiler';
+import { concatMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { UsuarioService } from '../usuario/usuario.service';
+import { Logged } from '../login/logged.component';
 
 
 @Injectable({
@@ -12,59 +15,62 @@ import { NullTemplateVisitor } from '@angular/compiler';
 })
 export class AuthService {
   usuarioPesquisado: Login;
-  usuarioLogado: Usuario = {
-    Codigo: 0, Login: '',
-    Nome: ''
+  usuarioLogado: Logged = {
+    codigo : "0",
+    login: ''
   };
+
+  tokenStorage: string ='tokenAuthentic';
+  loginStorage: string = 'loginAuthentic';
+
   usuarioAutenticado = false;
   mostrarMenuEmitter = new EventEmitter<boolean>();
-
+  Codigo : number; 
+  token : string;
 
   constructor(
     private router: Router,
     private loginService: LoginService,
+    private usuarioService: UsuarioService,
     private alertService: AlertService
   ) {}
 
 
   fazerLogin(usuario: Login) {
 
-    const login: Login =  { login: usuario.nome, senha: usuario.senha , Autenticado : usuario.Autenticado} as Login;
-
+    const login =  { login: usuario.login, senha: usuario.senha , Autenticado : usuario.Autenticado} as Login;
+    let usuarioEncontrado = {} as Usuario;
+    this.mostrarMenuEmitter.emit(false);
     // pesquisando na base de dados
-    this.loginService.validarLogin(login).subscribe(
-      (httpLogin) => {
-        if (httpLogin) {
+    this.loginService.validarLogin(login)
+                      .subscribe(resposta => {
+                                  if (resposta!== null)
+                                  {   
+                                      let usuarioStorage = {
+                                                            codigo : resposta.codigo,
+                                                            login : resposta.login
+                                                          } as Logged;
 
-          this.usuarioLogado =  {} as Usuario;
-
-          this.usuarioLogado.Codigo = httpLogin.codigo;
-          this.usuarioLogado.Nome = httpLogin.nome;
-          this.usuarioLogado.Login = httpLogin.login;
-
-
-          localStorage.setItem('user_logged', JSON.stringify(this.usuarioLogado));
-          this.usuarioPesquisado = httpLogin;
-          this.usuarioAutenticado = true;
-          this.mostrarMenuEmitter.emit(true);
-          // this.router.navigate(['/home']);
-
-          this.router.navigate(['/home']);
-        } else {
-          this.alertService.mensagemErro('Usuário ou senha inválido!');
-        }
-      },
-      (error) => {
-        console.error(error.error);
-        if (error.status = "404"){
-          this.alertService.mensagemExclamation('Usuario ou senha inválido!');
-        }else{
-          this.alertService.mensagemErro('Ocorreu um erro ao tentar validar o seu acesso!');
-        }
-        
-        return;
-      }
-    );
+                                      localStorage.setItem(this.tokenStorage, JSON.stringify(resposta.tokenAutorizacao));                                      
+                                      localStorage.setItem(this.loginStorage, JSON.stringify(usuarioStorage));          
+                                       
+                                      this.mostrarMenuEmitter.emit(true);
+                                      this.usuarioAutenticado = true;
+                                      this.router.navigate(['/home']); 
+                                  }else{
+                                    this.alertService.mensagemExclamation('Usuario ou senha inválido!');
+                                  }     
+                                }, error => {
+                                    console.error(error.error);
+                                    if (error.status = "404"){
+                                      this.alertService.mensagemExclamation('Usuario ou senha inválido!');
+                                    }else{
+                                      this.alertService.mensagemErro('Ocorreu um erro ao tentar validar o seu acesso!');
+                                    }
+                                    
+                                    return;
+                                  }
+                                );
   }
 
   usuarioEstaAutenticado() {
@@ -72,14 +78,32 @@ export class AuthService {
   }
 
   fazerLogout() {
+    localStorage.removeItem(this.loginStorage);
+    localStorage.removeItem(this.tokenStorage);
     this.usuarioAutenticado = false;
+    this.usuarioLogado = {} as Logged;
     this.mostrarMenuEmitter.emit(false);
     this.router.navigate(['/login']);
+    
   }
 
   getUserData() {
 
-    this.usuarioLogado = JSON.parse(localStorage.getItem('user_logged'));
-    this.usuarioAutenticado = this.usuarioLogado != null;
+    
+    let loginStorage : Login = localStorage.getItem(this.loginStorage)?
+                          JSON.parse(localStorage.getItem(this.loginStorage)):null;
+    if (loginStorage!=null){
+      this.usuarioAutenticado = this.getObterTokenUsuario() ;      
+      this.usuarioLogado.login = atob(loginStorage.login);      
+      this.usuarioLogado.codigo = atob(loginStorage.codigo);
+    }    
+ }
+ getObterTokenUsuario()
+ {
+    return localStorage.getItem(this.tokenStorage) ? true : false;
+ }
+ recuperarToken(){
+  this.token = localStorage.getItem(this.tokenStorage) ? JSON.parse(atob(localStorage.getItem(this.tokenStorage)))  : null;
+  
  }
 }

@@ -49,8 +49,17 @@
           <span matPrefix>R$&nbsp;</span>
           <!-- <span matSuffix>,00</span> -->
         </mat-form-field>
-
-
+        <mat-form-field appearance = "fill">
+          <mat-label>Valor Comiss&atilde;o (%)</mat-label>
+          <input 
+          matInput
+          formControlName = "valorComissao"
+          type = "number"
+          class="right-align"
+          required
+          placeholder="Digite o percentual de comissão"/>
+        </mat-form-field>
+        &nbsp;
         <mat-label>Situação:</mat-label>
         &nbsp;
         <mat-radio-group

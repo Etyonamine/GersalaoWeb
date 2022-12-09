@@ -1,5 +1,6 @@
 export class Usuario {
-    Codigo: number;
-    Login: string;
-    Nome: string;
+    codigo: number;
+    login: string;
+    nome: string;
+    tokenAutenticado : string;
 }

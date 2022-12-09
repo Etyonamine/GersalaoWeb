@@ -8,14 +8,13 @@ import { ClienteFormComponent } from './cliente-form/cliente-form.component';
 
 const clienteRoutes: Routes = [
   {path:'', component: ClienteComponent},
-  {path:'cliente-novo',
-      component:ClienteFormComponent},
-      {
-        path:':codigo',
-        component:ClienteFormComponent,
-        resolve:{
-          cliente: ClienteResolveGuard
-      }
+  {path:'cliente-novo', component:ClienteFormComponent},
+  {
+    path:':codigo',
+    component:ClienteFormComponent,
+    resolve:{
+      cliente: ClienteResolveGuard
+    }
   }
 ];
 

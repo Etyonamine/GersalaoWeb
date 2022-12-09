@@ -1,36 +1,45 @@
 import { AlertService } from './../shared/alert/alert.service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { AuthService } from '../auth-guard/auth.service';
 import { Login } from './login';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { BaseFormComponent } from '../shared/base-form/base-form.component';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent extends BaseFormComponent implements OnInit {
+  
+
   hide: boolean = true;
-
-
   login: Login = <Login>{};
+  formulario:UntypedFormGroup;
 
 
-
-  constructor(
+  constructor(private formBuilder: UntypedFormBuilder,
               private authService:AuthService,
-              private alertService: AlertService) { }
+              private alertService: AlertService) {
+                super();
+               }
 
   ngOnInit(): void {
-
+    this.criarFormulario();
   }
-
-  fazerLogin(){
-
+  submit() {
+    this.login.login = this.formulario.get("login").value;
+    this.login.senha = this.formulario.get("senha").value;
     this.authService.fazerLogin(this.login);
-
   }
-
+  criarFormulario(){
+      //formulario cliente
+    this.formulario = this.formBuilder.group({
+      login: [null, Validators.required],
+      senha: [null, Validators.required]
+    });
+  }
+ 
   alert(){
     this.alertService.mensagemErro('testando no login');
   }

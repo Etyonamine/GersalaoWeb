@@ -1,3 +1,5 @@
+import { TipoEndereco } from "../tipo-endereco/tipo-endereco";
+
 export interface Endereco{
   codigo:number;
   codigoTipoEndereco :number;
@@ -13,4 +15,5 @@ export interface Endereco{
   codigoUsuarioCadastrado:number;
   dataAlteracao :Date;
   codigoUsuarioAlteracao:number;
+  tipoEndereco : TipoEndereco;
 }

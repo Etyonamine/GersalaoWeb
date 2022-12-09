@@ -1,6 +1,5 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,7 +26,7 @@ import { CompraServiceService } from '../compra-service.service';
 })
 export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   compra: Compra;
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   codigo: number;
   tituloPagina:string;
   habilitaApagar:boolean;
@@ -48,16 +47,16 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
   events: string[] = [];
   dataMaximaCompra : Date = new Date(new Date().toDateString());
-  dataCompraHoje = (c:FormControl)=>{
+  dataCompraHoje = (c:UntypedFormControl)=>{
     let valor = new Date(c.value);
 
     return (valor.getDate() <= this.dataMaximaCompra.getDate()) ? true:false;    
   }
 
-  date = new FormControl(new Date());
-  serializedDate = new FormControl(new Date().toISOString());
+  date = new UntypedFormControl(new Date());
+  serializedDate = new UntypedFormControl(new Date().toISOString());
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
@@ -101,15 +100,15 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     }
   }
   criacaoFormulario(){
-    let hoje = new Date();
-
+    let dataBoleto = new Date();
+    dataBoleto.setDate(dataBoleto.getDate()+30);
     //formulario cliente
     this.formulario = this.formBuilder.group({
       codigo: [this.compra.codigo],
       valor: [this.compra.valor,[Validators.required,Validators.min(1), Validators.max(9999)]],
-      dataCompra: [this.compra.dataCompra === null? new Date:this.compra.dataCompra, [Validators.required,this.dataCompraHoje]],      
-      dataVenctoBoleto:[this.compra.dataVenctoBoleto === null?new Date: this.compra.dataVenctoBoleto,[Validators.required]],
-      dataPagtoBoleto:[this.compra.dataPagtoBoleto],
+      dataCompra: [this.compra.dataCompra === null? new Date() : this.compra.dataCompra, [Validators.required,this.dataCompraHoje]],      
+      dataVenctoBoleto:[this.compra.dataVenctoBoleto === null ? dataBoleto : this.compra.dataVenctoBoleto,[Validators.required]],
+      dataPagtoBoleto:[this.compra.dataPagtoBoleto!== null ? this.compra.dataPagtoBoleto : null],
       observacao:[this.compra.observacao]
     });
   }
@@ -117,59 +116,44 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 		const charCode = e.which ? e.which : e.keyCode;
 		if (charCode !== 190 && charCode !== 46 && charCode!==44){
       if (charCode > 31  && (charCode < 48 || charCode > 57)) {
-        this.handleError("Por favor, informar apenas numeros e casas decimais");
+        this.handleError("Por favor, informar apenas numeros e casas decimais");        
       }
-    }
-		
+    }	 
 	}
   submit() {
      
-    let dataCompraParam =  new Date(this.formulario.get('dataCompra').value );
+    let dataCompraParam = new Date(new Date(this.formulario.get('dataCompra').value));
+    
     let dataBoletoParam = new Date(this.formulario.get('dataVenctoBoleto').value);
     let valorTotalParam = this.formulario.get('valor').value;
        
-    if ( dataCompraParam.getDate() > dataBoletoParam.getDate()){
+    if ( dataCompraParam.getTime() > dataBoletoParam.getTime()){
       this.handleError('Por favor, verificar se a data de boleto está correta');
       return false;
     }
 
     //preeenchendo o objeto compra.
     this.compra.codigo = 0;    
-    this.compra.dataCompra = new Date(dataCompraParam.toDateString());
+    this.compra.dataCompra = dataCompraParam;
     this.compra.dataVenctoBoleto = dataBoletoParam;    
     this.compra.valor = parseFloat(valorTotalParam);
     this.compra.observacao = this.formulario.get('observacao').value;
-    this.compra.dataCadatro = new Date();
-    
+    this.compra.dataCadastro = this.dataHoraAtualSemTimeZone();
+    let codigoCompraDetalhe:number = 1;
     //salvando o registro.
     this.inscricao$ =  this.compraService.save(this.compra)
                                         .pipe(
                                           concatMap( (result:Compra) =>
                                             {
 
-                                              let codigoCompra  = result.codigo;
-                                              /* this.listaCompraDetalhe.forEach(detalhe=>{
-                                                  detalhe.codigo = 0 ;                                                      
-                                                  detalhe.produto = null;                                                                                                
-                                                  detalhe.codigoCompra = codigoCompra;
-                                                  detalhe.dataCadastro = new Date();
-                                                  this.inscricaoDetalhe$ = this.compraDetalheService.save(detalhe)
-                                                                          .subscribe(result=>{},error=>{                                                                            
-                                                                            this.compraDetalheService.excluirTodosProdutos(codigoCompra).subscribe();
-                                                                            this.compraService.delete(codigoCompra).subscribe();
-                                                                            console.log(error);
-                                                                            this.handleError('Ocorreu um erro ao tentar salvar um produto da compra.Será desfeito a operação.');
-                                                                          });
-
-
-                                              }) */
-                                               
                                               
                                               this.listaCompraDetalhe.forEach(detalhe =>{
+
                                                 detalhe.codigoCompra = result.codigo;
-                                                detalhe.dataCadastro = new Date();
+                                                detalhe.codigo = codigoCompraDetalhe;
+                                                detalhe.dataCadastro = this.dataHoraAtualSemTimeZone();
                                                 detalhe.produto = null;
-                                                
+                                                codigoCompraDetalhe++;
                                               })
 
                                               this.inscricaoDetalhe$ = this.compraDetalheService.salvarLista(this.listaCompraDetalhe)
@@ -228,7 +212,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
   } 
   retornar()
   {
-    this.router.navigate(['/compra']);    
+    this.router.navigate(['compra']);    
   }
   handleError(msg:string)
   {
@@ -277,7 +261,6 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
 
     let index  = this.listaCompraDetalhe.findIndex(x=>x.codigoProduto == this.codigoProdutoAdd && x.valorUnitario == valorUnitarioParam);
     
-
     if (index !== -1){        
         this.listaCompraDetalhe[index].quantidadeProduto += this.quantidadeProdutoAdd;        
     }
@@ -293,8 +276,8 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
    // this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
     //limpando os campos
     this.codigoProdutoAdd = 0;
-    this.quantidadeProdutoAdd = null;
-    this.valorUnitarioAdd = null;  
+    this.quantidadeProdutoAdd = 1;
+    this.valorUnitarioAdd = 0;  
   }
 
   adicionarLista(){
@@ -330,8 +313,15 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
     this.formulario.controls['valor'].setValue(this.valorTotalProdutoAdd);
 
   }
+  calcularDataBoleto(){
+    let dataBoleto = new Date(this.formulario.get("dataCompra").value);
+    dataBoleto.setDate( dataBoleto.getDate() + 30 );
+
+    this.formulario.controls["dataVenctoBoleto"].setValue(dataBoleto);
+  }
+
   addEventDigitarESelecionarBoleto(type: string, event: MatDatepickerInputEvent<Date>) {
-    let dataBoleto = new Date(event.value);
+    let dataBoleto =   new Date(event.value);
     if (type === "input"){
       
       if (event.value !== null )
@@ -361,9 +351,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
                                                 let objCompra = result; 
                                                 i : Number;
                                                 objCompra.listaCompraDetalhe.forEach(detalhe=>{
-                                                  let index = this.produtos.findIndex(x=>x.codigo == detalhe.codigoProduto);                                 
-                                                  detalhe.produto = this.produtos[index];
-
+                                                  detalhe.produto = this.produtos.find(x=>x.codigo == detalhe.codigoProduto);
                                                  })
                                                /*  for ( let i=0; i <= (itotal-1);i++){
                                                     
@@ -405,10 +393,7 @@ export class CompraEditComponent  extends BaseFormComponent implements OnInit {
       }
     );
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-      
-      this.inscricao$ = this.compraService.get<Compra>(this.codigo).subscribe(result=>{
-        
+      this.inscricao$ = this.compraService.get<Compra>(this.codigo).subscribe(result=>{        
         this.formulario.controls['dataPagtoBoleto'].setValue( result.dataPagtoBoleto);
       },error=>{
         console.log(error);

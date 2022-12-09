@@ -10,11 +10,11 @@ import { AgendaServicos } from './agenda-servicos';
 })
 export class AgendaServicosService extends BaseService<AgendaServicos> {
 
-  constructor(protected http : HttpClient) { super(http, `${environment.API}agendaservicos` );}
-  url : string = `${environment.API}agendaservicos`;
+  constructor(protected http : HttpClient) { super(http, `${environment.API}agendas` );}
+  url : string = `${environment.API}agendas`;
 
   quantidadePorProfissional(codigo:number){
-    return this.http.post(`${this.url}?codigoProfissional=${codigo}`, null).pipe(take(1));
-     
+    let urlQuantidade = this.url + '/quantidadePorProfissional/'+ codigo.toString();
+    return this.http.post(urlQuantidade, null).pipe(take(1));     
   }
 }

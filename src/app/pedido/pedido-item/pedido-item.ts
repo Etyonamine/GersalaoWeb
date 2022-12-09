@@ -4,8 +4,7 @@ import { Pedido } from "../pedido";
 
 export class PedidoItem{
     codigo: number;
-    codigoPedido: number;
-    codigoCliente: number;
+    codigoPedido: number;    
     codigoProduto: number;
     valorCusto: number;
     valorVenda: number;
@@ -13,8 +12,7 @@ export class PedidoItem{
     numeroPedido: string;
     dataCadastro: Date;
     dataAlteracao:Date;
-    pedido: Pedido;
-    cliente: Cliente;
+    pedido: Pedido;    
     produto: Produto;
 
 }

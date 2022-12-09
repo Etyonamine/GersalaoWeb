@@ -1,0 +1,36 @@
+.container .mat-form-field + .mat-form-field {
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.container{
+  text-align: center;
+}
+
+  .campoHora{
+    width: 100px;
+  }
+  .mat-form-field + .mat-form-field {
+    margin-left: 5px;
+    margin-top: 5px;        
+  } 
+  th, td {
+    padding: 5px;
+    border : 1px solid black;
+  }
+  mat-card-header{
+    text-align: center;
+    font-size: large;
+    height: 30px;
+    background-color: lightsteelblue;
+    color: black;
+    vertical-align: middle;
+  }
+  mat-card-subtitle{
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+  mat-card-content{
+    margin-left: 5px;
+    margin-top: 5px;
+    background-color: white;
+  }

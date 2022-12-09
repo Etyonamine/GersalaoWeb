@@ -10,3 +10,20 @@ table{
     padding: 5px;
     border : 1px solid black;
   }
+  .alinhaDireita{
+    display:flex;
+    justify-content:flex-end;
+    
+  }
+
+  tr.mat-footer-row {
+    font-weight: bold;
+  }
+
+  .mat-footer-cell{
+    background-color: lightsteelblue;
+    color: black;
+    font-weight: bold;
+    display:flex;
+    justify-content:flex-end;
+  }

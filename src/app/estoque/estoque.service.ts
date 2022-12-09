@@ -35,10 +35,12 @@ export class EstoqueService extends BaseService<Estoque>{
 
     return this.http.get<Estoque[]>(this.url,{params}).pipe(take(1));
   }
+
   estoqueTotal2(){
     let urlEstoqueTotal = this.url + '/EstoqueTotal';
     this.http.get(urlEstoqueTotal).pipe(take(1));
   }
+
   estoqueTotal<ApiResult>(pageIndex: number,
           pageSize: number,
           sortColumn: string,
@@ -67,11 +69,13 @@ export class EstoqueService extends BaseService<Estoque>{
     
     return this.http.post(urlValorVenda,null).pipe(take(1));
   }
+
   valorCusto(codigoProduto){
     let urlValorCusto= this.url + '/valorCusto?codigoProduto=' + codigoProduto.toString();
     
     return this.http.post(urlValorCusto,null).pipe(take(1));
   }
+
   estoquePorProduto(codigoProduto:number){
     let urlestoquePorProduto= this.url + '/estoquePorProduto?codigoProduto=' + codigoProduto.toString();
     
@@ -83,14 +87,35 @@ export class EstoqueService extends BaseService<Estoque>{
     
     return this.http.post<Estoque[]>(urlestoqueProdutosDisponiveis,null).pipe(take(1));
   }
-  baixarEstoque(codigoProduto: number, quantidade: number){
-    let urlbaixarEstoque= this.url + "/BaixaDeEstoque?codigoProduto=" + codigoProduto.toString() + "&quantidade=" + quantidade.toString() ;
+
+  baixarEstoque(estoque : Estoque){
+    let urlbaixarEstoque= this.url + "/BaixaDeEstoque";
     
-    return this.http.post<Estoque[]>(urlbaixarEstoque,null).pipe(take(1));
+    return this.http.post<Estoque[]>(urlbaixarEstoque,estoque).pipe(take(1));
   }
+
   adicionarQuantidadePorProduto(codigoProduto: number, quantidade: number){
     let urlAdcionarPorProdutoEstoque= this.url + "/AdicionarProdutoNoEstoque?codigoProduto=" + codigoProduto.toString() + "&quantidade=" + quantidade.toString() ;
     
     return this.http.post<Estoque[]>(urlAdcionarPorProdutoEstoque,null).pipe(take(1));
+  }
+
+  quantidadeEstoqueDisponivelPorProduto(codigoProduto:number){
+    let urlquantidadeEstoque= this.url + "/QuantidadeDisponivelPorProduto?codigoProduto=" + codigoProduto  ;
+    
+    return this.http.post<number>(urlquantidadeEstoque,null).pipe(take(1));
+  }
+  
+  estoqueProdutosQuantidadeTotal(){
+    let urlquantidadeEstoque= this.url + "/estoqueProdutosQuantidadeTotal";
+    
+    return this.http.post<Estoque[]>(urlquantidadeEstoque,null).pipe(take(1));
+  }
+
+  estoqueListaProdutosQuantidadeTotal(lista : Array<number>){
+    //EstoqueListaProdutosQuantidadeTotal
+    let urlListaquantidadeEstoque= this.url + "/EstoqueListaProdutosQuantidadeTotal";
+    
+    return this.http.post<Estoque[]>(urlListaquantidadeEstoque,lista).pipe(take(1));
   }
 }

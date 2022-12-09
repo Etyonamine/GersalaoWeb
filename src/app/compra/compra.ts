@@ -7,7 +7,7 @@ export interface Compra{
     quantidadeProduto: number;
     dataVenctoBoleto: Date;
     dataPagtoBoleto: Date;
-    dataCadatro: Date;
+    dataCadastro: Date;
     observacao: string;
     listaCompraDetalhe: CompraDetalhe[];
 }
