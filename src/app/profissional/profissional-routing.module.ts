@@ -5,15 +5,17 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { ProfissionalResolveGuard } from './guard/profissional-resolver.guard';
 
+
 const rotas: Routes = [
-  {path:'', component: ProfissionalComponent}  ,
+  {path:'', component: ProfissionalComponent}  , 
   {path:'profissional-novo',
-        component:ProfissionalFormComponent},
+        component:ProfissionalFormComponent},  
   {path:':codigo',
         component:ProfissionalFormComponent,
-      resolve:{
+     resolve:{
         profissional: ProfissionalResolveGuard
       }}
+ 
 ];
 
 @NgModule({

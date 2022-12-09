@@ -1,0 +1,107 @@
+<mat-card>
+    <mat-card-header>
+        Lista de Apurações de Profissionais
+    </mat-card-header>
+    <mat-card-content>
+        <div>
+            <button 
+            mat-raised-button
+            color="primary"
+            (click)="clearDate($event)">
+              Limpar
+          </button> 
+          &nbsp;&nbsp;
+          <mat-form-field [hidden]="!listaApuracoes" style="width: 15%">          
+           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+           <mat-datepicker #picker (change) ="loadData($event.target.value)"  ></mat-datepicker>
+            <mat-label>Pesquisa por período</mat-label>
+            <input matInput [matDatepicker]="picker" 
+                  (dateChange) ="loadData($event.target.value)" 
+                  readonly 
+                  [(ngModel)]="dataPesquisa" >                   
+          </mat-form-field>
+        </div>
+        <div class="commands text-right" style="margin-top: 5px;" >
+            <button mat-raised-button
+                    color="primary"
+                    [routerLink]="['apuracao-novo']" >
+              Nova apura&ccedil;&atilde;o &nbsp;<i class="material-icons right">add</i>
+            </button>
+          </div>         
+        <div    style="width: 100%;">
+          <table mat-table [dataSource]="listaApuracoes" class="mat-elevation-z8"   matSort
+          (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}"
+          matSortDirection="{{ defaultSortOrder }}">
+          <ng-container matColumnDef="acao">
+            <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+            <mat-cell *matCellDef="let apuracao">            
+               
+              <button mat-button                     
+                      aria-label="Detalhes da apuração"
+                      color="primary"
+                      [routerLink] ="['/profissional-apuracao', apuracao.codigo]">
+                      <!-- <mat-icon>info</mat-icon> -->
+                      Detalhes 
+              </button>
+              <button mat-button                     
+                      aria-label="Apagar a apuração"
+                      color="primary"
+                      (click)="apagarApuracao(apuracao.codigo)"
+                      [disabled]="apuracao.dataBaixa == null ? false : true"
+                      >
+                      Apagar
+              </button>
+              <button mat-button                     
+                      aria-label="Gerar o extrato"
+                      color="primary"                     
+                   (click) = "DownloadReport(apuracao.codigo)"
+                      >
+                      Extrato
+              </button>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="nome">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Profissional</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao">{{ apuracao.profissional.nome}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao"> {{ apuracao.codigo }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="data">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao"> {{ apuracao.dataApuracao | date : "dd/MM/yyyy HH:mm" }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="inicio">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>In&iacute;cio</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao"> {{ apuracao.dataInicio | date : "dd/MM/yyyy" }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="fim">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Fim</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao"> {{ apuracao.dataFim | date : "dd/MM/yyyy"}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="total">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Quantidade Total</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao"> {{ apuracao.quantidadeTotal}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="valor">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Total</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.valorTotal | currency }} </mat-cell>
+          </ng-container>      
+          <ng-container matColumnDef="dataBaixa">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Baixa</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.dataBaixa | date :  "dd/MM/yyyy HH:mm:ss"}} </mat-cell>
+          </ng-container>       
+          <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+        </table>
+        <mat-paginator   (page)="getData($event)" [length]="20" [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons>
+        </mat-paginator>
+        </div>
+        <div *ngIf="!listaApuracoes" style="text-align: center;">
+            <h3>Não há apurações efetuadas</h3>
+          </div>
+    </mat-card-content>
+</mat-card>
+

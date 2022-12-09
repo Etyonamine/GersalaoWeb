@@ -44,7 +44,7 @@ export class TipoProdutoComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadData();
     this.authService.getUserData();
-    this.codigoUsuario= this.authService.usuarioLogado.Codigo;
+    this.codigoUsuario= Number(this.authService.usuarioLogado.codigo);
   }
   ngOnDestroy():void{
     if(this.inscricao$){

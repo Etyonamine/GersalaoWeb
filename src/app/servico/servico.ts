@@ -6,6 +6,7 @@ export class Servico{
   codigoSituacao : number;
   descricao : string;
   valor : number ;
+  valorComissaoPercentual : number;
   dataCadastro : Date;
   codigoUsuarioCadastro : number;
   dataAlteracao : Date;

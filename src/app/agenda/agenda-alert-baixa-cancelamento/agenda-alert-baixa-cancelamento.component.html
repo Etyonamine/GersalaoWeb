@@ -1,0 +1,31 @@
+<h2 mat-dialog-title class="titulo">{{ data.title }}</h2>
+
+<mat-dialog-content>
+  <div>
+    <mat-form-field appearance="fill" class="campoNomeCliente">
+        <mat-label>Cliente</mat-label>
+        <input matInput [ngModel]="data.agenda.cliente.nome" readonly>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="campo-DataHora">
+        <mat-label>Data</mat-label>
+        <input matInput   [ngModel]=" dataAgenda | date:'dd/MM/yyyy HH:mm:ss':'pt' " readonly>
+    </mat-form-field>    
+  </div>
+  <div>
+    {{ data.content }}
+  </div>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+
+<mat-dialog-actions align = "end">
+  <button mat-raised-button class ="baixarAgendamento"   [mat-dialog-close]="'B'" >
+    {{ data.baixaButtonLabel }}
+  </button>
+  <button mat-raised-button class ="cancelarAgendamento" [mat-dialog-close]="'C'" >
+    {{ data.cancelarButtonLabel }}
+  </button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="false">
+    {{ data.closeButtonLabel }}
+  </button>
+</mat-dialog-actions>

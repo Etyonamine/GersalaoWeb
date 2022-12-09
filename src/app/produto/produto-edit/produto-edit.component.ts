@@ -1,9 +1,11 @@
 import { NumberSymbol } from '@angular/common';
 import { decimalDigest } from '@angular/compiler/src/i18n/digest';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Subscription } from 'rxjs';
+import { timeStamp } from 'console';
+import { EMPTY, Observable, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Fornecedor } from 'src/app/fornecedor/fornecedor';
 import { FornecedorService } from 'src/app/fornecedor/fornecedor.service';
 import { ProdutoLinha } from 'src/app/produto-linha/produto-linha';
@@ -23,7 +25,7 @@ import { ProdutoService } from '../produto.service';
 })
 export class ProdutoEditComponent extends BaseFormComponent implements OnInit, OnDestroy {
   
-  formulario: FormGroup;
+  formulario: UntypedFormGroup;
   tituloPagina: string;
   codigo: number;
   codigoSituacao: number;
@@ -37,9 +39,9 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
   inscricaoProduto$: Subscription;
   isSubmitted = false;
   valorComissaoField : string;
-
+  
   constructor(
-      private formBuilder:FormBuilder,
+      private formBuilder:UntypedFormBuilder,
       private alertService: AlertService,
       private fornecedorService: FornecedorService,
       private tipoProdutoService: TipoProdutoService,
@@ -56,7 +58,7 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     this.carregarTipos();
     this.carregarLinhas();
     this.criarFormulario();
-    this.valorComissaoField =  this.data.valorComissao != null?this.data.valorComissao.toString().replace('.',','): null;
+    this.valorComissaoField =  this.data.valorComissao != null?this.data.valorComissao.toString().replace('.',','): "0,00";
 
   }
   ngOnDestroy(): void{
@@ -74,9 +76,9 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     
     this.formulario = this.formBuilder.group({
       codigo:[this.codigo],
-      nome: [(this.codigo==0?null:this.data.nome), Validators.required],
+      nome: [(this.codigo==0?null:this.data.nome), Validators.required ],
       observacao: [(this.codigo==0?null:this.data.observacao)], 
-      tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),[Validators.required]],
+      tipo: [(this.data.codigo==0?null:this.data.codigoTipoProduto),Validators.required],
       linha:[(this.data.codigo==0?null:this.data.codigoLinha),Validators.required],
       codigoChaveFornecedor:[(this.codigo==0?null:this.data.codigoChaveFornecedor)],      
       codigoFornecedor: [(this.codigo ==0?null: this.data.codigoFornecedor),Validators.required],
@@ -88,8 +90,13 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
     this.inscricaoFornecedor$ = this.fornecedorService.listar().subscribe(result=>{
       this.fornecedores = result;
     }, error=>{
-      console.log(error);
-      this.handleError('Ocorreu um erro ao listar o fornecedor');
+      if (error.status !== 404) {
+        console.log(error);
+        this.handleError('Ocorreu um erro ao listar o fornecedor');
+      } else {
+        return EMPTY;
+      }
+     
     })
   }
   carregarTipos(){
@@ -106,11 +113,17 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
         });        
             
     },error=>{
-      console.log(error);
-      this.handleError('Ocorreu erro ao listar os tipos');
+      if (error.status !== 404) {
+        console.log(error);
+        this.handleError('Ocorreu erro ao listar os tipos');
+      } else {
+        return EMPTY;
+      }
+     
     });
   }
   carregarLinhas(){
+    this.linhas = [];
     this.inscricaoLinhas$ = this.linhaProdutoService.getData<ApiResult<ProdutoLinha>>(
       0,
       100,
@@ -124,19 +137,41 @@ export class ProdutoEditComponent extends BaseFormComponent implements OnInit, O
         });        
             
     },error=>{
-      console.log(error);
-      this.handleError('Ocorreu erro ao listar as linhas de produto');
+      if (error.status !== 404) {
+        console.log(error);
+        this.handleError('Ocorreu erro ao listar as linhas de produto');
+      } else {
+        return EMPTY;
+      }
+    
     });
   }
   openConfirmExclusao(){
 
   }
-  isDupe(){
+  isDupe():AsyncValidatorFn{
+    return(control:AbstractControl):Observable<{[key:string]:any}| null>=>{      
 
+      const produtoValidar = {
+        codigo: this.codigo,
+        nome: this.formulario === undefined ? this.produto.nome: this.formulario.get('nome').value,
+        codigoTipoProduto : this.formulario === undefined || this.formulario.get('tipo').value === null || this.formulario.get('tipo').value === undefined? 0 : this.formulario.get('tipo').value
+      } as Produto;
+     
+      return  this.produtoService.isDupe(produtoValidar)
+                  .pipe(map(result=>{
+                        return (result ? {isDupe:true} : null);
+      }));
+    }
+ 
   }
   submit() {
     this.isSubmitted = true;
     if (!this.formulario.valid) {
+      return false;
+    }
+    if (this.isDupe()){
+      this.handleError('O nome do produto e tipo já existe cadastrado!');
       return false;
     }
     if (this.valorComissaoField == null || this.valorComissaoField == undefined){
