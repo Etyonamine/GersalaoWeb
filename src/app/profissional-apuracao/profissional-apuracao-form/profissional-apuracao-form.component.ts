@@ -1,14 +1,10 @@
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { of, Subscription } from 'rxjs';
-import { concatMap, subscribeOn } from 'rxjs/operators';
-import { Agenda } from 'src/app/agenda/agenda';
 import { AgendaApurar } from 'src/app/agenda/agenda-apurar';
 import { AgendaService } from 'src/app/agenda/agenda.service';
 import { AuthService } from 'src/app/auth-guard/auth.service';
@@ -16,9 +12,7 @@ import { ProfissionalService } from 'src/app/profissional/profissional.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
-import { threadId } from 'worker_threads';
 import { ProfissionalApuracao } from '../profissional-apuracao';
-import { ProfissionalApuracaoDetalheService } from '../profissional-apuracao-detalhe/profissional-apuracao-detalhe.service';
 import { ProfissionalApuracaoPendente } from '../profissional-apuracao-pendente';
 import { ProfissionalApuracaoService } from '../profissional-apuracao.service';
 

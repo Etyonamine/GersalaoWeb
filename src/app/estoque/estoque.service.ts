@@ -1,7 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
 import { Injectable } from '@angular/core';
-import { $ } from 'protractor';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';

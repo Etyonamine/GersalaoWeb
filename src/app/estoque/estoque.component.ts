@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { timeStamp } from 'console';
 import { EMPTY, of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { Produto } from '../produto/produto';

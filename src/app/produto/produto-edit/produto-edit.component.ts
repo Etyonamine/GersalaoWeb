@@ -1,9 +1,6 @@
-import { NumberSymbol } from '@angular/common';
-import { decimalDigest } from '@angular/compiler/src/i18n/digest';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, AsyncValidatorFn, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { timeStamp } from 'console';
 import { EMPTY, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Fornecedor } from 'src/app/fornecedor/fornecedor';

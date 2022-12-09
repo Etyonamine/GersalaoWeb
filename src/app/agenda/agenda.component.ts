@@ -1,10 +1,6 @@
-import { removeSummaryDuplicates } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
-import { unwatchFile } from 'fs';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth-guard/auth.service';
 import { Empresa } from '../empresa/empresa';

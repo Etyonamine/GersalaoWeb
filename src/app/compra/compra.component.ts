@@ -1,11 +1,8 @@
-import { DatePipe } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';

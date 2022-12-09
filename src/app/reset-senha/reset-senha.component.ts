@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { timeStamp } from 'console';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { BaseFormComponent } from '../shared/base-form/base-form.component';
-import { UsuarioService } from '../usuario/usuario.service';
 import { ResetSenhaService } from './reset-senha.service';
 
 @Component({

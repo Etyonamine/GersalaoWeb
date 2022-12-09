@@ -2,20 +2,15 @@ import { TipoContato } from 'src/app/tipo-contato/tipo-contato';
 import { ProfissionalDocumentoService } from 'src/app/profissional/profissional-documento/profissional-documento.service';
 import { ProfissionalDocumento } from 'src/app/profissional/profissional-documento/profissional-documento';
 import { DocumentoService } from 'src/app/documento/documento.service';
-import { concatMap } from 'rxjs/operators';
-import { ValidaCpfService } from './../../shared/service/valida-cpf.service';
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { TipoDocumento } from 'src/app/tipo-documento/tipo-documento';
-import { TipoDocumentoService } from 'src/app/tipo-documento/tipo-documento.service';
 import { DocumentoDialog } from './documento-dialog';
 import { ValidaNumeroService } from 'src/app/shared/service/valida-numero.service';
 import { cnpj, cpf } from 'cpf-cnpj-validator';
 import { Documento } from '../documento';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-import { TransitionCheckState } from '@angular/material/checkbox';
 
 
 @Component({
