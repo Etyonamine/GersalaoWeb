@@ -1,0 +1,74 @@
+<div>
+  <mat-card>
+    <mat-card-header>Lista de tipos de produtos</mat-card-header>
+    <mat-card-content>
+      <div>
+        <mat-form-field [hidden]="!tipoProdutos" style="width: 100%" >
+          <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome (ou parte dele)..."  />
+        </mat-form-field>
+      </div>
+          
+      <div class="commands text-right" style="margin-top: 5px">
+        <button
+          mat-raised-button
+          color="primary" 
+          (click) = "openNovoRegistro()"           
+        >
+          Novo &nbsp;<i class="material-icons right">add</i>
+        </button>
+      </div>
+      
+        <table mat-table [dataSource]="tipoProdutos" class="mat-elevation-z8" [hidden]="!tipoProdutos"  matSort
+        (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+          <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-cell *matCellDef="let tipo"> {{ tipo.codigo }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="nome">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+            <mat-cell *matCellDef="let tipo"> {{ tipo.nome }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="situacao">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Situa&ccedil;&atilde;o</mat-header-cell>
+            <mat-cell *matCellDef="let tipo"> {{ tipo.situacao.descricao }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="acao">
+            <!-- <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-cell *matCellDef="let tipo"> {{ tipo.codigo }} </mat-cell> -->
+            <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+          <mat-cell *matCellDef="let tipo">
+            
+              <button
+                mat-mini-fab
+                color="primary"
+                aria-label="Editar o tipo de produto"                   
+                (click) ="openEditar(tipo.codigo)"
+              > 
+                
+                                      
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button
+                mat-mini-fab
+                aria-label="Apagar o tipo de produto" 
+                color="warn"
+                (click) ="openConfirmExclusao(tipo.codigo, tipo.nome)"
+                >
+                <!-- value="{{profissional.codigo}}"  -->               
+                
+                <mat-icon>delete</mat-icon>
+              </button>
+            
+          </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+            
+        </table>
+        <mat-paginator [hidden]="!tipoProdutos" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+          showFirstLastButtons>
+        </mat-paginator>
+    </mat-card-content>      
+  </mat-card>
+</div>

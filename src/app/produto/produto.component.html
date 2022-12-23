@@ -1,0 +1,79 @@
+<div>
+    <mat-card>
+      <mat-card-header>Lista de Produtos</mat-card-header>
+      <mat-card-content>
+        <div>
+          <mat-form-field [hidden]="!produtos" style="width: 100%" >
+            <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome (ou parte dele)..."  />
+          </mat-form-field>
+        </div>
+            
+        <div class="commands text-right" style="margin-top: 5px">
+          <button
+            mat-raised-button
+            color="primary" 
+            (click) = "openNovoRegistro()"           
+          >
+            Novo &nbsp;<i class="material-icons right">add</i>
+          </button>
+        </div>
+        
+          <table mat-table [dataSource]="produtos" class="mat-elevation-z8" [hidden]="!produtos"  matSort
+          (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+            <ng-container matColumnDef="codigo"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+              <mat-cell *matCellDef="let produto"> {{ produto.codigo }} </mat-cell>
+            </ng-container>
+           
+            <ng-container matColumnDef="nome"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header >Nome</mat-header-cell>
+              <mat-cell *matCellDef="let produto"  > {{ produto.nome }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="valorComissao"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Comiss&atilde;o(%)</mat-header-cell>
+              <mat-cell *matCellDef="let produto"> {{ produto.valorComissao |  number : '1.2-2' }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="tipo"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo</mat-header-cell>
+              <mat-cell *matCellDef="let produto"> {{ produto.tipoProduto.nome }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="fornecedor"  >
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Fornecedor</mat-header-cell>
+              <mat-cell *matCellDef="let produto"> {{ produto.fornecedor.nome }} </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="acao">              
+              <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+            <mat-cell *matCellDef="let produtos">
+              
+                <button
+                  mat-mini-fab
+                  color="primary"
+                  aria-label="Editar o produto"         
+                  value="{{ produtos.codigo }}"
+                  (click)="openEditarRegistro(produtos.codigo)"
+                 >                                         
+                  <mat-icon>edit</mat-icon>
+                </button>
+  
+                <button
+                  mat-mini-fab
+                  aria-label="Apagar o tipo de produto" 
+                  color="warn"
+                  value="{{ produtos.codigo }}"
+                  (click)="openApagarRegistro(produtos.codigo)"
+                >                                    
+                  <mat-icon>delete</mat-icon>
+                </button>
+              
+            </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+              
+          </table>
+          <mat-paginator [hidden]="!produtos" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+            showFirstLastButtons>
+          </mat-paginator>
+      </mat-card-content>      
+    </mat-card>
+  </div>

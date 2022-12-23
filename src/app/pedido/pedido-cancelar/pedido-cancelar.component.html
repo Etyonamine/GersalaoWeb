@@ -1,0 +1,73 @@
+<mat-card>
+    <mat-card-title>Cancelar Pedido - Nro.: {{ numeroDoPedido }} - {{ pedido.nomeCliente }}</mat-card-title>
+    <div class="container">
+        <mat-divider></mat-divider>
+    </div>
+    <div [formGroup]="formulario" (ngSubmit)="onSubmit()">
+
+        <div class="container">
+            <mat-form-field appearance="fill" style="width: 70px">
+                <mat-label>N&uacute;mero</mat-label>
+                <input matInput   formControlName="numeroPedido" />
+            </mat-form-field>
+            <mat-form-field   appearance="fill">
+                <mat-label>Cliente</mat-label>
+                <input matInput   formControlName="nomeCliente">
+            </mat-form-field>
+            <mat-form-field   appearance="fill" style="width: 250px">
+                <mat-label>Data-Pedido</mat-label>
+                <input matInput   disabled  [value] = " pedido.dataPedido | date : 'dd/MM/yyyy HH:mm:ss'" />
+                
+            </mat-form-field>
+            <mat-form-field   appearance="fill">
+                <mat-label>Quantidade - Total</mat-label>
+                <input matInput  disabled [value] = " pedido.quantidadeTotal "   />
+            </mat-form-field>
+            <mat-form-field   appearance="fill">
+                <mat-label>Valor - Total</mat-label>
+                <input matInput    disabled  [value]="pedido.valorTotal  | currency:'BRL':'symbol':'1.2-2':'pt' " />
+            </mat-form-field>
+            <mat-form-field   appearance="fill" style="width: 250px">
+                <mat-label>Data-Fechamento</mat-label>
+                <input matInput  disabled  [value] = " pedido.dataFechamento | date: 'dd/MM/yyyy'" />
+            </mat-form-field>
+            <mat-form-field   appearance="fill" style="width: 250px">
+                <mat-label>Situação</mat-label>
+                <input matInput disable disabled [value] =" pedido.situacao "  />
+            </mat-form-field>
+        </div>
+
+        <div class="container">
+            <mat-form-field   appearance="fill" class="observacao">
+                <mat-label>Observação</mat-label>
+                <textarea matInput   formControlName="observacao" maxlength="300"
+                    formControlName = "observacao"
+                    placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
+                    matTooltip="Digite aqui caso precise informar alguma observação do cliente."></textarea>
+            </mat-form-field>
+        </div>
+        <div class="container">
+            <mat-divider></mat-divider>
+        </div>
+        <!-- Informações sobre o cancelamento-->
+        
+        <div class="container">
+
+            <mat-form-field appearance="fill" class="motivoCancelamento" style="width:100%;">
+                <mat-label>motivo do cancelamento</mat-label>
+                <textarea matInput formControlName="motivoCancelamento" maxlength="300"
+                    placeholder="Informações sobre o cancelamento do pedido"
+                    matTooltip="Detalhes do motivo do cancelamento do pedido" ></textarea>
+            </mat-form-field>
+        </div>
+        <div class="container">
+            <mat-divider></mat-divider>
+        </div>        
+    </div>
+</mat-card>
+<mat-card-actions class = "example-card" align='start'>
+    <button mat-raised-button color="primary" (click) = "salvarRegistro()" [disabled]="!formulario.valid" >Confirmar <i class="material-icons right">save</i>
+    </button>
+    <button mat-raised-button color="primary"  [routerLink]="['/pedido']">Retornar <i class="material-icons right">reply</i>
+    </button>
+</mat-card-actions>

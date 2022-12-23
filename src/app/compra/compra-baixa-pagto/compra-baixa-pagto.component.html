@@ -1,0 +1,78 @@
+<h2 mat-dialog-title> Baixa de Pagamento da Compra</h2>
+<mat-dialog-content class="mat-typography">
+    <div>
+        <mat-form-field appearance="fill">
+            <mat-label>C&ograve;digo</mat-label>
+            <input matInput matTooltip="Código da compra" 
+                  [(ngModel)]="codigo" 
+                  readonly
+            />
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Data Vencimento Boleto</mat-label>
+            <input matInput [matDatepicker]="picker4" 
+                [(ngModel)]="dataBoleto" 
+                  matTooltip="Informar a data de vencimento do boleto"
+                  matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"                     
+                  readonly
+                   />
+            <mat-datepicker-toggle matSuffix [for]="picker4" [disabled] = "true"></mat-datepicker-toggle>
+            <mat-datepicker #picker4></mat-datepicker>
+          </mat-form-field>
+        <mat-form-field appearance="fill" >
+            <mat-label>Valor total</mat-label>
+            <input matInput matTooltip="Valor total da compra" 
+                  [ngModel]="valorTotal  |  currency:'BRL':'symbol':'1.2-2':'pt'" 
+                   
+                  readonly
+            />
+        </mat-form-field>
+    </div>
+    
+        <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+            <div class="form-group mat-container">
+                <div>
+                    <mat-form-field appearance="fill" style = "width: 640px;">
+                        <mat-label>Data de Pagamento do Boleto</mat-label>
+                        <input matInput [matDatepicker]="picker5" formControlName="dataPagtoBoletoSelecionado"  
+                            matTooltip="Informar a data de pagamento do boleto" matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
+                            [max]="dataHoje" required [disabled] = "atualizadoDataPagto" />
+                        <mat-datepicker-toggle matSuffix [for]="picker5" [disabled]="atualizadoDataPagto"></mat-datepicker-toggle>
+                        <mat-datepicker #picker5></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            
+                <!-- <div>
+                    
+                        <button mat-raised-button 
+                                type="submit"
+                                color="primary"                     
+                                [disabled] = "!formulario.valid"
+                                >
+                                Salvar &nbsp;<mat-icon>save</mat-icon>
+                        </button>
+                        <button mat-raised-button color="primary" mat-dialog-close>
+                            Retornar<mat-icon>reply</mat-icon>
+                        </button>
+                    
+                </div> -->
+            </div>
+            
+        </form>
+        
+    
+    
+</mat-dialog-content>
+ 
+<mat-dialog-actions align="end">
+    <button mat-raised-button="Salvar o registro" 
+            color="primary" 
+            (click)="submit()"
+            [disabled] = "!formulario.valid || atualizadoDataPagto "
+            >
+            Salvar &nbsp;<mat-icon>save</mat-icon>
+    </button>
+    <button mat-raised-button="Retornar" color="primary" mat-dialog-close>
+        Retornar<mat-icon>reply</mat-icon>
+    </button>
+</mat-dialog-actions>

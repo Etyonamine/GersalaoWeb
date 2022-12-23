@@ -1,0 +1,48 @@
+
+section {
+    display: table;
+  }
+  
+  .container .mat-form-field + .mat-form-field {
+     margin-left: 3px;
+     width: 100%;
+  }
+  
+  .right-align {
+    text-align: right;
+  }
+  
+  input.right-align::-webkit-outer-spin-button,
+  input.right-align::-webkit-inner-spin-button {
+    display: none;
+  }
+  
+  input.right-align {
+    -moz-appearance: textfield;
+  }
+  
+  table {
+    table-layout: auto;
+    width: 100%;
+  
+  }
+  .center {
+    margin: auto;
+    width: 15px;
+    // padding: 50px;
+  }
+  
+  .button-row {
+    display: table-cell;
+    width: 490px;
+  }
+  .example-card {
+    //max-width: 400px;
+    text-align:center;
+  }
+  
+.example-button-row {
+  display: table-cell;
+  width: 490px;
+}
+  

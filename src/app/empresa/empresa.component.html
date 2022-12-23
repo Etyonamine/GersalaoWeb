@@ -1,0 +1,180 @@
+<div>
+    <mat-card>
+        <mat-card-header>
+            <mat-label>Informações da empresa</mat-label>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="container">
+            <div class="form-group mat-container">
+              <app-msg-error
+              [mostrarErro]="              
+              formulario.get('nome').value &&  
+                formulario.get('nome').hasError('required')
+            "
+              mensagemErro="Por favor, digitar somente os números do CEP."
+            ></app-msg-error>
+              <app-msg-error
+                [mostrarErro]="              
+                formulario.get('cep').value &&  
+                  formulario.get('cep').hasError('pattern')
+              "
+                mensagemErro="Por favor, digitar somente os números do CEP."
+              ></app-msg-error>
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('cep').hasError('minlength') 
+              "
+              mensagemErro="Por favor, digitar o cep completo com 8 dígitos."
+            ></app-msg-error>
+            <app-msg-error
+            [mostrarErro]="
+              formulario.get('horaInicial').hasError('required') 
+            "
+            mensagemErro="Por favor, digitar a hora de início do funcionamento do estabeleciomento."
+          ></app-msg-error>
+          <app-msg-error
+          [mostrarErro]="
+              formulario.get('horaFinal').hasError('required') 
+            "
+            mensagemErro="Por favor, digitar a hora de término do funcionamento do estabeleciomento."
+          ></app-msg-error>
+          <app-msg-error
+          [mostrarErro]="
+
+              formulario.get('horaFinal').value==formulario.get('horaInicial').value
+            "
+            mensagemErro="Atenção! O horário de início e fim não podem ser iguais."
+          ></app-msg-error>
+            </div>
+             <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
+              <div class="form-group mat-container">                
+                <mat-form-field appearance="fill" style="width: 1018px">
+                  <mat-label>Nome</mat-label>
+                  <input matInput formControlName="nome"  required/>
+                </mat-form-field>
+              </div>
+              <mat-divider></mat-divider>
+              <mat-label>Informações - Endereço</mat-label>
+              <div class="form-group mat-container">                
+                  <mat-form-field appearance="fill" style="width: 350px">
+                    <mat-label>Endere&ccedil;o</mat-label>
+                    <input matInput formControlName="endereco" required />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" style="width: 100px">
+                    <mat-label>Número</mat-label>
+                    <input
+                      matInput
+                      placeholder="Digite o número do endereco da empresa"
+                      formControlName="numero"
+                      matTooltip="Informar o número do endereço da empresa"
+                      required
+                    />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" style="width: 558px">
+                    <mat-label>Complemento</mat-label>
+                    <input
+                      matInput
+                      placeholder="Digite o complemento do endereço da empresa"
+                      formControlName="complemento"
+                      matTooltip="Informar o complemento do endereço da empresa"
+                    />
+                  </mat-form-field>
+              </div>
+              
+              <div class="form-group mat-container">
+                <mat-form-field appearance="fill" style="width: 440px">
+                  <mat-label>Bairro</mat-label>
+                  <input
+                    matInput
+                    placeholder="Digite o bairro do cliente"
+                    formControlName="bairro"
+                    matTooltip="Informar o bairro do cliente"
+                    required
+                  />
+                </mat-form-field>
+                <mat-form-field appearance="fill" style="width: 100px">
+                  <mat-label>CEP</mat-label>
+                  <input
+                    matInput
+                    placeholder="Digite o número do CEP"
+                    formControlName="cep"
+                    matTooltip="Informar o CEP somente números"                    
+                    maxlength="8"                    
+                    required
+                  />
+                </mat-form-field>
+              
+              
+                <mat-form-field appearance="fill" style="width: 150px">
+                    <mat-label>Estado</mat-label>
+                    <mat-select
+                      formControlName="estado"
+                      matTooltip="Estado federativa do Brasil"
+                      [(ngModel)]="codigoUnidadeFederativa"
+                      required
+                    >
+                      <mat-option [value]="0"></mat-option>
+                      <mat-option
+                        *ngFor="let estado of estados"
+                        [value]="estado.codigo"
+                      >
+                        {{ estado.descricao }}
+                      </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="fill" style="width: 315px">
+                  <mat-label>Município</mat-label>
+                  <mat-select
+                    formControlName="municipio"
+                    matTooltip="Municípios do Brasil"
+                    [(ngModel)]="codigoMunicipio"
+                    required
+                  >
+                    <mat-option [value]="0"></mat-option>
+                    <mat-option
+                      *ngFor="let municipio of municipios"
+                      [value]="municipio.codigo"
+                    >
+                      {{ municipio.descricao }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <mat-divider></mat-divider>
+              <mat-label>Informações - Estabelecimento</mat-label>
+              <div class="form-group mat-container">
+                <mat-form-field appearance="fill"  class="campoHora" >
+                  <mat-label>Hora-In&iacute;cio</mat-label>
+                  <input matInput type="time" 
+                        formControlName="horaInicial"               
+                        required               
+                       >
+                </mat-form-field>
+                <mat-form-field appearance="fill"  class="campoHora" >
+                  <mat-label>Hora-T&eacute;rmino</mat-label>
+                  <input matInput type="time" 
+                        formControlName="horaFinal"               
+                        required               
+                       >
+                </mat-form-field>
+              </div>
+              <mat-divider></mat-divider>
+
+              <div class="container">
+               
+                      <button
+                      type="submit"
+                      mat-raised-button
+                      color="primary"
+                      [disabled]="!formulario.valid || codigoMunicipio === 0 || codigoUnidadeFederativa === 0"
+                    >
+                      Salvar &nbsp;<i class="material-icons right">save</i>
+                    </button>
+               
+              </div>
+            </form>     
+          </div>
+              
+        </mat-card-content>
+    </mat-card>
+</div>

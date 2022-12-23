@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Grupo de Serviços</h2>
+<mat-dialog-content class="mat-typography">
+  <div class="container">
+    <button  mat-raised-button color="primary"
+                 color="primary"
+                 matTooltip="salvar novo documento"
+                 [disabled] = "!habilitaNovo"
+                 (click)="openDialogNovo()">Adicionar &nbsp;
+                 <i class="material-icons right">add</i>
+          </button>
+  </div>
+
+  <div>
+
+      <table mat-table [dataSource]="profissionalTipoServicos" class="mat-elevation-z8" [hidden]="!profissionalTipoServicos" >
+      <ng-container matColumnDef="tipo">
+        <mat-header-cell *matHeaderCellDef >Tipo</mat-header-cell>
+        <mat-cell *matCellDef="let profiTpServico"> {{ profiTpServico.documento.tipoDocumento.descricao }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="descricao">
+        <mat-header-cell *matHeaderCellDef >Descrição</mat-header-cell>
+        <mat-cell *matCellDef="let profiTpServico"> {{ profiTpServico.documento.descricao }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="acao">
+        <mat-header-cell *matHeaderCellDef> Ação </mat-header-cell>
+        <mat-cell *matCellDef="let profiTpServico">
+          <button
+            mat-mini-fab
+            color="primary"
+            aria-label="Editar o documento"
+            value="{{ profiTpServico.codigoDocumento }}"
+            (click)="openDialogEditar(profiTpServico)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          &nbsp;
+          <button
+            mat-mini-fab
+            aria-label="Apagar documento"
+            color="warn"
+            value="{{profiTpServico.codigoDocumento}}"
+            (click)="openDialogApagar(profiTpServico.codigoDocumento)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+    </table>
+  </div>
+</mat-dialog-content>

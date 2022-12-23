@@ -1,0 +1,61 @@
+<h2 mat-dialog-title>Lista de Formas de Pagamento do Cliente</h2>
+<mat-dialog-content class="mat-typography">
+  <div class="container">
+    <button  mat-raised-button color="primary"
+                 color="primary"
+                 matTooltip="salvar novo contato"
+                 [disabled] = "!habilitaNovo"
+                 (click)="openDialogNovo()">Adicionar &nbsp;
+                 <i class="material-icons right">add</i>
+          </button>
+      &nbsp;
+      &nbsp;      
+      <button mat-raised-button="Retornar" color="primary" mat-dialog-close>
+        Retornar<mat-icon>reply</mat-icon>
+      </button>
+      
+  </div>
+
+  <div>
+
+      <table mat-table [dataSource]="clienteFormasPagto" class="mat-elevation-z8" [hidden]="!clienteFormasPagto" >
+      <ng-container matColumnDef="tipo">
+        <mat-header-cell *matHeaderCellDef >Tipo</mat-header-cell>
+        <mat-cell *matCellDef="let clienteFrmPg">{{ clienteFrmPg.formaPagamento.descricaoFormaPagto}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="descricao">
+        <mat-header-cell *matHeaderCellDef >Valor</mat-header-cell>
+        <mat-cell *matCellDef="let clienteFrmPg">{{clienteFrmPg.valor}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="acao">
+        <mat-header-cell *matHeaderCellDef> Ação </mat-header-cell>
+        <mat-cell *matCellDef="let clienteFrmPg">
+          <button
+            mat-mini-fab
+            color="primary"
+            aria-label="Editar o registro"
+            value="{{ clienteFrmPg.codigoFormaPagto }}"
+            (click)="openDialogEditar(clienteFrmPg)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          &nbsp;
+          <button
+            mat-mini-fab
+            aria-label="Apagar o registro"
+            color="warn"
+            value="{{clienteFrmPg.codigoFormaPagto}}"
+            (click)="openDialogApagar(clienteFrmPg.codigoFormaPagto)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+    </table>
+  </div>
+  
+    
+  
+</mat-dialog-content>

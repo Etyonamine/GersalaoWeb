@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>&nbsp;{{ titulo }} - Tipo - Produto</h2>
+
+<form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+    <div class="form-group mat-container">
+        <mat-dialog-content class="mat-typography">
+
+            <mat-form-field appearance="fill" style="width: 420px">
+                <mat-label>Nome</mat-label>
+                <input matInput 
+                       matTooltip="Digite o nome do tipo de produto que deseja!" 
+                       id="nome"
+                       formControlName="nome"
+                       required
+                />
+            </mat-form-field>
+             
+           
+            <mat-radio-group aria-label="Select an option"  formControlName="situacao" >
+                <mat-label>Situa&ccedil;&abreve;o: </mat-label> &nbsp;
+                <mat-radio-button value="1">Ativo</mat-radio-button>
+                <mat-radio-button value="2">Inativo</mat-radio-button>
+                </mat-radio-group>
+            
+        </mat-dialog-content>
+        <div *ngIf="formulario.get('nome').errors?.isDupe" class = "registroEncontrado">
+            Por favor, verificar! Este tipo já existe cadastrado.
+        </div>
+
+       <!--  <div>
+            <app-msg-error
+            [mostrarErro]="formulario.invalid && formulario.errors?.isDupe"
+            mensagemErro="O tipo digitado já existe no cadastrado!"
+          ></app-msg-error>
+        </div> -->
+
+        <mat-dialog-actions align="end">
+            <button type ="submit" mat-raised-button="Salvar o registro" color="primary"  [disabled]="!formulario.valid" >
+                Salvar &nbsp;<mat-icon>save</mat-icon>
+            </button>
+            <button mat-raised-button="Retornar" color="primary" mat-dialog-close>
+                Retornar<mat-icon>reply</mat-icon>
+            </button>
+        </mat-dialog-actions>
+    </div>
+</form>
+

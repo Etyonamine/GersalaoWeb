@@ -1,0 +1,72 @@
+
+<div >
+    <mat-card>
+        <div>
+          <mat-card-header>
+            <mat-label>Lista de Estoques</mat-label>
+          </mat-card-header>
+        </div>
+        <div>
+         <mat-card-content>
+          <div style="text-align: center;">
+            <p *ngIf="!estoques"><em>Não foi encontrado registros!</em></p>
+          </div>                 
+          <div    [hidden]="!estoques">
+            <mat-form-field [hidden]="!estoques" style="width: 100%;">
+              <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome do produto (ou parte dele)..." />
+            </mat-form-field> 
+            <table mat-table [dataSource]="estoques" class="mat-elevation-z8" [hidden]="!estoques" matSort         
+            (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+            <ng-container matColumnDef="codigo">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+              <mat-cell *matCellDef="let estoque"> {{ estoque.codigoProduto }} </mat-cell>
+              <mat-cell mat-footer-cell *matFooterCellDef class ="mat-footer-cell"></mat-cell> 
+              
+            </ng-container>
+            <ng-container matColumnDef="nome">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Nome do Produto</mat-header-cell>
+              <mat-cell *matCellDef="let estoque"><a >{{
+                  estoque.produto.nome  
+                  }}</a></mat-cell>
+              <mat-cell mat-footer-cell *matFooterCellDef class ="mat-footer-cell">Total</mat-cell>
+            </ng-container>        
+            <ng-container matColumnDef="quantidade">
+              <mat-header-cell *matHeaderCellDef mat-sort-header class="alinhaDireita">Quantidade-total</mat-header-cell>
+              <mat-cell *matCellDef="let estoque" class="alinhaDireita"><a >{{
+                  estoque.quantidadeEstoque
+                  }}</a></mat-cell>
+              <mat-cell mat-footer-cell *matFooterCellDef class ="mat-footer-cell">{{ getTotalQuantidade()}}</mat-cell>
+            </ng-container>               
+            <ng-container matColumnDef="valorSumarizado" >
+              <mat-header-cell *matHeaderCellDef mat-sort-header class ="alinhaDireita">Valor-total</mat-header-cell>
+              <mat-cell *matCellDef="let estoque" class ="alinhaDireita"  ><a >{{
+                  estoque.valorSumarizado | currency:'BRL':'symbol':'1.2-2':'pt'
+                  }}</a></mat-cell>
+              <mat-cell  mat-footer-cell *matFooterCellDef class ="mat-footer-cell" > {{getTotalCost() | currency}} </mat-cell>
+            </ng-container>               
+            <!-- <ng-container matColumnDef="acao">
+              <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+              <mat-cell *matCellDef="let estoque">
+                
+                  <button
+                    mat-mini-fab
+                    color="primary"
+                    aria-label="consultar detalhe"                   
+                    [routerLink]="['/estoque', estoque.codigoProduto]"
+                    >                                            
+                    <mat-icon>view_comfy</mat-icon>
+                  </button>
+              </mat-cell>
+            </ng-container>  -->   
+            <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+            <mat-row mat-footer-row *matFooterRowDef="colunas"></mat-row>
+            </table>
+            <mat-paginator [hidden]="!estoques" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+              showFirstLastButtons>
+            </mat-paginator>    
+          </div>
+        </mat-card-content>
+        </div>    
+      </mat-card>
+</div>

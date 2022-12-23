@@ -1,0 +1,9 @@
+<div *ngIf="mostrarErro">
+  <mat-card>
+    <mat-card-content>
+      <mat-error *ngIf="mensagemErro">
+        <i class="material-icons right">error</i>&nbsp;{{ mensagemErro }}
+      </mat-error>
+    </mat-card-content>
+  </mat-card>
+</div>

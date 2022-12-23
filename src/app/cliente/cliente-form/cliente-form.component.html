@@ -1,0 +1,349 @@
+<div class="container">
+  <mat-card>
+    <mat-card-title> Cadastro de Clientes - {{ tituloPagina }} </mat-card-title>
+  </mat-card>
+
+  <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+    <div class="form-group mat-container">
+      <mat-form-field appearance="fill" style="width: 70px">
+        <mat-label>Código</mat-label>
+        <input matInput formControlName="codigo" readonly />
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 635px">
+        <mat-label>Nome Completo</mat-label>
+        <input
+          matInput
+          placeholder="Digite o nome completo"
+          id="nome"
+          formControlName="nome"
+          matTooltip="Informar o nome completo do cliente"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="width: 150px">
+        <mat-label>Data de aniversário</mat-label>
+        <input
+          matInput
+          placeholder="Digite a data de aniversário"
+          formControlName="dataaniversario"
+          maxlength="10"
+          matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"
+        />
+      </mat-form-field>
+      <mat-form-field
+        *ngIf="optionSituacao"
+        appearance="fill"
+        style="width: 150px"
+      >
+        <mat-label>Selecione da lista</mat-label>
+        <mat-select
+          formControlName="codigoSituacao"
+          matTooltip="Situação do cliente"
+          required
+        >
+          <mat-option
+            *ngFor="let option of optionSituacao"
+            [value]="option.value"
+          >
+            {{ option.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="form-group mat-container">
+      <mat-form-field appearance="fill" class="observacao">
+        <mat-label>Observação</mat-label>
+        <textarea
+          matInput
+          formControlName="observacao"
+          maxlength="300"
+          placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
+          matTooltip="Digite aqui caso precise informar alguma observação do cliente."
+        ></textarea>
+      </mat-form-field>
+    </div>
+    <div>
+      
+      <app-msg-error
+        [mostrarErro]="
+          formulario.get('nome').invalid &&
+          formulario.get('nome').hasError('required')
+        "
+        mensagemErro="Por favor, digite o nome completo! "
+      ></app-msg-error>
+      <app-msg-error
+        [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
+        mensagemErro="O nome digitado já existe cadastrado!"
+      ></app-msg-error>
+      <app-msg-error
+        [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
+        mensagemErro="A data está com formato incorreto!"
+      ></app-msg-error>
+    </div>
+    <div>
+      <!--formularios tabulados *******************************************************************************************-->
+      <mat-tab-group mat-align-tabs="start">
+        <!--PASTA: ENDERECO *******************************************************************-->
+        <mat-tab label="Endereço">
+          <div class="Form-group mat-container" formGroupName="endereco">
+            <mat-form-field appearance="fill" style="width: 350px">
+              <mat-label>Rua</mat-label>
+              <input matInput formControlName="rua" />
+            </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 100px">
+              <mat-label>Número</mat-label>
+              <input
+                matInput
+                placeholder="Digite o número da rua do cliente"
+                formControlName="numero"
+                matTooltip="Informar a rua do cliente"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 558px">
+              <mat-label>Complemento</mat-label>
+              <input
+                matInput
+                placeholder="Digite o complemento do cliente"
+                formControlName="complemento"
+                matTooltip="Informar o complemento do cliente"
+              />
+            </mat-form-field>
+
+            <div class="form-group mat-container">
+              <mat-form-field appearance="fill" style="width: 440px">
+                <mat-label>Bairro</mat-label>
+                <input
+                  matInput
+                  placeholder="Digite o bairro do cliente"
+                  formControlName="bairro"
+                  matTooltip="Informar o bairro do cliente"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="fill" style="width: 100px">
+                <mat-label>CEP</mat-label>
+                <input
+                  matInput
+                  placeholder="Digite o número do CEP"
+                  formControlName="cep"
+                  matTooltip="Informar o CEP do cliente"
+                  maxlength="8"
+                />
+              </mat-form-field>
+              <mat-form-field appearance="fill" style="width: 150px">
+                <mat-label>Estado</mat-label>
+                <mat-select
+                  formControlName="estado"
+                  matTooltip="Estado federativa do Brasil"
+                >
+                  <mat-option [value]="0"></mat-option>
+                  <mat-option
+                    *ngFor="let estado of estados"
+                    [value]="estado.codigo"
+                  >
+                    {{ estado.descricao }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="fill" style="width: 315px">
+                <mat-label>Município</mat-label>
+                <mat-select
+                  formControlName="municipio"
+                  matTooltip="Municípios do Brasil"
+                >
+                  <mat-option [value]="0"></mat-option>
+                  <mat-option
+                    *ngFor="let municipio of municipios"
+                    [value]="municipio.codigo"
+                  >
+                    {{ municipio.descricao }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div>
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('endereco.cep').value &&
+                formulario.get('endereco.cep').hasError('pattern')
+              "
+              mensagemErro="Por favor, digitar somente os números do CEP."
+            ></app-msg-error>
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('endereco.cep').hasError('minlength')
+              "
+              mensagemErro="Por favor, digitar o cep completo."
+            >
+            </app-msg-error>
+          </div>
+        </mat-tab>
+        <!--PASTA: CONTATO ******************************************************************* -->
+        <mat-tab label="Contatos">
+          <div class="form-group mat-container" formGroupName="contato">
+            <mat-form-field appearance="fill" style="width: 410px">
+              <mat-label>Digite o seu email</mat-label>
+              <input
+                matInput
+                placeholder="nome@example.com"
+                formControlName="email"
+                matTooltip="Informe o e-mail"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 300px">
+              <mat-label>Telefone-Fixo</mat-label>
+              <input
+                matInput
+                formControlName="telefoneFixo"
+                placeholder="Digite o número do DDD e telefone fixo do cliente"
+                maxlength="11"
+                matTooltip="Informar somente os números do telefone fixo do cliente"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 300px">
+              <mat-label>celular</mat-label>
+              <input
+                matInput
+                formControlName="celular"
+                placeholder="Digite o número de telefone fixo do cliente"
+                maxlength="11"
+                matTooltip="Informar somente os números do celular"
+              />
+            </mat-form-field>
+          </div>
+          <!-- Mensagem de erro *******************************--->
+          <div>
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('contato.telefoneFixo') !== null &&
+                formulario.get('contato.telefoneFixo').hasError('pattern')
+              "
+              mensagemErro="Por favor, digite somente números."
+            ></app-msg-error>
+
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('contato.telefoneFixo') !== null &&
+                formulario.get('contato.telefoneFixo').hasError('minlength')
+              "
+              mensagemErro="Por favor, digite os 10 digitos (ddd + telefone) exemplo:  1199998888."
+            >
+            </app-msg-error>
+
+            <app-msg-error
+              [mostrarErro]="formulario.get('contato.email').hasError('email')"
+              mensagemErro="Por favor, digite um e-mail válido!"
+            ></app-msg-error>
+
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('contato.celular').hasError('pattern')
+              "
+              mensagemErro="Por favor, digite somente números."
+            ></app-msg-error>
+
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('contato.celular').hasError('minlength')
+              "
+              mensagemErro="Por favor, digitar os 11 números do celular (ddd + celular).Exemplo:  11999998888"
+            >
+            </app-msg-error>
+          </div>
+        </mat-tab>
+        <!--Documentos ********************************************************************-->
+        <mat-tab label="Documentos">
+          <div class="form-group mat-container" formGroupName="documento">
+            <mat-form-field appearance="fill" style="width: 506px">
+              <mat-label>R.G.</mat-label>
+              <input
+                matInput
+                placeholder="Digite o número do numero do RG"
+                formControlName="rg"
+                matTooltip="Informar somente os números do RG"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="fill" style="width: 507px">
+              <mat-label>C.P.F.</mat-label>
+              <input
+                matInput
+                placeholder="Digite o número de cpf"
+                formControlName="cpf"
+                maxlength="12"
+                matTooltip="Informar somente os números do cpf"
+              />
+            </mat-form-field>
+          </div>
+          <div>
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('documento.cpf') !== null &&
+                formulario.get('documento.cpf').hasError('minlength')
+              "
+              mensagemErro="Por favor, digitar os 11 números do cpf."
+            >
+            </app-msg-error>
+
+            <app-msg-error
+              [mostrarErro]="
+                formulario.get('documento.cpf') !== null &&
+                formulario.get('documento.cpf').hasError('cpfNotValid')
+              "
+              mensagemErro="Por favor, digitar um cpf válido!"
+            ></app-msg-error>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+
+    <!-- botoes *********************************************************************************************************-->
+    <div style="margin-top: 10px">
+      <mat-card>
+        <mat-card-content>                    
+            <table>
+              <tr>
+                <td  style="width:25%; text-align: left;">
+                  <button
+                    type="button"
+                    mat-raised-button
+                    color="accent"
+                    [disabled]="codigo == 0"
+                    (click)="openDialogFormaPagto()"
+                  >
+                    Forma Pagamento
+                  </button>
+                </td>
+                <td  style="width:25%; text-align: left;">
+                    <button
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    [disabled]="!formulario.valid"
+                  >
+                    Salvar &nbsp;<i class="material-icons right">save</i>
+                  </button>
+                  <button
+                    type="button"
+                    mat-raised-button
+                    color="warn"
+                    [disabled]="habilitaApagar"
+                    (click)="openConfirmExclusao()"
+                  >
+                    Apagar &nbsp;<i class="material-icons right">delete_forever</i>
+                  </button>
+      
+                  <button mat-raised-button color="primary" (click)="retornar()">
+                    Retornar &nbsp;<i class="material-icons right">reply</i>
+                  </button>
+              
+                </td>
+              </tr>
+            </table>
+          
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </form>
+</div>
+
+<!-- <app-form-debug [form]="formulario"></app-form-debug> -->

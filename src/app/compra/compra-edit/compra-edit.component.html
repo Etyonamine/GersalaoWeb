@@ -1,0 +1,262 @@
+<div class="container">
+  <mat-card>
+    <mat-card-title> Cadastro de compras - {{ tituloPagina }} </mat-card-title>
+    <div>
+      <mat-divider></mat-divider>
+    </div>
+    <mat-card-content>
+      <form [formGroup]="formulario" >
+        <div class="form-group mat-container">
+          <mat-form-field appearance="fill" style="width: 70px">
+            <mat-label>Código</mat-label>
+            <input matInput formControlName="codigo" readonly />
+          </mat-form-field>                  
+         
+          <mat-form-field appearance="fill">
+            <mat-label>Data de Lançamento</mat-label>
+            <input matInput  
+                  [matDatepicker]="picker3" 
+                  formControlName="dataCompra"    
+                  [max] = "dataMaximaCompra"  
+                  (dateChange)="calcularDataBoleto()"           
+                  required >
+            <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+            <mat-datepicker #picker3></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Valor Total</mat-label>             
+            <input
+              matInput                                       
+              class="right-align"               
+              formControlName="valor"   
+              required
+              placeholder="Digite o valor do serviço"
+              placeholder="0.000,00"                   
+              [readonly]="true"              
+              value="{{ valorTotalProdutoAdd | currency:'BRL':'symbol':'1.2-2':'pt'}}"  
+             
+              readonly                          
+            />
+            <!-- <span matPrefix>R$&nbsp;</span> -->
+            <!-- <span matSuffix>,00</span> -->
+          </mat-form-field>  
+          
+          <mat-form-field appearance="fill">
+            <mat-label>Data Vencimento Boleto</mat-label>
+            <input matInput [matDatepicker]="picker4" 
+                  formControlName="dataVenctoBoleto" 
+                  matTooltip="Informar a data de vencimento do boleto"
+                  matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021"   
+                  (dateInput)="addEventDigitarESelecionarBoleto('input', $event)" (dateChange)="addEventDigitarESelecionarBoleto('change', $event)"               
+                   />
+            <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+            <mat-datepicker #picker4></mat-datepicker>
+          </mat-form-field>
+          <!-- <mat-form-field class="example-full-width" appearance="fill">
+            <mat-label>Data de Pagamento</mat-label>
+            <input matInput   
+                   formControlName="dataPagtoBoleto" 
+                   readonly
+                    >
+          </mat-form-field> -->
+          <mat-form-field appearance="fill">
+            <mat-label>Data Pagamento do Boleto</mat-label>
+            <input matInput [matDatepicker]="picker5" 
+                  formControlName="dataPagtoBoleto" 
+                  matTooltip="Informar a data de pagamento de boleto"
+                  matTooltip="Formato dia/Mes/Ano. Exemplo: 01/01/2021" 
+                  readonly                    
+                   />
+            <mat-datepicker-toggle matSuffix [for]="picker5" disabled="true"></mat-datepicker-toggle>
+            <mat-datepicker #picker5></mat-datepicker>
+          </mat-form-field>
+          <div class="form-group mat-container">
+            <mat-form-field appearance="fill" class="observacao">
+              <mat-label>Observação</mat-label>
+              <textarea
+                matInput
+                formControlName="observacao"
+                maxlength="300"
+                placeholder="campo disponível para digitar (máximo 300 caracteres) alguma observação..."
+                matTooltip="Digite aqui caso precise informar alguma observação do cliente."
+              ></textarea>
+            </mat-form-field>
+          </div>
+          <div>
+            <div>
+              <mat-divider></mat-divider>
+              <mat-card-subtitle><h3><b>Adicionar o produto comprado</b></h3></mat-card-subtitle>
+            </div>
+          </div>
+          <div class="form-group mat-container">
+            <div>
+              <mat-form-field               
+                appearance="fill"
+                style="width: 235px"
+              >
+                <mat-label>Produto</mat-label>
+                <mat-select                  
+                  matTooltip="Por favor, selecione um produto da lista"
+                  [(value)]="codigoProdutoAdd"                  
+                >
+                  <mat-option
+                    *ngFor="let produto of produtos" 
+                    [value] ="produto.codigo"
+                  >
+                    {{ produto.nome }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="fill" style="text-align: right;">
+                <mat-label>Valor</mat-label>             
+                <input
+                  [(ngModel)]= "valorUnitarioAdd"
+                  [ngModelOptions]="{standalone: true}"
+                  matInput                                       
+                  class="right-align"                                                   
+                  autocomplete="off"
+                  placeholder="Digite o valor unitário do Produto"
+                  placeholder="0.000,00"     
+                  matTooltip="Por favor, digite o valor unitário do produto comprado."                      
+                  (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"
+                />
+                <span matPrefix>R$&nbsp;</span>
+                <!-- <span matSuffix>,00</span> -->
+              </mat-form-field>  
+              <mat-form-field appearance="fill"  style="text-align: right;">
+                <mat-label>Quantidade</mat-label>             
+                <input
+                  [(ngModel)] = "quantidadeProdutoAdd"   
+                  [ngModelOptions]="{standalone: true}"
+                  matInput                                       
+                  type="number"
+                  step="1"
+                  min="0"
+                  autocomplete="off"
+                  class="right-align"               
+                  placeholder="Digite a quantidade total comprada"  
+                  matTooltip="Por favor, digite a quantidade de produto(s) comprado(s)"                    
+                  [value]="quantidadeProdutoAdd"
+                />                
+                <!-- <span matSuffix>,00</span> -->
+              </mat-form-field> 
+              &nbsp;
+              <button
+              type="button"
+              mat-raised-button
+              color="primary"
+              [disabled]="codigo > 0"
+              (click) = "adicionarProduto()"
+            >
+              Adicionar &nbsp;<i class="material-icons right">add</i>
+            </button>
+
+            </div>
+            <mat-card-subtitle><h3><b>Lista de Produto(s) comprado(s)</b></h3></mat-card-subtitle>
+            <div class="form-group mat-container"  >
+              <table>
+                <tr >
+                  <th colspan="5">Lista de Produtos</th>
+                </tr>
+                <tr>
+                  <th>Produto</th>
+                  <th>Valor Unit&agrave;rio</th>
+                  <th>Quantidade</th>
+                  <th>Valor Total</th>
+                  <th></th>
+                  
+                </tr>
+                <tbody > 
+                  <tr  *ngFor="let produtoLista of  listaCompraDetalhe">
+                    <td>{{produtoLista.produto.nome}}</td>
+                    <td>{{produtoLista.valorUnitario |  currency:'BRL':'symbol':'1.2-2':'pt' }} </td>
+                    <td>{{produtoLista.quantidadeProduto }}</td>
+                    <td>{{(produtoLista.valorUnitario * produtoLista.quantidadeProduto) | currency:'BRL':'symbol':'1.2-2':'pt'}}</td> 
+                    <td>
+                      <button
+                        mat-mini-fab
+                        aria-label="Apagar a compra adicionada" 
+                        color="warn"                      
+                        (click)="removerDaLista(produtoLista.codigoProduto,produtoLista.valorUnitario)"
+                        [disabled]="codigo > 0 "
+                      >                                    
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+             
+                
+                <tfoot *ngIf="valorTotalProdutoAdd > 0">
+                  <tr>
+                    <td colspan="3" style ="text-align: right;">Total</td>
+                    <td style ="text-align: center;">{{valorTotalProdutoAdd | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+                
+              </table>
+            </div>
+           
+          </div>
+          
+         
+        </div>
+        <div>
+          
+          <!-- <app-msg-error
+            [mostrarErro]="
+              formulario.get('nome').invalid &&
+              formulario.get('nome').hasError('required')
+            "
+            mensagemErro="Por favor, digite o nome completo! "
+          ></app-msg-error>
+          <app-msg-error
+            [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
+            mensagemErro="O nome digitado já existe cadastrado!"
+          ></app-msg-error>
+          <app-msg-error
+            [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
+            mensagemErro="A data está com formato incorreto!"
+          ></app-msg-error> -->
+        </div>   
+        <div>
+          <mat-divider></mat-divider>
+        </div>         
+      </form> 
+       <!-- botoes *********************************************************************************************************-->
+       <div style="margin-top: 10px">
+        <table>
+          <tr>              
+            <td  style="text-align: left;">
+                <button
+                type="submit"
+                mat-raised-button
+                color="primary"
+                [disabled]="!formulario.valid || codigo > 0 "
+                (click)="submit()"
+              >
+                Salvar &nbsp;<i class="material-icons right">save</i>
+              </button>   
+                       
+              
+              &nbsp;
+              <button mat-raised-button color="primary" (click)="dialogBaixaPagto()"
+                [disabled]="(formulario.get('dataPagtoBoleto').value != null && codigo > 0) ||(codigo == 0 || codigo == null )"
+                type="button">
+                Baixa de Pagamento &nbsp;<i class="material-icons right">paid</i>
+              </button>
+              
+              &nbsp;
+              <button mat-raised-button color="primary" (click)="retornar()">
+                Retornar &nbsp;<i class="material-icons right">reply</i>
+              </button>            
+            </td>
+          </tr>
+        </table>
+      </div> 
+    </mat-card-content>    
+  </mat-card>
+   
+</div>

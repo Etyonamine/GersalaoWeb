@@ -1,0 +1,138 @@
+<div>
+  <p *ngIf="!profissionais"><em>Carregando...</em></p>
+
+</div>
+<div [hidden]="!profissionais">
+  <mat-card>
+    <div>
+      <mat-card-header>
+        <mat-label>Lista de profissionais</mat-label>
+      </mat-card-header>
+    </div>
+    <div>
+     <mat-card-content>
+      <mat-form-field [hidden]="!profissionais">
+        <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por nome (ou parte dele)..." />
+      </mat-form-field>
+
+      <div class="commands text-right" style="margin-top: 5px;" *ngIf="lista">
+        <button mat-raised-button
+                color="primary"
+                [routerLink]="['profissional-novo']" >
+          Novo &nbsp;<i class="material-icons right">add</i>
+        </button>
+      </div>
+      <!-- <table class="mat-elevation-z8" [hidden]="!profissionais">
+        <thead>
+          <tr>
+            <th>Codigo</th>
+            <th>Nome</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let profissional of profissionais">
+            <td>
+              {{ profissional.codigo }}
+            </td>
+            <td>
+              {{ profissional.nome }}
+            </td>
+            <td>
+              <button
+                mat-mini-fab
+                color="primary"
+                aria-label="Editar o Profissional"                 
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button
+                mat-mini-fab
+                aria-label="Example icon button with a home icon"
+                value="{{profissional.codigo}}"                
+                color="warn"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table> -->
+  
+      <table mat-table [dataSource]="profissionais" class="mat-elevation-z8" [hidden]="!profissionais" matSort
+        (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+        <ng-container matColumnDef="codigo">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+          <mat-cell *matCellDef="let profissional"> {{ profissional.codigo }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="nome">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+          <mat-cell *matCellDef="let profissional"><a >{{
+              profissional.nome
+              }}</a></mat-cell>
+        </ng-container>        
+        <ng-container matColumnDef="tiposervico">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+          <mat-cell *matCellDef="let profissional"><a >{{
+              profissional.TipoServico.descricao
+              }}</a></mat-cell>
+        </ng-container> 
+        <ng-container matColumnDef="situacao">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+          <mat-cell *matCellDef="let profissional"><a >{{
+              profissional.Situacao.descricao
+              }}</a></mat-cell>
+        </ng-container>        
+        <ng-container matColumnDef="datacadastro">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Cadastro</mat-header-cell>
+          <mat-cell *matCellDef="let profissional">{{
+            profissional.dataCadastro | date: "dd/MM/yyyy HH:mm:ss"
+            }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="dataalteracao">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Alterado</mat-header-cell>
+          <mat-cell *matCellDef="let profissional">{{
+            profissional.dataAlteracao | date: "dd/MM/yyyy HH:mm:ss"
+            }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="acao">
+          <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+          <mat-cell *matCellDef="let profissional">
+            
+              <button
+                mat-mini-fab
+                color="primary"
+                aria-label="Editar o Profissional"                   
+                [routerLink]="['/profissional', profissional.codigo]"
+                >  
+                                      
+                <mat-icon>edit</mat-icon>
+              </button>
+
+           <!--    <button
+                mat-mini-fab
+                aria-label="Apagar o profissional"
+                value="{{profissional.codigo}}"                
+                color="warn">
+                <mat-icon>delete</mat-icon>
+              </button> -->
+             
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+      </table>  
+
+      <mat-paginator [hidden]="!profissionais" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons>
+      </mat-paginator>
+
+    </mat-card-content>
+    </div>
+
+  </mat-card>
+
+</div>

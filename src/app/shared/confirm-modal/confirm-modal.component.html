@@ -1,0 +1,13 @@
+<div mat-dialog-container>
+  <h2 mat-dialog-title>{{ titulo }}</h2>
+
+  <mat-dialog-content>
+    <label>{{ data.mensagem }}</label>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+    <button mat-button [mat-dialog-close]="true"  >{{ data.descricaoBotaoOK }}</button>
+    <button mat-button mat-dialog-close>{{ data.descricaoBotaoCancel }}</button>
+  </mat-dialog-actions>
+
+</div>

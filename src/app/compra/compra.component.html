@@ -1,0 +1,121 @@
+
+  <div>
+    <mat-card>
+      <div>
+        <mat-card-header>
+          <mat-label>Lista de Compras - efetuadas</mat-label>
+        </mat-card-header>
+      </div>
+      <div *ngIf="!compras" style="text-align: center;">
+        <h3>Não há compras efetuadas</h3>
+      </div>
+      <div >
+       <mat-card-content>
+        <button 
+          mat-raised-button
+          color="primary"
+          (click)="clearDate($event)">
+            Limpar
+        </button> 
+        &nbsp;&nbsp;
+        <mat-form-field [hidden]="!compras" style="width: 15%">
+         <!-- <input matInput (keyup)="loadData($event.target.value)" placeholder="Pesquisar por compra (ou parte dele)..." />-->
+         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+         <mat-datepicker #picker (change) ="loadData($event.target.value)"  ></mat-datepicker>
+          <mat-label>Pesquisa por data de compra</mat-label>
+          <input matInput [matDatepicker]="picker" 
+                (dateChange) ="loadData($event.target.value)" 
+                readonly 
+                [(ngModel)]="dataPesquisa" >                   
+        </mat-form-field>
+       
+        <div class="commands text-right" style="margin-top: 5px;" >
+          <button mat-raised-button
+                  color="primary"
+                  [routerLink]="['compra-novo']" >
+            Registrar nova compra &nbsp;<i class="material-icons right">add</i>
+          </button>
+        </div>         
+        <div  [hidden]="!compras" style="width: 100%;">
+          <table mat-table [dataSource]="compras" class="mat-elevation-z8" [hidden]="!compras" matSort
+        
+       
+          (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+          <ng-container matColumnDef="codigo">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+            <mat-cell *matCellDef="let compra"> {{ compra.codigo }} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="dataCompra">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Compra</mat-header-cell>
+            <mat-cell *matCellDef="let compra"><a >{{
+                compra.dataCompra  | date: "dd/MM/yyyy"
+                }}</a></mat-cell>
+          </ng-container>        
+          <ng-container matColumnDef="valor">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Valor-total</mat-header-cell>
+            <mat-cell *matCellDef="let compra"><a >{{
+                compra.valor | currency:'BRL':'symbol':'1.2-2':'pt'
+                }}</a></mat-cell>
+          </ng-container>     
+          <ng-container matColumnDef="dataVenctoBoleto">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Dt. Boleto</mat-header-cell>
+            <mat-cell *matCellDef="let compra">{{
+              compra.dataVenctoBoleto | date: "dd/MM/yyyy"
+              }}</mat-cell>
+          </ng-container> 
+          <ng-container matColumnDef="dataPagtoBoleto">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Dt. Pagto.</mat-header-cell>
+            <mat-cell *matCellDef="let compra">{{
+              compra.dataPagtoBoleto | date: "dd/MM/yyyy HH:mm:ss"
+              }}</mat-cell>
+          </ng-container>    
+          <ng-container matColumnDef="datacadastro">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Cadastro</mat-header-cell>
+            <mat-cell *matCellDef="let compra">{{
+              compra.dataCadastro | date: "dd/MM/yyyy HH:mm:ss"
+              }}</mat-cell>
+          </ng-container>          
+          <ng-container matColumnDef="acao">
+            <mat-header-cell *matHeaderCellDef>Ação</mat-header-cell>
+            <mat-cell *matCellDef="let compra">
+              
+                <button
+                  mat-mini-fab
+                  color="primary"
+                  aria-label="Editar o Compra"                   
+                  [routerLink]="['/compra', compra.codigo]"
+                  >  
+                                        
+                  <mat-icon>view_comfy</mat-icon>
+                </button>
+  
+                <button
+                  [disabled] = "compra.dataPagtoBoleto !== null"
+                  mat-mini-fab
+                  aria-label="Baixa de Pagamento"
+                  value="{{compra.codigo}}"                
+                  color="warn"
+                  (click) = "dialogBaixaPagto(compra.codigo)"
+                  >
+                  <!-- <span class="material-icons-outlined">
+                    paid
+                    </span> -->
+                  <mat-icon>paid</mat-icon>
+                </button>
+               
+            </mat-cell>
+          </ng-container>
+  
+          <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+          </table>  
+        
+        <mat-paginator [hidden]="!compras" (page)="getData($event)" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+      </mat-card-content>
+      </div>  
+    </mat-card>  
+  </div>
+  

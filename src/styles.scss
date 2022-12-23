@@ -1,0 +1,133 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.version-info {
+  font-size: 8pt;
+  float: right;
+  margin: 8px;
+}
+.sucess-snackbar {
+  background: green;
+  color:white;
+}
+.error-snackbar {
+  background: red;
+  color:white;
+}
+.exclamation-snackbar {
+  background: yellow;
+  color:black;
+  font-weight: bold;
+}
+
+.container .mat-form-field + .mat-form-field {
+  margin-left: 5px;
+  margin-top: 5px;
+
+}
+// mat-card-header{
+//   text-align: center;
+//   font-size: large;
+//   height: 30px;
+//   background-color: lightsteelblue;
+//   color: white;
+//   vertical-align: middle;
+// }
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+  padding-left: 16px;
+}
+
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
+.campo_medio{
+  width:350px;
+}
+
+.campo_curto{
+  width:150px;
+}
+.mat-tab-group {
+  margin-bottom: 48px;
+}
+
+.observacao{
+  width: 1020px;
+}
+
+.button-row button,
+.button-row a {
+  margin-right: 8px;
+}
+/* table{
+  margin-top:10px;
+  width:100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+  border : 1px solid black;
+  text-align: center;
+} */
+
+mat-card{
+  background-color:lightsteelblue;
+  color: whitesmoke;
+  padding:5px ;
+}
+
+mat-card-header{
+  text-align: left;
+  font-size: large;
+  height: 30px;
+  background-color: lightsteelblue;
+  color: black;
+  vertical-align: middle;
+  font-weight: bold;
+}
+
+mat-card-subtitle{
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+mat-card-content{
+  margin-left: 5px;
+  margin-top: 5px;
+  background-color: white;
+  color: black;
+}
+.button-row button,
+.button-row a {
+  margin-right: 8px;
+  width: 100px;
+  text-align: left;
+}
+
+.example-flex-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.example-button-container {
+  display: flex;
+  justify-content: center;
+  width: 120px;
+}
+
+.red-color {
+  color:red;
+}
