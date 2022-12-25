@@ -1,6 +1,5 @@
-import { Time } from "@angular/common";
-import * as internal from "stream";
 import { EmpresaContato } from "./empresa-contato";
+import { EmpresaDocumento } from "./empresa-documento";
 import { EmpresaEndereco } from "./empresa-endereco";
 
 export interface Empresa{
@@ -10,6 +9,7 @@ export interface Empresa{
     horaInicial: string;
     horaFim: string;
     quantidadeMinutosServico: string;
-    empresaContato:EmpresaContato;
-    empresaEndereco:EmpresaEndereco;
+    empresaContato:EmpresaContato;    
+    empresaDocumento: EmpresaDocumento[];
+    empresaEndereco:EmpresaEndereco[];
 }

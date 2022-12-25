@@ -40,15 +40,21 @@
           ></app-msg-error>
           <app-msg-error
           [mostrarErro]="
-
-              formulario.get('horaFinal').value==formulario.get('horaInicial').value
+              ((formulario.get('horaFinal').valid) && formulario.get('horaInicial').valid) &&
+              (formulario.get('horaFinal').value==formulario.get('horaInicial').value)
             "
             mensagemErro="Atenção! O horário de início e fim não podem ser iguais."
           ></app-msg-error>
             </div>
              <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
-              <div class="form-group mat-container">                
-                <mat-form-field appearance="fill" style="width: 1018px">
+              <div class="form-group mat-container"> 
+                <mat-form-field appearance="fill" style="width: 250px">
+                  <mat-label>C.N.P.J</mat-label>
+                  <input matInput formControlName="cnpj" 
+                         placeholder="Digite somente os números do C.N.P.J da empresa"
+                         required/>
+                </mat-form-field>
+                <mat-form-field appearance="fill" style="width: 763px">
                   <mat-label>Nome</mat-label>
                   <input matInput formControlName="nome"  required/>
                 </mat-form-field>

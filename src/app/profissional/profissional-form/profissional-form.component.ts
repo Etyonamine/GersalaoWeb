@@ -11,7 +11,7 @@ import { ProfissionalEndereco } from '../profissional-endereco/profissional-ende
 import { ProfissionalContato } from '../profissional-contato/profissional-contato';
 import { ProfissionalDocumento } from '../profissional-documento/profissional-documento';
 import { Observable, Subscription } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -32,8 +32,6 @@ import { ContatoService } from 'src/app/contato/contato.service';
 import { DocumentoService } from 'src/app/documento/documento.service';
 import { ProfissionalEnderecoService } from '../profissional-endereco/profissional-endereco.service';
 import { EnderecoService } from 'src/app/endereco/endereco.service';
-import { ProfissionalTipoServicoService } from '../profissional-tipo-servico/profissional-tipo-servico.service';
-import { ProfissionalServicoService } from '../profissional-servico/profissional-servico.service';
 import { ProfissionalFinanceiroComponent } from '../profissional-financeiro/profissional-financeiro.component';
 
 
