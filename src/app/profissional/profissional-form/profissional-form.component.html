@@ -5,7 +5,7 @@
     </mat-card-title>
   </mat-card>
 
-  <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+  <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
     <div class="form-group mat-container">
       <mat-form-field appearance="fill" style="width: 70px">
         <mat-label>Código</mat-label>

@@ -14,6 +14,8 @@ import { ServicosService } from 'src/app/servico/servicos.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { Agenda } from '../agenda';
+import { AgendaGravarNovo } from '../agenda-gravar-novo';
+import { AgendaIsDupe } from '../agenda-is-dupe';
 import { AgendaService } from '../agenda.service';
 
 @Component({
@@ -36,6 +38,7 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   optionClientes: ClienteViewModel[];
 
   inscricaoAgenda$: Subscription;
+  inscricaoAgendaValidar$: Subscription;
   inscricaoProfissional$: Subscription;
   inscricaoServico$: Subscription;
   inscricaoClientes$: Subscription;
@@ -58,61 +61,81 @@ super();
 
 
   submit() {
-    if (this.validadorHoraInformado()== false){
-      return ;
-    }
+    
+    
     let dataForm = new Date(this.formulario.get("dataAgenda").value);
     let horaForm = this.formulario.get("horaAgenda").value;
 
     let dataHoraSelecionada = new Date(this.formulario.get("dataAgenda").value + ' ' + this.formulario.get('horaAgenda').value) ;
 
     let valueSubmit = Object.assign({}, this.formulario.value);
-    
+    let dataAgenda = this.formulario.get("dataAgenda").value;
+    let horaAgenda = this.formulario.get('horaAgenda').value;
+    let codigoClienteSelecionado = valueSubmit.codigoCliente;
+    let codigoProfissionalSelecionado = valueSubmit.codigoProfissional;
+    let codigoServicoSelecionado = valueSubmit.codigoServico;
+    let observacao = valueSubmit.observacao;
 
-    let agendaGravar = {
-      codigo: 0,
-      codigoCliente : valueSubmit.codigoCliente,
-      codigoProfissional : valueSubmit.codigoProfissional,
-      codigoServico : valueSubmit.codigoServico,
-      data : this.converteDataHoraSemTimeZone( dataHoraSelecionada),
-      valorServico : this.optionServicos.find(x=>x.codigo == valueSubmit.codigoServico).valor,
-      valorComissaoPercentual : this.optionProfissional.find(x=>x.codigo == valueSubmit.codigoProfissional).valorComissao,
-      observacao : valueSubmit.observacao,
-      codigoUsuarioCadastro : this.codigoUsuario,      
-      codigoSituacaoServico : 3,
-      codigoSituacaoBaixa : 5,   
-      codigoSituacaoApuracao : 8 ,    
-      dataUsuarioCadastro : this.dataHoraAtualSemTimeZone()
-    } as Agenda;
+    let agendaGravarNovo = {
+      data : dataAgenda, 
+      hora : horaAgenda,
+      codigoCliente: codigoClienteSelecionado,
+      codigoProfissional: codigoProfissionalSelecionado,
+      codigoServico: codigoServicoSelecionado,
+      observacao: observacao,
+      codigoUsuarioCadastro: this.codigoUsuario
+    } as AgendaGravarNovo;
+
+
+    let agendaIsDupe = {
+      data : dataAgenda,
+      hora : horaAgenda,
+      codigoCliente: codigoClienteSelecionado,
+      codigoProfissional: codigoProfissionalSelecionado,
+      codigoServico: codigoServicoSelecionado
+    } as AgendaIsDupe;
+   
     this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar com o agendamento?', 'Agendar - Cliente', (resposta: boolean) => {
       if (resposta) {
-
-          //valida se já existe a agenda cadstrada
-          this.inscricaoAgenda$ = this.agendaService.isDupe(agendaGravar).pipe(concatMap(result=>{
-            return of (result);
-          })).subscribe(retorno=>{
-            if (!retorno){
-                  //gravando no banco de dados.
-                  this.inscricaoAgenda$ = this.agendaService.save(agendaGravar)
-                  .subscribe(result=>{
-                    if (result){
-                      this.handlerSucesso('Gravado com sucesso!');
-                    }else{
-                      this.handleError('Não foi gravado a agenda.');
-                    }
-                  },error=>{
-                    console.log(error);
-                    this.handleError('Ocorreu um erro ao tentar gravar a agenda.');
-                  })
-              
+          //valida se a hora é valida
+          this.inscricaoAgendaValidar$ = this.agendaService.validaHoraDeAgendamento(horaAgenda)
+          .subscribe(retornoValidacao=>{
+            if (retornoValidacao === false){
+              this.handlerExclamacao('A hora informada do agendamento não permitido! Fora de horário de atendimento do estabelecimento.');  
+              return;
             }else{
-              this.handlerExclamacao("Esta agenda já existe!");        
+              this.inscricaoAgenda$ = this.agendaService.isDupeAgenda(agendaIsDupe).pipe(concatMap(result=>{
+                return of (result);
+              })).subscribe(retorno=>{
+                if (!retorno){
+                      //gravando no banco de dados.
+                      this.inscricaoAgenda$ = this.agendaService.salvarNovoRegistro(agendaGravarNovo)
+                      .subscribe(result=>{
+                        if (result){
+                          this.handlerSucesso('Gravado com sucesso!');
+                        }else{
+                          this.handleError('Não foi gravado a agenda.');
+                        }
+                      },error=>{
+                        console.log(error);
+                        this.handleError('Ocorreu um erro ao tentar gravar a agenda.');
+                      })
+                  
+                }else{
+                  this.handlerExclamacao("Esta agenda já existe!");        
+                }
+              },error=>{
+                console.log (error);
+                this.handleError('Ocorreu um erro ao validar a existência da agenda.');
+                return;
+              });
             }
           },error=>{
-            console.log (error);
-            this.handleError('Ocorreu um erro ao validar a existência da agenda.');
-            return;
+            console.log(error);
+            this.handleError('Ocorreu um erro ao validar a hora de agendamento');
           });
+          //valida se já existe a agenda cadstrada
+         
       }}, 'Sim', 'Não'
     );
   }
@@ -144,6 +167,9 @@ super();
     }
     if (this.inscricaoAgenda$){
       this.inscricaoAgenda$.unsubscribe();
+    }
+    if (this.inscricaoAgendaValidar$){
+      this.inscricaoAgendaValidar$.unsubscribe();
     }
   }
   criacaoFormulario(){
@@ -238,12 +264,24 @@ super();
 
     });
   }
-  validadorHoraInformado(){
-    let dataDia = new Date(this.formulario.get("dataAgenda").value).toLocaleDateString('pt');
-    let dataDiaHoraInicial = new Date(dataDia + ' ' + this.horaInicioDefault);
-    let dataDiaHoraFinal =  new Date(dataDia + ' ' + this.horaFimDefault);
-    let dataDiaHoraSelecionada = new Date(dataDia + ' ' + this.formulario.get("horaAgenda").value);
+  validadorHoraInformado(){   
     
+    let horaSelecionada = this.formulario.get("horaAgenda").value;
+    this.agendaService.validaHoraDeAgendamento(horaSelecionada)
+                      .subscribe(result=>{
+                        if(!result){
+                          this.handleError("Hora de agendamento fora do funcionamento do estabelecimento!");
+                          return false;
+                        }else{
+                          return true;
+                        }                        
+                      },error=>{
+                        console.log(error);
+                        this.handleError('Ocorreu um erro ao validar a hora de agendamento');
+                        return false;
+                      });
+    
+    /* 
     if  (dataDiaHoraInicial.getTime() > dataDiaHoraSelecionada.getTime()){
       this.handlerExclamacao('A hora de agenda informada é menor do que o inìcio de funcionamento do estabelecimento.')      ;
       return false;
@@ -252,7 +290,7 @@ super();
        this.handlerExclamacao('A hora de agenda informada é maior do que o fim de funcionamento do estabelecimento.')      ;
       return false;
     }
-    return true;
+    return true; */
   }
   handlerExclamacao(mensagem:string){
     this.alertService.mensagemExclamation(mensagem);

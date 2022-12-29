@@ -8,6 +8,8 @@ import { Agenda } from './agenda';
 import { AgendaApurar } from './agenda-apurar';
 import { AgendaBaixa } from './agenda-baixa';
 import { AgendaCancelar } from './agenda-cancelar';
+import { AgendaGravarNovo } from './agenda-gravar-novo';
+import { AgendaIsDupe } from './agenda-is-dupe';
 
 @Injectable({
   providedIn: 'root'
@@ -63,5 +65,23 @@ export class AgendaService extends BaseService<Agenda>{
             .set("filterQuery", filterQuery);
         }
     return this.http.get<ApiResult>(urlpendentesApuraProfi, { params }).pipe(take(1));
+  }
+  isDupeAgenda(agendaIsDupe  : AgendaIsDupe){
+    let urlDupe = this.url + '/isDupe';
+    return this.http.post<boolean>(urlDupe, agendaIsDupe).pipe(take(1));
+  }
+  salvarNovoRegistro(agendaGravarNovo: AgendaGravarNovo){
+    let urlgravarNovo= this.url ;
+    agendaGravarNovo.data = btoa(agendaGravarNovo.data);
+    agendaGravarNovo.hora = btoa(agendaGravarNovo.hora);
+    if (agendaGravarNovo.observacao!== undefined){
+      agendaGravarNovo.observacao = btoa(agendaGravarNovo.observacao);
+    }
+    return this.http.post<boolean>(urlgravarNovo, agendaGravarNovo).pipe(take(1));
+  }
+  validaHoraDeAgendamento(hora:string){
+    let horaCripto = btoa(hora);
+    let urlvalidarHora = this.url + '/HoraDeAgendamentoValida?hora='+ horaCripto;
+    return this.http.post<boolean>(urlvalidarHora, null).pipe(take(1));
   }
 }

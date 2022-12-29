@@ -3,7 +3,7 @@
       <mat-card-title> 
         Cadastro de Produtos - {{ tituloPagina }} 
       </mat-card-title>
-      <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+      <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
           <mat-card-content>
             <div class="form-group mat-container">
               <mat-form-field appearance="fill" style="width: 70px">

@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-header>Apuração do profissional</mat-card-header>
     <mat-card-content>
-      <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+      <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
         <mat-form-field appearance="fill" class="campoProfissional">
           <mat-label>Profissional</mat-label>
           <mat-select formControlName="codigoProfissional" matTooltip="Profissional a ser efetuado a apuração" required>
