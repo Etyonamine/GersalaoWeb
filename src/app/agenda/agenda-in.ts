@@ -1,12 +1,10 @@
 import { AgendaServico } from "../agenda-servicos/agenda-servico";
 
-export class AgendaGravarNovo{    
+export class AgendaIn {
     Data: string;    
     HoraInicio: string;    
     HoraFim: string;
     CodigoCliente: number;    
-    Observacao: string;    
-    NumeroComanda: number;    
-    CodigoUsuarioCadastro: number;
-    Servicos: Array<AgendaServico>;  
+    Observacao: string;
+    Servicos: Array<AgendaServico>;
 }

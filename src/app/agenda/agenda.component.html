@@ -44,19 +44,17 @@
                                         <table>
                                             <tr *ngFor="let agenda of agendaProfissional.listaAgenda">                                                
                                                 <a mat-stroked-button (click) = 'openDialogOperacao(agenda)' [class]="agenda.css" >
-                                                    {{ agenda.dataAgendaString | date: 'HH:mm' }} - {{ agenda.clienteDTO.nome}}
+                                                    {{ agenda.dataAgendaString | date: 'HH:mm' }} - {{ agenda.cliente.nome}}
                                                    
                                                 </a>                                              
                                             </tr>
                                         </table>                                         
                                     </td>
                                 </tr>                                
-                            </tbody>
-                         
+                            </tbody>                         
                         </table>
-                    </td>                    
-                </tr>
-               
+                    </td>                   
+                </tr>               
             </table>
             
             

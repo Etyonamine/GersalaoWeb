@@ -70,7 +70,7 @@
                     class="alinharADireita"
                     [(ngModel)]="agenda.valorAcrescimo"                    
                     autocomplete="off"
-                    placeholder="Digite o valor desconto do serviço"
+                    placeholder="Digite o valor de acréscimo do serviço"
                     placeholder="0.000,00"                     
                     (keypress)="allowNumericDigitsOnlyOnKeyUp($event)" 
                     (input)="calcularSaldo()"                    
@@ -94,8 +94,7 @@
                 <input matInput 
                     class="alinharADireita" 
                     [ngModel]="saldoFinal"                   
-                    autocomplete="off"
-                    placeholder="Digite o valor desconto do serviço"
+                    autocomplete="off"                    
                     placeholder="0.000,00"                     
                     (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"
                     [readonly]="statusBaixado">                

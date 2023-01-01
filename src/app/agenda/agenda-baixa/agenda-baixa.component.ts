@@ -40,6 +40,8 @@ export class AgendaBaixaComponent extends BaseFormComponent implements OnInit, O
   ngOnInit(): void {
     
     this.agenda = this.data;
+    this.agenda.valorAcrescimo = this.agenda.valorAcrescimo === undefined || this.agenda.valorAcrescimo === null?0 : this.agenda.valorAcrescimo;
+    this.agenda.valorDesconto = this.agenda.valorDesconto === undefined || this.agenda.valorDesconto === null?0 : this.agenda.valorDesconto;
     this.statusBaixado = this.agenda.situacaoBaixado;
     this.statusPendente = this.agenda.situacaoCancelado || this.agenda.situacaoBaixado ? false : true;
     this.calcularSaldo();
@@ -65,8 +67,8 @@ export class AgendaBaixaComponent extends BaseFormComponent implements OnInit, O
   }
   calcularSaldo() {
     let valorServico = Number.parseFloat(this.agenda.valorServico.toString());
-    let valorAcrescimo = Number.parseFloat(this.agenda.valorAcrescimo.toString());
-    let valorDesconto = Number.parseFloat(this.agenda.valorDesconto.toString());
+    let valorAcrescimo =this.agenda.valorAcrescimo === undefined || this.agenda.valorAcrescimo=== 0 ? 0: Number.parseFloat(this.agenda.valorAcrescimo.toString());
+    let valorDesconto = this.agenda.valorDesconto === undefined || this.agenda.valorDesconto=== null? 0 : Number.parseFloat(this.agenda.valorDesconto.toString());
 
     this.saldoFinal = ((valorServico + valorAcrescimo) - valorDesconto);
   }

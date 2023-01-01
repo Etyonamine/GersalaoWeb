@@ -10,25 +10,30 @@
                     <input readonly class="mensagemFuncionamento" value="O horário de funcionamento do estabelecimento : {{horaInicioDefault}} &agrave; {{ horaFimDefault}}">
                 </div>
                 <div>
+                    <!--Data-->
                     <mat-form-field appearance="fill" class="campo-DataHora">
                         <mat-label>Data</mat-label>
                         <input matInput type="date" formControlName="dataAgenda" required>
                     </mat-form-field>
-                    
+                    <!--Hora inicio-->
                     <mat-form-field appearance="fill"  class="campoHora" >
-                        <mat-label>Hora</mat-label>
+                        <mat-label>In&iacute;cio</mat-label>
                         <input matInput type="time" 
-                              formControlName="horaAgenda"               
+                              formControlName="horaInicio"               
                               required               
                              >
                     </mat-form-field>
-                   
-                    
-                    
-                    
+                    <!--Hora de termino-->
+                    <mat-form-field appearance="fill"  class="campoHora" >
+                        <mat-label>T&eacute;rmino</mat-label>
+                        <input matInput type="time" 
+                              formControlName="horaFim"               
+                              required               
+                             >
+                    </mat-form-field>                    
                 </div>
-
                 <div>    
+                    <!--Cliente-->
                     <mat-form-field *ngIf="optionClientes" appearance="fill" class="comboCliente">
                         <mat-label>Selecione o Cliente</mat-label>
                         <mat-select formControlName="codigoCliente" matTooltip="Selecione um cliente" required>
@@ -37,8 +42,27 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <!--Observacao do agendamento do cliente-->
+                    <div style="width: 100%;">
+                        <mat-form-field appearance="fill" class="observacao">
+                            <mat-label>Observa&ccedil;&aacute;o do Agendamento</mat-label>
+                            <textarea matInput #message maxlength="300" 
+                              placeholder="Digite uma observação" 
+                              cdkTextareaAutosize
+                              formControlName ="observacaoCliente"></textarea>
+                            <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
+                            </mat-hint>
+                            <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
+                        </mat-form-field>
+                    </div>
                 </div>
+                <mat-divider></mat-divider>
+                <div>                    
+                    <input readonly class="tituloListaServicos" value="Servi&ccedil;o(s)"/>
+                </div>
+                <mat-divider></mat-divider>
                 <div>
+                    <!--Profissional-->
                     <mat-form-field *ngIf="optionProfissional" appearance="fill" class="comboProfissional">
                         <mat-label>Selecione o profissional</mat-label>
                         <mat-select formControlName="codigoProfissional" matTooltip="Profissional" required
@@ -48,16 +72,30 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <!--Serviço-->
                     <mat-form-field *ngIf="optionServicos" appearance="fill" class="comboServico">
                         <mat-label>Selecione o Servi&ccedil;o</mat-label>
                         <mat-select formControlName="codigoServico" matTooltip="Serviço" required
-                            (selectionChange)="listaServicos($event)">
+                            (selectionChange)="recuperarValorServico()">
                             <mat-option *ngFor="let servico of optionServicos" [value]="servico.codigo">
                                 {{ servico.descricao }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <!--valor do servico-->                  
+                    <mat-form-field appearance="fill" class="campoValor">
+                        <mat-label>Valor</mat-label>
+                        <input matInput 
+                        type="number"
+                        class="alinharADireita"
+                        formControlName="valorServico"                  
+                        autocomplete="off"
+                        placeholder="Valor do serviço selecionado"
+                        placeholder="0.000,00"                           
+                        readonly>
+                    </mat-form-field>
                 </div>
+                <!--Observacao-->
                 <div style="width: 100%;">
                     <mat-form-field appearance="fill" class="observacao">
                         <mat-label>Observa&ccedil;&aacute;o</mat-label>
@@ -70,16 +108,105 @@
                         <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
                     </mat-form-field>
                 </div>
-               <!--  <mat-card-actions align="end">
-                    <button mat-button color="primary" class="full" align="end" [disabled]="!formulario.valid">Alterar
+                <mat-divider>
+
+                </mat-divider>      
+                <div>
+                    <button mat-raised-button color="primary" 
+                            type="button"
+                            class="full" 
+                            align="end"                             
+                            (click)="adicionarNaLista()"
+                            [disabled]="this.formulario.get('codigoServico').value == null || this.formulario.get('codigoServico').value == 0 "
+                            >
+                            Adicionar
+                            &nbsp;<i class="material-icons right">add</i></button>
+
+                    <button mat-raised-button  type="button" color="accent" class="full" align="end" [disabled]="selection.selected.length == 0" (click)="removerLista()">Remover
+                            &nbsp;<i class="material-icons right">remove</i></button>                            
+                </div>
+                <br />
+                <mat-divider></mat-divider>
+                <div>                    
+                     
+                    <input  class="tituloListaServicos" value="Lista de servi&ccedil;o(s) - adicionado(s) - Valor Total = {{ valorTotalServico |  number : '1.2-2':'pt' }}"/></div>
+                     
+                <mat-divider></mat-divider>
+               
+                <div style = "text-align: center;">
+                    <br/>
+                    <table mat-table [dataSource]="dataSource" 
+                        class="mat-elevation-z8" 
+                        [hidden]="listaServicosTabela.length == 0" 
+                        style="text-align:left;">
+
+                        <!-- Checkbox Column -->
+                        <ng-container matColumnDef="select">
+                          <th mat-header-cell *matHeaderCellDef>
+                            <mat-checkbox (change)="$event ? masterToggle() : null"
+                                          [checked]="selection.hasValue() && isAllSelected()"
+                                          [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                          [aria-label]="checkboxLabel()">
+                            </mat-checkbox>
+                          </th>
+                          <td mat-cell *matCellDef="let row">
+                            <mat-checkbox (click)="$event.stopPropagation()"
+                                          (change)="$event ? selection.toggle(row) : null"
+                                          [checked]="selection.isSelected(row)"
+                                          [aria-label]="checkboxLabel(row)">
+                            </mat-checkbox>
+                          </td>
+                        </ng-container>
+                      
+                        <!-- Item Column -->
+                        <ng-container matColumnDef="item">
+                          <th mat-header-cell *matHeaderCellDef> item </th>
+                          <td mat-cell *matCellDef="let element"> {{element.item}} </td>
+                        </ng-container>
+                      
+                        <!-- Profissional Column -->
+                        <ng-container matColumnDef="nomeProfissional">
+                          <th mat-header-cell *matHeaderCellDef> Profissional </th>
+                          <td mat-cell *matCellDef="let element"> {{element.nomeProfissional}} </td>
+                        </ng-container>
+                      
+                        <!-- servico Column -->
+                        <ng-container matColumnDef="nomeServico">
+                          <th mat-header-cell *matHeaderCellDef> Servi&ccedil;o </th>
+                          <td mat-cell *matCellDef="let element"> {{element.nomeServico}} </td>
+                        </ng-container>
+                        <!-- valor do servico Column -->
+                        <ng-container matColumnDef="valorServico">
+                            <th mat-header-cell *matHeaderCellDef> Valor </th>
+                            <td mat-cell *matCellDef="let element"> {{element.valorServico}} </td>
+                          </ng-container>
+                        <!-- descricaoSituacao -->
+                        <ng-container matColumnDef="descricaoSituacao">
+                            <th mat-header-cell *matHeaderCellDef> Situa&ccedil;&atilde;o </th>
+                            <td mat-cell *matCellDef="let element"> {{element.descricaoSituacao}} </td>
+                          </ng-container>
+                        <!-- observacao Column -->
+                        <ng-container matColumnDef="observacao">
+                          <th mat-header-cell *matHeaderCellDef> Observa&ccedil;&aacute;o</th>
+                          <td mat-cell *matCellDef="let element"> {{element.observacao}} </td>
+                        </ng-container>
+                      
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                            (click)="selection.toggle(row)">
+                        </tr>
+                      </table>
+                      <br/>
+                </div>
+                
+                <mat-divider></mat-divider>
+                <div>
+                    <button mat-raised-button color="primary" class="full" align="end" [disabled]="!formulario.valid || listaServicosTabela.length == 0" >Salvar
                         &nbsp;<i class="material-icons right">save</i></button>
-                    <button mat-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar
+                    <button mat-raised-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar
                         &nbsp;<i class="material-icons right">cancel</i></button>
-                </mat-card-actions> -->
-                <button mat-button color="primary" class="full" align="end" [disabled]="!formulario.valid">Salvar
-                    &nbsp;<i class="material-icons right">save</i></button>
-                <button mat-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar
-                    &nbsp;<i class="material-icons right">cancel</i></button>
+                </div>         
+                
             </form>
         </mat-card-content>
     </mat-card>

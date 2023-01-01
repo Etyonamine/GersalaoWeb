@@ -4,14 +4,17 @@
   margin-top: 5px; 
   text-align: center;
 }
+.mat-raised-button + .mat-raised-button{
+  margin-left: 5px;
+  margin-top: 5px;
+}
 .mat-form-field + .mat-form-field {
   margin-left: 5px;
   margin-top: 5px;
 }
 .titulo{
   background-color: #3f51b5;
-  color: white;
-  text-size-adjust: auto;
+  color: white;  
   font-size:medium;
 }
 .campo-DataHora{
@@ -27,7 +30,10 @@
   width: 250px;
 } 
 .comboServico{
-  width: 500px;
+  width: 355px;
+}
+.campoValor{
+  width: 150px;
 }
 .observacao{
   width: 750px; 
@@ -41,4 +47,25 @@
   background-color: #3f51b5;
   height: auto;
   color: white;
+}
+.tituloListaServicos{
+  width: 750px;
+  background-color: #3f51b5;
+  height: auto;
+  color: white;
+  text-align: center;
+  font-size:medium;
+}
+table {
+  width: 750px;
+  display: inline-table;
+  font-size: small;
+   
+}
+.mat-header-cell {
+  background: silver;
+  color:black;
+}
+.mat-cell{
+  font-size: small;
 }
