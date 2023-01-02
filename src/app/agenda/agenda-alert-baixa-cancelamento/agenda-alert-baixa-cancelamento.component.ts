@@ -15,7 +15,7 @@ export class AgendaAlertBaixaCancelamentoComponent implements OnInit {
              public data: ModalConfirmData){ }
 
   ngOnInit(): void {
-    this.dataAgenda = this.data.agenda.data.toLocaleString('BRL');
+    this.dataAgenda = this.data.agenda.DataInicio.toLocaleString('BRL');
   }
   
 

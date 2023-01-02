@@ -190,7 +190,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
                                           .subscribe(agendas=>{
         //linhas da tabela
         for(let a=0; a < agendas.length;a++){
-          let valorComissao = (agendas[a].agenda.valorComissaoPercentual/100) * agendas[a].agenda.valorServico;
+          /* let valorComissao = (agendas[a].agenda.valorComissaoPercentual/100) * agendas[a].agenda.valorServico;
           let dataApuracao = agendas[a].agenda.data.toLocaleString('BRL');
           dataApuracao = dataApuracao.substring(8,10) + dataApuracao.substring(4,8) + dataApuracao.substring(0,4)  + ' ' +  dataApuracao.substring(11,19) ;
           row.push(agendas[a].profissionalApuracao.profissional.nome)
@@ -198,9 +198,9 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
           row.push(agendas[a].agenda.valorServico.toFixed(2))      
           row.push(agendas[a].agenda.valorComissaoPercentual.toFixed(2))      
           row.push(valorComissao.toFixed(2))
-          row.push(agendas[a].agenda.codigoComissaoOrigem == 1 ? "Profissional": "Serviço")      
+          row.push(agendas[a].agenda.CodigoComissaoOrigem == 1 ? "Profissional": "Serviço")      
           rowD.push(row);
-          row =[];
+          row =[]; */
         }
         this.getReport(col , rowD , title, apuracao );
     },error=>{

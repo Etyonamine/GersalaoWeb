@@ -30,7 +30,15 @@
                               formControlName="horaFim"               
                               required               
                              >
-                    </mat-form-field>                    
+                    </mat-form-field>    
+                    <!-- situacao -->                
+                    <mat-form-field appearance="fill">
+                        <mat-label>Situa&ccedil;&atilde;o</mat-label>
+                        <input matInput 
+                              formControlName="descricaoSituacao"               
+                              readonly
+                             >
+                    </mat-form-field>    
                 </div>
                 <div>    
                     <!--Cliente-->
@@ -45,7 +53,7 @@
                     <!--Observacao do agendamento do cliente-->
                     <div style="width: 100%;">
                         <mat-form-field appearance="fill" class="observacao">
-                            <mat-label>Observa&ccedil;&aacute;o do Agendamento</mat-label>
+                            <mat-label>Observa&ccedil;&atilde;o do Agendamento</mat-label>
                             <textarea matInput #message maxlength="300" 
                               placeholder="Digite uma observação" 
                               cdkTextareaAutosize

@@ -37,6 +37,7 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   horaFimDefault: string;
   codigoUsuario: number; 
   valorTotalServico: number;
+  
 
   optionProfissional: Array<Profissional>=[];  
   optionServicos: Array<Servico>=[];  
@@ -161,7 +162,8 @@ checkboxLabel(row?: AgendaServicoAdd): string {
                 this.inscricaoAgenda$ = this.agendaService.salvarNovoRegistro(agendaGravar)
                                                           .subscribe(resultado=>{
                                                             if(resultado){
-                                                              this.handlerSucesso('Agendamento gravado com sucesso!');
+                                                              this.handlerSucesso('Agendamento gravado com sucesso!');                                                              
+                                                              this.limparCampos();
                                                             }
                                                           }, error=>{
                                                             console.log(error);
@@ -225,7 +227,8 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       codigoCliente: [null, Validators.required],
       valorServico: [0],
       observacao: [null],
-      observacaoCliente: [null]
+      observacaoCliente: [null],
+      descricaoSituacao: "Novo"
     });
   }  
   handlerSucesso(mensagem:string)
@@ -311,6 +314,12 @@ checkboxLabel(row?: AgendaServicoAdd): string {
   }
   limparCampos(){
     this.formulario.reset();
+    this.formulario.controls['descricaoSituacao'].setValue('Novo');
+    this.listaServicosTabela.splice(0,this.listaServicosTabela.length); 
+    this.selection.clear;
+    this.dataSource.data = this.listaServicosTabela;
+    
+
   }
   adicionarNaLista(){
     //validacao    
@@ -396,5 +405,5 @@ checkboxLabel(row?: AgendaServicoAdd): string {
         }
 
     }, 'Sim', 'Não');
-  }
+  }  
 }
