@@ -110,11 +110,11 @@ checkboxLabel(row?: AgendaServicoAdd): string {
 
     this.listaServicosTabela.forEach(serv =>{
       servicosGravar.push({
-        CodigoCliente:codigoClienteSelecionado,
-        CodigoProfissional:serv.codigoProfissional,
-        CodigoServico: serv.codigoServico,
-        DataAgenda: dataAgenda,
-        Observacao: serv.observacao
+        codigoCliente:codigoClienteSelecionado,
+        codigoProfissional:serv.codigoProfissional,
+        codigoServico: serv.codigoServico,
+        dataAgenda: dataAgenda,
+        observacao: serv.observacao
       } as AgendaServico);
     });
 

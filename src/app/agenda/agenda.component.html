@@ -18,10 +18,10 @@
                      <label><b>Data Selecionada:</b></label><b> {{selected | date: 'dd/MM/yyyy' }}</b>
                    </td>
                    <td style="text-align:right;">
-                        <b>Legendas dos hor&aacute;rios:</b>&nbsp;
+                       <!--  <b>Legendas dos hor&aacute;rios:</b>&nbsp;
                         <a  mat-stroked-button class ="hora_agendada_pendente"> Pendente</a>
                         <a  mat-stroked-button class ="hora_agendada_concluido"> Concluido </a> 
-                        <a  mat-stroked-button class ="hora_agendada_cancelado"> Cancelado </a>
+                        <a  mat-stroked-button class ="hora_agendada_cancelado"> Cancelado </a> -->
                    </td>
                 </tr>
                 <tr>
@@ -29,11 +29,14 @@
                         <mat-calendar class="demo-inline-calendar-card" [(selected)]="selected" (selectedChange)="obterAgendas()"></mat-calendar>
                     </td>
                     <td  colspan="2" style="vertical-align: top;">
-                        <table>
+                        <table class="tabelaAgendas">
                             <thead  >                    
-                                <tr class="titulo_lista">                                    
-                                    <th [attr.colspan]="qtdeColunasProfissionais">Lista de Horários - Agenda</th>
-                                </tr>            
+                                <tr class="titulo_horarios">                                    
+                                    <th [attr.colspan]="qtdeColunasProfissionais" >Profissionais</th>
+                                </tr>          
+                                <tr>
+                                    <td colspan="qtdeColunasProfissionais"></td>
+                                </tr>  
                                 <tr>                                                            
                                     <th *ngFor="let profissional of listaProfissionais" class="titulo_lista">{{profissional.nome}}</th>
                                 </tr>
@@ -43,10 +46,10 @@
                                     <td  *ngFor="let agendaProfissional of listaAgendasDia" class="celulasAgenda">
                                         <table>
                                             <tr *ngFor="let agenda of agendaProfissional.listaAgenda">                                                
-                                                <a mat-stroked-button (click) = 'openDialogOperacao(agenda)' [class]="agenda.css" >
-                                                    {{ agenda.dataAgendaString | date: 'HH:mm' }} - {{ agenda.cliente.nome}}
-                                                   
-                                                </a>                                              
+                                                <a mat-stroked-button  [class]="agenda.css" >
+                                                   {{ agenda.dataInicio | date: 'HH:mm' }} - {{ agenda.dataFim | date: 'HH:mm' }} - {{ agenda.cliente.nome}} 
+                                                </a>                  
+
                                             </tr>
                                         </table>                                         
                                     </td>

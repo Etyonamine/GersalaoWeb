@@ -40,7 +40,10 @@ export class AgendaService extends BaseService<Agenda>{
     let urlBaixa = this.url + '/CancelarAgendamento';
     return this.http.put<boolean>(urlBaixa, agendaCancelamento).pipe(take(1));
   }
- 
+  obterAgendaPorDia(data:string){
+    let urlAgenda = this.url + '/ListarPorData?dataAgenda=' + data;
+    return this.http.get<Array<Agenda>>(urlAgenda).pipe(take(1));
+  }
   listarAgendasPendentesApuracaoPorProfissional <ApiResult>(codigoProfissional:number,
     inicioPeriodo : Date,
     fimPeriodo : Date,
@@ -78,8 +81,8 @@ export class AgendaService extends BaseService<Agenda>{
     }
     if (agendaGravarNovo.Servicos.length>0){
       agendaGravarNovo.Servicos.forEach(serv=>{
-        let texto = serv.Observacao!=undefined ? btoa(serv.Observacao):null;        
-        serv.Observacao = texto;
+        let texto = serv.observacao!=undefined ? btoa(serv.observacao):null;        
+        serv.observacao = texto;
       })
     }    
     return this.http.post<boolean>(urlgravarNovo, agendaGravarNovo).pipe(take(1));
@@ -94,7 +97,6 @@ export class AgendaService extends BaseService<Agenda>{
     let urlvalidarHora = this.url + '/HoraFimDeAgendamentoValida?hora='+ horaCripto;
     return this.http.post<boolean>(urlvalidarHora, null).pipe(take(1));
   }
-
   validarInfoAgendamento(agendaIn: AgendaIn){
     let urlValidacao = this.url + '/ValidacaoAgendamento';
     return this.http.post<AgendaValidacao>(urlValidacao, agendaIn).pipe(take(1));

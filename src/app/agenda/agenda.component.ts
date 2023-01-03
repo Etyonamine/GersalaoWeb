@@ -1,18 +1,14 @@
-import { removeSummaryDuplicates } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
-import { unwatchFile } from 'fs';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AgendaServico } from '../agenda-servicos/agenda-servico';
 import { AuthService } from '../auth-guard/auth.service';
 import { Empresa } from '../empresa/empresa';
 import { EmpresaService } from '../empresa/empresa.service';
 import { Profissional } from '../profissional/professional';
 import { ProfissionalService } from '../profissional/profissional.service';
 import { AlertService } from '../shared/alert/alert.service';
-import { ApiResult } from '../shared/base.service';
 import { Usuario } from '../usuario/usuario';
 import { UsuarioService } from '../usuario/usuario.service';
 import { Agenda } from './agenda';
@@ -25,7 +21,7 @@ import { AgendaService } from './agenda.service';
 
 export interface AgendaDia{
   codigoProfissional:number;
-  listaAgenda: Array<Agenda>;
+  listaAgenda: Array<Agenda>; 
 }
 @Component({
   selector: 'app-agenda',
@@ -41,7 +37,8 @@ export class AgendaComponent implements OnInit {
   usuarios : Usuario[];
 
   listaProfissionais: Array<Profissional>=[];
-  listaAgenda: MatTableDataSource<Agenda>;
+  listaAgenda: Array<Agenda>=[];
+  listaServicos: Array<AgendaServico>=[];
   qtdeColunasProfissionais: number;
   qtdeAgendas : number;
 
@@ -60,11 +57,10 @@ export class AgendaComponent implements OnInit {
     private authService:AuthService,
     private alertService: AlertService,
     public dialog: MatDialog ,
-    private usuarioService: UsuarioService   
+    private usuarioService: UsuarioService  ,
+    private router: Router 
     ) {
-
   }
-
 
   ngOnInit(): void {
    
@@ -118,17 +114,13 @@ export class AgendaComponent implements OnInit {
       });
   }
   obterAgendas(){
-    let pageIndex: number = 0;
-    let pageSize: number = 100;
-    let sortColumn: string = 'nomeProfissional';
-    let sortOrder : string = 'ASC';
-    let filterColumn: string  = 'dataAgendaString';
-    let filterQuery: string  = this.selected.toJSON().substring(0,10);
-    
-    this.inscricaoAngenda$ = this.agendaService.getData<ApiResult<any>>(pageIndex,pageSize,sortColumn,sortOrder, filterColumn, filterQuery)
+    //let sortColumn: string = 'nomeProfissional';
+    //let dataAgenda = this.selected.toJSON().substring(0,10);   
+    let dataAgenda = this.selected;                                              
+    this.inscricaoAngenda$ = this.agendaService.obterAgendaPorDia(dataAgenda.toDateString())
                                                .subscribe(result=>{
-                                                  this.listaAgenda =  new MatTableDataSource<Agenda>(result.data);
-                                                  this.qtdeAgendas = result.totalCount;
+                                                  this.listaAgenda =  result;                                                  
+                                                  this.qtdeAgendas = 1;
                                                   this.montarAgendaDia();
                                                },error=>{
                                                 console.log(error);
@@ -136,19 +128,14 @@ export class AgendaComponent implements OnInit {
                                                });
   }
   recuperarDadosEmpresa() {
-
         this.inscricaoEmpresa$ = this.empresaService.recuperarDadosEmpresa()
           .subscribe(result => {
             this.empresa.codigo = atob(result.codigo);
             this.empresa.horaInicial = atob(result.horaInicial);
             this.empresa.horaFim = atob(result.horaFim);
             this.empresa.quantidadeMinutosServico = atob(result.quantidadeMinutosServico);
-
-
-
           }, error => {
             console.log(error);
-
           });
       }
   handlerSucesso(mensagem: string) {
@@ -169,30 +156,23 @@ export class AgendaComponent implements OnInit {
      let contadorAgenda: number;
      
      //montando
-     if (this.qtdeAgendas > 0 && this.listaAgenda.data.length > 0  ){
-       
-       //percorrendo a lista de profissionais
-        this.listaProfissionais.forEach(profi=>{           
-          
-          //let agendas = this.listaAgenda.data.filter(x=>x.CodigoProfissional === profi.codigo);
-            //agendas.sort(function(a,b){return new Date(a.DataAgendaString).getDate() - new Date(b.DataAgendaString).getDate()});
-          //  agendas.forEach(agenda=>{
-              /* switch (agenda.CodigoSituacaoServico){
-                case 4: // concluido
-                  agenda.css = cssHora[1].toString();
-                  break;
-                case 7 ://cancelado
-                  agenda.css = cssHora[2].toString();
-                  break;
-                default:
-                  agenda.css = cssHora[0].toString();
-                  break;
-              } */
-            })                                  
+     if (this.qtdeAgendas > 0 && this.listaAgenda.length > 0  ){
+      
 
-       //   this.listaAgendasDia.push({codigoProfissional : profi.codigo, listaAgenda : agendas });
-                        
-      //});
+       //percorrendo a lista de profissionais
+        this.listaProfissionais.forEach(profi=>{  
+          let agendas: Array<Agenda>=[];
+          this.listaAgenda.forEach(agenda=>{
+            if (agenda.listarServicos.find(x=>x.codigoProfissional== profi.codigo)){          
+              agenda.css=cssHora[0];
+              agendas.push(agenda);
+                        }
+          });                          
+          agendas.sort(function(a,b){return new Date(a.DataInicio).getDate() - new Date(b.DataInicio).getDate()});
+          
+          this.listaAgendasDia.push({codigoProfissional : profi.codigo, listaAgenda : agendas });
+                                  
+      });
     }      
   }
   openDialogBaixa(codigo:number){
@@ -332,6 +312,7 @@ export class AgendaComponent implements OnInit {
     
        
   }
+   
 }
 
 

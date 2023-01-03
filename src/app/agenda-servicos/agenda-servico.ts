@@ -1,7 +1,8 @@
 export class AgendaServico{
-    CodigoCliente: number;
-    CodigoProfissional:number;
-    CodigoServico: number;
-    DataAgenda: Date;    
-    Observacao: string;
+    codigoCliente: number;
+    codigoProfissional:number;
+    codigoServico: number;
+    codigoSituacao: number;
+    dataAgenda: Date;    
+    observacao: string;
 }

@@ -13,6 +13,6 @@ export class Agenda{
     CodigoUsuarioCadastro : number;    
     CodigoUsuarioAlteracao: number;    
     Cliente: Cliente
-    ListarServicos: Array<AgendaServico>;
-
+    listarServicos: Array<AgendaServico>;
+    css:String;
 }
