@@ -3,9 +3,6 @@ import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/r
 import { Observable, of } from 'rxjs';
 import { Agenda } from '../agenda';
 import { AgendaService } from '../agenda.service';
-
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +20,7 @@ export class AgendaResolveGuard implements Resolve<Agenda>{
         let codigo = route.params['codigo'];
         return this.agendaService.get<Agenda>(codigo);                   
     }
-    return null;
+    return of (this.agenda);
   }
 
 }

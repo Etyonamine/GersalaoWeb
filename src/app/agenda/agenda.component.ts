@@ -168,7 +168,7 @@ export class AgendaComponent implements OnInit {
               agendas.push(agenda);
                         }
           });                          
-          agendas.sort(function(a,b){return new Date(a.DataInicio).getDate() - new Date(b.DataInicio).getDate()});
+          agendas.sort(function(a,b){return new Date(a.dataInicio).getDate() - new Date(b.dataInicio).getDate()});
           
           this.listaAgendasDia.push({codigoProfissional : profi.codigo, listaAgenda : agendas });
                                   
@@ -182,30 +182,9 @@ export class AgendaComponent implements OnInit {
                                                .subscribe(result=>{
                                                 if (result){
 
-                                                  let usuarioBaixa = result.CodigoUsuarioAlteracao!==null ? this.usuarios.find(x=>x.codigo == result.CodigoUsuarioAlteracao ): null;
+                                                  let usuarioBaixa = result.codigoUsuarioAlteracao!==null ? this.usuarios.find(x=>x.codigo == result.codigoUsuarioAlteracao ): null;
                                                   let agendaBaixa = {
-                                                   /*  codigo : result.codigo,
-                                                    codigoFormaPagamento: result.codigoFormaPagamento,
-                                                    data : result.data,
-                                                    dataString: result.dataAgendaString,
-                                                    dataBaixa : result.codigoSituacaoServico === 4 ? result.dataUsuarioAlteracao: null,
-                                                    hora : result.horaAgendaString,                                                    
-                                                    nomeCliente : result.cliente.nome,
-                                                    nomeProfissional : result.profissional.nome,
-                                                    descricaoServico : result.servico.descricao,
-                                                    valorServico : result.valorServico,
-                                                    valorDesconto: result.valorDesconto, 
-                                                    valorAcrescimo: result.valorAcrescimo,
-                                                    valorComissao: result.valorComissaoPercentual,
-                                                    observacao: result.observacao,
-                                                    observacaoBaixa: result.observacaoBaixa                                                   ,
-                                                    codigoUsuarioAlteracao: this.codigoUsuario,
-                                                    situacaoBaixado : result.codigoSituacaoServico === 4 ? true:false,
-                                                    situacaoCancelado : result.codigoSituacaoServico === 7 ?true: false, */
-                                                    nomeUsuarioBaixa : usuarioBaixa != null ? usuarioBaixa.nome:null
-                                                    
-                                                    
-                                                    
+                                                    nomeUsuarioBaixa : usuarioBaixa != null ? usuarioBaixa.nome:null                                                    
                                                   } as AgendaBaixa;
 
                                                   const dialogRef = this.dialog.open(AgendaBaixaComponent,
@@ -251,9 +230,9 @@ export class AgendaComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result =>{
       let retorno = result;
       if (retorno === 'B'){
-        this.openDialogBaixa(agenda.Codigo);
+        this.openDialogBaixa(agenda.codigo);
       }else if (retorno ==='C'){
-        this.openCancelarAgendmento(agenda.Codigo);
+        this.openCancelarAgendmento(agenda.codigo);
       }
     });
   }
@@ -277,16 +256,11 @@ export class AgendaComponent implements OnInit {
       //let usuario = result.codigoUsuarioCancelamento!== null ? this.usuarios.find(x=>x.codigo === result.codigoUsuarioCancelamento):null;
 
        let agendaCancelar = {
-         codigo : result.Codigo,
-         data: result.DataInicio,
-         codigoUsuarioCancelamento: this.codigoUsuario ,
-         //dataCancelamento : result.DataUsuarioCancelamento,
-         campoNomeCliente : result.Cliente.nome,
-         //dataString : result.ataAgendaString,  
-         //motivoCancelamento : result.motivoCancelamento,
-         //codigoSituacao: result.codigoSituacaoServico,
-         //nomeUsuarioCancelamento:usuario!==null? usuario.nome: null,
-         //situacao: result.codigoSituacaoServico == 7?true:false
+         codigo : result.codigo,
+         data: result.dataInicio,
+         codigoUsuarioCancelamento: this.codigoUsuario ,         
+         campoNomeCliente : result.cliente.nome,
+        
        } as AgendaCancelar;
 
        const dialogCancelarRef = this.dialog.open(AgendaCancelamentoComponent,         

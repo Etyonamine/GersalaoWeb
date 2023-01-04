@@ -2,17 +2,17 @@ import { AgendaServico } from "../agenda-servicos/agenda-servico";
 import { Cliente } from "../cliente/cliente";
 
 export class Agenda{
-    Codigo : number;
-    DataInicio : Date;    
-    DataFim : Date;  
-    CodigoCliente: number;        
-    Observacao : string;        
-    NumeroComanda: Number;            
-    DataCadastro : Date;
-    DataAlteracao : Date;
-    CodigoUsuarioCadastro : number;    
-    CodigoUsuarioAlteracao: number;    
-    Cliente: Cliente
+    codigo : number;
+    dataInicio : Date;    
+    dataFim : Date;  
+    codigoCliente: number;        
+    observacao : string;        
+    nNumeroComanda: Number;            
+    dataCadastro : Date;
+    dataAlteracao : Date;
+    codigoUsuarioCadastro : number;    
+    codigoUsuarioAlteracao: number;    
+    cliente: Cliente
     listarServicos: Array<AgendaServico>;
     css:String;
 }

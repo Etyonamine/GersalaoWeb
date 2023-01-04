@@ -37,12 +37,15 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   horaFimDefault: string;
   codigoUsuario: number; 
   valorTotalServico: number;
-  
+  codigoClente :number;
+
+  edicao: boolean;
 
   optionProfissional: Array<Profissional>=[];  
   optionServicos: Array<Servico>=[];  
   optionClientes: ClienteViewModel[];
- 
+  tituloPagina: string;
+
   inscricaoAgenda$: Subscription;
   inscricaoAgendaValidar$: Subscription;
   inscricaoProfissional$: Subscription;
@@ -179,17 +182,26 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     );
   }
   ngOnInit(): void {
+    
+    this.agenda = this.route.snapshot.data['agenda'];
+    this.edicao = this.agenda==undefined? false:true;
+    this.tituloPagina = this.edicao?"Agenda - Serviço - Editando":"Agenda - Serviço - Novo Registro";
+    this.codigoClente = this.agenda!=undefined? this.agenda.codigoCliente:null;
+    this.criacaoFormulario();
+    this.listarProfissionais();
+    this.listaCliente(); 
+    
     this.tomorrow = new Date();    
     this.valorTotalServico =0 ;
-
-    this.dataSelecionada = new Date();
-    this.recuperarDadosEmpresa();
-    this.criacaoFormulario();
     this.optionProfissional = [];
     this.optionServicos = [];
-    this.listarProfissionais();
-    this.listaCliente();    
+    this.optionClientes = []; 
     this.codigoUsuario =  Number.parseInt(this.authService.usuarioLogado.codigo);
+    this.dataSelecionada = this.agenda != undefined ? this.agenda.dataInicio: new Date();
+    this.recuperarDadosEmpresa();
+    
+    
+    
     
   }
   ngOnDestroy():void {
@@ -215,21 +227,27 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       this.inscricaoValidacao$.unsubscribe();
     }    
   }
+  
   criacaoFormulario(){
-    
+   
+
+    let dataHoraInicial = this.agenda !=undefined? this.agenda.dataInicio.toString() : null;
+    let dataHoraFinal = this.agenda !=undefined? this.agenda.dataFim.toString(): null;
+
     //formulario cliente
-    this.formulario = this.formBuilder.group({    
-      dataAgenda: [new Date(),Validators.required],  
-      horaInicio: [ null,Validators.required] ,      
-      horaFim: [ null,Validators.required] ,      
+    this.formulario = this.formBuilder.group({          
+      dataAgenda: [{value:this.agenda !=undefined? dataHoraInicial.substring(0,10): new Date(),disabled : this.edicao},Validators.required],  
+      horaInicio: [{value : dataHoraInicial == undefined?null: dataHoraInicial.substring(11,16),disabled : this.edicao},Validators.required] ,      
+      horaFim: [{value:dataHoraFinal == undefined?null:dataHoraFinal.substring(11,16),disabled : this.edicao},Validators.required] ,      
       codigoProfissional:[null],
       codigoServico: [null ],       
-      codigoCliente: [null, Validators.required],
+      codigoCliente: [this.codigoClente, Validators.required],
       valorServico: [0],
       observacao: [null],
-      observacaoCliente: [null],
-      descricaoSituacao: "Novo"
-    });
+      observacaoCliente: [this.agenda !=undefined? this.agenda.observacao:null],
+      descricaoSituacao: [{value: this.agenda !=undefined? "Agendado":"Novo",disabled : true}]
+      
+    });    
   }  
   handlerSucesso(mensagem:string)
   {
@@ -292,7 +310,8 @@ checkboxLabel(row?: AgendaServicoAdd): string {
                                                 .subscribe(result=>{
                                                   if (result){
                                                     this.optionClientes = this.clienteService.ConverterListaCriptografadaCliente(result);
-                                                  }                                                                                                      
+                                                    
+                                                  }                                                     
                                                 },
                                                 error=>{
                                                   console.log(error);

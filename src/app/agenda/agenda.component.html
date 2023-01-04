@@ -46,7 +46,7 @@
                                     <td  *ngFor="let agendaProfissional of listaAgendasDia" class="celulasAgenda">
                                         <table>
                                             <tr *ngFor="let agenda of agendaProfissional.listaAgenda">                                                
-                                                <a mat-stroked-button  [class]="agenda.css" >
+                                                <a mat-stroked-button  [class]="agenda.css" [routerLink]="['agenda-novo', agenda.codigo]">
                                                    {{ agenda.dataInicio | date: 'HH:mm' }} - {{ agenda.dataFim | date: 'HH:mm' }} - {{ agenda.cliente.nome}} 
                                                 </a>                  
 

@@ -1,7 +1,7 @@
 <div class="container">
     <mat-card>
         <mat-card-title class="titulo">
-            Agendar - Serviço
+            {{tituloPagina}}
         </mat-card-title>
         <mat-card-content>
 
@@ -13,13 +13,14 @@
                     <!--Data-->
                     <mat-form-field appearance="fill" class="campo-DataHora">
                         <mat-label>Data</mat-label>
-                        <input matInput type="date" formControlName="dataAgenda" required>
+                        <input matInput type="date" formControlName="dataAgenda"   required>
                     </mat-form-field>
                     <!--Hora inicio-->
                     <mat-form-field appearance="fill"  class="campoHora" >
                         <mat-label>In&iacute;cio</mat-label>
                         <input matInput type="time" 
-                              formControlName="horaInicio"               
+                              formControlName="horaInicio"   
+                                           
                               required               
                              >
                     </mat-form-field>
@@ -27,7 +28,8 @@
                     <mat-form-field appearance="fill"  class="campoHora" >
                         <mat-label>T&eacute;rmino</mat-label>
                         <input matInput type="time" 
-                              formControlName="horaFim"               
+                              formControlName="horaFim"           
+                              
                               required               
                              >
                     </mat-form-field>    
@@ -41,15 +43,24 @@
                     </mat-form-field>    
                 </div>
                 <div>    
-                    <!--Cliente-->
-                    <mat-form-field *ngIf="optionClientes" appearance="fill" class="comboCliente">
-                        <mat-label>Selecione o Cliente</mat-label>
-                        <mat-select formControlName="codigoCliente" matTooltip="Selecione um cliente" required>
-                            <mat-option *ngFor="let cliente of optionClientes" [value]="cliente.codigo">
-                                {{ cliente.nome }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <div *ngIf="agenda == undefined">
+                        <!--Cliente-->
+                        <mat-form-field  appearance="fill" class="comboCliente" >
+                            <mat-label>Selecione o Cliente</mat-label>
+                            <mat-select formControlName="codigoCliente" matTooltip="Selecione um cliente" required>
+                                <mat-option *ngFor="let cliente of optionClientes" [value]="cliente.codigo">
+                                    {{ cliente.nome }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>               
+                    <div *ngIf="agenda != undefined">
+                        <mat-form-field class="comboCliente"  appearance="fill">
+                            <mat-label>Cliente</mat-label>
+                            <input matInput  disabled  value="{{agenda.cliente.nome}}">
+                          </mat-form-field>
+                    
+                    </div>     
                     <!--Observacao do agendamento do cliente-->
                     <div style="width: 100%;">
                         <mat-form-field appearance="fill" class="observacao">
