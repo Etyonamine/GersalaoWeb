@@ -131,53 +131,57 @@ checkboxLabel(row?: AgendaServicoAdd): string {
    
     this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar com o agendamento?', 'Agendar - Cliente', (resposta: boolean) => {
       if (resposta) {
-           
-           //validação das informações para agendamento.
-          this.inscricaoValidacao$ = this.agendaService.validarInfoAgendamento(agendaIn)
-          .pipe(
-            concatMap(              
-              result=>{
+          if (!this.edicao) {
+                //validação das informações para agendamento.
+                this.inscricaoValidacao$ = this.agendaService.validarInfoAgendamento(agendaIn)
+                .pipe(
+                  concatMap(              
+                    result=>{
 
-              let retorno:Boolean = false;              
-              if (result){
-                retorno = result.valido;
-                if(!retorno){
-                  this.handleError(result.mensagem);                                                            
-                }                
-              }               
-              return of(retorno);
-            })           
-          )
-            .subscribe(retorno=>{
-              if (retorno){                
-                //montando as informaçoes para gravar
-                var agendaGravar={
-                  CodigoCliente : agendaIn.CodigoCliente,
-                  CodigoUsuarioCadastro : this.codigoUsuario,
-                  Data: agendaIn.Data,
-                  HoraInicio: agendaIn.HoraInicio,
-                  HoraFim : agendaIn.HoraFim,
-                  NumeroComanda : 0,
-                  Observacao : observacaoCliente,
-                  Servicos : agendaIn.Servicos
-                } as AgendaGravarNovo; 
-                //gravar as informaçoes do agendamento.
-                this.inscricaoAgenda$ = this.agendaService.salvarNovoRegistro(agendaGravar)
-                                                          .subscribe(resultado=>{
-                                                            if(resultado){
-                                                              this.handlerSucesso('Agendamento gravado com sucesso!');                                                              
-                                                              this.limparCampos();
-                                                            }
-                                                          }, error=>{
-                                                            console.log(error);
-                                                            this.handleError('Ocorreu algum erro na tentativa de salvar o agendamento.');
-                                                          });
-              }
-            },
-            error=>{                                                          
-                console.log(error);
-                this.handleError("Ocorreu um erro ao tentar validar a hora inicial.");
-            });
+                    let retorno:Boolean = false;              
+                    if (result){
+                      retorno = result.valido;
+                      if(!retorno){
+                        this.handleError(result.mensagem);                                                            
+                      }                
+                    }               
+                    return of(retorno);
+                  })           
+                )
+                  .subscribe(retorno=>{
+                    if (retorno){                
+                      //montando as informaçoes para gravar
+                      var agendaGravar={
+                        CodigoCliente : agendaIn.CodigoCliente,
+                        CodigoUsuarioCadastro : this.codigoUsuario,
+                        Data: agendaIn.Data,
+                        HoraInicio: agendaIn.HoraInicio,
+                        HoraFim : agendaIn.HoraFim,
+                        NumeroComanda : 0,
+                        Observacao : observacaoCliente,
+                        Servicos : agendaIn.Servicos
+                      } as AgendaGravarNovo; 
+                      //gravar as informaçoes do agendamento.
+                      this.inscricaoAgenda$ = this.agendaService.salvarNovoRegistro(agendaGravar)
+                                                                .subscribe(resultado=>{
+                                                                  if(resultado){
+                                                                    this.handlerSucesso('Agendamento gravado com sucesso!');                                                              
+                                                                    this.limparCampos();
+                                                                  }
+                                                                }, error=>{
+                                                                  console.log(error);
+                                                                  this.handleError('Ocorreu algum erro na tentativa de salvar o agendamento.');
+                                                                });
+                    }
+                  },
+                  error=>{                                                          
+                      console.log(error);
+                      this.handleError("Ocorreu um erro ao tentar validar a hora inicial.");
+                  });
+          }else{
+            
+          }
+          
       }}, 'Sim', 'Não'
     );
   }
@@ -405,21 +409,25 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.alertService.openConfirmModal('Por favor, confirmar se deseja remover os itens selecionados da lista de serviços?', 'Agendar - Cliente', (resposta: boolean) => {
       if (resposta) {
         let rows : number = 1;
+        let countRemove:number=0;
         this.selection.selected.forEach(itemrem=>{
           if (itemrem.codigoSituacao == 99 ){
             let index = this.listaServicosTabela.findIndex(x=>x.item = itemrem.item);
             let valorSelecionado = Number.parseFloat(itemrem.valorServico.toString());
             this.listaServicosTabela.splice(index,1);                        
             this.valorTotalServico = (this.valorTotalServico - valorSelecionado);
+            countRemove++;
+          }else{
+            this.handlerExclamacao('Este serviço não pode ser removido.');
           }                    
         });
-        this.handlerSucesso('removido da lista com sucesso!');
-        this.dataSource.data = this.listaServicosTabela;
-       
-        this.selection.clear();
-        this.isAllSelected() ;
-        
-        }
+        if (countRemove>0){
+          this.handlerSucesso('removido da lista com sucesso!');
+          this.dataSource.data = this.listaServicosTabela;
+          this.selection.clear();
+          this.isAllSelected() ;
+        } 
+      }
 
     }, 'Sim', 'Não');
   }  

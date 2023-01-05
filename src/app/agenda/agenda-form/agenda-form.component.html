@@ -84,7 +84,7 @@
                     <!--Profissional-->
                     <mat-form-field *ngIf="optionProfissional" appearance="fill" class="comboProfissional">
                         <mat-label>Selecione o profissional</mat-label>
-                        <mat-select formControlName="codigoProfissional" matTooltip="Profissional" required
+                        <mat-select formControlName="codigoProfissional" matTooltip="Profissional" 
                             (selectionChange)="listaServicos($event)">
                             <mat-option *ngFor="let option of optionProfissional" [value]="option.codigo">
                                 {{ option.nome }}
@@ -94,7 +94,7 @@
                     <!--Serviço-->
                     <mat-form-field *ngIf="optionServicos" appearance="fill" class="comboServico">
                         <mat-label>Selecione o Servi&ccedil;o</mat-label>
-                        <mat-select formControlName="codigoServico" matTooltip="Serviço" required
+                        <mat-select formControlName="codigoServico" matTooltip="Serviço" 
                             (selectionChange)="recuperarValorServico()">
                             <mat-option *ngFor="let servico of optionServicos" [value]="servico.codigo">
                                 {{ servico.descricao }}
@@ -121,15 +121,25 @@
                         <textarea matInput #message maxlength="300" 
                           placeholder="Digite uma observação" 
                           cdkTextareaAutosize
-                          formControlName ="observacao"></textarea>
+                          formControlName ="observacao"
+                          [readonly]="this.formulario.get('codigoProfissional').value == undefined || this.formulario.get('codigoServico').value==undefined"></textarea>
                         <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
                         </mat-hint>
                         <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
                     </mat-form-field>
                 </div>
+                <div style="width: 100%;" *ngIf="this.formulario.get('codigoProfissional').value == undefined || this.formulario.get('codigoServico').value==undefined">
+                    <!-- <input value="Atenção!O campo observação do serviço está editável somente quando for selecionado um profissional e serviço."  class="observacao"> -->
+
+                    <mat-form-field class="mensagemObservacaoServico" appearance="fill">
+                        <mat-label>Mensagem</mat-label>
+                        <input matInput disabled value="Atenção!O campo observação do serviço está editável somente quando for selecionado um profissional e serviço."  class="observacao">
+                      </mat-form-field>
+                </div>
                 <mat-divider>
 
-                </mat-divider>      
+                </mat-divider>     
+                <!--BOTOES DE ADICIONAR E REMOVER--> 
                 <div>
                     <button mat-raised-button color="primary" 
                             type="button"
@@ -151,7 +161,8 @@
                     <input  class="tituloListaServicos" value="Lista de servi&ccedil;o(s) - adicionado(s) - Valor Total = {{ valorTotalServico |  number : '1.2-2':'pt' }}"/></div>
                      
                 <mat-divider></mat-divider>
-               
+
+                <!--TABELA DE SERVICOS-->
                 <div style = "text-align: center;">
                     <br/>
                     <table mat-table [dataSource]="dataSource" 
@@ -217,7 +228,7 @@
                       </table>
                       <br/>
                 </div>
-                
+                <!-- BOTOES -->
                 <mat-divider></mat-divider>
                 <div>
                     <button mat-raised-button color="primary" class="full" align="end" [disabled]="!formulario.valid || listaServicosTabela.length == 0" >Salvar
