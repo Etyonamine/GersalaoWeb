@@ -199,7 +199,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.codigoUsuario =  Number.parseInt(this.authService.usuarioLogado.codigo);
     this.dataSelecionada = this.agenda != undefined ? this.agenda.dataInicio: new Date();
     this.recuperarDadosEmpresa();
-    
+    this.preenchimentoServicos();
     
     
     
@@ -226,10 +226,8 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     if (this.inscricaoValidacao$){
       this.inscricaoValidacao$.unsubscribe();
     }    
-  }
-  
-  criacaoFormulario(){
-   
+  }  
+  criacaoFormulario(){ 
 
     let dataHoraInicial = this.agenda !=undefined? this.agenda.dataInicio.toString() : null;
     let dataHoraFinal = this.agenda !=undefined? this.agenda.dataFim.toString(): null;
@@ -425,4 +423,28 @@ checkboxLabel(row?: AgendaServicoAdd): string {
 
     }, 'Sim', 'Não');
   }  
+  preenchimentoServicos()
+  {
+    if (this.agenda ==undefined ){
+      return;
+    }
+    let lista = this.agenda.listarServicos;
+    lista.forEach(servico=>{     
+      
+      this.listaServicosTabela.push(
+        {
+          item : this.listaServicosTabela.length ==0 ? 1 : (this.listaServicosTabela.length + 1),
+          codigoProfissional : servico.codigoProfissional, 
+          codigoServico : servico.codigoServico,
+          nomeProfissional : servico.profissional.nome, 
+          nomeServico : servico.servico.descricao,
+          observacao : servico.observacao,
+          codigoSituacao : servico.codigoSituacao, 
+          descricaoSituacao : servico.situacao.descricao,
+          valorServico : servico.valorPercentualComissao
+        }as AgendaServicoAdd
+      );
+      
+    });    
+  }
 }
