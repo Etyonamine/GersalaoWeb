@@ -87,8 +87,8 @@ export class AgendaService extends BaseService<Agenda>{
     }    
     return this.http.post<boolean>(urlgravarNovo, agendaGravarNovo).pipe(take(1));
   }
-  atualizarRegistrio(agenda:Agenda){
-    let urlAtualizar = this.url;
+  atualizarRegistro(agenda:Agenda){
+    let urlAtualizar = this.url + "?codigo=" + agenda.codigo;
     return this.http.put(urlAtualizar,agenda).pipe(take(1));
   }
   validaHoraInicialDeAgendamento(hora:string){

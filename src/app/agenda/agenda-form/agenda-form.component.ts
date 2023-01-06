@@ -112,13 +112,19 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     let servicosGravar : Array<AgendaServico>=[];
 
     this.listaServicosTabela.forEach(serv =>{
-      servicosGravar.push({
-        codigoCliente:codigoClienteSelecionado,
-        codigoProfissional:serv.codigoProfissional,
-        codigoServico: serv.codigoServico,
-        dataAgenda: dataAgenda,
-        observacao: serv.observacao
-      } as AgendaServico);
+      if (serv.codigoAgenda > 0 ){
+        servicosGravar.push(serv.agendaServico);
+      }else{
+        servicosGravar.push({ 
+          codigoAgenda: serv.codigoAgenda,     
+          codigoCliente:codigoClienteSelecionado,
+          codigoProfissional:serv.codigoProfissional,
+          codigoServico: serv.codigoServico,
+          codigoSituacao: serv.codigoSituacao,         
+          dataAgenda: dataAgenda,
+          observacao: serv.observacao
+        } as AgendaServico)
+      }      
     });
 
     let agendaIn = {
@@ -179,7 +185,21 @@ checkboxLabel(row?: AgendaServicoAdd): string {
                       this.handleError("Ocorreu um erro ao tentar validar a hora inicial.");
                   });
           }else{
-            
+           
+            this.agenda.listarServicos = servicosGravar;
+            this.agenda.codigoUsuarioAlteracao = this.codigoUsuario;
+
+            this.inscricaoAgenda$=this.agendaService.atualizarRegistro(this.agenda)
+                                                    .subscribe(result=>{
+                                                      if(result){
+                                                        this.handlerSucesso('Agenda atualizada com sucesso!');
+                                                      }else{
+                                                        this.handlerExclamacao('Não foi atualizado com sucesso a agenda.');
+                                                      }
+                                                    },error=>{
+                                                      console.log(error);
+                                                      this.handleError('Ocorreu um erro ao tentar salvar o registro');
+                                                    })
           }
           
       }}, 'Sim', 'Não'
@@ -373,6 +393,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     let valorServicoSelecionado :number = this.formulario.get("valorServico").value;
 
     this.listaServicosTabela.push({
+      codigoAgenda : 0 ,
       item : this.listaServicosTabela.length ==0 ? 1 : (this.listaServicosTabela.length + 1),
       codigoProfissional : codigoProfi, 
       codigoServico : codigoServi,
@@ -441,15 +462,16 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       
       this.listaServicosTabela.push(
         {
+          codigoAgenda : this.agenda.codigo,
           item : this.listaServicosTabela.length ==0 ? 1 : (this.listaServicosTabela.length + 1),
           codigoProfissional : servico.codigoProfissional, 
           codigoServico : servico.codigoServico,
           nomeProfissional : servico.profissional.nome, 
           nomeServico : servico.servico.descricao,
-          observacao : servico.observacao,
-          codigoSituacao : servico.codigoSituacao, 
+          observacao : servico.observacao,          
           descricaoSituacao : servico.situacao.descricao,
-          valorServico : servico.valorPercentualComissao
+          valorServico : servico.valorPercentualComissao,
+          agendaServico: servico          
         }as AgendaServicoAdd
       );
       
