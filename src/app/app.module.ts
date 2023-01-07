@@ -39,7 +39,7 @@ import { ProfissionalApuracaoModule } from './profissional-apuracao/profissional
 import localePt from '@angular/common/locales/pt';
 import { registerLocaleData } from '@angular/common';
 import { FornecedorComponent } from './fornecedor/fornecedor.component';
-
+import { AgendaServicosModule } from './agenda-servicos/agenda-servicos.module';
 
 import { TokenInterceptor } from './auth-guard/interceptor/token.interceptor';
 import { EmpresaModule } from './empresa/empresa.module';
@@ -89,6 +89,7 @@ registerLocaleData(localePt,'pt');
     EstoqueModule,
     PedidoModule,
     AgendaModule,
+    AgendaServicosModule,
     ProfissionalApuracaoModule,
     ResetSenhaModule    ,
     ReportsModule ,

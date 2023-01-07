@@ -1,0 +1,36 @@
+.container .mat-form-field + .mat-form-field {
+    margin-left: 5px;
+    margin-top: 5px;
+  
+}
+.mat-raised-button + .mat-raised-button{
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.mat-dialog-title{
+    background-color: #3f51b5;
+    color: white;
+    text-align: center;    
+}
+.nomeProfissional{
+  width: 495px;
+}
+.descricaoServico{
+  width: 495px;
+}
+.situacao{
+  width: 150px; 
+}
+.valorServico{
+  width: 150px;
+  text-align: right;
+}
+.observacao{
+  width: 650px;
+}
+.alinhaBotao{
+  text-align: right;
+}
+.tituloRotulo{
+  text-align: left;
+}

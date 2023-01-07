@@ -1,0 +1,56 @@
+    <h2 mat-dialog-title>Edi&ccedil;&atilde;o de Servi&ccedil;o</h2>
+    <mat-dialog-content class="mat-typography">
+    <div class="container">
+        <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+            <div>
+                <!--nome do profissional-->
+                <mat-form-field class="nomeProfissional" appearance="fill">
+                    <mat-label>Profissional</mat-label>
+                    <input matInput   formControlName="nomeProfissional">
+                </mat-form-field>
+                <!--Situacao-->
+                <mat-form-field class="situacao" appearance="fill">
+                    <mat-label>Situação</mat-label>
+                    <input matInput  formControlName="descricaoSituacao">
+                </mat-form-field>
+            </div>
+            <div>
+                <!--descricao do servico-->
+                <mat-form-field class="descricaoServico" appearance="fill">
+                    <mat-label >Servi&ccedil;o</mat-label>
+                    <input matInput  formControlName="descricaoServico">
+                </mat-form-field>
+
+                <!--Valor do servico-->
+                <mat-form-field class="valorServico"appearance="fill" >
+                    <mat-label  >Valor</mat-label>
+                    <input matInput matTooltip="Valor do serviço" 
+                            formControlName="valorServico"
+                            value ="valorTotal  |  currency:'BRL':'symbol':'1.2-2':'pt' "                                
+                            
+                    />
+                </mat-form-field>                    
+            </div>            
+            <div>
+                <mat-form-field class="observacao"appearance="fill" >
+                    <mat-label  class="tituloRotulo">Observação</mat-label>
+                    <textarea matInput #message maxlength="300" 
+                          placeholder="Digite uma observação" 
+                          cdkTextareaAutosize
+                          formControlName ="observacao">
+                    </textarea>                        
+                    <mat-hint align="end">{{message.value.length}} / 300</mat-hint>                    
+                </mat-form-field>
+            </div>
+            <br />
+            <mat-divider>            </mat-divider>
+            <br />
+            <div class="alinhaBotao">
+                <button mat-raised-button="Salvar o registro" color="primary" (click)="submit()">
+                    Salvar &nbsp;<mat-icon>save</mat-icon>
+                </button>
+                <button mat-raised-button [mat-dialog-close]="servico.observacao" color="primary" cdkFocusInitial>Fechar</button>
+            </div>
+        </form>            
+    </div>    
+    </mat-dialog-content>
