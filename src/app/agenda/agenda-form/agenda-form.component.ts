@@ -2,6 +2,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ɵangular_material_src_material_grid_list_grid_list_a } from '@angular/material/grid-list';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subscription } from 'rxjs';
@@ -17,11 +18,12 @@ import { EmpresaService } from 'src/app/empresa/empresa.service';
 import { Profissional } from 'src/app/profissional/professional';
 import { ProfissionalService } from 'src/app/profissional/profissional.service';
 import { Servico } from 'src/app/servico/servico';
-import { ServicoModule } from 'src/app/servico/servico.module';
 import { ServicosService } from 'src/app/servico/servicos.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { Agenda } from '../agenda';
+import { AgendaCancelamentoComponent } from '../agenda-cancelamento/agenda-cancelamento.component';
+import { AgendaCancelar } from '../agenda-cancelar';
 import { AgendaGravarNovo } from '../agenda-gravar-novo';
 import { AgendaIn } from '../agenda-in';
 import { AgendaService } from '../agenda.service';
@@ -129,10 +131,14 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           codigoAgenda: serv.codigoAgenda,     
           codigoCliente:codigoClienteSelecionado,
           codigoProfissional:serv.codigoProfissional,
+          codigoCancelamentoServico: null,
+          dataCancelamento: null,
+          observacaoCancelamento:null,
           codigoServico: serv.codigoServico,
-          codigoSituacao: serv.codigoSituacao,         
+          codigoSituacao: serv.codigoSituacao,    
           dataAgenda: dataAgenda,
-          observacao: serv.observacao
+          observacao: serv.observacao,
+
         } as AgendaServico)
       }      
     });
@@ -403,6 +409,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     let nomeServicoSelecionado = this.optionServicos.find(x=>x.codigo == codigoServi).descricao;
     let descSituacaoServico : string = "Adicionado";
     let codigoSituacaoServi : number = 99;
+    
     let valorServicoSelecionado :number = this.formulario.get("valorServico").value;
 
     this.listaServicosTabela.push({
@@ -479,6 +486,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           item : this.listaServicosTabela.length ==0 ? 1 : (this.listaServicosTabela.length + 1),
           codigoProfissional : servico.codigoProfissional, 
           codigoServico : servico.codigoServico,
+          codigoSituacao: servico.codigoSituacao,
           nomeProfissional : servico.profissional.nome, 
           nomeServico : servico.servico.descricao,
           observacao : servico.observacao,          
@@ -494,6 +502,19 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     if(servico==undefined){
       return;
     }
+   
+    this.selection.selected.forEach(itemrem=>{
+      if (itemrem.codigoSituacao == 99 ){
+        let index = this.listaServicosTabela.findIndex(x=>x.item = itemrem.item);
+        let valorSelecionado = Number.parseFloat(itemrem.valorServico.toString());
+        this.listaServicosTabela.splice(index,1);                        
+        this.valorTotalServico = (this.valorTotalServico - valorSelecionado);
+        
+      }else{
+        this.handlerExclamacao('Este serviço está agendado não poderá ser removido! Por favor, faça o cancelamento.');
+      }                    
+    });
+
     let agendaServicoEdit ={
       codigoAgenda: servico.codigoAgenda,
       codigoProfissional: servico.codigoProfissional,
@@ -530,6 +551,58 @@ checkboxLabel(row?: AgendaServicoAdd): string {
                                                                           this.agenda.listarServicos[indexAgendasrvObs].observacao= servicoRecuperado.observacao.toString().trim();
                                                                         });
       }    
+       
+    });
+  }
+  cancelarServico(){
+    if (this.selection.isSelected.length == 0 ){
+      return;
+    }
+    let listaServicoSelecionado : Array<AgendaServicoAdd>=[];
+
+    this.selection.selected.forEach(itemrem=>{
+
+      if (itemrem.codigoSituacao === 3 ){
+        listaServicoSelecionado.push(itemrem);        
+      }else{
+        this.handlerExclamacao('Este serviço está agendado não poderá ser cancelado! Por favor, desmarque e clique novamente no botão cancelar.');
+        return;
+      }                    
+    });
+    let agendaCancelar = {
+      codigoAgenda: this.agenda.codigo,
+      codigoUsuarioCancelamento: this.codigoUsuario,      
+      campoNomeCliente : this.agenda.cliente.nome,
+      dataInicio: this.agenda.dataInicio,
+      dataFim: this.agenda.dataFim,
+      codigoMotivoCancelamento: null,
+      descricaoMotivoCancelamento: null,
+      listaServicos: listaServicoSelecionado     
+    }as AgendaCancelar;
+
+    const dialogRefCanc = this.dialog.open(AgendaCancelamentoComponent,
+      {width: '800px' , height: '1080px;',
+        data : agendaCancelar              
+      }
+    );
+    dialogRefCanc.afterClosed().subscribe(result => {
+
+    /*   let indexObserv = this.listaServicosTabela.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
+      let indexAgendasrvObs = this.agenda.listarServicos.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
+
+      if(result!== undefined){
+        this.listaServicosTabela[indexObserv].observacao = result.toString().trim();
+        this.agenda.listarServicos[indexAgendasrvObs].observacao= result.toString().trim();
+
+      }else{
+        let servicoRecuperado : AgendaServico ;
+        this.inscricaoAgendaServicoConsultar$= this.agendaServicoService.recuperarServico(servico)
+                                                                        .subscribe(resultadoConsulta=>{
+                                                                          servicoRecuperado  = resultadoConsulta;
+                                                                          this.listaServicosTabela[indexObserv].observacao = servicoRecuperado.observacao.toString().trim();
+                                                                          this.agenda.listarServicos[indexAgendasrvObs].observacao= servicoRecuperado.observacao.toString().trim();
+                                                                        });
+      }     */
        
     });
   }

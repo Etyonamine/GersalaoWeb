@@ -223,16 +223,17 @@
                         <!-- action -->
                         <ng-container matColumnDef="action">
                             <th mat-header-cell *matHeaderCellDef></th>
-                            <td mat-cell *matCellDef="let element">  
+                            <td mat-cell *matCellDef="let element">                                  
                                 <button
                                     type="button"
                                     mat-mini-fab
                                     color="primary"
-                                    aria-label="Editar o tipo de serviço"
+                                    aria-label="Editar a observacao do serviço"
                                     (click)="openDialogEditarServico(element.agendaServico)"
                                 >
                                     <mat-icon>edit</mat-icon>
-                                </button></td>
+                                </button>                               
+                            </td>
                           </ng-container>
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"
@@ -244,10 +245,15 @@
                 <!-- BOTOES -->
                 <mat-divider></mat-divider>
                 <div>
+                    <!--Cancelamento-->
+                    <button mat-raised-button color="warn" type="button" class="full" align="end"  [disabled]="selection.selected.length == 0" (click)="cancelarServico()">Cancelar
+                        &nbsp;<i class="material-icons right">cancel</i></button>
+                    <!--salvar-->
                     <button mat-raised-button color="primary" class="full" align="end" [disabled]="!formulario.valid || listaServicosTabela.length == 0" >Salvar
                         &nbsp;<i class="material-icons right">save</i></button>
+                    <!--retornar-->
                     <button mat-raised-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar
-                        &nbsp;<i class="material-icons right">cancel</i></button>
+                        &nbsp;<i class="material-icons right">reply</i></button>
                 </div>         
                 
             </form>

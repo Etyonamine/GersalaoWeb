@@ -214,7 +214,7 @@ export class AgendaComponent implements OnInit {
                                                 
                                                
   }
-  openDialogOperacao(agenda:Agenda){
+ /*  openDialogOperacao(agenda:Agenda){
     const dialogRef = this.dialog.open(AgendaAlertBaixaCancelamentoComponent, {
       width: '600px',
       data: new ModalConfirmData({
@@ -235,7 +235,7 @@ export class AgendaComponent implements OnInit {
         this.openCancelarAgendmento(agenda.codigo);
       }
     });
-  }
+  } */
   listarUsuarios(){
     this.inscricaoUsuario$ = this.usuarioService.listarTodos()
                                                 .subscribe(result=>{
@@ -245,7 +245,7 @@ export class AgendaComponent implements OnInit {
                                                   this.handleError('Ocorreu o erro ao tentar recuperar a lista de usuarios.');
                                                 })    
   }
-  openCancelarAgendmento(codigo:number){
+  /* openCancelarAgendmento(codigo:number){
    
     this.listarUsuarios();
     
@@ -256,11 +256,14 @@ export class AgendaComponent implements OnInit {
       //let usuario = result.codigoUsuarioCancelamento!== null ? this.usuarios.find(x=>x.codigo === result.codigoUsuarioCancelamento):null;
 
        let agendaCancelar = {
-         codigo : result.codigo,
-         data: result.dataInicio,
+        codigoAgenda : result.codigo,
+         dataInicio: result.dataInicio,
+         dataFim: result.dataFim,
          codigoUsuarioCancelamento: this.codigoUsuario ,         
          campoNomeCliente : result.cliente.nome,
-        
+         codigoMotivoCancelamento: null,
+         descricaoMotivoCancelamento: null, 
+         listaServicos: this.rec
        } as AgendaCancelar;
 
        const dialogCancelarRef = this.dialog.open(AgendaCancelamentoComponent,         
@@ -285,7 +288,7 @@ export class AgendaComponent implements OnInit {
 
     
        
-  }
+  } */
    
 }
 

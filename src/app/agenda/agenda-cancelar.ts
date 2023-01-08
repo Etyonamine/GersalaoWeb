@@ -1,12 +1,13 @@
+import { AgendaServico } from "../agenda-servicos/agenda-servico";
+import { AgendaServicoAdd } from "./agenda-form/agenda-servico-add";
+
 export class AgendaCancelar{
-    codigo: number;
-    codigoUsuarioCancelamento: number;
-    dataCancelamento: Date;
-    campoNomeCliente: string;
-    dataString: String;
-    data: Date;
-    motivoCancelamento: String;
-    situacao:boolean;
-    nomeUsuarioCancelamento: string;
-    codigoSituacao: number;
+    codigoAgenda: number;
+    codigoUsuarioCancelamento: number;    
+    campoNomeCliente: string;       
+    descricaoMotivoCancelamento: String;
+    dataInicio:Date;
+    dataFim: Date;    
+    codigoMotivoCancelamento: number;
+    listaServicos: AgendaServicoAdd[];
 }

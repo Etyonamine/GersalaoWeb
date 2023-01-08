@@ -46,7 +46,7 @@ import { EmpresaModule } from './empresa/empresa.module';
 import { ProfissionalApuracaoComponent } from './profissional-apuracao/profissional-apuracao.component';
 import { ResetSenhaModule } from './reset-senha/reset-senha.module';
 import { ReportsModule } from './reports/reports.module';
-
+import { MotivoCancelamentoServicoModule} from './motivo-cancelamento-servico/motivo-cancelamento-servico.module';
 
 registerLocaleData(localePt,'pt');
 
@@ -93,7 +93,8 @@ registerLocaleData(localePt,'pt');
     ProfissionalApuracaoModule,
     ResetSenhaModule    ,
     ReportsModule ,
-    EmpresaModule
+    EmpresaModule,
+    MotivoCancelamentoServicoModule
   ],
   providers: [
     {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},

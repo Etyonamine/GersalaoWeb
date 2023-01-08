@@ -5,7 +5,6 @@ import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { BaseService } from '../shared/base.service';
 import { Agenda } from './agenda';
-import { AgendaApurar } from './agenda-apurar';
 import { AgendaBaixa } from './agenda-baixa';
 import { AgendaCancelar } from './agenda-cancelar';
 import { AgendaGravarNovo } from './agenda-gravar-novo';

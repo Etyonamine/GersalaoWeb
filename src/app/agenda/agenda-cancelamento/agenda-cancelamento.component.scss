@@ -1,3 +1,17 @@
+.container .mat-form-field + .mat-form-field {
+    margin-left: 5px;
+    margin-top: 5px;
+  
+}
+.mat-raised-button + .mat-raised-button{
+  margin-left: 5px;
+   
+}
+.mat-card-title{
+    background-color: #3f51b5;
+    color: white;
+    text-align: center;    
+}
 .botaoCancelar{
     background-color: black;
 }
@@ -21,7 +35,7 @@
 }
 
 .campoNomeCliente {
-    width: 275px;
+    width: 320px;
 }
 
 .mat-form-field+.mat-form-field {
@@ -29,7 +43,10 @@
     margin-top: 5px;
 }
 .campoObservacao{
-    width: 550px;
+    width: 650px;
+}
+.comboMotivo{
+    width: 650px;
 }
 .campoSituacao{
     width: 100px;
@@ -43,3 +60,16 @@
     width: 385px;
     text-align: left;
 }
+table {
+    width: 650px;
+    display: inline-table;
+    font-size: small;
+     
+  }
+  .mat-header-cell {
+    background: silver;
+    color:black;
+  }
+  .mat-cell{
+    font-size: small;
+  }

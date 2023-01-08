@@ -4,7 +4,7 @@ export class AgendaServicoAdd{
     item: number;
     codigoAgenda: number;
     codigoProfissional: number;
-    codigoServico: number;
+    codigoServico: number;    
     observacao: string;
     nomeProfissional: string;
     nomeServico: string;

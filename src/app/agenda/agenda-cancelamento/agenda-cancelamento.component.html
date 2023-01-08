@@ -1,48 +1,96 @@
-<h2 mat-dialog-title class="titulo">Agendamento - cancelamento</h2>
+<mat-card>
 
-<mat-dialog-content class="mat-typography">
-    <div>
-        <mat-form-field appearance="fill" class="campoNomeCliente">
-            <mat-label>Cliente</mat-label>
-            <input matInput [ngModel]="agenda.campoNomeCliente" readonly>
-        </mat-form-field>
-        <mat-form-field appearance="fill" class="campo-DataHora">
-            <mat-label>Data</mat-label>
-            <input matInput [ngModel]=" dataAgenda | date:'dd/MM/yyyy HH:mm':'pt' " readonly>
-        </mat-form-field> 
-        <mat-form-field appearance="fill" class="campoSituacao">
-            <mat-label>Situa&ccedil;&aacute;o</mat-label>
-            <input matInput [ngModel]="descricaoSituacao" readonly>
-        </mat-form-field>
-    </div>  
-    <div>
-        <mat-divider></mat-divider>
-    </div>
-    <div *ngIf="statusCancelamento">
-        <mat-form-field appearance="fill" class="dataCancelamento">
-            <mat-label>Data Cancelamento</mat-label>
-            <input matInput [ngModel]="agenda.dataCancelamento | date : 'dd/MM/yyyy  HH:mm':'pt'" readonly>
-        </mat-form-field>
-        <mat-form-field appearance="fill" class="usuarioCancelamento">
-            <mat-label>Usuario</mat-label>
-            <input matInput [ngModel]="agenda.nomeUsuarioCancelamento" readonly>
-        </mat-form-field>
-    </div>
-        
-    <div>
+    <mat-card-title>
+        <h2>Agendamento - cancelamento</h2>
+    </mat-card-title>
 
-        <mat-form-field appearance="fill" class="campoObservacao" >
-            <mat-label>Motivo do cancelamento</mat-label>
-            <textarea matInput #message maxlength="300" placeholder="Por favor, informe o motivo do cancelamento" cdkTextareaAutosize
-            [(ngModel)]="agenda.motivoCancelamento" [readonly]="statusCancelamento"></textarea>
-            <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
-            </mat-hint>
-            <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
-        </mat-form-field> 
-    </div>
-</mat-dialog-content>
-<mat-divider></mat-divider>
-<mat-dialog-actions align="end">
-    <button mat-raised-button color="primary" mat-dialog-close>Retornar</button>
-    <button mat-raised-button color="primary" class ="botaoCancelar" [disabled] = "statusCancelamento" (click)="cancelar()" cdkFocusInitial>Cancelar</button>
-</mat-dialog-actions>
+
+    <mat-card-content class="mat-typography">
+        <div class="container">
+            <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+                <div>
+                    <!--Nome do cliente-->
+                    <mat-form-field appearance="fill" class="campoNomeCliente">
+                        <mat-label>Cliente</mat-label>
+                        <input matInput formControlName="nomeCliente" readonly>
+                    </mat-form-field>
+                    <!--Inicio da agenda-->
+                    <mat-form-field appearance="fill" class="campo-DataHora">
+                        <mat-label>In&iacute;cio</mat-label>
+                        <input matInput formControlName="dataInicio" readonly>
+                    </mat-form-field>
+                    <!--fim da agenda-->
+                    <mat-form-field appearance="fill" class="campo-DataHora">
+                        <mat-label>Fim</mat-label>
+                        <input matInput formControlName="dataFim" readonly>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <!--lista de motivos de cancelamento do servico-->
+                    <mat-form-field *ngIf="listaMotivosCancelamento" appearance="fill" class="comboMotivo">
+                        <mat-label>Selecione o motivo do cancelamento</mat-label>
+                        <mat-select formControlName="codigoMotivoCancelamento" matTooltip="Motivo de cancelamento">
+                            <mat-option *ngFor="let motivo of listaMotivosCancelamento" [value]="motivo.codigoMotivo">
+                                {{ motivo.descricaoMotivoCancelamento }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!--descrição do motivo de cancelamento-->
+                    <mat-form-field appearance="fill" class="campoObservacao">
+                        <mat-label>Descrição do motivo do cancelamento</mat-label>
+                        <textarea matInput #message maxlength="300"
+                            placeholder="Por favor, informe o motivo do cancelamento" cdkTextareaAutosize
+                            formControlName="descricaoMotivoCancelamento"></textarea>
+                        <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
+                        </mat-hint>
+                        <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
+                    </mat-form-field>
+                </div>
+                <br />
+                <div>
+                    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="text-align:left;">
+
+                        <!-- Item Column -->
+                        <ng-container matColumnDef="item">
+                            <th mat-header-cell *matHeaderCellDef> item </th>
+                            <td mat-cell *matCellDef="let element"> {{element.item}} </td>
+                        </ng-container>
+                        <!-- Profissional Column -->
+                        <ng-container matColumnDef="nomeProfissional">
+                            <th mat-header-cell *matHeaderCellDef> Profissional </th>
+                            <td mat-cell *matCellDef="let element"> {{element.nomeProfissional}} </td>
+                        </ng-container>
+                        <!-- servico Column -->
+                        <ng-container matColumnDef="nomeServico">
+                            <th mat-header-cell *matHeaderCellDef> Servi&ccedil;o </th>
+                            <td mat-cell *matCellDef="let element"> {{element.nomeServico}} </td>
+                        </ng-container>
+                        <!-- valor do servico Column -->
+                        <ng-container matColumnDef="valorServico">
+                            <th mat-header-cell *matHeaderCellDef> Valor </th>
+                            <td mat-cell *matCellDef="let element"> {{element.valorServico}} </td>
+                        </ng-container>
+                        <!-- observacao Column -->
+                        <ng-container matColumnDef="observacao">
+                            <th mat-header-cell *matHeaderCellDef> Observa&ccedil;&aacute;o</th>
+                            <td mat-cell *matCellDef="let element"> {{element.observacao}} </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                        </tr>
+                    </table>
+                </div>
+
+
+            </form>
+        </div>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+
+    <mat-card-actions align="end">
+        <button mat-raised-button color="warn" [disabled]="!formulario.valid">Confirmar</button>
+        <button mat-raised-button color="primary" mat-dialog-close cdkFocusInitial>Retornar</button>
+
+    </mat-card-actions>
+</mat-card>
