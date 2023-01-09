@@ -4,13 +4,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { AgendaServico } from 'src/app/agenda-servicos/agenda-servico';
+import { AgendaServicosService } from 'src/app/agenda-servicos/agenda-servicos.service';
 import { MotivoCancelamentoServico } from 'src/app/motivo-cancelamento-servico/motivo-cancelamento-servico';
 import { MotivoCancelamentoServicoService } from 'src/app/motivo-cancelamento-servico/motivo-cancelamento-servico.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { AgendaCancelar } from '../agenda-cancelar';
 import { AgendaServicoAdd } from '../agenda-form/agenda-servico-add';
-import { AgendaService } from '../agenda.service';
+import { AgendaServicoCancelarGravar } from './agenda-servico-cancelar-gravar';
+import { AgendaServicoProfissional } from './agendaServicoProfissional';
 
 @Component({
   selector: 'app-agenda-cancelamento',
@@ -44,7 +46,7 @@ export class AgendaCancelamentoComponent extends BaseFormComponent implements On
               public data: AgendaCancelar, 
               private formBuilder: FormBuilder,
               private motivoCancelamentoServicoService:MotivoCancelamentoServicoService,
-              private agendaService:AgendaService,
+              private agendaServicoService: AgendaServicosService,
               private alertService: AlertService,
               private dialogRef: MatDialogRef<AgendaCancelamentoComponent>) { super(); }
 
@@ -65,39 +67,7 @@ export class AgendaCancelamentoComponent extends BaseFormComponent implements On
     if(this.inscricao$){
       this.inscricao$.unsubscribe();
     }
-  }
- 
-  cancelar()
-  {
-   /*  if (this.agenda.motivoCancelamento === undefined || this.agenda.motivoCancelamento === null){
-       this.handleError('Por favor, informar o motivo do cancelamento!');
-       return;
-    }else if (this.agenda.motivoCancelamento.trim()===''){
-      this.handleError('Por favor, informar o motivo do cancelamento!');
-      return;
-    } */
-    
-    let agendaCancelar = this.agenda;
-    //agendaCancelar.dataCancelamento = this.dataHoraAtualSemTimeZone();
-    this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar com o cancelamento da agendamento?', 'Cancelar - Agendamento', (resposta: boolean) => {
-      if (resposta) {
-    //agendaCancelar.dataCancelamento 
-    this.inscricaoCancelar$= this.agendaService.cancelarAgendamento(agendaCancelar)
-                                               .subscribe(result=>{
-                                                if(result){
-                                                  this.handlerSucesso('Agendamento cancelado com sucesso!');
-                                                  setTimeout(() => {
-                                                    this.onNoClick();
-                                                  }, 3000);
-                                                }
-                                               },
-                                               error=>{
-                                                console.log(error);
-                                                this.handleError('Ocorreu um erro ao tentar cancelar o agendamento.');
-                                               });
-    }}, 'Sim', 'Não'
-    );
-  }
+  }  
   listarMotivos(){
     this.inscricao$ = this.motivoCancelamentoServicoService.Listar()
                                                            .subscribe(result=>{
@@ -132,6 +102,44 @@ export class AgendaCancelamentoComponent extends BaseFormComponent implements On
       this.handleError('Por favor, informe a descrição do motivo de cancelamento');
       return;
     }
+    let agendaCancelar = this.agenda;
+    
+    this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar com o cancelamento da agendamento?', 'Cancelar - Agendamento', (resposta: boolean) => {
+      if (resposta) {
+
+        //coletando informações para cancelar
+         let listaServicosGravar : Array<AgendaServicoProfissional> = [];
+
+         this.agenda.listaServicos.forEach(servico=>{
+                                                      listaServicosGravar.push({
+                                                                                      codigoProfissional : servico.codigoProfissional,
+                                                                                      codigoServico  : servico.codigoServico
+                                                                                      } as AgendaServicoProfissional);
+                                                    }
+                                          );
+          let agendaCancelarGravar = {
+                                       codigoAgenda: this.agenda.codigoAgenda,
+                                       codigoUsuarioCancelamento: this.agenda.codigoUsuarioCancelamento,
+                                       listaServicosIn: listaServicosGravar
+                                     } as AgendaServicoCancelarGravar;                                                    
+
+          //agendaCancelar.dataCancelamento 
+          this.inscricaoCancelar$= this.agendaServicoService.cancelarServicos(agendaCancelarGravar)
+                                                    .subscribe(result=>{
+                                                      if(result){
+                                                        this.handlerSucesso('Serviço(s) cancelado(s) com sucesso!');
+                                                        setTimeout(() => {
+                                                          this.onNoClick();
+                                                        }, 3000);
+                                                      }
+                                                    },
+                                                    error=>{
+                                                      console.log(error);
+                                                      this.handleError('Ocorreu um erro ao tentar cancelar o agendamento.');
+                                                    });
+          }
+        }, 'Sim', 'Não'
+    );
   }
 }
 

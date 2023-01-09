@@ -559,6 +559,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       return;
     }
     let listaServicoSelecionado : Array<AgendaServicoAdd>=[];
+    let abrirJanela : boolean = true;
 
     this.selection.selected.forEach(itemrem=>{
 
@@ -566,44 +567,48 @@ checkboxLabel(row?: AgendaServicoAdd): string {
         listaServicoSelecionado.push(itemrem);        
       }else{
         this.handlerExclamacao('Este serviço está agendado não poderá ser cancelado! Por favor, desmarque e clique novamente no botão cancelar.');
+        abrirJanela = false;
         return;
       }                    
     });
-    let agendaCancelar = {
-      codigoAgenda: this.agenda.codigo,
-      codigoUsuarioCancelamento: this.codigoUsuario,      
-      campoNomeCliente : this.agenda.cliente.nome,
-      dataInicio: this.agenda.dataInicio,
-      dataFim: this.agenda.dataFim,
-      codigoMotivoCancelamento: null,
-      descricaoMotivoCancelamento: null,
-      listaServicos: listaServicoSelecionado     
-    }as AgendaCancelar;
 
-    const dialogRefCanc = this.dialog.open(AgendaCancelamentoComponent,
-      {width: '800px' , height: '1080px;',
-        data : agendaCancelar              
-      }
-    );
-    dialogRefCanc.afterClosed().subscribe(result => {
+    if (abrirJanela){    
+        let agendaCancelar = {
+          codigoAgenda: this.agenda.codigo,
+          codigoUsuarioCancelamento: this.codigoUsuario,      
+          campoNomeCliente : this.agenda.cliente.nome,
+          dataInicio: this.agenda.dataInicio,
+          dataFim: this.agenda.dataFim,
+          codigoMotivoCancelamento: null,
+          descricaoMotivoCancelamento: null,
+          listaServicos: listaServicoSelecionado     
+        }as AgendaCancelar;
 
-    /*   let indexObserv = this.listaServicosTabela.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
-      let indexAgendasrvObs = this.agenda.listarServicos.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
+        const dialogRefCanc = this.dialog.open(AgendaCancelamentoComponent,
+          {width: '800px' , height: '1080px;',
+            data : agendaCancelar              
+          }
+        );
+        dialogRefCanc.afterClosed().subscribe(result => {
 
-      if(result!== undefined){
-        this.listaServicosTabela[indexObserv].observacao = result.toString().trim();
-        this.agenda.listarServicos[indexAgendasrvObs].observacao= result.toString().trim();
+        /*   let indexObserv = this.listaServicosTabela.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
+          let indexAgendasrvObs = this.agenda.listarServicos.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
 
-      }else{
-        let servicoRecuperado : AgendaServico ;
-        this.inscricaoAgendaServicoConsultar$= this.agendaServicoService.recuperarServico(servico)
-                                                                        .subscribe(resultadoConsulta=>{
-                                                                          servicoRecuperado  = resultadoConsulta;
-                                                                          this.listaServicosTabela[indexObserv].observacao = servicoRecuperado.observacao.toString().trim();
-                                                                          this.agenda.listarServicos[indexAgendasrvObs].observacao= servicoRecuperado.observacao.toString().trim();
-                                                                        });
-      }     */
-       
-    });
+          if(result!== undefined){
+            this.listaServicosTabela[indexObserv].observacao = result.toString().trim();
+            this.agenda.listarServicos[indexAgendasrvObs].observacao= result.toString().trim();
+
+          }else{
+            let servicoRecuperado : AgendaServico ;
+            this.inscricaoAgendaServicoConsultar$= this.agendaServicoService.recuperarServico(servico)
+                                                                            .subscribe(resultadoConsulta=>{
+                                                                              servicoRecuperado  = resultadoConsulta;
+                                                                              this.listaServicosTabela[indexObserv].observacao = servicoRecuperado.observacao.toString().trim();
+                                                                              this.agenda.listarServicos[indexAgendasrvObs].observacao= servicoRecuperado.observacao.toString().trim();
+                                                                            });
+          }     */
+          
+        });
+    }
   }
 }

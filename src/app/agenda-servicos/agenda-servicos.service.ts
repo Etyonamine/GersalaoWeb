@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { AgendaServicoCancelarGravar } from '../agenda/agenda-cancelamento/agenda-servico-cancelar-gravar';
 import { BaseService } from '../shared/base.service';
 import { AgendaServico } from './agenda-servico';
 import { AgendaServicoEdit } from './agenda-servico-edit/agenda-servico-edit';
@@ -25,5 +26,9 @@ export class AgendaServicosService extends BaseService<AgendaServico> {
   recuperarServico(servico:AgendaServico){
     let urlGet = this.url + '?codigoAgenda='+ servico.codigoAgenda + '&codigoProfissional=' + servico.codigoProfissional + '&codigoServico=' + servico.codigoServico;
     return this.http.get<AgendaServico>(urlGet).pipe(take(1));
+  }
+  cancelarServicos(servicos: AgendaServicoCancelarGravar){
+    let urlCancelar = this.url + '/CancelarServicos';
+    return this.http.put(urlCancelar, servicos).pipe(take(1));
   }
 }
