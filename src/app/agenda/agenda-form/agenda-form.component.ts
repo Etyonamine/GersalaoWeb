@@ -1,8 +1,9 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatDialog } from '@angular/material/dialog';
-import { ɵangular_material_src_material_grid_list_grid_list_a } from '@angular/material/grid-list';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subscription } from 'rxjs';
@@ -15,6 +16,8 @@ import { AuthService } from 'src/app/auth-guard/auth.service';
 import { ClienteService } from 'src/app/cliente/cliente.service';
 import { ClienteViewModel } from 'src/app/cliente/clienteViewModel';
 import { EmpresaService } from 'src/app/empresa/empresa.service';
+import { ParametroSistema } from 'src/app/parametro-sistema/parametro-sistema';
+import { ParametroSistemaService } from 'src/app/parametro-sistema/parametro-sistema.service';
 import { Profissional } from 'src/app/profissional/professional';
 import { ProfissionalService } from 'src/app/profissional/profissional.service';
 import { Servico } from 'src/app/servico/servico';
@@ -45,8 +48,12 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   codigoUsuario: number; 
   valorTotalServico: number;
   codigoClente :number;
+  parametroSistema: ParametroSistema;  
+  qtdDiasDiferenca: number;
 
+  //configuracao de edicao
   edicao: boolean;
+  permitidoGravarOuEditar: boolean = true;
 
   optionProfissional: Array<Profissional>=[];  
   optionServicos: Array<Servico>=[];  
@@ -61,6 +68,7 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   inscricaoEmpresa$: Subscription;
   inscricaoValidacao$ : Subscription;
   inscricaoAgendaServicoConsultar$:Subscription;
+  inscricaoParametroSistema$: Subscription;
 
   listaServicosTabela : Array<AgendaServicoAdd>=[];
 
@@ -108,6 +116,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     private authService : AuthService,
     private agendaService: AgendaService,
     private agendaServicoService: AgendaServicosService,
+    private parametroSistemaService : ParametroSistemaService,
     private route: ActivatedRoute,
     public dialog: MatDialog,) {
     super();
@@ -227,10 +236,16 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.edicao = this.agenda==undefined? false:true;
     this.tituloPagina = this.edicao?"Agenda - Serviço - Editando":"Agenda - Serviço - Novo Registro";
     this.codigoClente = this.agenda!=undefined? this.agenda.codigoCliente:null;
+    if (this.agenda == undefined){
+      this.qtdDiasDiferenca = 0;
+    }else{
+      this.identificarQtdeDiasDiferenca();
+    }
     this.criacaoFormulario();
     this.listarProfissionais();
     this.listaCliente(); 
-    
+    this.recuperarParametroSistema();
+
     this.tomorrow = new Date();    
     this.valorTotalServico =0 ;
     this.optionProfissional = [];
@@ -240,8 +255,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.dataSelecionada = this.agenda != undefined ? this.agenda.dataInicio: new Date();
     this.recuperarDadosEmpresa();
     this.preenchimentoServicos();
-    
-    
+       
     
   }
   ngOnDestroy():void {
@@ -382,6 +396,13 @@ checkboxLabel(row?: AgendaServicoAdd): string {
 
   }
   adicionarNaLista(){
+    if (this.qtdDiasDiferenca > 0 ){
+      let diasPermitido = Number.parseInt(this.parametroSistema.descricaoValor);
+      if (diasPermitido < this.qtdDiasDiferenca){
+        this.handlerExclamacao('Atenção! Não é mais permitido adicionar serviço! Somente permitido agendas com a data no máximo de ' + this.parametroSistema.descricaoValor + ' dia(s) atrás.');
+        return false;
+      }
+    }
     //validacao    
     //profissional
     if (this.formulario.get("codigoProfissional").value == 0 ||
@@ -459,7 +480,18 @@ checkboxLabel(row?: AgendaServicoAdd): string {
             this.valorTotalServico = (this.valorTotalServico - valorSelecionado);
             countRemove++;
           }else{
-            this.handlerExclamacao('Este serviço está agendado não poderá ser removido! Por favor, faça o cancelamento.');
+            if (itemrem.codigoSituacao === 4 )// 4-concluido , 
+            {                           
+              this.handlerExclamacao('O serviço [ ' + itemrem.nomeServico + ' ] está com situação concluída! Não pode ser removido!');              
+            }
+            else if (itemrem.codigoSituacao === 3){
+              this.handlerExclamacao('O serviço [ ' + itemrem.nomeServico + ' ] está com situação de pendente! Por favor, tente cancelá-lo!');
+            }
+            else if ( itemrem.codigoSituacao === 5)//5-cancelado
+            {
+              this.handlerExclamacao('O serviço [ ' + itemrem.nomeServico + ' ] está com situação cancelada! Não pode ser removido!');              
+            }
+            
           }                    
         });
         if (countRemove>0){
@@ -477,7 +509,13 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     if (this.agenda ==undefined ){
       return;
     }
-    let lista = this.agenda.listarServicos;
+    if (this.listaServicosTabela.length>0){
+      this.listaServicosTabela.splice(0,this.listaServicosTabela.length);
+      this.selection.clear;
+    }
+    let lista = this.agenda.listarServicos;    
+    this.valorTotalServico =0;
+
     lista.forEach(servico=>{     
       
       this.listaServicosTabela.push(
@@ -495,8 +533,11 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           agendaServico: servico          
         }as AgendaServicoAdd
       );
-      
-    });    
+
+      this.valorTotalServico = (this.valorTotalServico + servico.valorServico);
+    }); 
+    this.dataSource.data = this.listaServicosTabela;
+       
   }
   openDialogEditarServico(servico: AgendaServico ){
     if(servico==undefined){
@@ -566,7 +607,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       if (itemrem.codigoSituacao === 3 ){
         listaServicoSelecionado.push(itemrem);        
       }else{
-        this.handlerExclamacao('Este serviço está agendado não poderá ser cancelado! Por favor, desmarque e clique novamente no botão cancelar.');
+        this.handlerExclamacao('O serviço de [ ' + itemrem.nomeServico + ' ] não pode ser cancelado! Por favor, desmarcar.');
         abrirJanela = false;
         return;
       }                    
@@ -590,25 +631,42 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           }
         );
         dialogRefCanc.afterClosed().subscribe(result => {
-
-        /*   let indexObserv = this.listaServicosTabela.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
-          let indexAgendasrvObs = this.agenda.listarServicos.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
-
-          if(result!== undefined){
-            this.listaServicosTabela[indexObserv].observacao = result.toString().trim();
-            this.agenda.listarServicos[indexAgendasrvObs].observacao= result.toString().trim();
-
-          }else{
-            let servicoRecuperado : AgendaServico ;
-            this.inscricaoAgendaServicoConsultar$= this.agendaServicoService.recuperarServico(servico)
-                                                                            .subscribe(resultadoConsulta=>{
-                                                                              servicoRecuperado  = resultadoConsulta;
-                                                                              this.listaServicosTabela[indexObserv].observacao = servicoRecuperado.observacao.toString().trim();
-                                                                              this.agenda.listarServicos[indexAgendasrvObs].observacao= servicoRecuperado.observacao.toString().trim();
-                                                                            });
-          }     */
-          
+            this.recuperarListaServicos();          
         });
-    }
+    }    
+  }
+  recuperarListaServicos(){
+    this.inscricaoAgenda$ = this.agendaService.get<Agenda>(this.agenda.codigo)
+                                              .subscribe(result=>{
+                                                this.agenda.listarServicos = result.listarServicos;
+                                                this.preenchimentoServicos();
+                                              });
+  }
+  recuperarParametroSistema(){
+    this.inscricaoParametroSistema$ = this.parametroSistemaService.get<ParametroSistema>(5)
+                                                                  .subscribe(result=>{
+                                                                    this.parametroSistema = result;
+                                                                    this.validarPermissaoEdicao();
+                                                                  },error=>{
+                                                                    console.log(error);
+                                                                    this.handleError('Ocorreu erro na recuperação do parametro do sistema.');
+                                                                  });
+  }
+  identificarQtdeDiasDiferenca(){
+    const d1  = new Date(this.agenda.dataInicio.toString());
+    const d2    = new Date();   
+    this.qtdDiasDiferenca =0;
+    if (d1 < d2)
+    {
+      var diff = Math.abs(new Date(d1).getTime() - d2.getTime());
+      this.qtdDiasDiferenca = Math.ceil(diff / (1000 * 3600 * 24)); 
+    }    
+    console.log(this.qtdDiasDiferenca);
+  }
+  validarPermissaoEdicao(){
+    if (this.qtdDiasDiferenca > Number.parseInt(this.parametroSistema.descricaoValor)){
+      this.permitidoGravarOuEditar = false;
+      return;
+    }    
   }
 }

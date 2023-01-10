@@ -127,10 +127,7 @@ export class AgendaCancelamentoComponent extends BaseFormComponent implements On
           this.inscricaoCancelar$= this.agendaServicoService.cancelarServicos(agendaCancelarGravar)
                                                     .subscribe(result=>{
                                                       if(result){
-                                                        this.handlerSucesso('Serviço(s) cancelado(s) com sucesso!');
-                                                        setTimeout(() => {
-                                                          this.onNoClick();
-                                                        }, 3000);
+                                                        this.handlerSucesso('Serviço(s) cancelado(s) com sucesso!');                                                       
                                                       }
                                                     },
                                                     error=>{

@@ -85,7 +85,8 @@
                     <mat-form-field *ngIf="optionProfissional" appearance="fill" class="comboProfissional">
                         <mat-label>Selecione o profissional</mat-label>
                         <mat-select formControlName="codigoProfissional" matTooltip="Profissional" 
-                            (selectionChange)="listaServicos($event)">
+                            (selectionChange)="listaServicos($event)"
+                            [disabled]="permitidoGravarOuEditar === false">
                             <mat-option *ngFor="let option of optionProfissional" [value]="option.codigo">
                                 {{ option.nome }}
                             </mat-option>
@@ -95,7 +96,9 @@
                     <mat-form-field *ngIf="optionServicos" appearance="fill" class="comboServico">
                         <mat-label>Selecione o Servi&ccedil;o</mat-label>
                         <mat-select formControlName="codigoServico" matTooltip="Serviço" 
-                            (selectionChange)="recuperarValorServico()">
+                            (selectionChange)="recuperarValorServico()"
+                            [disabled]="permitidoGravarOuEditar === false"
+                            >
                             <mat-option *ngFor="let servico of optionServicos" [value]="servico.codigo">
                                 {{ servico.descricao }}
                             </mat-option>
@@ -122,7 +125,8 @@
                           placeholder="Digite uma observação" 
                           cdkTextareaAutosize
                           formControlName ="observacao"
-                          [readonly]="this.formulario.get('codigoProfissional').value == undefined || this.formulario.get('codigoServico').value==undefined"></textarea>
+                          [readonly]="this.formulario.get('codigoProfissional').value == undefined || this.formulario.get('codigoServico').value==undefined"
+                          [disabled]="permitidoGravarOuEditar === false"></textarea>
                         <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
                         </mat-hint>
                         <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
@@ -146,12 +150,12 @@
                             class="full" 
                             align="end"                             
                             (click)="adicionarNaLista()"
-                            [disabled]="this.formulario.get('codigoServico').value == null || this.formulario.get('codigoServico').value == 0 "
+                            [disabled]="this.formulario.get('codigoServico').value == null || this.formulario.get('codigoServico').value == 0 ||  permitidoGravarOuEditar === false"
                             >
                             Adicionar
                             &nbsp;<i class="material-icons right">add</i></button>
 
-                    <button mat-raised-button  type="button" color="accent" class="full" align="end" [disabled]="selection.selected.length == 0" (click)="removerLista()">Remover
+                    <button mat-raised-button  type="button" color="accent" class="full" align="end" [disabled]="selection.selected.length == 0 || permitidoGravarOuEditar === false " (click)="removerLista()">Remover
                             &nbsp;<i class="material-icons right">remove</i></button>                            
                 </div>
                 <br />
@@ -230,6 +234,7 @@
                                     color="primary"
                                     aria-label="Editar a observacao do serviço"
                                     (click)="openDialogEditarServico(element.agendaServico)"
+                                    [disabled]="element.descricaoSituacao!=='PENDENTE'"
                                 >
                                     <mat-icon>edit</mat-icon>
                                 </button>                               
@@ -246,10 +251,10 @@
                 <mat-divider></mat-divider>
                 <div>
                     <!--Cancelamento-->
-                    <button mat-raised-button color="warn" type="button" class="full" align="end"  [disabled]="selection.selected.length == 0" (click)="cancelarServico()">Cancelar
+                    <button mat-raised-button color="warn" type="button" class="full" align="end"  [disabled]="selection.selected.length == 0 || permitidoGravarOuEditar === false " (click)="cancelarServico()">Cancelar
                         &nbsp;<i class="material-icons right">cancel</i></button>
                     <!--salvar-->
-                    <button mat-raised-button color="primary" class="full" align="end" [disabled]="!formulario.valid || listaServicosTabela.length == 0" >Salvar
+                    <button mat-raised-button color="primary" class="full" align="end" [disabled]="!formulario.valid || listaServicosTabela.length == 0|| permitidoGravarOuEditar === false" >Salvar
                         &nbsp;<i class="material-icons right">save</i></button>
                     <!--retornar-->
                     <button mat-raised-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar
