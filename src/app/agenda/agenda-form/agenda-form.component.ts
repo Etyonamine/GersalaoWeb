@@ -218,8 +218,10 @@ checkboxLabel(row?: AgendaServicoAdd): string {
                                                     .subscribe(result=>{
                                                       if(result){
                                                         this.handlerSucesso('Agenda atualizada com sucesso!');
+                                                        this.recuperarListaServicos(); 
                                                       }else{
                                                         this.handlerExclamacao('Não foi atualizado com sucesso a agenda.');
+                                                                                                           
                                                       }
                                                     },error=>{
                                                       console.log(error);
@@ -420,7 +422,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     }
     let codigoServi =this.formulario.get("codigoServico").value;
     if (this.listaServicosTabela.length>0){
-      let servico = this.listaServicosTabela.find(x=>x.codigoProfissional == codigoProfi && x.codigoServico == codigoServi );
+      let servico = this.listaServicosTabela.find(x=>x.codigoServico == codigoServi && x.codigoSituacao !== 5  );
       if (servico !== undefined ){
         this.handlerExclamacao('Atenção!Já existe na lista este serviço.');
         return false;
