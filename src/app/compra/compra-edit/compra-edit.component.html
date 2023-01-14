@@ -38,10 +38,7 @@
              
               readonly                          
             />
-            <!-- <span matPrefix>R$&nbsp;</span> -->
-            <!-- <span matSuffix>,00</span> -->
-          </mat-form-field>  
-          
+          </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Data Vencimento Boleto</mat-label>
             <input matInput [matDatepicker]="picker4" 
@@ -53,13 +50,6 @@
             <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
             <mat-datepicker #picker4></mat-datepicker>
           </mat-form-field>
-          <!-- <mat-form-field class="example-full-width" appearance="fill">
-            <mat-label>Data de Pagamento</mat-label>
-            <input matInput   
-                   formControlName="dataPagtoBoleto" 
-                   readonly
-                    >
-          </mat-form-field> -->
           <mat-form-field appearance="fill">
             <mat-label>Data Pagamento do Boleto</mat-label>
             <input matInput [matDatepicker]="picker5" 
@@ -151,7 +141,6 @@
             >
               Adicionar &nbsp;<i class="material-icons right">add</i>
             </button>
-
             </div>
             <mat-card-subtitle><h3><b>Lista de Produto(s) comprado(s)</b></h3></mat-card-subtitle>
             <div class="form-group mat-container"  >
@@ -164,8 +153,7 @@
                   <th>Valor Unit&agrave;rio</th>
                   <th>Quantidade</th>
                   <th>Valor Total</th>
-                  <th></th>
-                  
+                  <th></th>                  
                 </tr>
                 <tbody > 
                   <tr  *ngFor="let produtoLista of  listaCompraDetalhe">
@@ -185,42 +173,18 @@
                       </button>
                     </td>
                   </tr>
-                </tbody>
-             
-                
+                </tbody> 
                 <tfoot *ngIf="valorTotalProdutoAdd > 0">
                   <tr>
                     <td colspan="3" style ="text-align: right;">Total</td>
                     <td style ="text-align: center;">{{valorTotalProdutoAdd | currency:'BRL':'symbol':'1.2-2':'pt' }}</td>
                     <td></td>
                   </tr>
-                </tfoot>
-                
+                </tfoot>                
               </table>
-            </div>
-           
+            </div>           
           </div>
-          
-         
-        </div>
-        <div>
-          
-          <!-- <app-msg-error
-            [mostrarErro]="
-              formulario.get('nome').invalid &&
-              formulario.get('nome').hasError('required')
-            "
-            mensagemErro="Por favor, digite o nome completo! "
-          ></app-msg-error>
-          <app-msg-error
-            [mostrarErro]="formulario.get('nome').errors?.isDupeCliente"
-            mensagemErro="O nome digitado já existe cadastrado!"
-          ></app-msg-error>
-          <app-msg-error
-            [mostrarErro]="formulario.get('dataaniversario').hasError('pattern')"
-            mensagemErro="A data está com formato incorreto!"
-          ></app-msg-error> -->
-        </div>   
+        </div>       
         <div>
           <mat-divider></mat-divider>
         </div>         

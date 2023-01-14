@@ -12,7 +12,6 @@ import { Cliente } from 'src/app/cliente/cliente';
 import { ClienteService } from 'src/app/cliente/cliente.service';
 import { Estoque } from 'src/app/estoque/estoque';
 import { EstoqueService } from 'src/app/estoque/estoque.service';
-import { ProdutoLinhaEditDialogComponent } from 'src/app/produto-linha/produto-linha-edit-dialog/produto-linha-edit-dialog.component';
 import { Produto } from 'src/app/produto/produto';
 import { ProdutoSemEstoque } from 'src/app/produto/produtoSemEstoque';
 import { AlertService } from 'src/app/shared/alert/alert.service';

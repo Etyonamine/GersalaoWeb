@@ -7,7 +7,7 @@ export interface AgendaPagamento{
     valorPagamento: number;
     valorDesconto: number;
     valorAcrescimo: number;
-    Observacao: string;
+    observacao: string;
     codigoUsuarioCadastro: number;
     codigousuarioAlteracao: number;
     dataCadastro: Date;

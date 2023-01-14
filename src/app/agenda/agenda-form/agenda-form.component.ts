@@ -624,6 +624,9 @@ checkboxLabel(row?: AgendaServicoAdd): string {
 
         let codigoProfissional = itemrem.codigoProfissional;
         let codigoServico = itemrem.codigoServico;
+        let agendaServicoAdd =this.agenda.listarServicos.find(x=>x.codigoServico == codigoServico && x.codigoProfissional);
+        let profissionalAdd = agendaServicoAdd.profissional;
+        let servicoAdd = agendaServicoAdd.servico;
         
 
         servicosPagto.push({
@@ -633,6 +636,9 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           codigoServico: codigoServico,
           codigoSituacaoApuracao : 8,
           codigoUsuarioCadastro : codigoUsuarioGravando,
+          agendaServico : agendaServicoAdd,   
+          profissional : profissionalAdd, 
+          servico: servicoAdd,       
           dataCadastro: new Date()
         } as AgendaPagamentoDetalhe);      
              
@@ -656,14 +662,14 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           valorAcrescimo : 0, 
           valorDesconto : 0,
           valorPagamento : valorTotalServico,
-          Observacao : null,
+          observacao : null,
           dataAlteracao : null
         } as AgendaPagamento;
 
         //abrindo o modal
        // montando o dialogo
         const dialogRef = this.dialog.open(AgendaPagamentoComponent,
-          {width: '700px' , height: '900px;',
+          {width: '500px' , height: '700px;',
             data : agendaPagamentoGravar               
           }
         );
