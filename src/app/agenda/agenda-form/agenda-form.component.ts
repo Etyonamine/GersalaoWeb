@@ -642,7 +642,12 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           dataCadastro: new Date()
         } as AgendaPagamentoDetalhe);      
              
-      }else{
+      }else if (itemrem.codigoSituacao === 4){
+        this.handlerExclamacao('Este serviço está concluído! Por favor, desmarque e tente novamente.');
+        abrirDialog = false;
+        return;
+      }
+      else if (itemrem.codigoSituacao === 5){
         this.handlerExclamacao('Este serviço está cancelado não pode ser pago! Por favor, desmarque e tente novamente.');
         abrirDialog = false;
         return;
@@ -675,23 +680,13 @@ checkboxLabel(row?: AgendaServicoAdd): string {
         );
         dialogRef.afterClosed().subscribe(result => {
 
-          /* let indexObserv = this.listaServicosTabela.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
-          let indexAgendasrvObs = this.agenda.listarServicos.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
-
-          if(result!== undefined){
-            this.listaServicosTabela[indexObserv].observacao = result.toString().trim();
-            this.agenda.listarServicos[indexAgendasrvObs].observacao= result.toString().trim();
-
-          }else{
-            let servicoRecuperado : AgendaServico ;
-            this.inscricaoAgendaServicoConsultar$= this.agendaServicoService.recuperarServico(servico)
-                                                                            .subscribe(resultadoConsulta=>{
-                                                                              servicoRecuperado  = resultadoConsulta;
-                                                                              this.listaServicosTabela[indexObserv].observacao = servicoRecuperado.observacao.toString().trim();
-                                                                              this.agenda.listarServicos[indexAgendasrvObs].observacao= servicoRecuperado.observacao.toString().trim();
-                                                                            });
-          }    
-            */
+          this.inscricaoAgendaServicoConsultar$ = this.agendaServicoService.getPorAgendamento(this.agenda.codigo)
+                                                                           .subscribe(result=>{
+                                                                            if (result){
+                                                                              this.agenda.listarServicos = result;
+                                                                              this.preenchimentoServicos();
+                                                                            }
+                                                                           });          
         });
     }
   }
@@ -768,6 +763,5 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       this.permitidoGravarOuEditar = false;
       return;
     }    
-  }
-
+  }  
 }

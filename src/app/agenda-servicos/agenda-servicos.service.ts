@@ -31,4 +31,8 @@ export class AgendaServicosService extends BaseService<AgendaServico> {
     let urlCancelar = this.url + '/CancelarServicos';
     return this.http.put(urlCancelar, servicos).pipe(take(1));
   }
+  getPorAgendamento(codigoAgenda: number){
+    let urlcon = this.url + '/' + codigoAgenda;
+    return this.http.get<AgendaServico[]>(urlcon).pipe(take(1));
+  }
 }
