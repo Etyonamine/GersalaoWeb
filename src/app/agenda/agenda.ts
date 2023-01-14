@@ -1,3 +1,4 @@
+import { AgendaPagamentoDetalhe } from "../agenda-pagamento/agenda-pagamento-detalhe/agenda-pagamento-detalhe";
 import { AgendaServico } from "../agenda-servicos/agenda-servico";
 import { Cliente } from "../cliente/cliente";
 
@@ -14,5 +15,6 @@ export class Agenda{
     codigoUsuarioAlteracao: number;    
     cliente: Cliente
     listarServicos: Array<AgendaServico>;
+    listaPagamentoDetalhe: AgendaPagamentoDetalhe[];
     css:String;
 }

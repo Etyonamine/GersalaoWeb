@@ -251,7 +251,7 @@
                 <mat-divider></mat-divider>
                 <div>
                     <!--Pagamento do cliente-->
-                    <button mat-raised-button type="button" class="botaoPagamento" align="end"  [disabled]="!habilitarBotaoPagamento" (click)="cancelarServico()">Pagamento
+                    <button mat-raised-button type="button" class="botaoPagamento" align="end"  [disabled]="!habilitarBotaoPagamento" (click)="openDialogPagamento()">Pagamento
                         &nbsp;<i class="material-icons right">payments</i></button>
                     <!--Cancelamento-->
                     <button mat-raised-button color="warn" type="button" class="full" align="end"  [disabled]="selection.selected.length == 0 || permitidoGravarOuEditar === false " (click)="cancelarServico()">Cancelar

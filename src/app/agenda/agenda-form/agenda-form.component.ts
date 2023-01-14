@@ -6,6 +6,9 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
+import { AgendaPagamento } from 'src/app/agenda-pagamento/agenda-pagamento';
+import { AgendaPagamentoDetalhe } from 'src/app/agenda-pagamento/agenda-pagamento-detalhe/agenda-pagamento-detalhe';
+import { AgendaPagamentoComponent } from 'src/app/agenda-pagamento/agenda-pagamento.component';
 import { AgendaServico } from 'src/app/agenda-servicos/agenda-servico';
 import { AgendaServicoEdit } from 'src/app/agenda-servicos/agenda-servico-edit/agenda-servico-edit';
 import { AgendaServicoEditComponent } from 'src/app/agenda-servicos/agenda-servico-edit/agenda-servico-edit.component';
@@ -93,7 +96,7 @@ masterToggle() {
   }
 
   this.selection.select(...this.dataSource.data);
-  this.habilitarBotaoPagamento = this.selection.selected.length>0 ? true:false;
+  
 }
 
 /** The label for the checkbox on the passed row */
@@ -101,7 +104,8 @@ checkboxLabel(row?: AgendaServicoAdd): string {
   if (!row) {
     return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
   }
-  return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.item + 1}`;
+  this.habilitarBotaoPagamento = this.selection.selected.length>0 ? true:false;
+  return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.item + 1}`;  
 }
 
 
@@ -600,23 +604,89 @@ checkboxLabel(row?: AgendaServicoAdd): string {
   }
   openDialogPagamento(){    
     let abrirDialog :boolean = true;
+    
+    let servicosPagto : AgendaPagamentoDetalhe[] = [];
+    let codigoAgenda = this.agenda.codigo;
+    let codigoUsuarioGravando = this.codigoUsuario;
+    let valorTotalServico: number = 0;
 
     this.selection.selected.forEach(itemrem=>{
-      if (itemrem.codigoSituacao == 99 ){
+
+      
+
+      if (itemrem.codigoSituacao == 3 )//PENDENTE
+      {
         let index = this.listaServicosTabela.findIndex(x=>x.item = itemrem.item);
         let valorSelecionado = Number.parseFloat(itemrem.valorServico.toString());
         this.listaServicosTabela.splice(index,1);                        
-        this.valorTotalServico = (this.valorTotalServico - valorSelecionado);
+
+        valorTotalServico = (valorTotalServico +  valorSelecionado);
+
+        let codigoProfissional = itemrem.codigoProfissional;
+        let codigoServico = itemrem.codigoServico;
         
+
+        servicosPagto.push({
+          codigoAgenda : codigoAgenda,
+          codigoAgendaPagamento : 0 ,
+          codigoProfissional : codigoProfissional, 
+          codigoServico: codigoServico,
+          codigoSituacaoApuracao : 8,
+          codigoUsuarioCadastro : codigoUsuarioGravando,
+          dataCadastro: new Date()
+        } as AgendaPagamentoDetalhe);      
+             
       }else{
-        this.handlerExclamacao('Este serviço está agendado não poderá ser removido! Por favor, faça o cancelamento.');
+        this.handlerExclamacao('Este serviço está cancelado não pode ser pago! Por favor, desmarque e tente novamente.');
         abrirDialog = false;
         return;
       }                    
     });
 
     if (abrirDialog){
-      
+
+        //montando o objeto para envio da tela de agendapagamento
+        let agendaPagamentoGravar = {
+          codigo : 0 , 
+          codigoFormaPagamento : null,
+          codigoSituacao : 6,
+          codigoUsuarioCadastro : codigoUsuarioGravando,
+          dataCadastro : new Date() ,
+          listaDetalhes : servicosPagto,
+          valorAcrescimo : 0, 
+          valorDesconto : 0,
+          valorPagamento : valorTotalServico,
+          Observacao : null,
+          dataAlteracao : null
+        } as AgendaPagamento;
+
+        //abrindo o modal
+       // montando o dialogo
+        const dialogRef = this.dialog.open(AgendaPagamentoComponent,
+          {width: '700px' , height: '900px;',
+            data : agendaPagamentoGravar               
+          }
+        );
+        dialogRef.afterClosed().subscribe(result => {
+
+          /* let indexObserv = this.listaServicosTabela.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
+          let indexAgendasrvObs = this.agenda.listarServicos.findIndex(x=>x.codigoServico == agendaServicoEdit.codigoServico && x.codigoProfissional== agendaServicoEdit.codigoProfissional);
+
+          if(result!== undefined){
+            this.listaServicosTabela[indexObserv].observacao = result.toString().trim();
+            this.agenda.listarServicos[indexAgendasrvObs].observacao= result.toString().trim();
+
+          }else{
+            let servicoRecuperado : AgendaServico ;
+            this.inscricaoAgendaServicoConsultar$= this.agendaServicoService.recuperarServico(servico)
+                                                                            .subscribe(resultadoConsulta=>{
+                                                                              servicoRecuperado  = resultadoConsulta;
+                                                                              this.listaServicosTabela[indexObserv].observacao = servicoRecuperado.observacao.toString().trim();
+                                                                              this.agenda.listarServicos[indexAgendasrvObs].observacao= servicoRecuperado.observacao.toString().trim();
+                                                                            });
+          }    
+            */
+        });
     }
   }
   cancelarServico(){

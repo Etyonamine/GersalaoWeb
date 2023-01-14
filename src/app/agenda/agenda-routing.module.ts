@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { AgendaComponent } from './agenda.component';
 import { AgendaFormComponent } from './agenda-form/agenda-form.component';
 import { AgendaResolveGuard } from './guard/agenda-resolver.guard';
-import { AgendaAlertBaixaCancelamentoComponent } from './agenda-alert-baixa-cancelamento/agenda-alert-baixa-cancelamento.component';
 
 const agendaRoutes: Routes = [
   {path:'', component: AgendaComponent},
