@@ -1,8 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
@@ -54,6 +52,7 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   //configuracao de edicao
   edicao: boolean;
   permitidoGravarOuEditar: boolean = true;
+  habilitarBotaoPagamento: boolean = false;
 
   optionProfissional: Array<Profissional>=[];  
   optionServicos: Array<Servico>=[];  
@@ -89,10 +88,12 @@ isAllSelected() {
 masterToggle() {
   if (this.isAllSelected()) {
     this.selection.clear();
+    this.habilitarBotaoPagamento = false;
     return;
   }
 
   this.selection.select(...this.dataSource.data);
+  this.habilitarBotaoPagamento = this.selection.selected.length>0 ? true:false;
 }
 
 /** The label for the checkbox on the passed row */
@@ -233,7 +234,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     );
   }
   ngOnInit(): void {
-    
+    this.habilitarBotaoPagamento = false;
     this.agenda = this.route.snapshot.data['agenda'];
     this.edicao = this.agenda==undefined? false:true;
     this.tituloPagina = this.edicao?"Agenda - Serviço - Editando":"Agenda - Serviço - Novo Registro";
@@ -597,6 +598,27 @@ checkboxLabel(row?: AgendaServicoAdd): string {
        
     });
   }
+  openDialogPagamento(){    
+    let abrirDialog :boolean = true;
+
+    this.selection.selected.forEach(itemrem=>{
+      if (itemrem.codigoSituacao == 99 ){
+        let index = this.listaServicosTabela.findIndex(x=>x.item = itemrem.item);
+        let valorSelecionado = Number.parseFloat(itemrem.valorServico.toString());
+        this.listaServicosTabela.splice(index,1);                        
+        this.valorTotalServico = (this.valorTotalServico - valorSelecionado);
+        
+      }else{
+        this.handlerExclamacao('Este serviço está agendado não poderá ser removido! Por favor, faça o cancelamento.');
+        abrirDialog = false;
+        return;
+      }                    
+    });
+
+    if (abrirDialog){
+      
+    }
+  }
   cancelarServico(){
     if (this.selection.isSelected.length == 0 ){
       return;
@@ -671,4 +693,5 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       return;
     }    
   }
+
 }

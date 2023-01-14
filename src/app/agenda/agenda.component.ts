@@ -12,11 +12,7 @@ import { AlertService } from '../shared/alert/alert.service';
 import { Usuario } from '../usuario/usuario';
 import { UsuarioService } from '../usuario/usuario.service';
 import { Agenda } from './agenda';
-import { AgendaAlertBaixaCancelamentoComponent, ModalConfirmData } from './agenda-alert-baixa-cancelamento/agenda-alert-baixa-cancelamento.component';
 import { AgendaBaixa } from './agenda-baixa';
-import { AgendaBaixaComponent } from './agenda-baixa/agenda-baixa.component';
-import { AgendaCancelamentoComponent } from './agenda-cancelamento/agenda-cancelamento.component';
-import { AgendaCancelar } from './agenda-cancelar';
 import { AgendaService } from './agenda.service';
 
 export interface AgendaDia{
@@ -175,67 +171,6 @@ export class AgendaComponent implements OnInit {
       });
     }      
   }
-  openDialogBaixa(codigo:number){
-    this.listarUsuarios();
-     
-    this.inscricaoAngenda$ = this.agendaService.get<Agenda>(codigo)
-                                               .subscribe(result=>{
-                                                if (result){
-
-                                                  let usuarioBaixa = result.codigoUsuarioAlteracao!==null ? this.usuarios.find(x=>x.codigo == result.codigoUsuarioAlteracao ): null;
-                                                  let agendaBaixa = {
-                                                    nomeUsuarioBaixa : usuarioBaixa != null ? usuarioBaixa.nome:null                                                    
-                                                  } as AgendaBaixa;
-
-                                                  const dialogRef = this.dialog.open(AgendaBaixaComponent,
-                                                    { width: '800px' ,
-                                                      height: '1080px;',
-                                                      data : agendaBaixa }
-                                                  );
-
-                                                  dialogRef.afterClosed().subscribe(retornoDialog => {
-      
-                                                    this.obterAgendas();
-                                                  });
-                                                 
-                                                }else{
-                                                  this.handleError('Não foi encontrado este agendamento!');
-                                                  return ;
-                                                }
-                                               }, error=>{
-                                                console.log(error);
-                                                this.handleError('Ocorreu um erro ao recuperar o agendamento.');
-                                               });
-
-     
-    
- 
-    
-                                                
-                                               
-  }
- /*  openDialogOperacao(agenda:Agenda){
-    const dialogRef = this.dialog.open(AgendaAlertBaixaCancelamentoComponent, {
-      width: '600px',
-      data: new ModalConfirmData({
-        title: " Operação",
-        content: "Por favor, selecione a operação que deseja?",
-        baixaButtonLabel: 'Baixa de agendamento',
-        cancelarButtonLabel: 'Cancelar agendamento',
-        closeButtonLabel:  'Retornar' ,
-        agenda: agenda
-      })
-    });
-
-    dialogRef.afterClosed().subscribe(result =>{
-      let retorno = result;
-      if (retorno === 'B'){
-        this.openDialogBaixa(agenda.codigo);
-      }else if (retorno ==='C'){
-        this.openCancelarAgendmento(agenda.codigo);
-      }
-    });
-  } */
   listarUsuarios(){
     this.inscricaoUsuario$ = this.usuarioService.listarTodos()
                                                 .subscribe(result=>{
@@ -245,51 +180,6 @@ export class AgendaComponent implements OnInit {
                                                   this.handleError('Ocorreu o erro ao tentar recuperar a lista de usuarios.');
                                                 })    
   }
-  /* openCancelarAgendmento(codigo:number){
-   
-    this.listarUsuarios();
-    
-
-    this.inscricaoAngenda$ = this.agendaService.get<Agenda>(codigo)
-    .subscribe(result=>{
-     if (result){
-      //let usuario = result.codigoUsuarioCancelamento!== null ? this.usuarios.find(x=>x.codigo === result.codigoUsuarioCancelamento):null;
-
-       let agendaCancelar = {
-        codigoAgenda : result.codigo,
-         dataInicio: result.dataInicio,
-         dataFim: result.dataFim,
-         codigoUsuarioCancelamento: this.codigoUsuario ,         
-         campoNomeCliente : result.cliente.nome,
-         codigoMotivoCancelamento: null,
-         descricaoMotivoCancelamento: null, 
-         listaServicos: this.rec
-       } as AgendaCancelar;
-
-       const dialogCancelarRef = this.dialog.open(AgendaCancelamentoComponent,         
-         { width: '600px' ,
-           height: '900px;',
-           data : agendaCancelar }
-       );
-
-       dialogCancelarRef.afterClosed().subscribe(retornoDialog => {
-
-         this.obterAgendas();
-       });
-      
-     }else{
-       this.handleError('Não foi encontrado este agendamento!');
-       return ;
-     }
-    }, error=>{
-     console.log(error);
-     this.handleError('Ocorreu um erro ao recuperar o agendamento.');
-    });
-
-    
-       
-  } */
-   
 }
 
 

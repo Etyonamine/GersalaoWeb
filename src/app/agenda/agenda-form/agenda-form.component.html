@@ -137,7 +137,7 @@
 
                     <mat-form-field class="mensagemObservacaoServico" appearance="fill">
                         <mat-label>Mensagem</mat-label>
-                        <input matInput disabled value="Atenção!O campo observação do serviço está editável somente quando for selecionado um profissional e serviço."  class="observacao">
+                        <input matInput disabled value="Atenção!O campo observação do serviço está editável somente quando for selecionado um profissional e serviço." class="observacao">
                       </mat-form-field>
                 </div>
                 <mat-divider>
@@ -250,6 +250,9 @@
                 <!-- BOTOES -->
                 <mat-divider></mat-divider>
                 <div>
+                    <!--Pagamento do cliente-->
+                    <button mat-raised-button type="button" class="botaoPagamento" align="end"  [disabled]="!habilitarBotaoPagamento" (click)="cancelarServico()">Pagamento
+                        &nbsp;<i class="material-icons right">payments</i></button>
                     <!--Cancelamento-->
                     <button mat-raised-button color="warn" type="button" class="full" align="end"  [disabled]="selection.selected.length == 0 || permitidoGravarOuEditar === false " (click)="cancelarServico()">Cancelar
                         &nbsp;<i class="material-icons right">cancel</i></button>
