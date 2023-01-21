@@ -1,4 +1,5 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import { ThrowStmt } from '@angular/compiler';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -42,6 +43,7 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   formulario: FormGroup;
   formServicos: FormGroup;
   agenda: Agenda;
+  listaAgendaServicos: AgendaServico[]=[];
   dataSelecionada: Date | null;
   tomorrow:Date;
   horaInicioDefault: string;
@@ -56,11 +58,15 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   edicao: boolean;
   permitidoGravarOuEditar: boolean = true;
   habilitarBotaoPagamento: boolean = false;
+  habilitarBotaoCancelamento: boolean = false;
+  habilitarEstorno: boolean = false;
 
   optionProfissional: Array<Profissional>=[];  
   optionServicos: Array<Servico>=[];  
   optionClientes: ClienteViewModel[];
   tituloPagina: string;
+
+  listaPagamentosDetalhe: AgendaPagamentoDetalhe[]=[];
 
   inscricaoAgenda$: Subscription;
   inscricaoAgendaValidar$: Subscription;
@@ -91,7 +97,7 @@ isAllSelected() {
 masterToggle() {
   if (this.isAllSelected()) {
     this.selection.clear();
-    this.habilitarBotaoPagamento = false;
+    this.habilitarBotoes();
     return;
   }
 
@@ -104,7 +110,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
   if (!row) {
     return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
   }
-  this.habilitarBotaoPagamento = this.selection.selected.length>0 ? true:false;
+  this.habilitarBotoes();
   return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.item + 1}`;  
 }
 
@@ -238,8 +244,10 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     );
   }
   ngOnInit(): void {
+    this.habilitarEstorno = false;
     this.habilitarBotaoPagamento = false;
     this.agenda = this.route.snapshot.data['agenda'];
+    this.recuperarListaAgendaServicos();    
     this.edicao = this.agenda==undefined? false:true;
     this.tituloPagina = this.edicao?"Agenda - Serviço - Editando":"Agenda - Serviço - Novo Registro";
     this.codigoClente = this.agenda!=undefined? this.agenda.codigoCliente:null;
@@ -264,7 +272,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.preenchimentoServicos();
        
     
-  }
+  }  
   ngOnDestroy():void {
     if (this.inscricaoProfissional$){
       this.inscricaoProfissional$.unsubscribe();      
@@ -290,7 +298,16 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     if (this.inscricaoAgendaServicoConsultar$){
       this.inscricaoAgendaServicoConsultar$.unsubscribe();
     }
-  }  
+  }
+  recuperarListaPagamentoDetalhe(){
+    if (this.agenda.listarServicos !== null || this.agenda.listarServicos !== undefined){
+      this.agenda.listarServicos.forEach(serv=>{
+        serv.listaPagamentoDetalhe.forEach(det=>{
+          this.listaPagamentosDetalhe.push(det);
+        });        
+      });
+    }
+  }    
   criacaoFormulario(){ 
 
     let dataHoraInicial = this.agenda !=undefined? this.agenda.dataInicio.toString() : null;
@@ -338,6 +355,13 @@ checkboxLabel(row?: AgendaServicoAdd): string {
                                                             console.log(error);
                                                             this.handleError('Ocorreu um erro ao listar os Profissionais.');
                                                           })
+  }  
+  recuperarListaAgendaServicos(){
+    //this.listaAgendaServicos 
+    this.inscricaoAgenda$ = this.agendaServicoService.getPorAgendamento(this.agenda.codigo)
+                                                      .subscribe(result=>{
+                                                        this.listaAgendaServicos = result;
+                                                      });
   }
   listaServicos(event){
     let objProfissional= this.optionProfissional.find(x=>x.codigo === this.formulario.get('codigoProfissional').value) ;
@@ -679,14 +703,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           }
         );
         dialogRef.afterClosed().subscribe(result => {
-
-          this.inscricaoAgendaServicoConsultar$ = this.agendaServicoService.getPorAgendamento(this.agenda.codigo)
-                                                                           .subscribe(result=>{
-                                                                            if (result){
-                                                                              this.agenda.listarServicos = result;
-                                                                              this.preenchimentoServicos();
-                                                                            }
-                                                                           });          
+          this.recuperarListaServicos();                   
         });
     }
   }
@@ -735,7 +752,9 @@ checkboxLabel(row?: AgendaServicoAdd): string {
                                               .subscribe(result=>{
                                                 this.agenda.listarServicos = result.listarServicos;
                                                 this.preenchimentoServicos();
+                                                this.selection.clear();
                                               });
+    this.selection.selected.length = 0;  
   }
   recuperarParametroSistema(){
     this.inscricaoParametroSistema$ = this.parametroSistemaService.get<ParametroSistema>(5)
@@ -763,5 +782,33 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       this.permitidoGravarOuEditar = false;
       return;
     }    
+  }  
+  habilitarBotoes()
+  {
+    this.habilitarBotaoPagamento = true;
+    this.habilitarBotaoCancelamento = true;
+    this.habilitarEstorno = false;
+
+    if(this.selection.selected.length ==0 ){
+      this.habilitarBotaoPagamento = false;
+      this.habilitarBotaoCancelamento = false;
+    }
+
+    //valida se algum dos selecionados esta com status nao em conformidade para fazer o pagamento
+    this.selection.selected.forEach(itemrem=>{
+      if (itemrem.codigoSituacao === 4 || itemrem.codigoSituacao === 5 || itemrem.codigoSituacao== 99){
+        this.habilitarBotaoPagamento = false;
+        this.habilitarBotaoCancelamento = false;
+      }
+    });   
+
+    //valida se existe pagamento a estornar
+    if(this.listaAgendaServicos!== undefined && this.listaAgendaServicos.length>0){
+      let pagamento = this.listaAgendaServicos.find(x=>x.listaPagamentoDetalhe.find(x=>x.agendaServicoPagamento.codigoSituacao ===7));
+      if (pagamento!==undefined ){
+        this.habilitarEstorno = true;
+      }
+    }
+
   }  
 }

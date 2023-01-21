@@ -1,3 +1,4 @@
+import { AgendaPagamentoDetalhe } from "../agenda-pagamento/agenda-pagamento-detalhe/agenda-pagamento-detalhe";
 import { Profissional } from "../profissional/professional";
 import { Servico } from "../servico/servico";
 import { Situacao } from "../situacao/situacao";
@@ -22,5 +23,6 @@ export class AgendaServico{
     profissional: Profissional;
     servico: Servico;
     situacao: Situacao;
+    listaPagamentoDetalhe: AgendaPagamentoDetalhe[]
 
 }
