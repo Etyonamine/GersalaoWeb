@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
+import { AgendaEstornoComponent } from 'src/app/agenda-estorno/agenda-estorno.component';
 import { AgendaPagamento } from 'src/app/agenda-pagamento/agenda-pagamento';
 import { AgendaPagamentoDetalhe } from 'src/app/agenda-pagamento/agenda-pagamento-detalhe/agenda-pagamento-detalhe';
 import { AgendaPagamentoComponent } from 'src/app/agenda-pagamento/agenda-pagamento.component';
@@ -358,6 +359,9 @@ checkboxLabel(row?: AgendaServicoAdd): string {
   }  
   recuperarListaAgendaServicos(){
     //this.listaAgendaServicos 
+    if (this.agenda == undefined){
+      return false;
+    }
     this.inscricaoAgenda$ = this.agendaServicoService.getPorAgendamento(this.agenda.codigo)
                                                       .subscribe(result=>{
                                                         this.listaAgendaServicos = result;
@@ -703,9 +707,22 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           }
         );
         dialogRef.afterClosed().subscribe(result => {
-          this.recuperarListaServicos();                   
+          this.recuperarListaServicos();   
+          this.habilitarBotoes  ();             
         });
     }
+  }
+  openDialogEstorno(){     
+    //abrindo o modal
+       // montando o dialogo
+       const dialogRef = this.dialog.open(AgendaEstornoComponent,
+        {width: '500px' , height: '700px;',
+          data : this.agenda.codigo
+        }
+      );
+      dialogRef.afterClosed().subscribe(result => {
+        this.recuperarListaServicos();                   
+      });
   }
   cancelarServico(){
     if (this.selection.isSelected.length == 0 ){

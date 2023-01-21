@@ -17,4 +17,12 @@ export class AgendaPagamentoService extends BaseService<AgendaPagamento> {
   salvarRegistro(agendaServicoPagamento: AgendaPagamento){
     return this.http.post(this.url, agendaServicoPagamento).pipe(take(1));
   }
+  recuperarListaAgendaServicoPagamento(codigoAgenda:number){
+    let urlLista = this.url;
+    this.http.get<AgendaPagamento[]>(urlLista).pipe(take(1));
+  }
+  recuperarPagamentoAEstonarPorAgenda(codigoAgenda:number){
+    let urlEstornar = this.url + '/PagamentosEstornarPorAgenda?codigoAgenda=' + codigoAgenda;
+    return this.http.get<AgendaPagamento[]>(urlEstornar).pipe(take(1));
+  }
 }
