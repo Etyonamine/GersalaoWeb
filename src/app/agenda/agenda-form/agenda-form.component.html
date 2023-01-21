@@ -250,12 +250,26 @@
                 <!-- BOTOES -->
                 <mat-divider></mat-divider>
                 <div>
+                    <!--estorno de Pagamento do cliente-->
+                    <button mat-raised-button type="button" class="botaoEstorno" align="end"  
+                        [disabled] ="!habilitarEstorno"
+                    (click)="openDialogPagamento()">Estorno
+                        &nbsp;<i class="material-icons right">money_off</i></button>
+
                     <!--Pagamento do cliente-->
-                    <button mat-raised-button type="button" class="botaoPagamento" align="end"  [disabled]="!habilitarBotaoPagamento" (click)="openDialogPagamento()">Pagamento
+                    <button mat-raised-button type="button" class="botaoPagamento" align="end"  
+                            [disabled]="!habilitarBotaoPagamento" 
+                            (click)="openDialogPagamento()">Pagamento
                         &nbsp;<i class="material-icons right">payments</i></button>
                     <!--Cancelamento-->
-                    <button mat-raised-button color="warn" type="button" class="full" align="end"  [disabled]="selection.selected.length == 0 || permitidoGravarOuEditar === false " (click)="cancelarServico()">Cancelar
-                        &nbsp;<i class="material-icons right">cancel</i></button>
+                    <button mat-raised-button color="warn" 
+                            type="button" 
+                            class="full" 
+                            align="end"  
+                            [disabled]="!habilitarBotaoCancelamento"
+                            (click)="cancelarServico()">
+                            Cancelar&nbsp;
+                            <i class="material-icons right">cancel</i></button>
                     <!--salvar-->
                     <button mat-raised-button color="primary" class="full" align="end" [disabled]="!formulario.valid || listaServicosTabela.length == 0|| permitidoGravarOuEditar === false" >Salvar
                         &nbsp;<i class="material-icons right">save</i></button>
