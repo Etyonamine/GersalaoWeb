@@ -212,7 +212,7 @@
                         <!-- valor do servico Column -->
                         <ng-container matColumnDef="valorServico">
                             <th mat-header-cell *matHeaderCellDef> Valor </th>
-                            <td mat-cell *matCellDef="let element"> {{element.valorServico}} </td>
+                            <td mat-cell *matCellDef="let element"> {{element.valorServico | currency:'BRL':'symbol':'1.2-2':'pt'}} </td>
                           </ng-container>
                         <!-- descricaoSituacao -->
                         <ng-container matColumnDef="descricaoSituacao">

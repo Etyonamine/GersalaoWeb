@@ -1,5 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { ThrowStmt } from '@angular/compiler';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -278,10 +279,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.codigoUsuario =  Number.parseInt(this.authService.usuarioLogado.codigo);
     this.dataSelecionada = this.agenda != undefined ? this.agenda.dataInicio: new Date();
     this.recuperarDadosEmpresa();
-    this.recuperarListaPagamentoDetalhe();
     this.preenchimentoServicos();
-    this.habilitarBotoes();
-       
     
   }  
   ngOnDestroy():void {
@@ -323,8 +321,24 @@ checkboxLabel(row?: AgendaServicoAdd): string {
 
     this.inscricaoPagamentoDetalhe$ = this.agendaPagamentoDetalheService.recuperarInformacoes(this.agenda.codigo)
                                                                         .subscribe(result=>{
-                                                                          this.listaPagamentosDetalhe = result;
-                                                                          this.preenchimentoServicos();
+                                                                          this.listaPagamentosDetalhe = result;                                                                          
+                                                                          if (this.listaServicosTabela.length>0){
+                                                                            this.listaServicosTabela.forEach(servico=>{
+                                                                              let pagamento = this.listaPagamentosDetalhe.filter(x=>x.codigoServico == servico.codigoServico && x.codigoProfissional == servico.codigoProfissional);
+                                                                              if (pagamento!=undefined){
+                                                                                if (pagamento[0].agendaServicoPagamento.codigoSituacao ==7){
+                                                                                  servico.descricaoSituacaoCobranca = 'PAGO';
+                                                                                  if (this.habilitarEstorno ===false){
+                                                                                    this.habilitarEstorno = true;
+                                                                                  }
+                                                                                }else {
+                                                                                  servico.descricaoSituacaoCobranca = 'ESTORNO';
+                                                                                }
+                                                                              }else{
+                                                                                servico.descricaoSituacaoCobranca = 'PENDENTE';
+                                                                              }
+                                                                            });
+                                                                          }
                                                                         },error=>{
                                                                           console.log(error);
                                                                           this.handleError('erro ao recuperar os detalhes do pagamento');
@@ -576,23 +590,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     let lista = this.agenda.listarServicos;    
     this.valorTotalServico =0;
 
-    lista.forEach(servico=>{     
-      let situacaoCobranca :string = "PENDENTE";
-      if(this.listaPagamentosDetalhe.length > 0){
-        let servicoPagamento = this.listaPagamentosDetalhe.filter(x=>x.codigoServico == servico.codigoServico && 
-                                                                                    x.codigoProfissional == servico.codigoProfissional
-                                                                                    );
-        if (servicoPagamento!== null){
-          if (servicoPagamento[0].agendaServicoPagamento.codigoSituacao == 7 ){
-            situacaoCobranca = 'PAGO';
-          }else if(servicoPagamento[0].agendaServicoPagamento.codigoSituacao == 16){
-            situacaoCobranca = 'ESTORNO';
-          }
-        }
-      }else{
-        situacaoCobranca  = '';
-      }
-
+    lista.forEach(servico=>{            
       this.listaServicosTabela.push(
         {
           codigoAgenda : this.agenda.codigo,
@@ -604,7 +602,7 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           nomeServico : servico.servico.descricao,
           observacao : servico.observacao,          
           descricaoSituacao : servico.situacao.descricao,
-          descricaoSituacaoCobranca: situacaoCobranca,
+          descricaoSituacaoCobranca: '',
           valorServico : servico.valorServico,
           agendaServico: servico          
         }as AgendaServicoAdd
@@ -616,7 +614,8 @@ checkboxLabel(row?: AgendaServicoAdd): string {
       this.valorTotalServico = (this.valorTotalServico + servico.valorServico);
     }); 
     this.dataSource.data = this.listaServicosTabela;
-       
+    this.recuperarListaPagamentoDetalhe();
+
   }
   openDialogEditarServico(servico: AgendaServico ){
     if(servico==undefined){
@@ -751,25 +750,35 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           }
         );
         dialogRef.afterClosed().subscribe(result => {
-          this.recuperarListaServicos(); 
-          this.recuperarListaPagamentoDetalhe();  
+          this.recuperarListaServicos();           
           this.habilitarBotoes  ();             
         });
     }
   }
-  openDialogEstorno(){     
-    //abrindo o modal
-       // montando o dialogo
-       const dialogRef = this.dialog.open(AgendaEstornoComponent,
-        {width: '500px' , height: '700px;',
-          data : this.agenda.codigo
-        }
-      );
-      dialogRef.afterClosed().subscribe(result => {
-        this.recuperarListaServicos();     
-        this.recuperarListaPagamentoDetalhe();     
-        this.habilitarBotoes  ();            
-      });
+  openDialogEstorno(){   
+    let abrirDialog : boolean = true;
+     //validar
+     this.selection.selected.forEach(itemrem=>{
+      if (itemrem.descricaoSituacaoCobranca !== 'PAGO' ){
+        this.handlerExclamacao('Atenção!O serviço [ ' + itemrem.nomeServico +' ] está com situação de cobrança diferente de PAGO. Por favor, desmarque-o.');
+        abrirDialog = false;
+        return false;
+        
+      }
+     });
+     if (abrirDialog === true){
+        //abrindo o modal
+        // montando o dialogo
+        const dialogRef = this.dialog.open(AgendaEstornoComponent,
+          {width: '500px' , height: '700px;',
+            data : this.agenda.codigo
+          }
+        );
+        dialogRef.afterClosed().subscribe(result => {
+          this.recuperarListaServicos();             
+          this.habilitarBotoes  ();            
+        });
+     }    
   }
   cancelarServico(){
     if (this.selection.isSelected.length == 0 ){
@@ -868,17 +877,10 @@ checkboxLabel(row?: AgendaServicoAdd): string {
         this.habilitarBotaoCancelamento = false;
         this.permitidoGravarOuEditar = false;
       }
+      //valida se existe pagamento a estornar
+      if(itemrem.descricaoSituacaoCobranca == "PAGO"){
+        this.habilitarEstorno = true;            
+      }
     });   
-
-    //valida se existe pagamento a estornar
-    if (this.listaPagamentosDetalhe!==undefined && this.listaPagamentosDetalhe.length>0){
-        this.listaPagamentosDetalhe.forEach(pag=>{
-          if (pag.agendaServicoPagamento.codigoSituacao == 7 )
-          {
-            this.habilitarEstorno = true;            
-          }
-        });
-    }
-    
   }  
 }
