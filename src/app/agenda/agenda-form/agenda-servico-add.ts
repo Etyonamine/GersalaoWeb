@@ -10,6 +10,7 @@ export class AgendaServicoAdd{
     nomeServico: string;
     codigoSituacao: number;
     descricaoSituacao: string;
+    descricaoSituacaoCobranca:string;
     valorServico: number;
     agendaServico: AgendaServico;
 }

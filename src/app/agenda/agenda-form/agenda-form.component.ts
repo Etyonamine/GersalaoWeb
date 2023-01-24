@@ -10,6 +10,7 @@ import { concatMap } from 'rxjs/operators';
 import { AgendaEstornoComponent } from 'src/app/agenda-estorno/agenda-estorno.component';
 import { AgendaPagamento } from 'src/app/agenda-pagamento/agenda-pagamento';
 import { AgendaPagamentoDetalhe } from 'src/app/agenda-pagamento/agenda-pagamento-detalhe/agenda-pagamento-detalhe';
+import { AgendaPagamentoDetalheService } from 'src/app/agenda-pagamento/agenda-pagamento-detalhe/agenda-pagamento-detalhe.service';
 import { AgendaPagamentoComponent } from 'src/app/agenda-pagamento/agenda-pagamento.component';
 import { AgendaServico } from 'src/app/agenda-servicos/agenda-servico';
 import { AgendaServicoEdit } from 'src/app/agenda-servicos/agenda-servico-edit/agenda-servico-edit';
@@ -61,6 +62,7 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   habilitarBotaoPagamento: boolean = false;
   habilitarBotaoCancelamento: boolean = false;
   habilitarEstorno: boolean = false;
+  
 
   optionProfissional: Array<Profissional>=[];  
   optionServicos: Array<Servico>=[];  
@@ -78,12 +80,13 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
   inscricaoValidacao$ : Subscription;
   inscricaoAgendaServicoConsultar$:Subscription;
   inscricaoParametroSistema$: Subscription;
+  inscricaoPagamentoDetalhe$: Subscription;
 
   listaServicosTabela : Array<AgendaServicoAdd>=[];
 
 
 //manipulacao da tabela
-displayedColumns: string[] = ['select', 'item', 'nomeProfissional', 'nomeServico', 'valorServico','descricaoSituacao','observacao', 'action'];
+displayedColumns: string[] = ['select', 'item', 'nomeProfissional', 'nomeServico', 'valorServico','descricaoSituacao','descricaoSituacaoCobranca','observacao', 'action'];
 dataSource = new MatTableDataSource<AgendaServicoAdd>(this.listaServicosTabela);
 selection = new SelectionModel<AgendaServicoAdd>(true, []);
 
@@ -129,12 +132,17 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     private agendaService: AgendaService,
     private agendaServicoService: AgendaServicosService,
     private parametroSistemaService : ParametroSistemaService,
+    private agendaPagamentoDetalheService: AgendaPagamentoDetalheService,
     private route: ActivatedRoute,
     public dialog: MatDialog,) {
     super();
   }
 
   submit() {
+    if (this.listaServicosTabela.length === 0){
+      this.handleError('Por favor, adicionar ao menos 1 serviço!');
+      return false;
+    }
     let valueSubmit = Object.assign({}, this.formulario.value);
     let dataAgenda = this.formulario.get("dataAgenda").value;     
     let horaInicio = this.formulario.get('horaInicio').value;
@@ -270,7 +278,9 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.codigoUsuario =  Number.parseInt(this.authService.usuarioLogado.codigo);
     this.dataSelecionada = this.agenda != undefined ? this.agenda.dataInicio: new Date();
     this.recuperarDadosEmpresa();
+    this.recuperarListaPagamentoDetalhe();
     this.preenchimentoServicos();
+    this.habilitarBotoes();
        
     
   }  
@@ -299,15 +309,26 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     if (this.inscricaoAgendaServicoConsultar$){
       this.inscricaoAgendaServicoConsultar$.unsubscribe();
     }
+    if (this.inscricaoPagamentoDetalhe$){
+      this.inscricaoPagamentoDetalhe$.unsubscribe();
+    }
   }
   recuperarListaPagamentoDetalhe(){
-    if (this.agenda.listarServicos !== null || this.agenda.listarServicos !== undefined){
-      this.agenda.listarServicos.forEach(serv=>{
-        serv.listaPagamentoDetalhe.forEach(det=>{
-          this.listaPagamentosDetalhe.push(det);
-        });        
-      });
+    if (this.listaPagamentosDetalhe.length>0){
+      this.listaPagamentosDetalhe.splice(0,this.listaPagamentosDetalhe.length);
     }
+    if (this.agenda == undefined){
+      return false;
+    }
+
+    this.inscricaoPagamentoDetalhe$ = this.agendaPagamentoDetalheService.recuperarInformacoes(this.agenda.codigo)
+                                                                        .subscribe(result=>{
+                                                                          this.listaPagamentosDetalhe = result;
+                                                                          this.preenchimentoServicos();
+                                                                        },error=>{
+                                                                          console.log(error);
+                                                                          this.handleError('erro ao recuperar os detalhes do pagamento');
+                                                                        });
   }    
   criacaoFormulario(){ 
 
@@ -541,9 +562,13 @@ checkboxLabel(row?: AgendaServicoAdd): string {
   }  
   preenchimentoServicos()
   {
+    
+
     if (this.agenda ==undefined ){
       return;
-    }
+    }   
+    this.permitidoGravarOuEditar = false;
+    
     if (this.listaServicosTabela.length>0){
       this.listaServicosTabela.splice(0,this.listaServicosTabela.length);
       this.selection.clear;
@@ -552,7 +577,22 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.valorTotalServico =0;
 
     lista.forEach(servico=>{     
-      
+      let situacaoCobranca :string = "PENDENTE";
+      if(this.listaPagamentosDetalhe.length > 0){
+        let servicoPagamento = this.listaPagamentosDetalhe.filter(x=>x.codigoServico == servico.codigoServico && 
+                                                                                    x.codigoProfissional == servico.codigoProfissional
+                                                                                    );
+        if (servicoPagamento!== null){
+          if (servicoPagamento[0].agendaServicoPagamento.codigoSituacao == 7 ){
+            situacaoCobranca = 'PAGO';
+          }else if(servicoPagamento[0].agendaServicoPagamento.codigoSituacao == 16){
+            situacaoCobranca = 'ESTORNO';
+          }
+        }
+      }else{
+        situacaoCobranca  = '';
+      }
+
       this.listaServicosTabela.push(
         {
           codigoAgenda : this.agenda.codigo,
@@ -564,11 +604,15 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           nomeServico : servico.servico.descricao,
           observacao : servico.observacao,          
           descricaoSituacao : servico.situacao.descricao,
+          descricaoSituacaoCobranca: situacaoCobranca,
           valorServico : servico.valorServico,
           agendaServico: servico          
         }as AgendaServicoAdd
       );
-
+      //valida se existe servico a ser salvo - situacao pendente
+      if (servico.codigoSituacao === 3 ){        
+        this.permitidoGravarOuEditar = true;
+      }
       this.valorTotalServico = (this.valorTotalServico + servico.valorServico);
     }); 
     this.dataSource.data = this.listaServicosTabela;
@@ -707,7 +751,8 @@ checkboxLabel(row?: AgendaServicoAdd): string {
           }
         );
         dialogRef.afterClosed().subscribe(result => {
-          this.recuperarListaServicos();   
+          this.recuperarListaServicos(); 
+          this.recuperarListaPagamentoDetalhe();  
           this.habilitarBotoes  ();             
         });
     }
@@ -721,7 +766,9 @@ checkboxLabel(row?: AgendaServicoAdd): string {
         }
       );
       dialogRef.afterClosed().subscribe(result => {
-        this.recuperarListaServicos();                   
+        this.recuperarListaServicos();     
+        this.recuperarListaPagamentoDetalhe();     
+        this.habilitarBotoes  ();            
       });
   }
   cancelarServico(){
@@ -805,27 +852,33 @@ checkboxLabel(row?: AgendaServicoAdd): string {
     this.habilitarBotaoPagamento = true;
     this.habilitarBotaoCancelamento = true;
     this.habilitarEstorno = false;
+   
 
     if(this.selection.selected.length ==0 ){
       this.habilitarBotaoPagamento = false;
-      this.habilitarBotaoCancelamento = false;
+      this.habilitarBotaoCancelamento = false;      
     }
+    
+    
 
     //valida se algum dos selecionados esta com status nao em conformidade para fazer o pagamento
     this.selection.selected.forEach(itemrem=>{
       if (itemrem.codigoSituacao === 4 || itemrem.codigoSituacao === 5 || itemrem.codigoSituacao== 99){
         this.habilitarBotaoPagamento = false;
         this.habilitarBotaoCancelamento = false;
+        this.permitidoGravarOuEditar = false;
       }
     });   
 
     //valida se existe pagamento a estornar
-    if(this.listaAgendaServicos!== undefined && this.listaAgendaServicos.length>0){
-      let pagamento = this.listaAgendaServicos.find(x=>x.listaPagamentoDetalhe.find(x=>x.agendaServicoPagamento.codigoSituacao ===7));
-      if (pagamento!==undefined ){
-        this.habilitarEstorno = true;
-      }
+    if (this.listaPagamentosDetalhe!==undefined && this.listaPagamentosDetalhe.length>0){
+        this.listaPagamentosDetalhe.forEach(pag=>{
+          if (pag.agendaServicoPagamento.codigoSituacao == 7 )
+          {
+            this.habilitarEstorno = true;            
+          }
+        });
     }
-
+    
   }  
 }

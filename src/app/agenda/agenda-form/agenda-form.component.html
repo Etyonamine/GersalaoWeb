@@ -34,13 +34,13 @@
                              >
                     </mat-form-field>    
                     <!-- situacao -->                
-                    <mat-form-field appearance="fill">
+                    <!-- <mat-form-field appearance="fill">
                         <mat-label>Situa&ccedil;&atilde;o</mat-label>
                         <input matInput 
                               formControlName="descricaoSituacao"               
                               readonly
                              >
-                    </mat-form-field>    
+                    </mat-form-field>  -->   
                 </div>
                 <div>    
                     <div *ngIf="agenda == undefined">
@@ -219,6 +219,11 @@
                             <th mat-header-cell *matHeaderCellDef> Situa&ccedil;&atilde;o </th>
                             <td mat-cell *matCellDef="let element"> {{element.descricaoSituacao}} </td>
                           </ng-container>
+                        <!-- descricao cobranca Column -->
+                        <ng-container matColumnDef="descricaoSituacaoCobranca">
+                            <th mat-header-cell *matHeaderCellDef> Cobran&ccedil;a</th>
+                            <td mat-cell *matCellDef="let element"> {{element.descricaoSituacaoCobranca}} </td>
+                          </ng-container>
                         <!-- observacao Column -->
                         <ng-container matColumnDef="observacao">
                           <th mat-header-cell *matHeaderCellDef> Observa&ccedil;&aacute;o</th>
@@ -271,7 +276,7 @@
                             Cancelar&nbsp;
                             <i class="material-icons right">cancel</i></button>
                     <!--salvar-->
-                    <button mat-raised-button color="primary" class="full" align="end" [disabled]="!formulario.valid || listaServicosTabela.length == 0|| permitidoGravarOuEditar === false" >Salvar
+                    <button mat-raised-button color="primary" class="full" align="end" [disabled]="!formulario.valid ||listaServicosTabela.length === 0|| permitidoGravarOuEditar === false" >Salvar
                         &nbsp;<i class="material-icons right">save</i></button>
                     <!--retornar-->
                     <button mat-raised-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar
