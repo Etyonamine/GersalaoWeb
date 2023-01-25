@@ -7,6 +7,8 @@ import jsPDF from "jspdf";
 import 'jspdf-autotable'
 import { EMPTY, of, Subscription } from 'rxjs';
 import { AgendaService } from '../agenda/agenda.service';
+import { Profissional } from '../profissional/professional';
+import { ProfissionalService } from '../profissional/profissional.service';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
 import { ProfissionalApuracao } from './profissional-apuracao';
@@ -22,19 +24,21 @@ import { ProfissionalApuracaoService } from './profissional-apuracao.service';
 })
 export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
 
-  colunas: string[] = ["nome", "codigo", "data", "valor", "inicio", "fim", "total", "dataBaixa", "acao"];
+  colunas: string[] = [ "codigo", "data", "valor", "inicio", "fim", "total", "dataBaixa", "acao"];
   defaultPageIndex: number = 0;
   defaultPageSize: number = 10;
   inscricao$: Subscription;
   dataPesquisa: Date;
 
-  public defaultSortColumn: string = "CodigoProfissional";
+  public defaultSortColumn: string = "dataApuracao";
   public defaultSortOrder: string = "desc";
 
   inscricaoProfissionalApuracaoDetalhe$: Subscription;
   inscricaoAgenda$: Subscription;
+  inscricaoProfissional$ :Subscription;
 
-
+  optionProfissionais: Profissional[]=[];
+  
   defaultFilterColumn: string = "CodigoProfissional";
   filterQuery: string = null;
 
@@ -43,26 +47,43 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
 
   listaApuracoes: MatTableDataSource<ProfissionalApuracao>;
   apuracoes: Array<ProfissionalApuracao> = [];
+  listaApuracaoDetalhe: ProfissionalApuracaoDetalhe[] = [];
+
   constructor(private serviceAlert: AlertService,
     private profissionalApuracaoService: ProfissionalApuracaoService,
     private profisionalApuracaoDetalheService: ProfissionalApuracaoDetalheService,
-    private agendaService: AgendaService
+    private agendaService: AgendaService,
+    private profissionalService: ProfissionalService,
+    private alertService : AlertService
     ) { }
 
   ngOnInit(): void {
     this.loadData();
-    
+    this.listaProfissionais();
 
   }
   ngOnDestroy(): void {
     if (this.inscricao$) { this.inscricao$.unsubscribe(); }
     if (this.inscricaoAgenda$) { this.inscricaoAgenda$.unsubscribe() }
     if (this.inscricaoProfissionalApuracaoDetalhe$) { this.inscricaoProfissionalApuracaoDetalhe$.unsubscribe() }
+    if (this.inscricaoProfissional$ ){this.inscricaoProfissional$ .unsubscribe();}
   }
   clearDate(event) {
     event.stopPropagation();
     this.dataPesquisa = null;
     this.loadData();
+  }
+  listaProfissionais() {
+     
+    
+    
+    this.inscricaoProfissional$ = this.profissionalService.listarProfissionaisApurados(this.dataPesquisa)
+      .subscribe(result => {
+      this.optionProfissionais = result;
+      }, error => {
+        console.log(error);
+        this.handlerError('Ocorreu um erro ao recuperar a lista de profissionais.');
+      });
   }
   loadData(query: string = null) {
     var pageEvent = new PageEvent();
@@ -182,25 +203,38 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   DownloadReport(codigoApuracao: number){
     let row : any[] = []
     let rowD : any[] = []
-    let col=['profissional','data','valor-Servico','comissão(%)', 'valor-Comissão', 'Origem-Comissâo']; // initialization for headers
+    let col=['cliente','inicio-agenda','termino-agenda','valor-Servico','comissão(%)', 'valor-Comissão']; // initialization for headers
     let title = "Extrato - Apuração" // title of report
     
     let apuracao = this.listaApuracoes.data.find(x=>x.codigo);
     this.profisionalApuracaoDetalheService.get<Array<ProfissionalApuracaoDetalhe>>(codigoApuracao)
                                           .subscribe(agendas=>{
         //linhas da tabela
-        for(let a=0; a < agendas.length;a++){
-          /* let valorComissao = (agendas[a].agenda.valorComissaoPercentual/100) * agendas[a].agenda.valorServico;
-          let dataApuracao = agendas[a].agenda.data.toLocaleString('BRL');
-          dataApuracao = dataApuracao.substring(8,10) + dataApuracao.substring(4,8) + dataApuracao.substring(0,4)  + ' ' +  dataApuracao.substring(11,19) ;
-          row.push(agendas[a].profissionalApuracao.profissional.nome)
-          row.push(dataApuracao)
-          row.push(agendas[a].agenda.valorServico.toFixed(2))      
-          row.push(agendas[a].agenda.valorComissaoPercentual.toFixed(2))      
-          row.push(valorComissao.toFixed(2))
-          row.push(agendas[a].agenda.CodigoComissaoOrigem == 1 ? "Profissional": "Serviço")      
-          rowD.push(row);
-          row =[]; */
+        for(let a=0; a < agendas.length;a++)
+        {
+          let nomeCliente = agendas[a].agenda.cliente.nome;
+          let dataInicioAgenda = agendas[a].agenda.dataInicio.toLocaleDateString();
+          let dataTerminoAgenda = agendas[a].agenda.dataFim.toLocaleDateString();
+          let servicos =agendas[a].agenda.listarServicos;
+          
+          //tratando datas
+          dataInicioAgenda = dataInicioAgenda.substring(8,10) + dataInicioAgenda.substring(4,7) + '-'+ dataInicioAgenda.substring(0,4) + ' ' + dataInicioAgenda.substring(11,19);
+          dataTerminoAgenda = dataTerminoAgenda.substring(8,10) + dataTerminoAgenda.substring(4,7) + '-'+ dataTerminoAgenda.substring(0,4) + ' ' + dataTerminoAgenda.substring(11,19);
+
+          servicos.forEach(serv=>{
+            let valorServico = serv.valorServico.toFixed(2);
+            let valorComissao = serv.valorServico * (serv.valorPercentualComissao/100);
+            let percentualComissao = serv.valorPercentualComissao.toFixed(2);
+            
+            //adicionando a linha
+            row.push(nomeCliente);
+            row.push(dataInicioAgenda);
+            row.push(dataTerminoAgenda);
+            row.push(valorServico);
+            row.push(percentualComissao);
+            row.push(valorComissao.toFixed(2));
+            rowD.push(row);
+          });        
         }
         this.getReport(col , rowD , title, apuracao );
     },error=>{
@@ -212,7 +246,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   getReport(col: any[], rowD: any[], title: any, profissionalApuracao: ProfissionalApuracao) {
     const totalPagesExp = "{total_pages_count_string}";        
     let pdf = new jsPDF('p', 'pt', 'a4');
-    let colResumo = ['','','','','','']
+    let colResumo = ['Codigo','Profissional','Início','Término', 'Apurado','Usuario']
     let rowDResumo : any[] = []
     let rowResumo : any[] = []
     pdf.setTextColor(51, 156, 255);          
@@ -233,24 +267,31 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
         pdf.text(str, data.settings.margin.left, pageHeight - 10); // showing current page number
     };
     pdf.setFontSize(12);    
-  
-    rowResumo.push("Codigo");
-    rowResumo.push(profissionalApuracao.codigo.toString());
-    rowResumo.push("Início");
-    rowResumo.push(profissionalApuracao.dataInicio,200,100);
-    rowResumo.push("Fim");
-    rowResumo.push(profissionalApuracao.dataFim,200,100);
+    let dataInicioPeriodo = profissionalApuracao.dataInicio.toLocaleString();
+    let dataTerminoPeriodo = profissionalApuracao.dataFim.toLocaleString();   
+    let dataApuracao = profissionalApuracao.dataApuracao.toLocaleString();
+
+    dataInicioPeriodo = dataInicioPeriodo.substring(8,10) + dataInicioPeriodo.substring(4,7) + '-'+ dataInicioPeriodo.substring(0,4);
+    dataTerminoPeriodo = dataTerminoPeriodo.substring(8,10) + dataTerminoPeriodo.substring(4,7) + '-'+ dataTerminoPeriodo.substring(0,4);
+    dataApuracao = dataApuracao.substring(8,10) + dataApuracao.substring(4,7) + '-'+ dataApuracao.substring(0,4) + ' ' + dataApuracao.substring(11,19);
+        
+    rowResumo.push(profissionalApuracao.codigo.toString());    
+    rowResumo.push(profissionalApuracao.profissional.nome);    
+    rowResumo.push(dataInicioPeriodo);    
+    rowResumo.push(dataTerminoPeriodo);
+    rowResumo.push(dataApuracao);
+    rowResumo.push(profissionalApuracao.usuario.nome);
     rowDResumo.push(rowResumo);
 
     pdf.autoTable(colResumo, rowDResumo,
       {
          
-          margin: { top: 110 },
+          margin: { top: 30 },
       });
     pdf.autoTable(col, rowD,
         {
             addPageContent: pageContent,
-            margin: { top: 310 },
+            margin: { top: 80 },
         });
 
     //for adding total number of pages // i.e 10 etc
@@ -259,6 +300,8 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     }
 
     pdf.save(title + '.pdf');
-}
-
+  }
+  handlerError(msg:string){
+    this.alertService.mensagemErro(msg);
+  }
 }

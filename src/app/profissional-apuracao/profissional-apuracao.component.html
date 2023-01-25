@@ -4,6 +4,16 @@
     </mat-card-header>
     <mat-card-content>
         <div>
+          <mat-form-field appearance="fill">
+            <mat-label>Profissional</mat-label>
+            <mat-select formControlName="codigoProfissional" matTooltip="Profissional a ser efetuado a apuração" required>
+              <mat-option *ngFor="let profissional of optionProfissionais" [value]="profissional.codigo">
+                {{profissional.nome}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
             <button 
             mat-raised-button
             color="primary"
@@ -59,11 +69,7 @@
                       Extrato
               </button>
             </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="nome">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Profissional</mat-header-cell>
-            <mat-cell *matCellDef="let apuracao">{{ apuracao.profissional.nome}} </mat-cell>
-          </ng-container>
+          </ng-container>       
           <ng-container matColumnDef="codigo">
             <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
             <mat-cell *matCellDef="let apuracao"> {{ apuracao.codigo }} </mat-cell>

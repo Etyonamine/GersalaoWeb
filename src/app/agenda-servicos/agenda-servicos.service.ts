@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AgendaServicoCancelarGravar } from '../agenda/agenda-cancelamento/agenda-servico-cancelar-gravar';
@@ -34,5 +35,5 @@ export class AgendaServicosService extends BaseService<AgendaServico> {
   getPorAgendamento(codigoAgenda: number){
     let urlcon = this.url + '/' + codigoAgenda;
     return this.http.get<AgendaServico[]>(urlcon).pipe(take(1));
-  }
+  }    
 }

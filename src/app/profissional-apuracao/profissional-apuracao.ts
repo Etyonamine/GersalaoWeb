@@ -1,4 +1,5 @@
 import { Profissional } from "../profissional/professional";
+import { Usuario } from "../usuario/usuario";
 import { ProfissionalApuracaoDetalhe } from "./profissional-apuracao-detalhe/profissional-apuracao-detalhe";
 
 export class ProfissionalApuracao{
@@ -13,4 +14,5 @@ export class ProfissionalApuracao{
     codigoUsuarioCadastro : number;
     listaApuracaoDetalhe : ProfissionalApuracaoDetalhe[];
     profissional : Profissional;
+    usuario: Usuario;
 }

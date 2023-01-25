@@ -4,6 +4,7 @@ import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { BaseService } from '../shared/base.service';
 import { ProfissionalApuracao } from './profissional-apuracao';
+import { ProfissionalApuracaoIn } from './profissional-apuracao-in';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class ProfissionalApuracaoService extends BaseService<ProfissionalApuraca
   constructor(protected http: HttpClient,) {
     super(http, `${environment.API}profissionalApuracao`);
   }
-  salvar(dados : ProfissionalApuracao){
-    return this.http.post<number>(this.url,dados).pipe(take(1));
+  salvar(profissionalApuracaoIn : ProfissionalApuracaoIn){
+    return this.http.post<number>(this.url,profissionalApuracaoIn).pipe(take(1));
   }
 }

@@ -25,59 +25,10 @@
           <mat-datepicker-toggle matSuffix [for]="pickerFim"></mat-datepicker-toggle>
           <mat-datepicker #pickerFim></mat-datepicker>
         </mat-form-field>
-        <button mat-raised-button type="button" color="primary" [disabled]="!formulario.valid" (click)="loadData()">
+        <!-- <button mat-raised-button type="button" color="primary" [disabled]="!formulario.valid" (click)="loadData()">
           Pr&eacute;via &nbsp;<i class="material-icons right">preview</i>
-        </button>
-
-
-         <div>
-          <mat-divider> </mat-divider>
-          <h3 class="tituloPrevia">Prévia da apura&ccedil;&atilde;o</h3>
-          <mat-form-field apperance="fill" class="camposValoresTotais">
-            <mat-label>Valor Total Servi&ccedil;o</mat-label>
-            <input matInput readonly value="{{ valorServicoTotal | currency }}">
-          </mat-form-field>
-          <mat-form-field apperance="fill" class="camposValoresTotais">
-            <mat-label>Valor Total Comiss&atilde;o</mat-label>
-            <input matInput readonly value="{{ valorComissaoTotal | currency }}">
-          </mat-form-field>
-
-          <table mat-table [dataSource]="agendas" class="mat-elevation-z8" [hidden]="!agendas" matSort
-            (matSortChange)="loadData()" matSortActive="{{ defaultSortColumn }}"
-            matSortDirection="{{ defaultSortOrder }}">
-            <ng-container matColumnDef="data">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Data</mat-header-cell>
-              <mat-cell *matCellDef="let agenda"> {{ agenda.data | date: 'dd/MM/yyyy HH:mm' }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="cliente">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Cliente</mat-header-cell>
-              <mat-cell *matCellDef="let agenda"> {{ agenda.cliente.nome }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="servico">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Servi&ccedil;o</mat-header-cell>
-              <mat-cell *matCellDef="let agenda"> {{ agenda.servico.descricao }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="valor">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Servi&ccedil;o</mat-header-cell>
-              <mat-cell *matCellDef="let agenda"> {{ agenda.valor | currency }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="percentual">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Comiss&atilde;o(%)</mat-header-cell>
-              <mat-cell *matCellDef="let agenda"> {{ agenda.valorComissaoPercentual | number : '1.2-2' }} </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="comissao">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Comiss&atilde;o</mat-header-cell>
-              <mat-cell *matCellDef="let agenda"> {{ ((agenda.valorComissaoPercentual/100) * agenda.valor) | currency }}
-              </mat-cell>
-            </ng-container>
-            <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: colunas"></mat-row>
-          </table>
-          <mat-paginator [hidden]="!agendas" (page)="getData($event)" [length]="20" [pageSize]="10"
-            [pageSizeOptions]="[5, 10, 20, 50]" showFirstLastButtons>
-          </mat-paginator>
-        </div>
-        
+        </button> -->
+  
         <mat-divider> </mat-divider>
         <mat-card-actions align="end">
           <button type="submit" mat-raised-button color="primary" [disabled]="!formulario.valid">

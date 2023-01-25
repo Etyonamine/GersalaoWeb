@@ -42,4 +42,12 @@ export class ProfissionalService extends BaseService<Profissional>{
     let urlListaPendenteApuracao = this.url+ '/ListarProfissionalApurar?inicioPeriodo=' + inicioPeriodoPar.toDateString() + '&fimPeriodo=' + fimPeriodoPar.toDateString();
     return this.http.get<ProfissionalApuracaoPendente[]>(urlListaPendenteApuracao).pipe(take(1));
   }
+  listarProfissionaisApurados(dataApurado:Date){
+    let urlListaProfissionalApurado = this.url + '/ListarProfissionalApurado';
+    if(dataApurado !==undefined){
+      urlListaProfissionalApurado = urlListaProfissionalApurado + '?dataApurado=' + dataApurado;
+    }
+    
+    return this.http.get<Profissional[]>(urlListaProfissionalApurado).pipe(take(1));
+  }
 }
