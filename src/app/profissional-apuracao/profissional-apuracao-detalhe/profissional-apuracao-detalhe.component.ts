@@ -2,12 +2,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY, Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth-guard/auth.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { ApiResult } from 'src/app/shared/base.service';
+import { ProfissionalApuracaoService } from '../profissional-apuracao.service';
 import { ProfissionalApuracaoDetalhe } from './profissional-apuracao-detalhe';
 import { ProfissionalApuracaoDetalheService } from './profissional-apuracao-detalhe.service';
+import { ProfissionalApuracaoExcluirIn } from './profissional-apuracao-excluir-in';
 
 @Component({
   selector: 'app-profissional-apuracao-detalhe',
@@ -28,6 +31,8 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
   situacaoBaixa : string;
   nomeProfissional: string;
 
+  inscricaoExcluir$:Subscription;
+
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
   inscricao$:Subscription;  
@@ -42,16 +47,25 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
   @ViewChild(MatSort) sort:MatSort;
 
   listaApuracoes:  MatTableDataSource<ProfissionalApuracaoDetalhe> ;
-  
+  codigoUsuario: number;
+
   constructor(private profissionalApuracaoDetalheService : ProfissionalApuracaoDetalheService,
               private serviceAlert: AlertService,
-              private route: ActivatedRoute,) { }
+              private authService : AuthService,
+              private route: ActivatedRoute,
+              private router: Router,
+              private profissionalApuracaoService:ProfissionalApuracaoService) { }
 
   ngOnInit(): void {
     this.codigoProfissionalApuracao =  this.route.snapshot.data.codigoApuracao;
+    this.authService.getUserData();
+    this.codigoUsuario = Number(this.authService.usuarioLogado.codigo);
     this.loadData();
   }
-
+  ngOnDestroy():void{
+    if (this.inscricao$) {this.inscricao$.unsubscribe();}
+    if (this.inscricaoExcluir$){this.inscricaoExcluir$.unsubscribe();}
+  }
   loadData(query:string = null)
   {
     var pageEvent = new PageEvent();
@@ -117,5 +131,36 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
   handleError(mensagem:string)
   {
     this.serviceAlert.mensagemErro(mensagem);
+  }
+  apagarApuracao() {
+
+    this.serviceAlert.openConfirmModal('Por favor, confirmar se deseja excluir a apuração?',
+      'Apuração - Profissional', (resposta: boolean) => {
+        if (resposta) {
+
+          let profissionalApuracaoExcluirIn = {
+            codigoApuracao : this.codigoProfissionalApuracao,
+            codigoUsuarioAlteracao: this.codigoUsuario
+          } as ProfissionalApuracaoExcluirIn;
+          
+          this.inscricaoExcluir$ = this.profissionalApuracaoService.apagar(profissionalApuracaoExcluirIn)
+                                                                   .subscribe(result=>
+                                                                    {
+                                                                      if(result){
+                                                                        this.handlerSucesso('Apuração apagada com sucesso!');
+                                                                        setTimeout(() => {
+                                                                          this.retornar();
+                                                                        }, 3000);
+                                                                      }
+                                                                    });
+        }
+      }, 'Sim', 'Não'
+    );
+  }
+  retornar(){
+    this.router.navigate(['/profissional-apuracao']);
+  }
+  handlerSucesso(mensagem: string){
+    this.serviceAlert.mensagemSucesso(mensagem);
   }
 }

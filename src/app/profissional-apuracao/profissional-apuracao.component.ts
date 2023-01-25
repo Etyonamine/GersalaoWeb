@@ -131,69 +131,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
       }
     });
   }
-  apagarApuracao(codigoApuracao: number) {
-
-    this.serviceAlert.openConfirmModal('Por favor, confirmar se deseja excluir a apuração?',
-      'Apuração - Profissional', (resposta: boolean) => {
-        if (resposta) {
-
-          let apuracao = this.listaApuracoes.data.find(x => x.codigo == codigoApuracao);
-
-          let codigosAgenda: Array<number> = [];
-
-          if (apuracao !== null) {
-            //recuperar a lista de codigos de agendas
-            this.profisionalApuracaoDetalheService.get<Array<ProfissionalApuracaoDetalhe>>(codigoApuracao).subscribe(listaAgendas => {
-              listaAgendas.forEach(agenda => {
-                codigosAgenda.push(agenda.codigoAgenda);
-              });
-
-              if (codigosAgenda.length>0) {
-                //excluir as agendas do detalhe
-                this.profisionalApuracaoDetalheService.delete(codigoApuracao).subscribe(exclusaoDetalhe => {
-
-                  if (exclusaoDetalhe) {
-                    //excluir a apuracao
-                    this.profissionalApuracaoService.delete(codigoApuracao).subscribe(exclusaoApuracao => {
-                      if (exclusaoApuracao) {
-
-                        //alterar para o status de apurar na agenda.
-                        this.agendaService.alterarStatusPendenteApuracao(codigosAgenda).subscribe(alteracao => {
-                          if (alteracao) {
-                            this.handlerSucesso('Apuração apagada com sucesso!');
-                            setTimeout(() => {
-                              this.loadData();
-                              return of(true);
-                            }, 3000);
-                          }
-                        }, error => {
-                          console.log(error);
-                          this.handleError('Ocorreu erro ao tentar alterar o status das agendas da apuração.');
-                        });
-
-                      }
-                    }, error => {
-                      console.log(error);
-
-                    });
-                  }
-                  else {
-                    return of(false);
-                  }
-                });
-              } else {
-                return of(false);
-              }
-            },error=>{
-              console.log(error);
-              this.handleError('Ocorreu um erro ao recuperar a lista de detalhes.');
-            });
-          }        
-        }
-      }, 'Sim', 'Não'
-    );
-
-  }
+ 
   handlerSucesso(mensagem: string) {
     this.serviceAlert.mensagemSucesso(mensagem);
   } 

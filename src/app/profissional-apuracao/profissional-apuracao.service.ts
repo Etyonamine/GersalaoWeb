@@ -4,6 +4,7 @@ import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { BaseService } from '../shared/base.service';
 import { ProfissionalApuracao } from './profissional-apuracao';
+import { ProfissionalApuracaoExcluirIn } from './profissional-apuracao-detalhe/profissional-apuracao-excluir-in';
 import { ProfissionalApuracaoIn } from './profissional-apuracao-in';
 
 @Injectable({
@@ -16,5 +17,10 @@ export class ProfissionalApuracaoService extends BaseService<ProfissionalApuraca
   }
   salvar(profissionalApuracaoIn : ProfissionalApuracaoIn){
     return this.http.post<number>(this.url,profissionalApuracaoIn).pipe(take(1));
+  }
+  apagar(profissionalApuracaoExcluirIn: ProfissionalApuracaoExcluirIn){
+    let urlApagar = this.url + '/' + profissionalApuracaoExcluirIn.codigoApuracao + '/' + profissionalApuracaoExcluirIn.codigoUsuarioAlteracao;
+    
+    return this.http.delete(urlApagar).pipe(take(1));
   }
 }
