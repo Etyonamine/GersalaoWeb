@@ -50,4 +50,8 @@ export class ProfissionalService extends BaseService<Profissional>{
     
     return this.http.get<Profissional[]>(urlListaProfissionalApurado).pipe(take(1));
   }
+  recuperarProfissionalApuracao(codigoApuracao:number){
+    let urlProfi = this.url + '/GetProfissionalApuracao/' + codigoApuracao;
+    return this.http.get<Profissional>(urlProfi).pipe(take(1));
+  }
 }

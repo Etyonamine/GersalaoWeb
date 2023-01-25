@@ -3,8 +3,7 @@ import { Usuario } from "../usuario/usuario";
 import { ProfissionalApuracaoDetalhe } from "./profissional-apuracao-detalhe/profissional-apuracao-detalhe";
 
 export class ProfissionalApuracao{
-    codigo : number;
-    codigoProfissional : number;
+    codigo : number;    
     dataApuracao : Date;
     dataBaixa : Date;
     dataInicio : Date;

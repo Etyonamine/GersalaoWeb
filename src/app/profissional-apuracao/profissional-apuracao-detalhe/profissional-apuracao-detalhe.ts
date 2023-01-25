@@ -1,4 +1,4 @@
-import { Agenda } from "src/app/agenda/agenda";
+import { AgendaServico } from "src/app/agenda-servicos/agenda-servico";
 import { ProfissionalApuracao } from "../profissional-apuracao";
 
 export class ProfissionalApuracaoDetalhe{
@@ -6,6 +6,6 @@ export class ProfissionalApuracaoDetalhe{
     codigoProfissionalApuracao: number;
     codigoServico: number;
     codigoProfissional: number;
-    agenda: Agenda;
+    agendaServico: AgendaServico;
     profissionalApuracao: ProfissionalApuracao;
 }
