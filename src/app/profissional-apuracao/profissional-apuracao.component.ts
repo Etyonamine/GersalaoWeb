@@ -29,8 +29,9 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   defaultPageSize: number = 10;
   inscricao$: Subscription;
   dataPesquisa: Date;
-
-  public defaultSortColumn: string = "dataApuracao";
+ 
+  
+  public defaultSortColumn: string = "codigo";
   public defaultSortOrder: string = "desc";
 
   inscricaoProfissionalApuracaoDetalhe$: Subscription;
@@ -39,7 +40,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
 
   optionProfissionais: Profissional[]=[];
   
-  defaultFilterColumn: string = "CodigoProfissional";
+  defaultFilterColumn: string = "dataApuracao";
   filterQuery: string = null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -59,8 +60,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadData();
-    this.listaProfissionais();
-
+   
   }
   ngOnDestroy(): void {
     if (this.inscricao$) { this.inscricao$.unsubscribe(); }
@@ -73,18 +73,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     this.dataPesquisa = null;
     this.loadData();
   }
-  listaProfissionais() {
-     
-    
-    
-    this.inscricaoProfissional$ = this.profissionalService.listarProfissionaisApurados(this.dataPesquisa)
-      .subscribe(result => {
-      this.optionProfissionais = result;
-      }, error => {
-        console.log(error);
-        this.handlerError('Ocorreu um erro ao recuperar a lista de profissionais.');
-      });
-  }
+  
   loadData(query: string = null) {
     var pageEvent = new PageEvent();
     pageEvent.pageIndex = this.defaultPageIndex;
@@ -116,9 +105,9 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
       filterColumn,
       filterQuery
     ).subscribe(result => {
-
+      
       this.listaApuracoes = new MatTableDataSource<ProfissionalApuracao>(result.data);
-      this.apuracoes = result.data;
+      
       this.paginator.length = result.totalCount;
       this.paginator.pageIndex = result.pageIndex;
       this.paginator.pageSize = result.pageSize;
@@ -196,10 +185,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   }
   handlerSucesso(mensagem: string) {
     this.serviceAlert.mensagemSucesso(mensagem);
-  }
-  handleError(mensagem: string) {
-    this.serviceAlert.mensagemErro('Erro ao carregar a lista de compras. Tente novamente mais tarde.');
-  }
+  } 
   DownloadReport(codigoApuracao: number){
     let row : any[] = []
     let rowD : any[] = []
@@ -301,7 +287,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
 
     pdf.save(title + '.pdf');
   }
-  handlerError(msg:string){
+  handleError(msg:string){
     this.alertService.mensagemErro(msg);
   }
 }
