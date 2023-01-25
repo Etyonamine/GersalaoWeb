@@ -4,9 +4,13 @@
   </mat-card-header>
   <mat-card-content>
     <div class="container">
-      <mat-form-field  appearance="fill">
+      <mat-form-field  appearance="fill" class="codigoApuracao">
         <mat-label>C&oacute;digo</mat-label>
-        <input matInput [ngModel]=" codigoProfissionalApuracao" readonly class="AlinharValores">
+        <input matInput [ngModel]=" codigoProfissionalApuracao" readonly >
+      </mat-form-field>
+      <mat-form-field  appearance="fill" class="nomeProfissional">
+        <mat-label>Profissional</mat-label>
+        <input matInput [ngModel]="nomeProfissional" readonly >
       </mat-form-field>
       <mat-form-field   appearance="fill"  >
         <mat-label>Data Apura&ccedil;&atilde;o</mat-label>
@@ -16,9 +20,9 @@
         <mat-label>Usu&aacute;rio</mat-label>
         <input matInput [value]=" nomeUsuarioCadastro " readonly class="AlinhaCentro">
       </mat-form-field>      
-      <mat-form-field   appearance="fill" >
-        <mat-label>Situa&ccedil;&atilde;o</mat-label>
-        <input matInput [ngModel] ="situacaoBaixa" readonly class="AlinhaCentro">
+      <mat-form-field   appearance="fill" class = "situacaoBaixa">
+        <mat-label>Situa&ccedil;&atilde;o Baixa</mat-label>
+        <input matInput [ngModel] ="situacaoBaixa" readonly >
       </mat-form-field>
       
     </div>
@@ -46,37 +50,39 @@
         matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
         <ng-container matColumnDef="codigo">
           <mat-header-cell *matHeaderCellDef>C&oacute;digo</mat-header-cell>
-          <mat-cell *matCellDef="let apuracao"> {{ apuracao.codigoProfissionalApuracao }} </mat-cell>
+          <mat-cell *matCellDef="let apuracao"> {{ apuracao.agendaServico.codigoAgenda }} </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="data">
-          <mat-header-cell *matHeaderCellDef>Data</mat-header-cell>
-          <mat-cell *matCellDef="let apuracao"> {{ apuracao.agenda.data | date : "dd/MM/yyyy HH:mm" }} </mat-cell>
+        <ng-container matColumnDef="inicio">
+          <mat-header-cell *matHeaderCellDef>Data-In&iacute;cio</mat-header-cell>
+          <mat-cell *matCellDef="let apuracao"> {{ apuracao.agendaServico.agenda.dataInicio | date : "dd/MM/yyyy HH:mm" }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="termino">
+          <mat-header-cell *matHeaderCellDef>Data-T&eacute;rmino</mat-header-cell>
+          <mat-cell *matCellDef="let apuracao"> {{ apuracao.agendaServico.agenda.dataFim | date : "dd/MM/yyyy HH:mm" }} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="cliente">
           <mat-header-cell *matHeaderCellDef>Cliente</mat-header-cell>
-          <mat-cell *matCellDef="let apuracao">{{ apuracao.agenda.cliente.nome }} </mat-cell>
+          <mat-cell *matCellDef="let apuracao">{{ apuracao.agendaServico.agenda.cliente.nome }} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="servico">
-          <mat-header-cell *matHeaderCellDef>Profissional</mat-header-cell>
-          <mat-cell *matCellDef="let apuracao">{{ apuracao.agenda.servico.descricao}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef>Servico</mat-header-cell>
+          <mat-cell *matCellDef="let apuracao">{{ apuracao.agendaServico.servico.descricao}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="valorServico">
-          <mat-header-cell *matHeaderCellDef>Quantidade Total</mat-header-cell>
-          <mat-cell *matCellDef="let apuracao"> {{ apuracao.agenda.valorServico | currency}} </mat-cell>
+          <mat-header-cell *matHeaderCellDef>Valor do Servi&ccedil;o Total</mat-header-cell>
+          <mat-cell *matCellDef="let apuracao"> {{ apuracao.agendaServico.valorServico | currency}} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="valorComissaoPercentual">
           <mat-header-cell *matHeaderCellDef>Comiss&atilde;o(%)</mat-header-cell>
-          <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.agenda.valorComissaoPercentual |
-            number:'1.2-2' }} </mat-cell>
+          <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.agendaServico.valorPercentualComissao | number:'1.2-2' }} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="valorComissao">
           <mat-header-cell *matHeaderCellDef>Valor Comiss&atilde;o</mat-header-cell>
-          <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ ((apuracao.agenda.valorComissaoPercentual/100)
-            *apuracao.agenda.valorServico) | currency }} </mat-cell>
+          <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ (apuracao.agendaServico.valorPercentualComissao/100) * apuracao.agendaServico.valorServico | currency }} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="origemComissao">
           <mat-header-cell *matHeaderCellDef>Origem - Comiss&atilde;o</mat-header-cell>
-          <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.agenda.codigoComissaoOrigem == 1 ? "Profissional": "Serviço" }} </mat-cell>
+          <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.agendaServico.codigoComissaoOrigem == 1 ? "Profissional": "Serviço" }} </mat-cell>
         </ng-container>
         <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
         <mat-row *matRowDef="let row; columns: colunas"></mat-row>

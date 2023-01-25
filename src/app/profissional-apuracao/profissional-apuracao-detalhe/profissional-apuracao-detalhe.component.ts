@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { EMPTY, Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { ApiResult } from 'src/app/shared/base.service';
-import { ProfissionalApuracao } from '../profissional-apuracao';
 import { ProfissionalApuracaoDetalhe } from './profissional-apuracao-detalhe';
 import { ProfissionalApuracaoDetalheService } from './profissional-apuracao-detalhe.service';
 
@@ -18,7 +17,7 @@ import { ProfissionalApuracaoDetalheService } from './profissional-apuracao-deta
 export class ProfissionalApuracaoDetalheComponent implements OnInit {
 
   
-   colunas: string[]=["codigo","data","cliente","servico", "valorServico","valorComissaoPercentual","valorComissao", "origemComissao"]; 
+   colunas: string[]=["codigo","inicio", "termino","cliente","servico", "valorServico","valorComissaoPercentual","valorComissao", "origemComissao"]; 
   codigoProfissionalApuracao: number;  
   valorTotal : number;
   dataApuracao: Date;
@@ -27,12 +26,13 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
   inicioPeriodo: Date;
   fimPeriodo: Date;
   situacaoBaixa : string;
+  nomeProfissional: string;
 
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
   inscricao$:Subscription;  
 
-  public defaultSortColumn:string = "dataAgenda";
+  public defaultSortColumn:string = "codigoAgenda";
   public defaultSortOrder:string = "asc";
 
   defaultFilterColumn: string= "codigoProfissionalApuracao";
@@ -104,14 +104,15 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
                       }                      
                     });
   }
-  preencherDadosApuracao(profissionalApuracao){
-    this.dataApuracao = profissionalApuracao[0].profissionalApuracao.dataApuracao;
-    this.valorTotal = profissionalApuracao[0].profissionalApuracao.valorTotal;
-    this.quantidadeTotal = profissionalApuracao[0].profissionalApuracao.quantidadeTotal;
-    this.nomeUsuarioCadastro = profissionalApuracao[0].profissionalApuracao.usuarioCadastro.nome;
-    this.inicioPeriodo = profissionalApuracao[0].profissionalApuracao.dataInicio;
-    this.fimPeriodo = profissionalApuracao[0].profissionalApuracao.dataFim;
-    this.situacaoBaixa = profissionalApuracao[0].profissionalApuracao.dataBaixa == null? "Pendente": "Baixado";
+  preencherDadosApuracao(profissionalApuracaoDetalhe){
+    this.dataApuracao = profissionalApuracaoDetalhe[0].profissionalApuracao.dataApuracao;
+    this.valorTotal = profissionalApuracaoDetalhe[0].profissionalApuracao.valorTotal;
+    this.quantidadeTotal = profissionalApuracaoDetalhe[0].profissionalApuracao.quantidadeTotal;
+    this.nomeUsuarioCadastro = profissionalApuracaoDetalhe[0].profissionalApuracao.usuarioCadastro.nome;
+    this.inicioPeriodo = profissionalApuracaoDetalhe[0].profissionalApuracao.dataInicio;
+    this.fimPeriodo = profissionalApuracaoDetalhe[0].profissionalApuracao.dataFim;
+    this.situacaoBaixa = profissionalApuracaoDetalhe[0].profissionalApuracao.dataBaixa == null? "Pendente": "Baixado";
+    this.nomeProfissional = profissionalApuracaoDetalhe[0].agendaServico.profissional.nome;
   }
   handleError(mensagem:string)
   {
