@@ -16,6 +16,30 @@
         <mat-label>Data Apura&ccedil;&atilde;o</mat-label>
         <input type="text" matInput [ngModel]=" dataApuracao | date: 'dd/MM/yyyy HH:mm:ss'" readonly class="AlinhaCentro">
       </mat-form-field>
+     
+    <!--   
+    </div>
+    <div class="container"> -->
+      <mat-form-field   appearance="fill" class="dataPeriodo" >
+        <mat-label>In&igrave;cio do Per&igrave;odo</mat-label>
+        <input matInput [ngModel]=" inicioPeriodo | date:'dd/MM/yyyy'" readonly class="AlinhaCentro">
+      </mat-form-field>
+      <mat-form-field   appearance="fill" class="dataPeriodo">
+        <mat-label>Fim do Per&igrave;odo</mat-label>
+        <input matInput [ngModel] ="fimPeriodo | date:'dd/MM/yyyy'" readonly class="AlinhaCentro">
+      </mat-form-field>
+      <mat-form-field   appearance="fill" class="valorTotal" >
+        <mat-label>Valor Total</mat-label>
+        <input matInput [ngModel]="  valorTotal | currency " readonly class="AlinharValores">
+      </mat-form-field>
+      <mat-form-field   appearance="fill" class="totalAgendamento" >
+        <mat-label>Total de Agendamentos</mat-label>
+        <input matInput [ngModel]=" quantidadeTotal " readonly class="AlinharValores">
+      </mat-form-field>
+      <mat-form-field   appearance="fill" >
+        <mat-label>Data de Baixa </mat-label>
+        <input matInput value= "{{ dataBaixa | date: 'dd/MM/yyyy HH:mm:ss' }}" readonly class="AlinharValores">
+      </mat-form-field>
       <mat-form-field   appearance="fill" >
         <mat-label>Usu&aacute;rio</mat-label>
         <input matInput [value]=" nomeUsuarioCadastro " readonly class="AlinhaCentro">
@@ -24,26 +48,6 @@
         <mat-label>Situa&ccedil;&atilde;o Baixa</mat-label>
         <input matInput [ngModel] ="situacaoBaixa" readonly >
       </mat-form-field>
-      
-    </div>
-    <div class="container">
-      <mat-form-field   appearance="fill" >
-        <mat-label>In&igrave;cio do Per&igrave;odo</mat-label>
-        <input matInput [ngModel]=" inicioPeriodo | date:'dd/MM/yyyy'" readonly class="AlinhaCentro">
-      </mat-form-field>
-      <mat-form-field   appearance="fill" >
-        <mat-label>Fim do Per&igrave;odo</mat-label>
-        <input matInput [ngModel] ="fimPeriodo | date:'dd/MM/yyyy'" readonly class="AlinhaCentro">
-      </mat-form-field>
-      <mat-form-field   appearance="fill"  >
-        <mat-label>Valor Total</mat-label>
-        <input matInput [ngModel]="  valorTotal | currency " readonly class="AlinharValores">
-      </mat-form-field>
-      <mat-form-field   appearance="fill" >
-        <mat-label>Total de Agendamentos</mat-label>
-        <input matInput [ngModel]=" quantidadeTotal " readonly class="AlinharValores">
-      </mat-form-field>
-     
     </div>
     <div style="width: 100%;">
       <table mat-table [dataSource]="listaApuracoes" class="mat-elevation-z8" matSort (matSortChange)="loadData()"
@@ -93,6 +97,9 @@
     </div>
   </mat-card-content>
   <mat-card-actions align="end">
+    <button type="button" mat-raised-button class="botaoCheckin" (click)="openDialogBaixa()">
+      Baixa &nbsp;<i class="material-icons right">verified</i>
+    </button>
     <button type="button" mat-raised-button color="warn" (click)="apagarApuracao()">
       Apagar &nbsp;<i class="material-icons right">delete</i>
     </button>

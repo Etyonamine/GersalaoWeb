@@ -32,6 +32,8 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
   nomeProfissional: string;
 
   inscricaoExcluir$:Subscription;
+  dataBaixa: Date;
+  descricaoSituacao: string;
 
   defaultPageIndex :number = 0 ;
   defaultPageSize:number = 10;
@@ -54,13 +56,14 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
               private authService : AuthService,
               private route: ActivatedRoute,
               private router: Router,
-              private profissionalApuracaoService:ProfissionalApuracaoService) { }
+              private profissionalApuracaoService:ProfissionalApuracaoService,
+              private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.codigoProfissionalApuracao =  this.route.snapshot.data.codigoApuracao;
     this.authService.getUserData();
     this.codigoUsuario = Number(this.authService.usuarioLogado.codigo);
-    this.loadData();
+    this.loadData();    
   }
   ngOnDestroy():void{
     if (this.inscricao$) {this.inscricao$.unsubscribe();}
@@ -107,7 +110,9 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
                       this.preencherDadosApuracao(result.data);
                       this.paginator.length=result.totalCount;
                       this.paginator.pageIndex=result.pageIndex;
-                      this.paginator.pageSize=result.pageSize;                      
+                      this.paginator.pageSize=result.pageSize;    
+                      this.dataBaixa = this.listaApuracoes.data[0].profissionalApuracao.dataBaixa;  
+                      
                     }, error=>
                     {
                       console.error(error);
@@ -125,7 +130,7 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
     this.nomeUsuarioCadastro = profissionalApuracaoDetalhe[0].profissionalApuracao.usuarioCadastro.nome;
     this.inicioPeriodo = profissionalApuracaoDetalhe[0].profissionalApuracao.dataInicio;
     this.fimPeriodo = profissionalApuracaoDetalhe[0].profissionalApuracao.dataFim;
-    this.situacaoBaixa = profissionalApuracaoDetalhe[0].profissionalApuracao.dataBaixa == null? "Pendente": "Baixado";
+    this.situacaoBaixa = profissionalApuracaoDetalhe[0].profissionalApuracao.dataBaixa == null? "Pendente": "Pago";
     this.nomeProfissional = profissionalApuracaoDetalhe[0].agendaServico.profissional.nome;
   }
   handleError(mensagem:string)
@@ -156,6 +161,14 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
         }
       }, 'Sim', 'Não'
     );
+  }
+  openDialogBaixa(){
+    this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar com a apuração?', 'Apuração - Profissional', (resposta: boolean) => {
+        if (resposta) 
+        {
+
+        }
+      }, 'Sim', 'Não');
   }
   retornar(){
     this.router.navigate(['/profissional-apuracao']);
