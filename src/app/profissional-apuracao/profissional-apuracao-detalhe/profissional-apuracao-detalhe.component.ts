@@ -9,6 +9,7 @@ import { AuthService } from 'src/app/auth-guard/auth.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { ApiResult } from 'src/app/shared/base.service';
 import { ProfissionalApuracaoPagamento } from '../profissional-apuracao-pagamento/profissional-apuracao-pagamento';
+import { ProfissionalApuracaoPagamentoIn } from '../profissional-apuracao-pagamento/profissional-apuracao-pagamento-In';
 import { ProfissionalApuracaoPagamentoComponent } from '../profissional-apuracao-pagamento/profissional-apuracao-pagamento.component';
 import { ProfissionalApuracaoService } from '../profissional-apuracao.service';
 import { ProfissionalApuracaoDetalhe } from './profissional-apuracao-detalhe';
@@ -60,7 +61,6 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
               private route: ActivatedRoute,
               private router: Router,
               private profissionalApuracaoService:ProfissionalApuracaoService,
-              private alertService: AlertService,              
               private dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -167,11 +167,16 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
     );
   }
   openDialogPagamento(){
+    let profissionalApuracaoPagamentoIn = {
+      codigoApuracao: this.codigoProfissionalApuracao,
+      valorTotalApuracao : this.valorTotal 
+    }as ProfissionalApuracaoPagamentoIn;
+
      //abrindo o modal
        // montando o dialogo
        const dialogRef = this.dialog.open(ProfissionalApuracaoPagamentoComponent,
         {width: '500px' , height: '700px;',
-         data: this.codigoProfissionalApuracao
+         data: profissionalApuracaoPagamentoIn
         }
       );
       dialogRef.afterClosed().subscribe(result => {

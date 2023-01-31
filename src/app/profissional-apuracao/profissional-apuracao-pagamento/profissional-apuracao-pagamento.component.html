@@ -1,1 +1,55 @@
-<p>profissional-apuracao-pagamento works!</p>
+<mat-card>
+    <mat-card-header>Profissional-Apura&ccedil;&atilde;o-Pagamento</mat-card-header>
+    <mat-card-content class="mat-typography">
+        <div class="container">
+            <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+
+                <!--Lançamentos pagos-->
+                <div>
+                    
+                </div>
+                <!--Valor total da apuracao-->
+                <div>
+                    <mat-form-field appearance="fill" class="campoValorTotal">
+                        <mat-label>Valor Total da Apura&ccedil;&atilde;o</mat-label>
+                        <input matInput disabled formControlName="valorTotalApuracao" placeholder="0.000,00">
+                    </mat-form-field>
+                </div>               
+                <!--Valor a Pagar-->
+                <div class="container">
+                    <mat-form-field appearance="fill" class="campoValorAPagar">
+                        <mat-label>Valor a Pagar</mat-label>
+                        <input matInput formControlName="valorAPagar" placeholder="0.000,00"   required>
+                    </mat-form-field>
+                </div>
+                <!--Formas de Pagamento-->
+                <div [hidden]="!formasPagto">
+                    <mat-form-field *ngIf="formasPagto" appearance="fill" class="comboForma">
+                        <mat-label>Selecione uma forma de pagamento da lista</mat-label>
+                        <mat-select matTooltip="formas" formControlName="codigoFormaPagamento" required>
+                            <mat-option *ngFor="let option of formasPagto" [value]="option.codigoFormaPagto">
+                                {{ option.descricaoFormaPagto }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <!--Observacao-->
+                <div>
+
+                    <mat-form-field appearance="fill" class="campoObservacao">
+                        <mat-label>Observação do pagamento</mat-label>
+                        <input matInput formControlName="observacao">
+                    </mat-form-field>
+                </div>                
+            </form>
+        </div>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-footer>
+
+    </mat-card-footer>
+    <mat-card-actions align="end">
+        <button mat-raised-button class="botaoConfirmar" [disabled]="!this.formulario.valid">Confirmar</button>
+        <button mat-raised-button color="primary" mat-dialog-close cdkFocusInitial>Retornar</button>
+    </mat-card-actions>
+</mat-card>
