@@ -8,4 +8,5 @@ export class ProfissionalApuracaoDetalhe{
     codigoProfissional: number;
     agendaServico: AgendaServico;
     profissionalApuracao: ProfissionalApuracao;
+    
 }

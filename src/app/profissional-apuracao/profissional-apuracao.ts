@@ -1,4 +1,5 @@
 import { Profissional } from "../profissional/professional";
+import { Situacao } from "../situacao/situacao";
 import { Usuario } from "../usuario/usuario";
 import { ProfissionalApuracaoDetalhe } from "./profissional-apuracao-detalhe/profissional-apuracao-detalhe";
 
@@ -14,4 +15,5 @@ export class ProfissionalApuracao{
     listaApuracaoDetalhe : ProfissionalApuracaoDetalhe[];
     profissional : Profissional;
     usuario: Usuario;
+    situacao: Situacao;
 }

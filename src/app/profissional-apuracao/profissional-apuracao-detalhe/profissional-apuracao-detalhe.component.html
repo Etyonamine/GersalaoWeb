@@ -45,7 +45,7 @@
         <input matInput [value]=" nomeUsuarioCadastro " readonly class="AlinhaCentro">
       </mat-form-field>      
       <mat-form-field   appearance="fill" class = "situacaoBaixa">
-        <mat-label>Situa&ccedil;&atilde;o Baixa</mat-label>
+        <mat-label>Situa&ccedil;&atilde;o de Pagamento</mat-label>
         <input matInput [ngModel] ="situacaoBaixa" readonly >
       </mat-form-field>
     </div>
@@ -97,8 +97,8 @@
     </div>
   </mat-card-content>
   <mat-card-actions align="end">
-    <button type="button" mat-raised-button class="botaoCheckin" (click)="openDialogBaixa()">
-      Baixa &nbsp;<i class="material-icons right">verified</i>
+    <button type="button" mat-raised-button class="botaoCheckin" (click)="openDialogPagamento()">
+      Pagamento &nbsp;<i class="material-icons right">verified</i>
     </button>
     <button type="button" mat-raised-button color="warn" (click)="apagarApuracao()">
       Apagar &nbsp;<i class="material-icons right">delete</i>
