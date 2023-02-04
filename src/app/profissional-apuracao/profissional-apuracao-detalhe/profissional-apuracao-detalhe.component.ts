@@ -8,7 +8,6 @@ import { EMPTY, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { ApiResult } from 'src/app/shared/base.service';
-import { ProfissionalApuracaoPagamento } from '../profissional-apuracao-pagamento/profissional-apuracao-pagamento';
 import { ProfissionalApuracaoPagamentoIn } from '../profissional-apuracao-pagamento/profissional-apuracao-pagamento-In';
 import { ProfissionalApuracaoPagamentoComponent } from '../profissional-apuracao-pagamento/profissional-apuracao-pagamento.component';
 import { ProfissionalApuracaoService } from '../profissional-apuracao.service';
@@ -180,7 +179,7 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
         }
       );
       dialogRef.afterClosed().subscribe(result => {
-                
+        this.recuperarDescricaoSituacao();
       });
   }
   retornar(){
@@ -188,5 +187,14 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
   }
   handlerSucesso(mensagem: string){
     this.serviceAlert.mensagemSucesso(mensagem);
+  }
+  recuperarDescricaoSituacao(){
+   this.inscricao$ =  this.profissionalApuracaoService.descricaoSituacao(this.codigoProfissionalApuracao)
+                                         .subscribe(resultado=>{
+                                          this.situacaoBaixa = resultado.toString();
+                                         },error=>{
+                                          console.log(error);
+                                          this.handleError('Ocorreu erro ao recuperar a situação da apuracao.');
+                                         })
   }
 }

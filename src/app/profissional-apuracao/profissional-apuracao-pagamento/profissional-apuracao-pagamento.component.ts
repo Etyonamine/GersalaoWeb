@@ -119,9 +119,10 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
                                                                             .subscribe(result=>{
                                                                               if(result){
                                                                                 this.handlerSucesso("Registro salvo com sucesso!");
-                                                                                this.formulario.controls["valorAPagar"].setValue("0");
-                                                                                this.formulario.controls["observacao"].setValue('');
-                                                                                this.recuperarFormasPagamento();
+                                                                                this.formulario.reset();
+                                                                                this.valorTotalPagoBase = this.valorTotalPagoBase + valorAPagar;                                                                                
+                                                                              }else{
+                                                                                this.handleError("Não foi salvo o registro!Ocorreu algum erro.");
                                                                               }
                                                                             },error=>{
                                                                               console.log(error);
@@ -171,6 +172,6 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
     this.listaPagamentos.forEach(pag=>{
       this.valorTotalPagoBase = this.valorTotalPagoBase + pag.valorPago;
     });
-    this.formulario.controls["valorTotalPago"].setValue(this.valorTotalPagoBase);
+     
   }
 }

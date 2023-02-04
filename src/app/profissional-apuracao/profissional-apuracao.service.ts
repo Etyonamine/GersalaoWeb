@@ -23,4 +23,8 @@ export class ProfissionalApuracaoService extends BaseService<ProfissionalApuraca
     
     return this.http.delete(urlApagar).pipe(take(1));
   }
+  descricaoSituacao(codigoApuracao: number){
+    let urlSituacao = this.url + '/situacao/' + codigoApuracao;
+    return this.http.get<string>(urlSituacao).pipe(take(1));
+  }
 }
