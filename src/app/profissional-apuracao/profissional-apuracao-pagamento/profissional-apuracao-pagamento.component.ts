@@ -80,7 +80,7 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
   recuperarLancamentosPagamento(){
     this.inscricao$ = this.profissionalApuracaoPagamentoService.recuperarLista(this.data.codigoApuracao)
                                                                .subscribe(result=>{
-                                                                this.listaPagamentos = result;
+                                                                this.listaPagamentos = result.filter(x=>x.codigoSituacaoPagamento === 20);
                                                                 this.calcularVAlorPago();
                                                                },error=>{
                                                                 console.log(error);

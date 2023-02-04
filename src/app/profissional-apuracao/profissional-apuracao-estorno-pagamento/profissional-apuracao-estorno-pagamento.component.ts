@@ -50,7 +50,7 @@ export class ProfissionalApuracaoEstornoPagamentoComponent extends BaseFormCompo
   recuperarListaPagamentos() {
     this.inscricao$ = this.profissionalApuracaoPagamentoService.recuperarLista(this.codigoApuracao)
       .subscribe(result => {
-        this.listaPagamentos = result;
+        this.listaPagamentos = result.filter(x=>x.codigoSituacaoPagamento === 20);
       }, error => {
         console.log(error);
         this.handleError('Ocorreu erro ao recuperar a lista de pagamentos.');
@@ -69,7 +69,7 @@ export class ProfissionalApuracaoEstornoPagamentoComponent extends BaseFormCompo
 
     //montando o objeto com os dados   
     let profissionalPagamentoCancelarIn = {
-      codigoPagamento: this.formulario.get("codigoPagmento").value,
+      codigoPagamento: this.formulario.get("codigoPagamento").value,
       codigoUsuario: this.codigoUsuario,
       observacao: this.formulario.get("observacao").value
     } as ProfissionalPagamentoCancelarIn;
@@ -82,6 +82,8 @@ export class ProfissionalApuracaoEstornoPagamentoComponent extends BaseFormCompo
                                                                         this.handlerSucesso('Pagamento cancelado com sucesso!');
                                                                         this.formulario.reset();
                                                                         this.recuperarListaPagamentos();
+                                                                      }else{
+                                                                        this.handleError('Ocorreu algum erro ao tentar cancelar o pagamento.');
                                                                       }
                                                                    },error=>{
                                                                       console.log (error);
