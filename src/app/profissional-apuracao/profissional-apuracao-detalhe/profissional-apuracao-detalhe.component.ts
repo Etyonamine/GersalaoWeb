@@ -8,6 +8,7 @@ import { EMPTY, Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { ApiResult } from 'src/app/shared/base.service';
+import { ProfissionalApuracaoEstornoPagamentoComponent } from '../profissional-apuracao-estorno-pagamento/profissional-apuracao-estorno-pagamento.component';
 import { ProfissionalApuracaoPagamentoIn } from '../profissional-apuracao-pagamento/profissional-apuracao-pagamento-In';
 import { ProfissionalApuracaoPagamentoComponent } from '../profissional-apuracao-pagamento/profissional-apuracao-pagamento.component';
 import { ProfissionalApuracaoService } from '../profissional-apuracao.service';
@@ -166,6 +167,18 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
         }
       }, 'Sim', 'Não'
     );
+  }
+  openDialogCancelar(){
+       //abrindo o modal
+       // montando o dialogo
+       const dialogRef = this.dialog.open(ProfissionalApuracaoEstornoPagamentoComponent,
+        {width: '500px' , height: '800px;',
+         data: this.codigoProfissionalApuracao
+        }
+      );
+      dialogRef.afterClosed().subscribe(result => {
+        this.loadData();
+      });
   }
   openDialogPagamento(){
     let profissionalApuracaoPagamentoIn = {

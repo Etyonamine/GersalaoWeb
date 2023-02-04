@@ -97,13 +97,17 @@
     </div>
   </mat-card-content>
   <mat-card-actions align="end">
-    <button type="button" mat-raised-button color="warn" [disabled]="codigoSituacaoCorrente === 19" >
+    <button type="button" 
+            mat-raised-button color="warn"
+            [disabled]="codigoSituacaoCorrente === 19" 
+            (click)="openDialogCancelar()"
+            >
       Estorno &nbsp;<i class="material-icons right">money_off</i>
     </button>
-    <button type="button" mat-raised-button class="botaoCheckin" (click)="openDialogPagamento()" [disabled]="codigoSituacaoCorrente === 17" >
+    <button type="button" mat-raised-button class="botaoCheckin" (click)="openDialogPagamento()" [disabled]="codigoSituacaoCorrente == 17" >
       Pagamento &nbsp;<i class="material-icons right">verified</i>
     </button>
-    <button type="button" mat-raised-button color="warn" (click)="apagarApuracao()"[disabled]="codigoSituacaoCorrente !== 19">
+    <button type="button" mat-raised-button color="warn" (click)="apagarApuracao()"[disabled]="codigoSituacaoCorrente !== 19 ">
       Apagar &nbsp;<i class="material-icons right">delete</i>
     </button>
     <button type="button" mat-raised-button color="primary" [routerLink]="['/profissional-apuracao']">

@@ -1,0 +1,46 @@
+<mat-card>
+    <mat-card-header>Profissional - Cancelamento - Pagamento</mat-card-header>
+    <mat-card-content class="mat-typography">
+        <div class="container">
+            <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
+                <!--Codigo-->
+                <div>
+                    <mat-form-field appearance="fill" class="campoCodigo">
+                        <mat-label>C&oacute;digo</mat-label>
+                        <input matInput disabled formControlName="codigoProfissionalApuracao">
+                    </mat-form-field>
+                </div>
+                <!--Pagamentos-->
+                <mat-form-field *ngIf="listaPagamentos" appearance="fill" class="comboForma">
+                    <mat-label>Selecione o pagamento a cancelar</mat-label>
+                    <mat-select matTooltip="Pagamentos" formControlName="codigoPagamento" required>
+                        <mat-option *ngFor="let option of listaPagamentos" [value]="option.codigo">
+                            {{ 'Pagamento = ' + (option.dataBaixa | date: 'dd/MM/yyyy HH:mm:ss') + ' / Valor = ' +
+                            (option.valorPago | currency:'BRL':'symbol':'1.2-2':'pt') }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <!--Observacao-->
+                <div>
+                    <mat-form-field appearance="fill" class="campoObservacao">
+                        <mat-label>Observa&ccedil;&atilde;o do cancelamento</mat-label>
+                        <textarea matInput #message maxlength="300" 
+                                  placeholder="Digite uma observação"
+                                  cdkTextareaAutosize formControlName="observacao"
+                                  required>
+                        </textarea>
+                        <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
+                        </mat-hint>
+                        <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
+                    </mat-form-field>
+                </div>
+            </form>
+        </div>
+    </mat-card-content>
+    <mat-divider></mat-divider>
+    <mat-card-actions align="end">
+        <button mat-raised-button class="botaoConfirmar" (click)="submit()"
+            [disabled]="!this.formulario.valid">Confirmar</button>
+        <button mat-raised-button color="primary" mat-dialog-close cdkFocusInitial>Retornar</button>
+    </mat-card-actions>
+</mat-card>
