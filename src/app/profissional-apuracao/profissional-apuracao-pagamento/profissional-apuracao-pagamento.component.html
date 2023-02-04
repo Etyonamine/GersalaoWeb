@@ -45,7 +45,15 @@
 
                     <mat-form-field appearance="fill" class="campoObservacao">
                         <mat-label>Observação do pagamento</mat-label>
-                        <input matInput formControlName="observacao">
+                        <textarea matInput #message maxlength="300" 
+                                  placeholder="Digite uma observação"
+                                  cdkTextareaAutosize 
+                                  formControlName="observacao"
+                                  required>
+                        </textarea>
+                        <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
+                        </mat-hint>
+                        <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
                     </mat-form-field>
                 </div>                
             </form>

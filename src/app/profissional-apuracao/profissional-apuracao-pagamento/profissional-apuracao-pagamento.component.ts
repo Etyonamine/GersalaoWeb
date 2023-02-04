@@ -69,9 +69,10 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
     });    
   }   
   recuperarFormasPagamento(){
-    this.inscricaoForma$ = this.formasPagamentoService.list<FormaPagamento[]>()
-                                                      .subscribe(result=>{
-                                                        this.formasPagto = result;
+    this.inscricaoForma$ = this.formasPagamentoService.listarFormasPagamentoApuracao()
+                                                      .subscribe(result=>{                                                        
+                                                         this.formasPagto = result;                                                                                                                 
+                                                        
                                                       },error=>{
                                                         console.log(error);
                                                         this.handleError('Ocorreu um erro ao recuperar a forma de pagmento.');
