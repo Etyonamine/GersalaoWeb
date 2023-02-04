@@ -12,9 +12,16 @@
                 <div>
                     <mat-form-field appearance="fill" class="campoValorTotal">
                         <mat-label>Valor Total da Apura&ccedil;&atilde;o</mat-label>
-                        <input matInput disabled formControlName="valorTotalApuracao" placeholder="0.000,00">
+                        <input matInput disabled  value = "{{ valorTotalApuracao | currency }}" placeholder="0.000,00">
                     </mat-form-field>
-                </div>               
+                </div>      
+                 <!--Valor total pago -->
+                 <div>
+                    <mat-form-field appearance="fill" class="campoValorTotal">
+                        <mat-label>Valor Total Pago</mat-label>
+                        <input matInput disabled value = "{{ valorTotalPagoBase | currency }}" placeholder="0.000,00">
+                    </mat-form-field>
+                </div>                
                 <!--Valor a Pagar-->
                 <div class="container">
                     <mat-form-field appearance="fill" class="campoValorAPagar">
@@ -49,7 +56,7 @@
 
     </mat-card-footer>
     <mat-card-actions align="end">
-        <button mat-raised-button class="botaoConfirmar" [disabled]="!this.formulario.valid">Confirmar</button>
+        <button mat-raised-button class="botaoConfirmar" (click)="submit()" [disabled]="!this.formulario.valid">Confirmar</button>
         <button mat-raised-button color="primary" mat-dialog-close cdkFocusInitial>Retornar</button>
     </mat-card-actions>
 </mat-card>

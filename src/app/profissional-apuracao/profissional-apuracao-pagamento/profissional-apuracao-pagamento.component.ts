@@ -2,6 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/auth-guard/auth.service';
 import { FormaPagamento } from 'src/app/forma-pagamento/forma-pagamento';
 import { FormaPagamentoService } from 'src/app/forma-pagamento/forma-pagamento.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -21,23 +22,32 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
   formasPagto: FormaPagamento[]=[];
   inscricao$ : Subscription;
   inscricaoForma$: Subscription;
+  inscricaoPagamento$: Subscription;
   valorMaximo: number;
-
+  valorTotalPagoBase: number;
+  valorTotalApuracao: number;  
+  codigoUsuario: number;
+ 
   listaPagamentos: ProfissionalApuracaoPagamento[]=[];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: ProfissionalApuracaoPagamentoIn,
               private alertService: AlertService,
               private formBuilder: FormBuilder,
               private profissionalApuracaoPagamentoService: ProfissionalApuracaoPagamentoService,
-              private formasPagamentoService: FormaPagamentoService ) {
+              private formasPagamentoService: FormaPagamentoService ,
+              private authService: AuthService) {
     super();
   }
   
   ngOnInit(): void {
     this.recuperarLancamentosPagamento();
     this.recuperarFormasPagamento();
+    this.valorTotalApuracao = this.data.valorTotalApuracao;
     this.valorMaximo = this.data.valorTotalApuracao;
-    this.criacaoFormulario();
+    this.valorTotalPagoBase = 0;
+    this.authService.getUserData();
+    this.codigoUsuario = Number.parseInt(this.authService.usuarioLogado.codigo);
+    this.criacaoFormulario();    
   }
   ngOnDestroy(): void{
     if (this.inscricao$){
@@ -46,16 +56,18 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
     if(this.inscricaoForma$){
       this.inscricaoForma$.unsubscribe();
     }
+    if (this.inscricaoPagamento$){
+      this.inscricaoPagamento$.unsubscribe();
+    }
   }
   criacaoFormulario(){     
     //formulario cliente
     this.formulario = this.formBuilder.group({          
-     codigoFormaPagamento: [null, Validators.required],
-     valorTotalApuracao: [{value: this.data.valorTotalApuracao ,disabled:true },Validators.required],          
+     codigoFormaPagamento: [null, Validators.required],     
      valorAPagar:[0, [Validators.required]],
      observacao: [null]      
     });    
-  } 
+  }   
   recuperarFormasPagamento(){
     this.inscricaoForma$ = this.formasPagamentoService.list<FormaPagamento[]>()
                                                       .subscribe(result=>{
@@ -69,13 +81,54 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
     this.inscricao$ = this.profissionalApuracaoPagamentoService.recuperarLista(this.data.codigoApuracao)
                                                                .subscribe(result=>{
                                                                 this.listaPagamentos = result;
+                                                                this.calcularVAlorPago();
                                                                },error=>{
                                                                 console.log(error);
                                                                 this.handleError('Ocorreu um erro ao tentar recuperar a lista de pagamentos.');
                                                                });
   }
   submit() {
-    throw new Error('Method not implemented.');
+    
+    let valueSubmit = Object.assign({}, this.formulario.value);
+    let valorTotal =  this.valorTotalApuracao;;
+    let valorPago = this.valorTotalPagoBase;
+    let valorAPagar = Number.parseFloat(valueSubmit.valorAPagar.replace(',','.'));
+    let codigoFormaPagamentoGravar = valueSubmit.codigoFormaPagamento;
+    let observacaoGravar  = valueSubmit.observacao;
+    
+    //validações
+    if((valorTotal-valorPago)< valorAPagar){
+      this.handlerExclamacao('Atenção!O valor a pagar é maior do que o total + pago. Por favor, verifique.');
+      return false;
+    }
+    //gravar efetivamente.
+    this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar com a apuração?', 'Apuração - Profissional', (resposta: boolean) => {
+      if (resposta) {
+        let dadoSalvar = {
+          codigo : 0 ,
+          codigoApuracao : this.data.codigoApuracao,
+          codigoFormaPagamento : codigoFormaPagamentoGravar,
+          observacao : observacaoGravar,
+          codigoSituacaoPagamento : 0,
+          codigoUsuarioBaixa : this.codigoUsuario,
+          dataBaixa: new Date(),
+          valorPago: valorAPagar
+        } as ProfissionalApuracaoPagamento;
+
+        this.inscricaoPagamento$ = this.profissionalApuracaoPagamentoService.save(dadoSalvar)
+                                                                            .subscribe(result=>{
+                                                                              if(result){
+                                                                                this.handlerSucesso("Registro salvo com sucesso!");
+                                                                                this.formulario.controls["valorAPagar"].setValue("0");
+                                                                                this.formulario.controls["observacao"].setValue('');
+                                                                                this.recuperarFormasPagamento();
+                                                                              }
+                                                                            },error=>{
+                                                                              console.log(error);
+                                                                              this.handleError('Ocorreu um erro ao tentar salvar os registros.');
+                                                                            });
+      }
+    }, 'Sim', 'Não');
   }
   allowNumericDigitsOnlyOnKeyUp(e) {		
 		const charCode = e.which ? e.which : e.keyCode;
@@ -85,6 +138,7 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
       }
     }	 
 	}
+
   handlerSucesso(mensagem:string)
   {
     this.alertService.mensagemSucesso(mensagem);
@@ -111,5 +165,12 @@ export class ProfissionalApuracaoPagamentoComponent extends BaseFormComponent im
 
     let valorAPagar = ((valorTotalServico+ valorTotalAcrescimo)  - valorDesconto);
     this.formulario.controls['valorAPagar'].setValue(valorAPagar.toFixed(2)); */
+  }
+  calcularVAlorPago(){
+    this.valorTotalPagoBase =0;
+    this.listaPagamentos.forEach(pag=>{
+      this.valorTotalPagoBase = this.valorTotalPagoBase + pag.valorPago;
+    });
+    this.formulario.controls["valorTotalPago"].setValue(this.valorTotalPagoBase);
   }
 }
