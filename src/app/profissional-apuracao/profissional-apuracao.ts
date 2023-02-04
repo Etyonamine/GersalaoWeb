@@ -12,6 +12,7 @@ export class ProfissionalApuracao{
     valorTotal : number;
     quantidadeTotal: number;
     codigoUsuarioCadastro : number;
+    codigoSituacao: number;
     listaApuracaoDetalhe : ProfissionalApuracaoDetalhe[];
     profissional : Profissional;
     usuario: Usuario;

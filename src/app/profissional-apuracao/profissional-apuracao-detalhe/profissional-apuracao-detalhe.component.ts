@@ -33,6 +33,7 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
   fimPeriodo: Date;
   situacaoBaixa : string;
   nomeProfissional: string;
+  codigoSituacaoCorrente:number;
 
   inscricaoExcluir$:Subscription;
   dataBaixa: Date;
@@ -66,7 +67,7 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
     this.codigoProfissionalApuracao =  this.route.snapshot.data.codigoApuracao;
     this.authService.getUserData();
     this.codigoUsuario = Number(this.authService.usuarioLogado.codigo);
-    this.loadData();    
+    this.loadData();        
   }
   ngOnDestroy():void{
     if (this.inscricao$) {this.inscricao$.unsubscribe();}
@@ -135,6 +136,7 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
     this.fimPeriodo = profissionalApuracaoDetalhe[0].profissionalApuracao.dataFim;
     this.situacaoBaixa = profissionalApuracaoDetalhe[0].profissionalApuracao.situacao.descricao;
     this.nomeProfissional = profissionalApuracaoDetalhe[0].agendaServico.profissional.nome;
+    this.codigoSituacaoCorrente = profissionalApuracaoDetalhe[0].profissionalApuracao.situacao.codigo;
   }
   handleError(mensagem:string)
   {
@@ -179,7 +181,7 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
         }
       );
       dialogRef.afterClosed().subscribe(result => {
-        this.recuperarDescricaoSituacao();
+        this.loadData();
       });
   }
   retornar(){
@@ -188,13 +190,5 @@ export class ProfissionalApuracaoDetalheComponent implements OnInit {
   handlerSucesso(mensagem: string){
     this.serviceAlert.mensagemSucesso(mensagem);
   }
-  recuperarDescricaoSituacao(){
-   this.inscricao$ =  this.profissionalApuracaoService.descricaoSituacao(this.codigoProfissionalApuracao)
-                                         .subscribe(resultado=>{
-                                          this.situacaoBaixa = resultado.toString();
-                                         },error=>{
-                                          console.log(error);
-                                          this.handleError('Ocorreu erro ao recuperar a situação da apuracao.');
-                                         })
-  }
+   
 }
