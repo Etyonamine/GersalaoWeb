@@ -88,9 +88,13 @@
             <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.valorTotal | currency }} </mat-cell>
           </ng-container>      
           <ng-container matColumnDef="dataBaixa">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Baixa</mat-header-cell>
-            <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.dataBaixa | date :  "dd/MM/yyyy HH:mm:ss"}} </mat-cell>
-          </ng-container>       
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Data-Apura&ccedil;&atilde;o</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao" class="AlinharValores"> {{ apuracao.dataApuracao | date :  "dd/MM/yyyy HH:mm:ss"}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="situacaoPagto">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Situação-Pagamento</mat-header-cell>
+            <mat-cell *matCellDef="let apuracao" > {{ apuracao.situacao.descricao}} </mat-cell>
+          </ng-container>
           <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
           <mat-row *matRowDef="let row; columns: colunas"></mat-row>
         </table>

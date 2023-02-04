@@ -25,7 +25,7 @@ import { ProfissionalApuracaoService } from './profissional-apuracao.service';
 })
 export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
 
-  colunas: string[] = [ "codigo", "data", "valor", "inicio", "fim", "total", "dataBaixa", "acao"];
+  colunas: string[] = [ "codigo", "data", "valor", "inicio", "fim", "total", "dataBaixa","situacaoPagto" ,"acao"];
   defaultPageIndex: number = 0;
   defaultPageSize: number = 10;
   inscricao$: Subscription;
@@ -54,7 +54,6 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   constructor(private serviceAlert: AlertService,
     private profissionalApuracaoService: ProfissionalApuracaoService,
     private profisionalApuracaoDetalheService: ProfissionalApuracaoDetalheService,
-    private agendaService: AgendaService,
     private alertService : AlertService,
     private profissionalService: ProfissionalService
     ) { }
