@@ -1,1 +1,20 @@
- 
+.container {
+  margin-left: 5px;
+  margin-top: 5px;
+  text-align: center;
+}
+.mat-raised-button+.mat-raised-button {
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.mat-form-field+.mat-form-field {
+  margin-left: 5px;
+  margin-top: 5px;
+}
+.campoObservacao{
+  width: 500px;
+}
+.botaoAbrir{
+  background-color: green;
+  color: white;
+}

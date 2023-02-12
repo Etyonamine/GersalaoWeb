@@ -1,1 +1,45 @@
-caixa abrir
+<div class="container">
+    <mat-card>
+        <mat-card-header>
+            <label style="text-align:center;">Caixa - Abertura</label>
+        </mat-card-header>
+        <div class="container">
+            <mat-card-title>Informações</mat-card-title>
+            <mat-divider></mat-divider>
+        </div>
+
+        <mat-card-content>
+            <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
+                <div class="form-group mat-container">
+                    <mat-form-field appearance="fill" style="width: 250px">
+                        <mat-label>Data</mat-label>
+                        <input matInput disabled formControlName="dataCorrente" />
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" style="width: 250px">
+                        <mat-label>Valor Inicial</mat-label>
+                        <input matInput disabled formControlName="valorInicial"  placeholder="0.000,00"   required/>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field appearance="fill" class="campoObservacao">
+                        <mat-label>Observa&ccedil;&atilde;o</mat-label>
+                        <textarea matInput #message maxlength="300" placeholder="Digite uma observação"
+                            cdkTextareaAutosize formControlName="observacao" >
+                            </textarea>
+                        <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
+                        </mat-hint>
+                        <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <button mat-raised-button color="primary" class="botaoAbrir" [disabled]="!formulario.valid">
+                        Abrir &nbsp;<i class="material-icons right">done</i>
+                    </button>
+                    <button type="button" mat-raised-button color = "primary"(click)="retornar()">
+                        Retornar &nbsp;<i class="material-icons right">reply</i>
+                      </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
