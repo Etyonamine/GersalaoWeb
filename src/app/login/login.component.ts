@@ -25,6 +25,7 @@ export class LoginComponent extends BaseFormComponent implements OnInit {
                }
 
   ngOnInit(): void {
+    this.authService.removerLoginArmazenado();
     this.criarFormulario();
   }
   submit() {

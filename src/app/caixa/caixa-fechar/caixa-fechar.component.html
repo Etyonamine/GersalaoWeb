@@ -1,0 +1,91 @@
+<div class="container">
+    <mat-card>
+        <mat-card-header>Caixa - Fechamento</mat-card-header>
+        <mat-card-content>
+            <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
+                <div>
+                    <mat-card-subtitle>Informa&ccedil;&otilde;es da abertura</mat-card-subtitle>
+                    <mat-divider></mat-divider>
+                </div>
+                
+                <div class="form-group mat-container">
+                    <!-- Codigo-->
+                    <mat-form-field appearance="fill" class="campoCodigo">
+                        <mat-label>C&oacute;digo</mat-label>
+                        <input matInput formControlName="codigo" readonly />
+                    </mat-form-field>
+
+                    <!-- Data e Hora-->
+                    <mat-form-field appearance="fill" class="camposAbertura" >
+                        <mat-label>Data\Hora</mat-label>
+                        <input matInput disabled formControlName="dataAbertura" readonly/>
+                    </mat-form-field>
+
+                    <!-- valor inicial-->
+                    <mat-form-field appearance="fill"  class="campoValor">
+                        <mat-label>Valor Inicial</mat-label>
+                        <input matInput disabled formControlName="valorInicial"  
+                               placeholder="0.000,00"
+                                (keypress)="allowNumericDigitsOnlyOnKeyUp($event)" 
+                               required readonly/>
+                    </mat-form-field>                
+                    <!-- Observacao-->
+                    <mat-form-field appearance="fill" class="campoObservacao">
+                        <mat-label>Observa&ccedil;&atilde;o</mat-label>
+                        <textarea matInput #message maxlength="300" placeholder="Digite uma observação"
+                            cdkTextareaAutosize formControlName="observacao" 
+                            readonly>
+                            </textarea>                          
+                    </mat-form-field>
+                </div>
+                <mat-divider></mat-divider>
+                <div>
+                    <mat-card-subtitle>Informa&ccedil;&otilde;es de fechamento</mat-card-subtitle>
+                    <mat-divider></mat-divider>
+                </div>
+                <div class="form-group mat-container">
+                    <mat-form-field appearance="fill"  class="campoValor">
+                        <mat-label>Valor Final</mat-label>
+                        <input matInput disabled formControlName="valorFinal"  
+                               placeholder="0.000,00"
+                                (keypress)="allowNumericDigitsOnlyOnKeyUp($event)" 
+                               required readonly/>
+                    </mat-form-field>     
+                     <!-- Observacao do fechamento-->
+                     <mat-form-field appearance="fill" class="campoObservacao">
+                        <mat-label>Observa&ccedil;&atilde;o do fechamento</mat-label>
+                        <textarea matInput #message maxlength="300" placeholder="Digite uma observação"
+                            cdkTextareaAutosize formControlName="observacaoFechamento" 
+                            readonly>
+                            </textarea>                          
+                    </mat-form-field>
+                </div>
+                <div class="form-group mat-container">
+                    <!--Tabela de valores encontrados-->
+                    <table [class.mat-elevation-z8]="true" >                        
+                        <thead>
+                            <tr>
+                                <td>Tipo Lan&ccedil;amento</td>
+                                <td>Valor</td>
+                            </tr>
+                        </thead>  
+                        <tbody>
+                            <tr>
+                                <td>x</td>
+                                <td>23,00</td>
+                            </tr>
+                        </tbody>                                       
+                    </table>
+                </div>
+                <div>
+                    <button mat-raised-button   class="botaoFechar" [disabled]="!formulario.valid">
+                        Fechar &nbsp;<i class="material-icons right">done</i>
+                    </button>
+                    <button type="button" mat-raised-button color = "primary"(click)="retornar()">
+                        Retornar &nbsp;<i class="material-icons right">reply</i>
+                      </button>
+                </div>
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>

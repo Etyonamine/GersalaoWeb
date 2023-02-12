@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { CaixaComponent } from './caixa.component';
 import { CaixaAbrirComponent } from './caixa-abrir/caixa-abrir.component';
+import { CaixaFecharComponent } from './caixa-fechar/caixa-fechar.component';
+import { CaixaComponent } from './caixa.component';
+import { CaixaResolveGuard } from './guard/caixa-resolver.guard';
 
-
-const rotas: Routes = [
-    {path:'caixa', component: CaixaComponent},
-    {path:'abrir', component: CaixaAbrirComponent}
+const routes: Routes = [
+  {path:'',component:CaixaComponent},
+  {path:'abrir', component:CaixaAbrirComponent},
+  {path:'caixa/:codigo', component:CaixaFecharComponent,
+    resolve:{
+      caixa: CaixaResolveGuard
+    }}
 ];
 
 @NgModule({
-    declarations: [],
-    imports: [
-      CommonModule,
-      RouterModule.forChild(rotas)
-    ],
-    exports:[RouterModule]
-  })
-  export class CaixaRoutingModule { }
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class CaixaRoutingModule { }

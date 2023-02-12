@@ -8,11 +8,15 @@ import { ProfissionalApuracaoDetalheResolveGuard } from './guard/profissional-ap
 
 
 const rotas: Routes = [
-  {path:'', component: ProfissionalApuracaoComponent}  , 
-  {path:'apuracao-novo', component: ProfissionalApuracaoFormComponent},
-  {path:':codigo', 
-          component:ProfissionalApuracaoDetalheComponent,
-          resolve:{codigoApuracao: ProfissionalApuracaoDetalheResolveGuard}}, 
+  { path: '', component: ProfissionalApuracaoComponent },
+  { path: 'apuracao-novo', component: ProfissionalApuracaoFormComponent },
+  {
+    path: ':codigo',
+    component: ProfissionalApuracaoDetalheComponent,
+    resolve: {
+      codigoApuracao: ProfissionalApuracaoDetalheResolveGuard
+    }
+  },
 ];
 
 @NgModule({
@@ -21,6 +25,6 @@ const rotas: Routes = [
     CommonModule,
     RouterModule.forChild(rotas)
   ],
-  exports:[RouterModule]
+  exports: [RouterModule]
 })
 export class ProfissionalApuracaoRoutingModule { }

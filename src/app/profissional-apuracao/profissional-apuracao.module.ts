@@ -8,10 +8,11 @@ import { ProfissionalApuracaoDetalheComponent } from './profissional-apuracao-de
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { ProfissionalApuracaoPagamentoComponent } from './profissional-apuracao-pagamento/profissional-apuracao-pagamento.component';
 import { ProfissionalApuracaoEstornoPagamentoComponent } from './profissional-apuracao-estorno-pagamento/profissional-apuracao-estorno-pagamento.component';
-
+import { ProfissionalApuracaoComponent } from './profissional-apuracao.component';
 
 @NgModule({
   declarations: [
+    ProfissionalApuracaoComponent,
     ProfissionalApuracaoFormComponent,
     ProfissionalApuracaoDetalheComponent,
     ProfissionalApuracaoPagamentoComponent,

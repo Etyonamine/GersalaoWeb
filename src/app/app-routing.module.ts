@@ -7,6 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { PaginaNaoEncontradaComponent } from './pagina-nao-encontrada/pagina-nao-encontrada.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: '/home', pathMatch: 'full'},
   {
     path: 'cliente',
         loadChildren: () => import ('./cliente/cliente.module').then(mod=>mod.ClienteModule),
@@ -120,8 +121,7 @@ const routes: Routes = [
       loadChildren:()=>import('./caixa/caixa.module').then(mod=>mod.CaixaModule),
       canActivate:[AuthGuard],
       canLoad:[AuthGuard]
-  }, 
-  { path: '', redirectTo: '/home', pathMatch: 'full'},
+  },   
   { path: '**', component: PaginaNaoEncontradaComponent }
 ];
 

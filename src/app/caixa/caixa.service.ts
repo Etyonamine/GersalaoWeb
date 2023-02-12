@@ -11,5 +11,5 @@ export class CaixaService extends BaseService<Caixa> {
   url : string =`${environment.API}Caixas`;
   constructor(protected http: HttpClient) {
     super(http,`${environment.API}Caixas`);
-  }
+  }   
 }

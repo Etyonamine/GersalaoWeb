@@ -21,7 +21,7 @@ export class CaixaComponent implements OnInit {
   filterQuery: string = null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;  
-  colunas: string[] = [ "codigo", "dataAbertura", "dataFechamento", "valorInicial", "ValorFim" ,"acao"];
+  colunas: string[] = [ "codigo", "dataAbertura", "dataFechamento", "valorInicial", "valorFinal" ,"acao"];
   defaultPageIndex: number = 0;
   defaultPageSize: number = 10;
   public defaultSortColumn: string = "dataAbertura";

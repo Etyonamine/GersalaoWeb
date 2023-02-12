@@ -31,11 +31,13 @@ export class AuthService {
   constructor(
     private router: Router,
     private loginService: LoginService,
-    private usuarioService: UsuarioService,
     private alertService: AlertService
   ) {}
 
-
+  removerLoginArmazenado(){
+    localStorage.removeItem(this.loginStorage);
+    localStorage.removeItem(this.tokenStorage);
+  }
   fazerLogin(usuario: Login) {
 
     const login =  { login: usuario.login, senha: usuario.senha , Autenticado : usuario.Autenticado} as Login;

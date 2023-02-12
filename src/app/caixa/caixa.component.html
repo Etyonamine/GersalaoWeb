@@ -3,7 +3,7 @@
   <mat-card-content>
 
     <div class="commands text-right" style="margin-top: 5px;" *ngIf="lista">
-      <button mat-raised-button color="primary" [routerLink]="['abrir']">
+      <button mat-raised-button color="primary" [routerLink]="['abrir']" >
         Abertura &nbsp;<i class="material-icons right">open_in_new</i>
       </button>
     </div>
@@ -16,7 +16,7 @@
         </ng-container>
         <ng-container matColumnDef="dataAbertura">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Abertura</mat-header-cell>
-          <mat-cell *matCellDef="let caixa"> {{ caixa.dataAbertura | date : "dd/MM/yyyy" }} </mat-cell>
+          <mat-cell *matCellDef="let caixa"> {{ caixa.dataAbertura | date : "dd/MM/yyyy HH:mm:ss" }} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="dataFechamento">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Fechamento</mat-header-cell>
@@ -24,12 +24,21 @@
         </ng-container>
         <ng-container matColumnDef="valorInicial">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Inicial</mat-header-cell>
-          <mat-cell *matCellDef="let caixa" class="AlinharValores"> {{ caixa.ValorInicial | currency }} </mat-cell>
+          <mat-cell *matCellDef="let caixa" class="AlinharValores"> {{ caixa.valorInicial | currency }} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="valorFinal">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Final</mat-header-cell>
-          <mat-cell *matCellDef="let caixa" class="AlinharValores"> {{ caixa.ValorFinal | currency }} </mat-cell>
+          <mat-cell *matCellDef="let caixa" class="AlinharValores"> {{ caixa.valorFinal | currency }} </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="acao">
+          <mat-header-cell *matHeaderCellDef> Ação </mat-header-cell>
+          <mat-cell *matCellDef="let caixa">    
+            <a mat-mini-fab  color ="primary" aria-label = "Fechamento de caixa" [routerLink]="['caixa',caixa.codigo]"><mat-icon>money_off</mat-icon></a>
+            &nbsp;
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: colunas"></mat-row>        
       </table>
       <mat-paginator (page)="getData($event)" [length]="20" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
         showFirstLastButtons>

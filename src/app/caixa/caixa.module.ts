@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { CaixaAbrirComponent } from './caixa-abrir/caixa-abrir.component';
-import { CaixaRoutingModule } from './caixa-routing.module';
 import { CaixaComponent } from './caixa.component';
-
+import { CaixaFecharComponent } from './caixa-fechar/caixa-fechar.component';
+import { CaixaRoutingModule } from './caixa-routing.module';
 @NgModule({
   declarations: [    
-    CaixaAbrirComponent, CaixaComponent
+    CaixaAbrirComponent, CaixaComponent, CaixaFecharComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule,
-    CaixaRoutingModule
+    SharedModule ,
+    CaixaRoutingModule   
   ]
 })
 export class CaixaModule { }
