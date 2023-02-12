@@ -49,6 +49,7 @@ import { ReportsModule } from './reports/reports.module';
 import { MotivoCancelamentoServicoModule} from './motivo-cancelamento-servico/motivo-cancelamento-servico.module';
 import { AgendaPagamentoModule} from './agenda-pagamento/agenda-pagamento.module';
 import { AgendaEstornoModule} from'./agenda-estorno/agenda-estorno.module';
+import { CaixaModule} from './caixa/caixa.module';
 
 registerLocaleData(localePt,'pt');
 
@@ -66,6 +67,7 @@ registerLocaleData(localePt,'pt');
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    CaixaModule,
     RouterModule,
     AppRoutingModule,
     BrowserAnimationsModule,

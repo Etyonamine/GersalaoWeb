@@ -1,0 +1,42 @@
+<mat-card>
+  <mat-card-header> Lista de Caixas</mat-card-header>
+  <mat-card-content>
+
+    <div class="commands text-right" style="margin-top: 5px;" *ngIf="lista">
+      <button mat-raised-button color="primary" [routerLink]="['abrir']">
+        Abrir &nbsp;<i class="material-icons right">open_in_new</i>
+      </button>
+    </div>
+    <div>
+      <table mat-table [dataSource]="lista" class="mat-elevation-z8" matSort (matSortChange)="loadData()"
+        matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+        <ng-container matColumnDef="codigo">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+          <mat-cell *matCellDef="let caixa"> {{ caixa.codigo }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="dataAbertura">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Abertura</mat-header-cell>
+          <mat-cell *matCellDef="let caixa"> {{ caixa.dataAbertura | date : "dd/MM/yyyy" }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="dataFechamento">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Fechamento</mat-header-cell>
+          <mat-cell *matCellDef="let caixa"> {{ caixa.dataFechamento | date : "dd/MM/yyyy" }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="valorInicial">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Inicial</mat-header-cell>
+          <mat-cell *matCellDef="let caixa" class="AlinharValores"> {{ caixa.ValorInicial | currency }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="valorFinal">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Final</mat-header-cell>
+          <mat-cell *matCellDef="let caixa" class="AlinharValores"> {{ caixa.ValorFinal | currency }} </mat-cell>
+        </ng-container>
+      </table>
+      <mat-paginator (page)="getData($event)" [length]="20" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons>
+      </mat-paginator>
+    </div>
+    <div *ngIf="!lista" style="text-align: center;">
+      <h3>Não há apurações efetuadas</h3>
+    </div>
+  </mat-card-content>
+</mat-card>

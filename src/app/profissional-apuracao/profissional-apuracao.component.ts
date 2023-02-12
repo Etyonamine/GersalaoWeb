@@ -1,4 +1,3 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -6,8 +5,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import jsPDF from "jspdf";
 import 'jspdf-autotable'
 import { EMPTY, of, Subscription } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
-import { AgendaService } from '../agenda/agenda.service';
 import { Profissional } from '../profissional/professional';
 import { ProfissionalService } from '../profissional/profissional.service';
 import { AlertService } from '../shared/alert/alert.service';

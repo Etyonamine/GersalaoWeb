@@ -2,10 +2,7 @@
     <mat-card-header>
         Lista de Apurações de Profissionais
     </mat-card-header>
-    <mat-card-content>
-       
-         
-        
+    <mat-card-content>        
         <div>
             <button 
             mat-raised-button
@@ -42,18 +39,10 @@
               <button mat-button                     
                       aria-label="Detalhes da apuração"
                       color="primary"
-                      [routerLink] ="['/profissional-apuracao', apuracao.codigo]">
-                      <!-- <mat-icon>info</mat-icon> -->
+                      [routerLink] ="['/profissional-apuracao', apuracao.codigo]">                      
                       Detalhes 
               </button>
-              <!-- <button mat-button                     
-                      aria-label="Apagar a apuração"
-                      color="primary"
-                      (click)="apagarApuracao(apuracao.codigo)"
-                      [disabled]="apuracao.dataBaixa == null ? false : true"
-                      >
-                      Apagar
-              </button> -->
+           
               <button mat-button                     
                       aria-label="Gerar o extrato"
                       color="primary"                     

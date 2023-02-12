@@ -1,6 +1,5 @@
-import { ProfissionalComponent } from './profissional/profissional.component';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, CanActivate } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './auth-guard/auth-guard';
 import { HomeComponent } from './home/home.component';
@@ -116,6 +115,12 @@ const routes: Routes = [
       canActivate:[AuthGuard],
       canLoad: [AuthGuard]
   },
+  {
+    path:'caixa',
+      loadChildren:()=>import('./caixa/caixa.module').then(mod=>mod.CaixaModule),
+      canActivate:[AuthGuard],
+      canLoad:[AuthGuard]
+  }, 
   { path: '', redirectTo: '/home', pathMatch: 'full'},
   { path: '**', component: PaginaNaoEncontradaComponent }
 ];

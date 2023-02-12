@@ -11,12 +11,21 @@
           <div *ngIf="mostrarMenu">        
             <button mat-button [routerLink]="['/home']"> &nbsp; <i class ="material-icons right">home</i>Home</button>    
             <button mat-button [matMenuTriggerFor]="Cadastro" > &nbsp; <i class ="material-icons right">app_registration</i>Cadastro-Geral</button>
+            <button mat-button [matMenuTriggerFor]="Financeiro" > &nbsp; <i class ="material-icons right">monetization_on</i>Finaceiro</button>
             <button mat-button [matMenuTriggerFor]="Agenda" > &nbsp; <i class ="material-icons right">calendar_month</i>Agenda</button>
             <button mat-button [matMenuTriggerFor]="Venda" > &nbsp; <i class ="material-icons right">point_of_sale</i>Vendas</button>
             <button mat-button [routerLink]="['/reports']" > &nbsp; <i class ="material-icons right">report</i>Relatorios</button>        
             <mat-menu #Agenda="matMenu">
               <button mat-menu-item [routerLink]="['agenda']"><i class ="material-icons right">event_note</i> Agendamento</button>            
-            </mat-menu>            
+            </mat-menu>   
+            <mat-menu #Financeiro ="matMenu">
+              <button mat-menu-item [matMenuTriggerFor]="Caixa" ><i class ="material-icons right">account_balance_wallet</i>Caixa</button>               
+              
+            </mat-menu>       
+            <mat-menu #Caixa="matMenu">
+               <button mat-menu-item [routerLink]="['caixa']"><i class ="material-icons right">open_in_new</i>Caixa</button> 
+              
+            </mat-menu>
             <mat-menu #Venda="matMenu">
               <button mat-menu-item [routerLink]="['pedido']" ><i class ="material-icons right">point_of_sale</i>Pedido</button>
               <mat-divider></mat-divider>
