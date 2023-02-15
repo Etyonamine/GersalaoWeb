@@ -1,3 +1,5 @@
+import { CaixaDetalhe } from "./caixa-detalhe";
+
 export class Caixa{
     codigo: number;
     dataAbertura: Date;
@@ -7,4 +9,5 @@ export class Caixa{
     valorInicial:number;
     valorFinal: number;    
     observacao: string;
+    caixaDetalhe: CaixaDetalhe[];
 }
