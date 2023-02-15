@@ -62,7 +62,8 @@
                 </div>
                 <div class="form-group mat-container">
                     <!--Tabela de valores encontrados-->
-                    <table [class.mat-elevation-z8]="true" >                        
+                    <table mat-table [dataSource]="listaDetalhes" class="mat-elevation-z8" matSort (matSortChange)="loadData()"
+                    matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}" >                        
                         <thead>
                             <tr>
                                 <td>Tipo Lan&ccedil;amento</td>
