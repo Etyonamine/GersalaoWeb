@@ -1,0 +1,49 @@
+<div class="container">
+
+
+<h2 mat-dialog-title class="titulo">Caixa - Lan&ccedil;amento manual</h2>
+<mat-dialog-content class="mat-typography">
+    <div class="titulo">
+        <h3 class="container">Informa&ccedil;&atilde;o</h3>
+    </div>
+    <mat-divider></mat-divider>    
+    <div>
+        <label id="example-radio-group-label">Tipo de lançamento manual</label>
+    </div>    
+    <div>
+        
+        <mat-radio-group aria-label="Selecione o tipo de lançamento" [(ngModel)]="codigoTipoEntrada">
+            <mat-radio-button value="1" [checked]="true">Entrada</mat-radio-button>
+            <mat-radio-button value="2">Sa&iacute;da</mat-radio-button>
+        </mat-radio-group>
+         
+    </div>
+    <div class="container">
+        
+        <mat-form-field appearance="fill" style="width: 150px" class="AlinharValores">
+            <mat-label>Valor</mat-label>
+            <input matInput matTooltip="valor do lançamento" [(ngModel)]="valor"
+                (keypress)="allowNumericDigitsOnlyOnKeyUp($event)" required/>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="campoObservacao">
+            <mat-label>Motivo de lan&ccedil;amento manual</mat-label>
+            <textarea matInput #message maxlength="300" placeholder="Digite uma observação" cdkTextareaAutosize
+                [(ngModel)]="descricao" required>
+                </textarea>
+            <mat-hint align="start"><strong>Por favor, digite apenas a quantidade permitida.</strong>
+            </mat-hint>
+            <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
+        </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-raised-button="Salvar o registro" color="primary" (click)="salvarRegistro()">
+        Salvar &nbsp;<mat-icon>save</mat-icon>
+    </button>
+    <button mat-raised-button="Retornar" color="primary" mat-dialog-close>
+        Retornar<mat-icon>reply</mat-icon>
+    </button>
+</mat-dialog-actions>
+</div>

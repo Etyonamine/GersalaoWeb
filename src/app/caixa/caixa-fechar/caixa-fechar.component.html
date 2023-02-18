@@ -46,10 +46,12 @@
                 <div class="form-group mat-container">
                     <mat-form-field appearance="fill"  class="campoValor">
                         <mat-label>Valor Final</mat-label>
-                        <input matInput disabled formControlName="valorFinal"  
+                        <input matInput disabled  
                                placeholder="0.000,00"
-                                (keypress)="allowNumericDigitsOnlyOnKeyUp($event)" 
-                               required readonly/>
+                                (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"                                
+                                value="{{ valorFinal | currency }}"
+                               readonly
+                               />
                     </mat-form-field>     
                      <!-- Observacao do fechamento-->
                      <mat-form-field appearance="fill" class="campoObservacao">
@@ -64,21 +66,36 @@
                     <!--Tabela de valores encontrados-->
                     <table mat-table [dataSource]="listaDetalhes" class="mat-elevation-z8" matSort (matSortChange)="loadData()"
                     matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}" >                        
-                        <thead>
-                            <tr>
-                                <td>Tipo Lan&ccedil;amento</td>
-                                <td>Valor</td>
-                            </tr>
-                        </thead>  
-                        <tbody>
-                            <tr>
-                                <td>x</td>
-                                <td>23,00</td>
-                            </tr>
-                        </tbody>                                       
+                        <ng-container matColumnDef="tipo">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo-Lan&ccedil;amento</mat-header-cell>
+                            <mat-cell *matCellDef="let caixaDetalhe"> {{ caixaDetalhe.caixaTipoLancamento.descricao }} </mat-cell>
+                        </ng-container>  
+                        <ng-container matColumnDef="valor">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Valor-Total</mat-header-cell>
+                            <mat-cell *matCellDef="let caixaDetalhe" class="AlinharValores"> {{ caixaDetalhe.valor | currency }} </mat-cell>
+                        </ng-container>  
+                        <ng-container matColumnDef="observacao">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header>Observa&ccedil;&atilde;o</mat-header-cell>
+                            <mat-cell *matCellDef="let caixaDetalhe"> {{ caixaDetalhe.observacao }} </mat-cell>
+                        </ng-container>  
+                        <ng-container matColumnDef="acao">
+                            <mat-header-cell *matHeaderCellDef> Ação </mat-header-cell>
+                            <mat-cell *matCellDef="let caixa">    
+                              <a mat-mini-fab  color ="primary" aria-label = "Fechamento de caixa" [disabled]="caixa.codigoTipoLancamento !=3 "><mat-icon>delete</mat-icon></a>
+                              &nbsp;
+                            </mat-cell>
+                          </ng-container>
+                        <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: colunas"></mat-row>                          
                     </table>
+                    <mat-paginator (page)="getData($event)" [length]="20" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+                        showFirstLastButtons>
+                    </mat-paginator>
                 </div>
                 <div>
+                    <button mat-raised-button   class="botaoFechar" (click)="openDialogLancamentoManual()" >
+                        Lan&ccedil;amento manual &nbsp;<i class="material-icons right">add</i>
+                    </button>
                     <button mat-raised-button   class="botaoFechar" [disabled]="!formulario.valid">
                         Fechar &nbsp;<i class="material-icons right">done</i>
                     </button>

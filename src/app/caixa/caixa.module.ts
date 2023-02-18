@@ -6,9 +6,10 @@ import { CaixaAbrirComponent } from './caixa-abrir/caixa-abrir.component';
 import { CaixaComponent } from './caixa.component';
 import { CaixaFecharComponent } from './caixa-fechar/caixa-fechar.component';
 import { CaixaRoutingModule } from './caixa-routing.module';
+import { CaixaLancamentoManualComponent } from './caixa-lancamento-manual/caixa-lancamento-manual.component';
 @NgModule({
   declarations: [    
-    CaixaAbrirComponent, CaixaComponent, CaixaFecharComponent
+    CaixaAbrirComponent, CaixaComponent, CaixaFecharComponent, CaixaLancamentoManualComponent
   ],
   imports: [
     CommonModule,
