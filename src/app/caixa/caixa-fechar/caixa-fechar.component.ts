@@ -5,7 +5,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, SubscribableOrPromise, Subscription } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
 import { AgendaServicoPagamentoEstorno } from 'src/app/agenda-estorno/agenda-servico-pagamento-estorno';
 import { AgendaServicoPagamentoEstornoService } from 'src/app/agenda-estorno/agenda-servico-pagamento-estorno.service';
 import { AgendaPagamentoService } from 'src/app/agenda-pagamento/agenda-pagamento.service';
@@ -13,6 +13,7 @@ import { AuthService } from 'src/app/auth-guard/auth.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
+import { CaixaTipoLancamentoStatus } from 'src/app/shared/enum/caixa/caixa-tipo-lancamento-status';
 import { Caixa } from '../caixa';
 import { CaixaDetalhe } from '../caixa-detalhe';
 import { CaixaLancamentoManualIn } from '../caixa-lancamento-manual/caixa-lancamento-manual-in';
@@ -28,27 +29,28 @@ import { CaixaDetalhePrevia } from './caixa-detalhe-previa';
   styleUrls: ['./caixa-fechar.component.scss']
 })
 export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
- 
+
   caixa: Caixa;
   listaDetalhes: MatTableDataSource<CaixaDetalhe>;
-  listaTiposLancamentos: CaixaTipoLancamento[]=[];
-  listaPrevia: CaixaDetalhePrevia[];
+  listaTiposLancamentos: CaixaTipoLancamento[] = [];
+  listaPrevia:  CaixaDetalhePrevia[]=[];
+  listaPreviaBase : CaixaDetalhePrevia[]=[];
 
   listaPagamentosServicos: AgendaPagamentoService[];
   listaEstornosServicos: AgendaServicoPagamentoEstorno[];
 
-  colunasPrevia: string[] = [ "tipo", "valor"];
+  colunasPrevia: string[] = ['descricaoTipoLancamento', 'valorTotal'];
 
   defaultFilterColumn: string = "codigoTipoLancamento";
   filterQuery: string = null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;  
-  colunas: string[] = [ "tipo", "valor", "observacao","acao"];
+  @ViewChild(MatSort) sort: MatSort;
+  colunas: string[] = ["tipo", "valor", "observacao", "acao"];
   defaultPageIndex: number = 0;
   defaultPageSize: number = 10;
   public defaultSortColumn: string = "codigoTipoLancamento";
   public defaultSortOrder: string = "desc";
-  
+
 
 
   formulario: FormGroup;
@@ -61,45 +63,46 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
   codigoCaixa: number;
   codigoUsuario: number;
   caixaFechado: boolean = false;
-
-  valorFinal : number;
+  valorInicialCaixa: number;
+  valorFinal: number;
 
   constructor(private route: ActivatedRoute,
-              private formBuilder: FormBuilder,
-              private alertService: AlertService,
-              private router:Router,
-              private caixaDetalheService: CaixaDetalheService,
-              private caixaTipoDetalheService: CaixaTipoLancamentoService,
-              public dialog: MatDialog,
-              private authService: AuthService,
-              private agendaPagamentoService: AgendaPagamentoService,
-              private agendaPagamentoEstornoService: AgendaServicoPagamentoEstornoService) {
+    private formBuilder: FormBuilder,
+    private alertService: AlertService,
+    private router: Router,
+    private caixaDetalheService: CaixaDetalheService,
+    private caixaTipoDetalheService: CaixaTipoLancamentoService,
+    public dialog: MatDialog,
+    private authService: AuthService,
+    private agendaPagamentoService: AgendaPagamentoService,
+    private agendaPagamentoEstornoService: AgendaServicoPagamentoEstornoService) {
     super();
   }
-  ngOnInit(): void {
-    this.caixaFechado = false;
-    this.valorFinal = 0;
+  ngOnInit(): void {      
     this.caixa = this.route.snapshot.data['caixa'];    
     this.codigoCaixa = this.caixa.codigo;
+    this.valorFinal = this.caixa.valorInicial;
+    this.valorInicialCaixa  = this.caixa.valorInicial;
+    this.caixaFechado = this.caixa.dataFechamento === undefined ? true: false;  
     this.criacaoFormulario();
     this.listarTiposLancamentos();
-    this.loadData();      
+    this.loadData();
     this.authService.getUserData();
     this.codigoUsuario = Number.parseInt(this.authService.usuarioLogado.codigo);
-
-
-  }  
-  ngOnDestroy():void{
-    if (this.inscricao$){
+    
+    
+  }
+  ngOnDestroy(): void {
+    if (this.inscricao$) {
       this.inscricao$.unsubscribe();
     }
-    if (this.inscricaoTipo$){
+    if (this.inscricaoTipo$) {
       this.inscricaoTipo$.unsubscribe();
     }
-    if (this.inscricaoEstorno$){
+    if (this.inscricaoEstorno$) {
       this.inscricaoEstorno$.unsubscribe();
     }
-    if(this.inscricaoPagamento$){
+    if (this.inscricaoPagamento$) {
       this.inscricaoPagamento$.unsubscribe();
     }
   }
@@ -125,7 +128,7 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     var sortOrder = (this.sort) ? this.sort.direction : this.defaultSortOrder;
     var filterColumn = (this.filterQuery) ? this.defaultFilterColumn : null;
     var filterQuery = (this.filterQuery) ? this.filterQuery : null;
-    this.valorFinal = 0;
+    
 
     this.inscricao$ = this.caixaDetalheService.recuperarLista<ApiResult<any>>(
       this.codigoCaixa,
@@ -136,22 +139,24 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
       filterColumn,
       filterQuery
     ).subscribe(result => {
-      
-      let valorCalcular : number = 0;
+
+      let valorCalcular: number = 0;
       this.listaDetalhes = new MatTableDataSource<CaixaDetalhe>(result.data);
       this.listaDetalhes.data.forEach(element => {
-          valorCalcular = element.valor; 
-          element.caixaTipoLancamento = this.listaTiposLancamentos.find(x=>x.codigo == element.codigoTipoLancamento)
+        valorCalcular = element.valor;
+        element.caixaTipoLancamento = this.listaTiposLancamentos.find(x => x.codigo == element.codigoTipoLancamento)
 
-          if (element.codigoTipoLancamento === 2 || element.codigoTipoLancamento === 5 ){
-            valorCalcular = valorCalcular * (-1);
-          }
-          element.valor = valorCalcular;
-          this.calcularValorFinal(valorCalcular);
-      });
+        if (element.codigoTipoLancamento === 2 || element.codigoTipoLancamento === 5) {
+          valorCalcular = valorCalcular * (-1);
+        }
+        element.valor = valorCalcular;
+       
+      });      
       this.paginator.length = result.totalCount;
       this.paginator.pageIndex = result.pageIndex;
       this.paginator.pageSize = result.pageSize;
+
+      this.calcularValorFinal();
     }, error => {
       console.error(error);
       if (error.status !== 404) {
@@ -161,99 +166,156 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
       }
     });
   }
-  listarTiposLancamentos(){
+  listarTiposLancamentos() {
     this.inscricaoTipo$ = this.caixaTipoDetalheService.list<CaixaTipoLancamento[]>()
-                                                      .subscribe(result=>{
-                                                        this.listaTiposLancamentos = result;
-                                                      },error=>{
-                                                        console.log(error);
-                                                        this.handleError('Ocorreu um erro ao recuperar a lista de tipos.');
-                                                      });
-    
-  }   
-  criacaoFormulario() {
-    let codigoParam = 0;    
-    let observcaoParam : string = '';
-    let observcaoFechamentoParam : string = '';
+      .subscribe(result => {
+        this.listaTiposLancamentos = result;
+        if (!this.caixaFechado){
+          this.listarServicoPagamentos();
+          this.listarServicoEstorno();
+        }        
+      }, error => {
+        console.log(error);
+        this.handleError('Ocorreu um erro ao recuperar a lista de tipos.');
+      });
 
-    let dataAberturaParam: Date  = new Date() ;
+  }
+  criacaoFormulario() {
+    let codigoParam = 0;
+    let observcaoParam: string = '';
+    let observcaoFechamentoParam: string = '';
+
+    let dataAberturaParam: Date = new Date();
     let dataFechamentoParam: Date;
-    let valorInicialParam : number = 0;
- 
- 
-    if (this.caixa!== undefined){
+    let valorInicialParam: number = 0;
+
+
+    if (this.caixa !== undefined) {
 
       dataAberturaParam = new Date(this.caixa.dataAbertura.toString())
       codigoParam = this.caixa.codigo;
       valorInicialParam = this.caixa.valorInicial;
 
-      if (this.caixa.dataFechamento !== undefined && this.caixa.dataFechamento !== null){
+      if (this.caixa.dataFechamento !== undefined && this.caixa.dataFechamento !== null) {
         dataFechamentoParam = new Date(this.caixa.dataFechamento.toString());
         this.caixaFechado = true;
       }
-      if (this.caixa.observacao !== undefined && this.caixa.observacao!== null){
+      if (this.caixa.observacao !== undefined && this.caixa.observacao !== null) {
         observcaoParam = this.caixa.observacao.trim();
       }
-      if (this.caixa.observacaoFechamento !== undefined && this.caixa.observacaoFechamento!== null){
+      if (this.caixa.observacaoFechamento !== undefined && this.caixa.observacaoFechamento !== null) {
         observcaoFechamentoParam = this.caixa.observacaoFechamento.trim();
       }
     }
     this.formulario = this.formBuilder.group({
       codigo: [codigoParam],
       dataAbertura: [dataAberturaParam.toLocaleString()],
-      dataFechamento: [dataFechamentoParam !== undefined ? dataFechamentoParam.toLocaleString(): null],
-      valorInicial:[valorInicialParam, Validators.required],      
-      observacao:[observcaoParam],
+      dataFechamento: [dataFechamentoParam !== undefined ? dataFechamentoParam.toLocaleString() : null],
+      valorInicial: [valorInicialParam, Validators.required],
+      observacao: [observcaoParam],
       observacaoFechamento: [observcaoFechamentoParam]
     });
-  }   
-  allowNumericDigitsOnlyOnKeyUp(e) {		
-		const charCode = e.which ? e.which : e.keyCode;
-		if (charCode !== 190 && charCode !== 46 && charCode!==44){
-      if (charCode > 31  && (charCode < 48 || charCode > 57)) {
-        this.handleError("Por favor, informar apenas numeros e casas decimais");        
+  }
+  allowNumericDigitsOnlyOnKeyUp(e) {
+    const charCode = e.which ? e.which : e.keyCode;
+    if (charCode !== 190 && charCode !== 46 && charCode !== 44) {
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        this.handleError("Por favor, informar apenas numeros e casas decimais");
       }
-    }	 
-	}
-  handleError(msg:string){
+    }
+  }
+  handleError(msg: string) {
     this.alertService.mensagemErro(msg);
-  }  
-  handleSucesso(msg:string){
+  }
+  handleSucesso(msg: string) {
     this.alertService.mensagemSucesso(msg);
   }
-  retornar(){
+  retornar() {
     this.router.navigate(['/caixa']);
-  } 
-  calcularValorFinal(valorAdicionar: number){
-    let valorAtual =this.valorFinal;
-    valorAtual = valorAtual + valorAdicionar;
-    this.valorFinal = valorAtual;
-  } 
-  openDialogLancamentoManual(){
-    let ultimaSequencia : number = 1; 
-    if (this.listaDetalhes.data.length>0){
-      let maximaSequencia =  Math.max(...this.listaDetalhes.data.map(x=>x.numeroSequencia)) + 1;
+  }
+  calcularValorFinal() {
+    this.valorFinal = this.valorInicialCaixa 
+
+    //lancamentos do sistema
+    this.listaPrevia.forEach(previa=>{
+      this.valorFinal = this.valorFinal + previa.valorTotal;
+    });   
+    
+    //lancamentos manual
+    this.listaDetalhes.data.forEach(lancManual=>{
+      this.valorFinal = this.valorFinal + lancManual.valor;
+    });   
+  }
+  openDialogLancamentoManual() {
+    let ultimaSequencia: number = 1;
+    if (this.listaDetalhes.data.length > 0) {
+      let maximaSequencia = Math.max(...this.listaDetalhes.data.map(x => x.numeroSequencia)) + 1;
     }
     let data = {
-      codigoCaixa : this.codigoCaixa,
-      codigoUsuario : this.codigoUsuario, 
-      ultimoNumeroSequencia : ultimaSequencia
+      codigoCaixa: this.codigoCaixa,
+      codigoUsuario: this.codigoUsuario,
+      ultimoNumeroSequencia: ultimaSequencia
     } as CaixaLancamentoManualIn;
 
-     // montando o dialogo
-     const dialogRef = this.dialog.open(CaixaLancamentoManualComponent,
-      {width: '700px' , height: '900px;',
-        data : data               
+    // montando o dialogo
+    const dialogRef = this.dialog.open(CaixaLancamentoManualComponent,
+      {
+        width: '700px', height: '900px;',
+        data: data
       }
     );
-    dialogRef.afterClosed().subscribe(result=>{
+    dialogRef.afterClosed().subscribe(result => {
       this.loadData();
     });
   }
   submit() {
     throw new Error('Method not implemented.');
   }
-  listarServicoPagamentos(){
-    //this.inscricaoPagamento$ = this.agendaPagamentoService.
+  listarServicoPagamentos() {
+    let valorRetorno: number;
+    let descricaoTipoLancamento = this.listaTiposLancamentos.find(x => x.codigo == CaixaTipoLancamentoStatus.ClientesServicoRecebido).descricao;
+    let dataHoraParam = new Date(this.caixa.dataAbertura.toString());
+    this.inscricaoPagamento$ = this.agendaPagamentoService.recuperarVAlorRecebidoPorData( dataHoraParam)
+      .subscribe(result => {
+        valorRetorno = result;
+        if (valorRetorno > 0) {
+          this.listaPrevia.push({
+            codigoCaixaTipoLancamento: CaixaTipoLancamentoStatus.ClientesServicoRecebido,
+            valorTotal: valorRetorno,
+            descricaoTipoLancamento: descricaoTipoLancamento
+          } as CaixaDetalhePrevia);
+          this.calcularValorFinal();
+        }
+      }, error => {
+        this.handleError('Ocorreu um erro ao tentar recuperar a lista de pagamentos recebidos.');
+        console.log(error);
+      });
+  }
+  listarServicoEstorno() {
+    let valorRetorno: number;
+    let descricaoTipoLancamento = this.listaTiposLancamentos.find(x => x.codigo == CaixaTipoLancamentoStatus.ClientesServicoEstorno).descricao;
+    let dataHoraParam = new Date(this.caixa.dataAbertura.toString());
+    this.inscricaoEstorno$ = this.agendaPagamentoEstornoService.recuperarValorTotalPorData(dataHoraParam)
+      .subscribe(result => {
+        valorRetorno = result;
+        if (valorRetorno > 0) {
+          this.listaPrevia.push({
+            codigoCaixaTipoLancamento: CaixaTipoLancamentoStatus.ClientesServicoRecebido,
+            valorTotal: (valorRetorno * (-1)),
+            descricaoTipoLancamento: descricaoTipoLancamento
+          } as CaixaDetalhePrevia);
+          this.calcularValorFinal();
+        }
+      }, error => {
+        this.handleError('Ocorreu um erro ao tentar recuperar a lista de pagamentos recebidos.');
+        console.log(error);
+      });
+  }
+   /** Gets total da tabela de lançamento sistema. */
+   getTotalCost() {
+    return this.listaPrevia.map(t => t.valorTotal).reduce((acc, value) => acc + value, 0).toFixed(2);
+  }
+  getTotalLancManual() {
+    return this.listaDetalhes.data.map(t => t.valor).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
 }

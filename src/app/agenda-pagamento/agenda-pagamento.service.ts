@@ -25,8 +25,11 @@ export class AgendaPagamentoService extends BaseService<AgendaPagamento> {
     let urlEstornar = this.url + '/PagamentosEstornarPorAgenda?codigoAgenda=' + codigoAgenda;
     return this.http.get<AgendaPagamento[]>(urlEstornar).pipe(take(1));
   }
-  recuperarPagamentosStatusPagoPorData(dataHora:Date){
-    let urlPago = this.url + '/';
-    return this.http.get<AgendaPagamento[]>(urlPago).pipe(take(1));
+  recuperarVAlorRecebidoPorData(dataHora:Date){
+    let data_string = dataHora.toLocaleDateString().replace('/','-').replace('/','-');
+    let hora_string = dataHora.toLocaleTimeString();
+
+    let urlPago = this.url + '/ValorTotalRecebidoPorData/' + data_string + '/' + hora_string;
+    return this.http.get<number>(urlPago).pipe(take(1));
   }
 }
