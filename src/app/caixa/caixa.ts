@@ -9,5 +9,6 @@ export class Caixa{
     valorInicial:number;
     valorFinal: number;    
     observacao: string;
+    observacaoFechamento: string;
     caixaDetalhe: CaixaDetalhe[];
 }

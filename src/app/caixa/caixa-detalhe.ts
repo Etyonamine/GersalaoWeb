@@ -5,7 +5,7 @@ export class CaixaDetalhe{
     codigoTipoLancamento: number; 
     numeroSequencia: number;
     valor: number;
-    observacao: string;
+    observacao: string;    
     dataCadastro: Date;
     codigoUsuarioCadastro: number;
     caixaTipoLancamento: CaixaTipoLancamento

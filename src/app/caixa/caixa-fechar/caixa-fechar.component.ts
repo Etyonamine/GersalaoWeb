@@ -17,6 +17,7 @@ import { CaixaLancamentoManualComponent } from '../caixa-lancamento-manual/caixa
 import { CaixaTipoLancamento } from '../caixa-tipo-lancamento';
 import { CaixaTipoLancamentoService } from '../caixa-tipo-lancamento.service';
 import { CaixaDetalheService } from '../caixaDetalhe.service';
+import { CaixaDetalhePrevia } from './caixa-detalhe-previa';
 
 @Component({
   selector: 'app-caixa-fechar',
@@ -28,6 +29,12 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
   caixa: Caixa;
   listaDetalhes: MatTableDataSource<CaixaDetalhe>;
   listaTiposLancamentos: CaixaTipoLancamento[]=[];
+  listaPrevia: CaixaDetalhePrevia[];
+
+
+  colunasPrevia: string[] = [ "tipo", "valor"];
+
+
   defaultFilterColumn: string = "codigoTipoLancamento";
   filterQuery: string = null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -38,13 +45,16 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
   public defaultSortColumn: string = "codigoTipoLancamento";
   public defaultSortOrder: string = "desc";
   
+
+
   formulario: FormGroup;
 
   inscricao$: Subscription;
   inscricaoTipo$: Subscription;
   codigoCaixa: number;
   codigoUsuario: number;
-  
+  caixaFechado: boolean = false;
+
   valorFinal : number;
 
   constructor(private route: ActivatedRoute,
@@ -58,6 +68,7 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     super();
   }
   ngOnInit(): void {
+    this.caixaFechado = false;
     this.valorFinal = 0;
     this.caixa = this.route.snapshot.data['caixa'];    
     this.codigoCaixa = this.caixa.codigo;
@@ -98,6 +109,7 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     var sortOrder = (this.sort) ? this.sort.direction : this.defaultSortOrder;
     var filterColumn = (this.filterQuery) ? this.defaultFilterColumn : null;
     var filterQuery = (this.filterQuery) ? this.filterQuery : null;
+    this.valorFinal = 0;
 
     this.inscricao$ = this.caixaDetalheService.recuperarLista<ApiResult<any>>(
       this.codigoCaixa,
@@ -109,10 +121,17 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
       filterQuery
     ).subscribe(result => {
       
+      let valorCalcular : number = 0;
       this.listaDetalhes = new MatTableDataSource<CaixaDetalhe>(result.data);
       this.listaDetalhes.data.forEach(element => {
+          valorCalcular = element.valor; 
           element.caixaTipoLancamento = this.listaTiposLancamentos.find(x=>x.codigo == element.codigoTipoLancamento)
-          this.calcularValorFinal(element.valor);
+
+          if (element.codigoTipoLancamento === 2 || element.codigoTipoLancamento === 5 ){
+            valorCalcular = valorCalcular * (-1);
+          }
+          element.valor = valorCalcular;
+          this.calcularValorFinal(valorCalcular);
       });
       this.paginator.length = result.totalCount;
       this.paginator.pageIndex = result.pageIndex;
@@ -139,23 +158,37 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
   criacaoFormulario() {
     let codigoParam = 0;    
     let observcaoParam : string = '';
-    let dataAberturaParam: Date  = new Date() ;
-    let valorInicialParam : number = 0;
+    let observcaoFechamentoParam : string = '';
 
-    if (this.caixa!== undefined && (this.caixa.observacao !== undefined && this.caixa.observacao!== null) ){
-      observcaoParam = this.caixa.observacao.trim();
-    }
+    let dataAberturaParam: Date  = new Date() ;
+    let dataFechamentoParam: Date;
+    let valorInicialParam : number = 0;
+ 
+ 
     if (this.caixa!== undefined){
+
       dataAberturaParam = new Date(this.caixa.dataAbertura.toString())
       codigoParam = this.caixa.codigo;
       valorInicialParam = this.caixa.valorInicial;
+
+      if (this.caixa.dataFechamento !== undefined && this.caixa.dataFechamento !== null){
+        dataFechamentoParam = new Date(this.caixa.dataFechamento.toString());
+        this.caixaFechado = true;
+      }
+      if (this.caixa.observacao !== undefined && this.caixa.observacao!== null){
+        observcaoParam = this.caixa.observacao.trim();
+      }
+      if (this.caixa.observacaoFechamento !== undefined && this.caixa.observacaoFechamento!== null){
+        observcaoFechamentoParam = this.caixa.observacaoFechamento.trim();
+      }
     }
     this.formulario = this.formBuilder.group({
       codigo: [codigoParam],
       dataAbertura: [dataAberturaParam.toLocaleString()],
+      dataFechamento: [dataFechamentoParam !== undefined ? dataFechamentoParam.toLocaleString(): null],
       valorInicial:[valorInicialParam, Validators.required],      
       observacao:[observcaoParam],
-      observacaoFechamento: [ null]
+      observacaoFechamento: [observcaoFechamentoParam]
     });
   }   
   allowNumericDigitsOnlyOnKeyUp(e) {		

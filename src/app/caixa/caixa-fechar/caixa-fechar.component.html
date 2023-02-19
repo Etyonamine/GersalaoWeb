@@ -44,9 +44,14 @@
                     <mat-divider></mat-divider>
                 </div>
                 <div class="form-group mat-container">
+                    <!-- Data e Hora-->
+                    <mat-form-field appearance="fill" class="camposAbertura" >
+                        <mat-label>Data\Hora</mat-label>
+                        <input matInput disabled formControlName="dataFechamento" readonly/>
+                    </mat-form-field>
                     <mat-form-field appearance="fill"  class="campoValor">
                         <mat-label>Valor Final</mat-label>
-                        <input matInput disabled  
+                        <input matInput   
                                placeholder="0.000,00"
                                 (keypress)="allowNumericDigitsOnlyOnKeyUp($event)"                                
                                 value="{{ valorFinal | currency }}"
@@ -54,13 +59,34 @@
                                />
                     </mat-form-field>     
                      <!-- Observacao do fechamento-->
-                     <mat-form-field appearance="fill" class="campoObservacao">
+                     <mat-form-field appearance="fill" class="campoFechamento">
                         <mat-label>Observa&ccedil;&atilde;o do fechamento</mat-label>
                         <textarea matInput #message maxlength="300" placeholder="Digite uma observação"
                             cdkTextareaAutosize formControlName="observacaoFechamento" 
                             >
                             </textarea>                          
                     </mat-form-field>
+                </div>
+                <div *ngIf="listaPrevia" class="form-group mat-container">
+                    <mat-divider></mat-divider>
+                    
+                        <!--Tabela de valores prévia -->
+                        <table mat-table [dataSource]="listaPrevia" class="mat-elevation-z8" matSort (matSortChange)="loadData()"
+                        matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}" >                        
+                            <ng-container matColumnDef="tipo">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo-Lan&ccedil;amento</mat-header-cell>
+                                <mat-cell *matCellDef="let caixaDetalhe"> {{ caixaDetalhe.caixaTipoLancamento.descricao }} </mat-cell>
+                            </ng-container>  
+                            <ng-container matColumnDef="valor">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>Valor-Total</mat-header-cell>
+                                <mat-cell *matCellDef="let caixaDetalhe" class="AlinharValores"> {{ caixaDetalhe.valor | currency }} </mat-cell>
+                            </ng-container>                         
+                            <mat-header-row *matHeaderRowDef="colunasPrevia"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: colunasPrevia"></mat-row>                          
+                        </table>
+    
+                       
+                    
                 </div>
                 <div class="form-group mat-container">
                     <!--Tabela de valores encontrados-->
@@ -81,10 +107,10 @@
                         <ng-container matColumnDef="acao">
                             <mat-header-cell *matHeaderCellDef> Ação </mat-header-cell>
                             <mat-cell *matCellDef="let caixa">    
-                              <a mat-mini-fab  color ="primary" aria-label = "Fechamento de caixa" [disabled]="caixa.codigoTipoLancamento !=3 "><mat-icon>delete</mat-icon></a>
-                              &nbsp;
+                            <a mat-mini-fab  color ="primary" aria-label = "Fechamento de caixa" [disabled]="caixa.codigoTipoLancamento !=3 || caixaFechado === true"><mat-icon>delete</mat-icon></a>
+                            &nbsp;
                             </mat-cell>
-                          </ng-container>
+                        </ng-container>
                         <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
                         <mat-row *matRowDef="let row; columns: colunas"></mat-row>                          
                     </table>
@@ -92,11 +118,14 @@
                         showFirstLastButtons>
                     </mat-paginator>
                 </div>
+                 
+                
+                <mat-divider></mat-divider>
                 <div>
-                    <button mat-raised-button   class="botaoFechar" (click)="openDialogLancamentoManual()" >
+                    <button mat-raised-button   class="botaoFechar" (click)="openDialogLancamentoManual()" [disabled]="caixaFechado === true">
                         Lan&ccedil;amento manual &nbsp;<i class="material-icons right">add</i>
                     </button>
-                    <button mat-raised-button   class="botaoFechar" [disabled]="!formulario.valid">
+                    <button mat-raised-button   class="botaoFechar" [disabled]="!formulario.valid || caixaFechado === true">
                         Fechar &nbsp;<i class="material-icons right">done</i>
                     </button>
                     <button type="button" mat-raised-button color = "primary"(click)="retornar()">
