@@ -5,7 +5,10 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY, Subscription } from 'rxjs';
+import { EMPTY, SubscribableOrPromise, Subscription } from 'rxjs';
+import { AgendaServicoPagamentoEstorno } from 'src/app/agenda-estorno/agenda-servico-pagamento-estorno';
+import { AgendaServicoPagamentoEstornoService } from 'src/app/agenda-estorno/agenda-servico-pagamento-estorno.service';
+import { AgendaPagamentoService } from 'src/app/agenda-pagamento/agenda-pagamento.service';
 import { AuthService } from 'src/app/auth-guard/auth.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
@@ -31,9 +34,10 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
   listaTiposLancamentos: CaixaTipoLancamento[]=[];
   listaPrevia: CaixaDetalhePrevia[];
 
+  listaPagamentosServicos: AgendaPagamentoService[];
+  listaEstornosServicos: AgendaServicoPagamentoEstorno[];
 
   colunasPrevia: string[] = [ "tipo", "valor"];
-
 
   defaultFilterColumn: string = "codigoTipoLancamento";
   filterQuery: string = null;
@@ -51,6 +55,9 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
 
   inscricao$: Subscription;
   inscricaoTipo$: Subscription;
+  inscricaoPagamento$: Subscription;
+  inscricaoEstorno$: Subscription;
+
   codigoCaixa: number;
   codigoUsuario: number;
   caixaFechado: boolean = false;
@@ -64,7 +71,9 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
               private caixaDetalheService: CaixaDetalheService,
               private caixaTipoDetalheService: CaixaTipoLancamentoService,
               public dialog: MatDialog,
-              private authService: AuthService) {
+              private authService: AuthService,
+              private agendaPagamentoService: AgendaPagamentoService,
+              private agendaPagamentoEstornoService: AgendaServicoPagamentoEstornoService) {
     super();
   }
   ngOnInit(): void {
@@ -78,6 +87,7 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     this.authService.getUserData();
     this.codigoUsuario = Number.parseInt(this.authService.usuarioLogado.codigo);
 
+
   }  
   ngOnDestroy():void{
     if (this.inscricao$){
@@ -85,6 +95,12 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     }
     if (this.inscricaoTipo$){
       this.inscricaoTipo$.unsubscribe();
+    }
+    if (this.inscricaoEstorno$){
+      this.inscricaoEstorno$.unsubscribe();
+    }
+    if(this.inscricaoPagamento$){
+      this.inscricaoPagamento$.unsubscribe();
     }
   }
   loadData(query: string = null) {
@@ -236,5 +252,8 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
   }
   submit() {
     throw new Error('Method not implemented.');
+  }
+  listarServicoPagamentos(){
+    //this.inscricaoPagamento$ = this.agendaPagamentoService.
   }
 }
