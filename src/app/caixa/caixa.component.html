@@ -9,7 +9,7 @@
     </div>
     <div>
       <table mat-table [dataSource]="lista" class="mat-elevation-z8" matSort (matSortChange)="loadData()"
-        matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+        matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}" [hidden]="!lista">
         <ng-container matColumnDef="codigo">
           <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
           <mat-cell *matCellDef="let caixa"> {{ caixa.codigo }} </mat-cell>
@@ -18,9 +18,17 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header>Abertura</mat-header-cell>
           <mat-cell *matCellDef="let caixa"> {{ caixa.dataAbertura | date : "dd/MM/yyyy HH:mm:ss" }} </mat-cell>
         </ng-container>
+        <ng-container matColumnDef="usuarioAbertura">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Usuário-Abertura</mat-header-cell>
+          <mat-cell *matCellDef="let caixa"> {{ caixa.usuarioAbertura == undefined ? ' ':  caixa.usuarioAbertura.nome }} </mat-cell>
+        </ng-container>
         <ng-container matColumnDef="dataFechamento">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Fechamento</mat-header-cell>
-          <mat-cell *matCellDef="let caixa"> {{ caixa.dataFechamento | date : "dd/MM/yyyy" }} </mat-cell>
+          <mat-cell *matCellDef="let caixa"> {{ caixa.dataFechamento | date : "dd/MM/yyyy HH:mm:ss" }} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="usuarioFechamento">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Usuário-Fechamento</mat-header-cell>
+          <mat-cell *matCellDef="let caixa"> {{ caixa.usuarioFechamento == undefined? " ": caixa.usuarioFechamento.nome }} </mat-cell>
         </ng-container>
         <ng-container matColumnDef="valorInicial">
           <mat-header-cell *matHeaderCellDef mat-sort-header>Valor Inicial</mat-header-cell>

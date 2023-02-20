@@ -5,6 +5,7 @@ import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { BaseService } from '../shared/base.service';
 import { CaixaDetalhe } from './caixa-detalhe';
+import { CaixaDetalheExcluirIn } from './caixa-detalhe-excluir-in';
 import { CaixaDetalheIn } from './caixa-detalhe-in';
 
 @Injectable({
@@ -46,5 +47,10 @@ export class CaixaDetalheService extends BaseService<CaixaDetalhe> {
   }
   fecharCaixa(caixaDetalheIn:CaixaDetalheIn){
     return this.http.post<boolean>(this.url,caixaDetalheIn ).pipe(take(1));
+  }
+  excluir(caixadetalheExcluirIn: CaixaDetalheExcluirIn ){
+    let urlExcluir = this.url + '/' + caixadetalheExcluirIn.codigoCaixa + '/' + caixadetalheExcluirIn.numeroSequencia + '/' + caixadetalheExcluirIn.codigoUsuario;
+
+    return this.http.delete<boolean>(urlExcluir).pipe(take(1));
   }
 }

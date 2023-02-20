@@ -18,9 +18,12 @@
                     <!-- Data e Hora-->
                     <mat-form-field appearance="fill" class="camposAbertura">
                         <mat-label>Data\Hora</mat-label>
-                        <input matInput disabled formControlName="dataAbertura" readonly />
+                        <input matInput readonly formControlName="dataAbertura" readonly />
                     </mat-form-field>
-
+                    <mat-form-field appearance="fill">
+                        <mat-label>Usu&aacute;rio</mat-label>
+                        <input matInput readonly [value]="nomeUsuarioAbertura"/>
+                    </mat-form-field>
                     <!-- valor inicial-->
                     <mat-form-field appearance="fill" class="campoValorInicial">
                         <mat-label>Valor Inicial</mat-label>
@@ -45,7 +48,11 @@
                     <!-- Data e Hora-->
                     <mat-form-field appearance="fill" class="camposAbertura">
                         <mat-label>Data\Hora</mat-label>
-                        <input matInput disabled formControlName="dataFechamento" readonly />
+                        <input matInput readonly formControlName="dataFechamento" readonly />
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Usu&aacute;rio</mat-label>
+                        <input matInput readonly [value]="nomeUsuarioFechamento"/>
                     </mat-form-field>
                     <mat-form-field appearance="fill" class="campoValor">
                         <mat-label>Valor Final (Inicial + lanc. sistema + lanc. manual)</mat-label>
@@ -64,7 +71,7 @@
 
                 <mat-divider></mat-divider>
                 <div>
-                    <button mat-raised-button class="botaoFechar" (click)="openDialogLancamentoManual()"
+                    <button mat-raised-button class="botaoFechar" type="button" (click)="openDialogLancamentoManual()"
                         [disabled]="caixaFechado === true">
                         Lan&ccedil;amento manual &nbsp;<i class="material-icons right">add</i>
                     </button>
@@ -79,12 +86,11 @@
                 <mat-divider></mat-divider>
                 <!--titulo da previa-->
                 <div>
-                    <mat-card-subtitle class="tituloLancamentos">Informa&ccedil;&otilde;es de lançamentos - sistema
+                    <mat-card-subtitle class="tituloLancamentos">Informa&ccedil;&otilde;es de lançamentos - pr&eacute;via do sistema
                     </mat-card-subtitle>
                 </div>
                 <!--Tabela de valores prévia -->
                 <div>
-
                     <table class="tabelaPrevia">
                         <thead>
                             <tr>

@@ -16,8 +16,11 @@ import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { ApiResult } from 'src/app/shared/base.service';
 import { CaixaTipoLancamentoStatus } from 'src/app/shared/enum/caixa/caixa-tipo-lancamento-status';
+import { Usuario } from 'src/app/usuario/usuario';
+import { UsuarioService } from 'src/app/usuario/usuario.service';
 import { Caixa } from '../caixa';
 import { CaixaDetalhe } from '../caixa-detalhe';
+import { CaixaDetalheExcluirIn } from '../caixa-detalhe-excluir-in';
 import { CaixaDetalheIn } from '../caixa-detalhe-in';
 import { CaixaLancamentoManualIn } from '../caixa-lancamento-manual/caixa-lancamento-manual-in';
 import { CaixaLancamentoManualComponent } from '../caixa-lancamento-manual/caixa-lancamento-manual.component';
@@ -68,7 +71,11 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
   caixaFechado: boolean = false;
   valorInicialCaixa: number;
   valorFinal: number;
+  nomeUsuarioAbertura: string;
+  nomeUsuarioFechamento: string;
 
+  listaUsuarios: Usuario[]=[];
+  
   constructor(private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private alertService: AlertService,
@@ -78,10 +85,14 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     public dialog: MatDialog,
     private authService: AuthService,
     private agendaPagamentoService: AgendaPagamentoService,
-    private agendaPagamentoEstornoService: AgendaServicoPagamentoEstornoService) {
+    private agendaPagamentoEstornoService: AgendaServicoPagamentoEstornoService,
+    private usuarioService: UsuarioService) {
     super();
   }
-  ngOnInit(): void {      
+  ngOnInit(): void {   
+    this.nomeUsuarioAbertura = '';
+    this.nomeUsuarioFechamento = '';
+    
     this.caixa = this.route.snapshot.data['caixa'];    
     this.codigoCaixa = this.caixa.codigo;
     this.valorFinal = this.caixa.valorInicial;
@@ -92,8 +103,7 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     this.loadData();
     this.authService.getUserData();
     this.codigoUsuario = Number.parseInt(this.authService.usuarioLogado.codigo);
-    
-    
+    this.recuperarListaUsuarios();    
   }
   ngOnDestroy(): void {
     if (this.inscricao$) {
@@ -126,6 +136,10 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     this.getData(pageEvent);
 
   }
+  identificarNomesUsuarios(){
+    this.nomeUsuarioAbertura = this.listaUsuarios.find(x=>x.codigo == this.caixa.codigoUsuarioAbertura).nome;
+    this.nomeUsuarioFechamento = this.listaUsuarios.find(x=>x.codigo == this.caixa.codigoUsuarioFechamento).nome;
+  }
   getData(event: PageEvent) {
     var sortColumn = (this.sort) ? this.sort.active : this.defaultSortColumn;
     var sortOrder = (this.sort) ? this.sort.direction : this.defaultSortOrder;
@@ -153,8 +167,7 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
         if (element.codigoTipoLancamento === 2 || element.codigoTipoLancamento === 5) {
           valorCalcular = valorCalcular * (-1);
         }
-        element.valor = valorCalcular;
-       
+        element.valor = valorCalcular;       
       });           
       
       if (this.paginator!== undefined){
@@ -174,6 +187,16 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
         return EMPTY;
       }
     });
+  }
+  recuperarListaUsuarios(){
+    this.inscricao$ = this.usuarioService.listarTodos()
+                                        .subscribe(result=>{
+                                            this.listaUsuarios = result;
+                                            this.identificarNomesUsuarios();
+                                        },error=>{
+                                          console.log(error);
+                                          this.handleError('Ocorreu um erro ao recuperar a lista de usuarios.');
+                                        })
   }
   listarTiposLancamentos() {
     this.inscricaoTipo$ = this.caixaTipoDetalheService.list<CaixaTipoLancamento[]>()
@@ -285,6 +308,24 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar a exclusão do lançamento manual?', 'Excluir o registro', (resposta: boolean) => {
       if (resposta)       
       {
+        let caixaDetalheExcluirIn = {
+          codigoCaixa: this.caixa.codigo,
+          numeroSequencia : numeroSequencia,
+          codigoUsuario : this.codigoUsuario
+        } as CaixaDetalheExcluirIn;
+
+        this.inscricao$ = this.caixaDetalheService.excluir(caixaDetalheExcluirIn)
+                                                  .subscribe(result=>{
+                                                    if (result){
+                                                      this.handleSucesso('Lançamento manual excluído com sucesso!');
+                                                      this.loadData();
+                                                    }else{
+                                                      this.handleError('Ocorreu o erro excluir o lançamento manual.');  
+                                                    }
+                                                  },error=>{
+                                                    console.log(error);
+                                                    this.handleError('Ocorreu o erro excluir o lançamento manual.');
+                                                  })
       }}, 'Sim', 'Não'
       );
   }

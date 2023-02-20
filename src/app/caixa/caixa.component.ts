@@ -1,10 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ThisReceiver, ThrowStmt } from '@angular/compiler';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { element } from 'protractor';
 import { EMPTY, Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { ApiResult } from '../shared/base.service';
+import { Usuario } from '../usuario/usuario';
+import { UsuarioService } from '../usuario/usuario.service';
 import { Caixa } from './caixa';
 import { CaixaService } from './caixa.service';
 
@@ -13,28 +17,40 @@ import { CaixaService } from './caixa.service';
   templateUrl: './caixa.component.html',
   styleUrls: ['./caixa.component.scss']
 })
-export class CaixaComponent implements OnInit {
+export class CaixaComponent implements OnInit, OnDestroy {
 
   //*************************estrutura da tabela *************** *//
   lista: MatTableDataSource<Caixa>;
   defaultFilterColumn: string = "dataAbertura";
   filterQuery: string = null;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;  
-  colunas: string[] = [ "codigo", "dataAbertura", "dataFechamento", "valorInicial", "valorFinal" ,"acao"];
+  @ViewChild(MatSort) sort: MatSort;
+  colunas: string[] = ["codigo", "dataAbertura","usuarioAbertura", "dataFechamento", "usuarioFechamento", "valorInicial", "valorFinal", "acao"];
   defaultPageIndex: number = 0;
   defaultPageSize: number = 10;
   public defaultSortColumn: string = "dataAbertura";
   public defaultSortOrder: string = "desc";
 
-  inscricao$: Subscription;  
+  inscricao$: Subscription;
+  inscricaoUsuario$: Subscription;
 
-   
+  listaUsuarios: Usuario[] = [];
+
   constructor(private caixaService: CaixaService,
-              private alertService: AlertService) { }
+    private alertService: AlertService,
+    private usuarioService: UsuarioService) { }
 
   ngOnInit(): void {
+    this.recuperarUsuarios();
     this.loadData();
+  }
+  ngOnDestroy(): void {
+    if (this.inscricao$) {
+      this.inscricao$.unsubscribe();
+    }
+    if (this.inscricaoUsuario$) {
+      this.inscricaoUsuario$.unsubscribe();
+    }
   }
   loadData(query: string = null) {
     var pageEvent = new PageEvent();
@@ -67,9 +83,18 @@ export class CaixaComponent implements OnInit {
       filterColumn,
       filterQuery
     ).subscribe(result => {
-      
+
       this.lista = new MatTableDataSource<Caixa>(result.data);
-      
+      //atualizando os usuarios.
+      this.lista.data.forEach(element=>{
+        if(element.codigoUsuarioAbertura!== undefined){
+          element.usuarioAbertura = this.listaUsuarios.find(x=>x.codigo == element.codigoUsuarioAbertura);          
+        }
+        if(element.codigoUsuarioFechamento!== undefined){
+          element.usuarioFechamento = this.listaUsuarios.find(x=>x.codigo == element.codigoUsuarioFechamento);          
+        }
+      });
+
       this.paginator.length = result.totalCount;
       this.paginator.pageIndex = result.pageIndex;
       this.paginator.pageSize = result.pageSize;
@@ -82,7 +107,16 @@ export class CaixaComponent implements OnInit {
       }
     });
   }
-  handleError(msg:string){
+  handleError(msg: string) {
     this.alertService.mensagemErro(msg);
+  }
+  recuperarUsuarios() {
+    this.inscricaoUsuario$ = this.usuarioService.listarTodos()
+      .subscribe(result => {
+        this.listaUsuarios = result;
+      }, error => {
+        console.log(error);
+        this.handleError('Ocorreu o erro ao recuperar informações do usuario.');
+      });
   }
 }

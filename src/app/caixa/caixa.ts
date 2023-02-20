@@ -1,3 +1,4 @@
+import { Usuario } from "../usuario/usuario";
 import { CaixaDetalhe } from "./caixa-detalhe";
 
 export class Caixa{
@@ -11,4 +12,6 @@ export class Caixa{
     observacao: string;
     observacaoFechamento: string;
     caixaDetalhe: CaixaDetalhe[];
+    usuarioAbertura: Usuario;
+    usuarioFechamento: Usuario;
 }
