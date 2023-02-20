@@ -67,10 +67,10 @@ table{
   border-style:solid; 
   border-color:#000000;    
 }
-tfoot{
+.tfoot {
   background-color: beige;  
   color: black;
-  font-weight: bold;
+  font-weight: bolder;
 }
 .mat-footer-cell {
   background-color: beige;  
@@ -82,11 +82,9 @@ th{
   color: white;
   
 }
-th, td {
+th{
   padding: 5px;      
-  font-weight: normal;
-
-  
+  font-weight: normal; 
 } 
 tr{
   border-bottom: 1px solid #ddd;
