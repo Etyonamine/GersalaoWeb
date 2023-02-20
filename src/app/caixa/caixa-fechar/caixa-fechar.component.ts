@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -16,6 +17,7 @@ import { ApiResult } from 'src/app/shared/base.service';
 import { CaixaTipoLancamentoStatus } from 'src/app/shared/enum/caixa/caixa-tipo-lancamento-status';
 import { Caixa } from '../caixa';
 import { CaixaDetalhe } from '../caixa-detalhe';
+import { CaixaDetalheIn } from '../caixa-detalhe-in';
 import { CaixaLancamentoManualIn } from '../caixa-lancamento-manual/caixa-lancamento-manual-in';
 import { CaixaLancamentoManualComponent } from '../caixa-lancamento-manual/caixa-lancamento-manual.component';
 import { CaixaTipoLancamento } from '../caixa-tipo-lancamento';
@@ -268,8 +270,39 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
       this.loadData();
     });
   }
+  apagarLancamentoManual(numeroSequencia: number){
+    this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar a exclusão do lançamento manual?', 'Excluir o registro', (resposta: boolean) => {
+      if (resposta)       
+      {
+      }}, 'Sim', 'Não'
+      );
+  }
   submit() {
-    throw new Error('Method not implemented.');
+    this.alertService.openConfirmModal('Por favor, confirmar se deseja continuar o fechamento do caixa?', 'Salvar registro', (resposta: boolean) => {
+      if (resposta) 
+      {
+        let caixaDetalheIn = {
+          codigoCaixa: this.caixa.codigo,
+          codigoUsuario: this.codigoUsuario
+        } as CaixaDetalheIn;
+
+        this.caixaDetalheService.fecharCaixa(caixaDetalheIn)
+                                .subscribe(result=>{
+                                  if(result){
+                                    this.handleSucesso('Caixa fechado com sucesso!');
+                                    this.caixaFechado = true;
+                                    setTimeout(() => {
+                                      this.retornar();  
+                                    }, 3000);
+                                    
+                                  }
+                                },error=>{
+                                  console.log(error);
+                                  this.handleError('Ocorreu um erro ao tentar fechar o caixa.');
+                                });
+
+      }}, 'Sim', 'Não'
+      );
   }
   listarServicoPagamentos() {
     let valorRetorno: number;

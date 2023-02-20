@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { ApiResult, BaseService } from '../shared/base.service';
-import { Caixa } from './caixa';
+import { BaseService } from '../shared/base.service';
 import { CaixaDetalhe } from './caixa-detalhe';
+import { CaixaDetalheIn } from './caixa-detalhe-in';
 
 @Injectable({
   providedIn: 'root'
@@ -43,5 +43,8 @@ export class CaixaDetalheService extends BaseService<CaixaDetalhe> {
             .set("filterQuery", filterQuery)            
         }
     return this.http.get<ApiResult>(this.url, { params }).pipe(take(1));
+  }
+  fecharCaixa(caixaDetalheIn:CaixaDetalheIn){
+    return this.http.post<boolean>(this.url,caixaDetalheIn ).pipe(take(1));
   }
 }

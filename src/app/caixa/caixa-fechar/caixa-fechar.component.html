@@ -154,9 +154,11 @@
                         </ng-container>
                         <ng-container matColumnDef="acao">
                             <mat-header-cell *matHeaderCellDef> Ação </mat-header-cell>
-                            <mat-cell *matCellDef="let caixa">
+                            <mat-cell *matCellDef="let caixaDetalhe">
                                 <a mat-mini-fab color="primary" aria-label="Fechamento de caixa"
-                                    [disabled]="caixa.codigoTipoLancamento !=3 || caixaFechado === true">
+                                    [disabled]="caixaDetalhe.codigoTipoLancamento !=3 || caixaFechado === true"
+                                    value ="{ caixaDetalhe.numeroSequencia }"
+                                    (click)="apagarLancamentoManual(caixaDetalhe.numeroSequencia)">
                                     <mat-icon>delete</mat-icon>
                                 </a>
                                 &nbsp;
