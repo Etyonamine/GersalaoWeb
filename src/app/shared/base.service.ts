@@ -57,6 +57,30 @@ export class BaseService<T> {
         }
     return this.http.get<ApiResult>(this.API_URL, { params }).pipe(take(1));
   }
+  getData3<ApiResult>(
+    codigo: number,
+    pageIndex: number,
+    pageSize: number,
+    sortColumn: string,
+    sortOrder: string,
+    filterColumn: string,
+    filterQuery: string): Observable<ApiResult> {
+
+
+        var params = new HttpParams()
+          .set("codigo", codigo.toString())
+          .set("pageIndex", pageIndex.toString())
+          .set("pageSize", pageSize.toString())
+          .set("sortColumn", sortColumn)
+          .set("sortOrder", sortOrder);
+
+        if (filterQuery) {
+          params = params
+            .set("filterColumn", filterColumn)
+            .set("filterQuery", filterQuery)            
+        }
+    return this.http.get<ApiResult>(this.API_URL, { params }).pipe(take(1));
+  }
   list<T>(): Observable<T>{
     return this.http.get<T>(this.API_URL).pipe(take(1));
   }

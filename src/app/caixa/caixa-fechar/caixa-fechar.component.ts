@@ -6,6 +6,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
+import { unwatchFile } from 'fs';
 import { EMPTY, Subscription } from 'rxjs';
 import { AgendaServicoPagamentoEstorno } from 'src/app/agenda-estorno/agenda-servico-pagamento-estorno';
 import { AgendaServicoPagamentoEstornoService } from 'src/app/agenda-estorno/agenda-servico-pagamento-estorno.service';
@@ -132,7 +133,7 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     var filterQuery = (this.filterQuery) ? this.filterQuery : null;
     
 
-    this.inscricao$ = this.caixaDetalheService.recuperarLista<ApiResult<any>>(
+    this.inscricao$ = this.caixaDetalheService.getData3<ApiResult<any>>(
       this.codigoCaixa,
       event.pageIndex,
       event.pageSize,
@@ -143,7 +144,8 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     ).subscribe(result => {
 
       let valorCalcular: number = 0;
-      this.listaDetalhes = new MatTableDataSource<CaixaDetalhe>(result.data);
+            
+      this.listaDetalhes = new MatTableDataSource<CaixaDetalhe>(result.data);      
       this.listaDetalhes.data.forEach(element => {
         valorCalcular = element.valor;
         element.caixaTipoLancamento = this.listaTiposLancamentos.find(x => x.codigo == element.codigoTipoLancamento)
@@ -153,12 +155,17 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
         }
         element.valor = valorCalcular;
        
-      });      
-      this.paginator.length = result.totalCount;
-      this.paginator.pageIndex = result.pageIndex;
-      this.paginator.pageSize = result.pageSize;
+      });           
+      
+      if (this.paginator!== undefined){
+        this.paginator.length = result.totalCount;
+        this.paginator.pageIndex = result.pageIndex;
+        this.paginator.pageSize = result.pageSize;
+      }
 
       this.calcularValorFinal();
+
+      
     }, error => {
       console.error(error);
       if (error.status !== 404) {
@@ -239,14 +246,18 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     this.valorFinal = this.valorInicialCaixa 
 
     //lancamentos do sistema
-    this.listaPrevia.forEach(previa=>{
-      this.valorFinal = this.valorFinal + previa.valorTotal;
-    });   
+    if(this.listaPrevia !== undefined){
+      this.listaPrevia.forEach(previa=>{
+        this.valorFinal = this.valorFinal + previa.valorTotal;
+      });   
+    }
     
     //lancamentos manual
-    this.listaDetalhes.data.forEach(lancManual=>{
-      this.valorFinal = this.valorFinal + lancManual.valor;
-    });   
+    if (this.listaDetalhes!== undefined){
+      this.listaDetalhes.data.forEach(lancManual=>{
+        this.valorFinal = this.valorFinal + lancManual.valor;
+      });   
+    }    
   }
   openDialogLancamentoManual() {
     let ultimaSequencia: number = 1;
@@ -349,6 +360,9 @@ export class CaixaFecharComponent extends BaseFormComponent implements OnInit {
     return this.listaPrevia.map(t => t.valorTotal).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
   getTotalLancManual() {
+    if (this.listaDetalhes === undefined){
+      return 0;
+    }
     return this.listaDetalhes.data.map(t => t.valor).reduce((acc, value) => acc + value, 0).toFixed(2);
   }
 }
