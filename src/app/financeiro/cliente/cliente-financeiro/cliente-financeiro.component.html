@@ -1,0 +1,32 @@
+<div class="container">
+    <mat-card>
+        <mat-card-title>Clientes - Pendentes de Pagamentos de Servi&ccedil;o(s)</mat-card-title>
+        <mat-card-content>
+            <table mat-table [dataSource]="lista" class="mat-elevation-z8" matSort (matSortChange)="loadData()"
+                matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+                <ng-container matColumnDef="codigoCliente">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+                    <mat-cell *matCellDef="let info"> {{ info.codigoCliente }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="nomeCliente">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Nome</mat-header-cell>
+                    <mat-cell *matCellDef="let info"> {{ info.nomeCliente }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="acao">
+                    <mat-header-cell *matHeaderCellDef> Ação </mat-header-cell>
+                    <mat-cell *matCellDef="let info">
+                        <a mat-mini-fab color="primary" aria-label="Detalhes" [routerLink]="['cliente-financeiro-detalhe', info.codigoCliente]">
+                            <mat-icon>details</mat-icon>
+                        </a>
+                        &nbsp;
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: colunas"></mat-row>
+            </table>
+            <mat-paginator (page)="getData($event)" [length]="20" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]"
+                showFirstLastButtons>
+            </mat-paginator>
+        </mat-card-content>
+    </mat-card>
+</div>

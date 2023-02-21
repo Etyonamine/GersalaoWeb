@@ -122,6 +122,12 @@ const routes: Routes = [
       canActivate:[AuthGuard],
       canLoad:[AuthGuard]
   },   
+  {
+    path:'cliente-financeiro',
+      loadChildren:()=>import('./financeiro/cliente/cliente-financeiro/cliente-financeiro.module').then(mod=>mod.ClienteFinanceiroModule),
+      canActivate:[AuthGuard],
+      canLoad:[AuthGuard]
+  },
   { path: '**', component: PaginaNaoEncontradaComponent }
 ];
 

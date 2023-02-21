@@ -49,7 +49,7 @@ import { ReportsModule } from './reports/reports.module';
 import { MotivoCancelamentoServicoModule} from './motivo-cancelamento-servico/motivo-cancelamento-servico.module';
 import { AgendaPagamentoModule} from './agenda-pagamento/agenda-pagamento.module';
 import { AgendaEstornoModule} from'./agenda-estorno/agenda-estorno.module';
- 
+import { ClienteFinanceiroDetalheComponent } from './financeiro/cliente/cliente-financeiro-detalhe/cliente-financeiro-detalhe.component';
 
 registerLocaleData(localePt,'pt');
 
@@ -61,7 +61,7 @@ registerLocaleData(localePt,'pt');
     HomeComponent,
     PaginaNaoEncontradaComponent,
     TwoDecimalNumberDirective,        
-    FornecedorComponent
+    FornecedorComponent, ClienteFinanceiroDetalheComponent
    ],
   imports: [
     BrowserModule,

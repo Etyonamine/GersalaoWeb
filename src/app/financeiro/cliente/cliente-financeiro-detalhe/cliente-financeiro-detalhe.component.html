@@ -1,0 +1,39 @@
+<div class="container">
+    <mat-card>
+        <mat-card-header>
+            <mat-card-title> Cliente - Pagamento Pendente - Detalhe</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>    
+            <mat-card-subtitle>Informa&ccedil;&otilde;es - Pend&ecirc;ncia</mat-card-subtitle>
+            <mat-divider></mat-divider>
+            <div class="container">
+                <mat-form-field appearance="fill"  class="codigo">
+                    <mat-label>C&oacute;digo</mat-label>
+                    <input matInput readonly [value]="codigoCliente" readonly />
+                </mat-form-field> 
+                <mat-form-field appearance="fill" class="nomeCliente">
+                    <mat-label>Nome</mat-label>
+                    <input matInput readonly [value]="cliente.nome" readonly />
+                </mat-form-field>     
+                <mat-form-field appearance="fill" class="codigo">
+                    <mat-label>Quantidade</mat-label>
+                    <input matInput readonly [value]="quantidade" readonly class="alinhaValores"/>
+                </mat-form-field>     
+                <mat-form-field appearance="fill" >
+                    <mat-label>Valor Total</mat-label>
+                    <input matInput readonly [value]="valorTotalPendente|currency" readonly class="alinhaValores" />
+                </mat-form-field>     
+                <mat-divider></mat-divider>
+            </div>                    
+            <div class="container">
+                <mat-card-subtitle>Informa&ccedil;&otilde;es - Pagamento</mat-card-subtitle>
+                <mat-divider></mat-divider>                
+            </div>
+            <div class="container">
+                <mat-card-subtitle>Lista de Servi&ccedil;o(s)</mat-card-subtitle>
+                <mat-divider></mat-divider>                
+            </div>
+            
+        </mat-card-content>
+    </mat-card>    
+</div>

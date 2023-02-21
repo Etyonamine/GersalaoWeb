@@ -1,0 +1,19 @@
+.container{
+    text-align: center;
+}
+.container .mat-form-field + .mat-form-field {
+    margin-left: 5px;
+    margin-top: 5px;     
+}
+table{
+    width: 100%;
+}
+.codigo{
+    width:100px;
+}
+.nomeCliente{
+    width:300px;
+}
+.alinhaValores{
+    text-align: right;
+}

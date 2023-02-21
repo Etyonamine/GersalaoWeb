@@ -19,12 +19,17 @@
               <button mat-menu-item [routerLink]="['agenda']"><i class ="material-icons right">event_note</i> Agendamento</button>            
             </mat-menu>   
             <mat-menu #Financeiro ="matMenu">
-              <button mat-menu-item [matMenuTriggerFor]="Caixa" ><i class ="material-icons right">account_balance_wallet</i>Caixa</button>               
+              <button mat-menu-item [matMenuTriggerFor]="Caixa" ><i class ="material-icons right">account_balance_wallet</i>Caixa</button>   
+              <button mat-menu-item [matMenuTriggerFor]="ClienteFinanceiro" ><i class ="material-icons right">people</i>Cliente</button>   
+              
               
             </mat-menu>       
             <mat-menu #Caixa="matMenu">
                <button mat-menu-item [routerLink]="['caixa']"><i class ="material-icons right">open_in_new</i>Caixa</button> 
               
+            </mat-menu>
+            <mat-menu #ClienteFinanceiro = "matMenu">
+              <button mat-menu-item [routerLink]="['cliente-financeiro']" ><i class ="material-icons right">pending</i> Pendente</button>                 
             </mat-menu>
             <mat-menu #Venda="matMenu">
               <button mat-menu-item [routerLink]="['pedido']" ><i class ="material-icons right">point_of_sale</i>Pedido</button>
