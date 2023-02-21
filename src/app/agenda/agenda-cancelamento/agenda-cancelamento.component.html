@@ -89,7 +89,7 @@
     <mat-divider></mat-divider>
 
     <mat-card-actions align="end">
-        <button mat-raised-button color="warn" [disabled]="!formulario.valid" (click)="submit()">Confirmar</button>
+        <button mat-raised-button color="warn" [disabled]="!formulario.valid || statusCancelamento === true" (click)="submit()">Confirmar</button>
         <button mat-raised-button color="primary" mat-dialog-close cdkFocusInitial>Retornar</button>
 
     </mat-card-actions>

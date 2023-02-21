@@ -57,7 +57,7 @@ export class AgendaCancelamentoComponent extends BaseFormComponent implements On
     this.dataSource.data=this.agenda.listaServicos;
     this.listarMotivos();
     this.criarFormulario();
-    
+    this.statusCancelamento = false;
     
   }
   ngOnDestroy():void{
@@ -127,7 +127,8 @@ export class AgendaCancelamentoComponent extends BaseFormComponent implements On
           this.inscricaoCancelar$= this.agendaServicoService.cancelarServicos(agendaCancelarGravar)
                                                     .subscribe(result=>{
                                                       if(result){
-                                                        this.handlerSucesso('Serviço(s) cancelado(s) com sucesso!');                                                       
+                                                        this.handlerSucesso('Serviço(s) cancelado(s) com sucesso!');    
+                                                        this.statusCancelamento = true;                                                   
                                                       }
                                                     },
                                                     error=>{

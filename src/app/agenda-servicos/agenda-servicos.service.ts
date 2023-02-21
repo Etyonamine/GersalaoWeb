@@ -38,6 +38,6 @@ export class AgendaServicosService extends BaseService<AgendaServico> {
   }    
   listarServicosPendentes(codigoCliente:number){
     let urlSrvPend = this.url + '/ListarServicosPendentesPorCliente/' + codigoCliente;
-    return this.http.get<AgendaServico>(urlSrvPend).pipe(take(1));
+    return this.http.get<AgendaServico[]>(urlSrvPend).pipe(take(1));
   }
 }

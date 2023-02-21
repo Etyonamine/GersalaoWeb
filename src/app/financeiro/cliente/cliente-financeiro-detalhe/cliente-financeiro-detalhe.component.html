@@ -33,7 +33,53 @@
                 <mat-card-subtitle>Lista de Servi&ccedil;o(s)</mat-card-subtitle>
                 <mat-divider></mat-divider>                
             </div>
-            
-        </mat-card-content>
+            <div>
+                <table mat-table [dataSource]="" class="tabelaPrevia">
+                    <thead>
+                        <tr>                            
+                            <th>In&iacute;cio</th>
+                            <th>Fim</th>
+                            <th>Profissional</th>
+                            <th>Servi&ccedil;o</th>
+                            <th>Valor-Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let agendaServico of listaAgendaServico">                                                       
+                            <td>
+                                {{agendaServico.agenda.dataInicio | date : 'dd/MM/yyyy HH:mm:ss'}}
+                            </td>
+                            <td>
+                                {{agendaServico.agenda.dataFim | date : 'dd/MM/yyyy HH:mm:ss'}}
+                            </td>
+                            <td>
+                                {{agendaServico.profissional.nome}}
+                            </td>
+                            <td>
+                                {{agendaServico.servico.descricao}}
+                            </td>
+                            <td>
+                                {{agendaServico.valorServico | currency}}
+                            </td>
+                        </tr>
+                    </tbody>
+                  <!--   <tfoot class="tfoot">
+                        <tr style="font-weight:bold;">
+                            <td>Total</td>
+                            <td>{{getTotalCost() | currency}}</td>
+                        </tr>
+                    </tfoot> -->
+                </table>
+            </div>
+            <mat-divider></mat-divider>
+            <div class="container">
+                <button mat-raised-button color="primary">
+                    Salvar &nbsp;<mat-icon>save</mat-icon>
+                </button>
+                <button mat-raised-button color="primary" (click)="retornar()">
+                    Retornar<mat-icon>reply</mat-icon>
+                </button>
+            </div>
+        </mat-card-content>        
     </mat-card>    
 </div>
