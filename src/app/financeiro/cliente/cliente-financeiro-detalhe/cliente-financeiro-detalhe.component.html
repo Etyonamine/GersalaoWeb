@@ -3,83 +3,85 @@
         <mat-card-header>
             <mat-card-title> Cliente - Pagamento Pendente - Detalhe</mat-card-title>
         </mat-card-header>
-        <mat-card-content>    
+        <mat-card-content>
             <mat-card-subtitle>Informa&ccedil;&otilde;es - Pend&ecirc;ncia</mat-card-subtitle>
             <mat-divider></mat-divider>
             <div class="container">
-                <mat-form-field appearance="fill"  class="codigo">
+                <mat-form-field appearance="fill" class="codigo">
                     <mat-label>C&oacute;digo</mat-label>
                     <input matInput readonly [value]="codigoCliente" readonly />
-                </mat-form-field> 
+                </mat-form-field>
                 <mat-form-field appearance="fill" class="nomeCliente">
                     <mat-label>Nome</mat-label>
                     <input matInput readonly [value]="cliente.nome" readonly />
-                </mat-form-field>     
+                </mat-form-field>
                 <mat-form-field appearance="fill" class="codigo">
                     <mat-label>Quantidade</mat-label>
-                    <input matInput readonly [value]="quantidade" readonly class="alinhaValores"/>
-                </mat-form-field>     
-                <mat-form-field appearance="fill" >
+                    <input matInput readonly [value]="quantidade" readonly class="alinhaValores" />
+                </mat-form-field>
+                <mat-form-field appearance="fill">
                     <mat-label>Valor Total</mat-label>
                     <input matInput readonly [value]="valorTotalPendente|currency" readonly class="alinhaValores" />
-                </mat-form-field>     
+                </mat-form-field>
                 <mat-divider></mat-divider>
-            </div>                    
+            </div>
             <div class="container">
                 <mat-card-subtitle>Informa&ccedil;&otilde;es - Pagamento</mat-card-subtitle>
-                <mat-divider></mat-divider>                
+                <mat-divider></mat-divider>
             </div>
             <div class="container">
                 <mat-card-subtitle>Lista de Servi&ccedil;o(s)</mat-card-subtitle>
-                <mat-divider></mat-divider>                
+                <mat-divider></mat-divider>
             </div>
             <div>
-                <table mat-table [dataSource]="" class="tabelaPrevia">
-                    <thead>
-                        <tr>                            
-                            <th>In&iacute;cio</th>
-                            <th>Fim</th>
-                            <th>Profissional</th>
-                            <th>Servi&ccedil;o</th>
-                            <th>Valor-Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let agendaServico of listaAgendaServico">                                                       
-                            <td>
-                                {{agendaServico.agenda.dataInicio | date : 'dd/MM/yyyy HH:mm:ss'}}
-                            </td>
-                            <td>
-                                {{agendaServico.agenda.dataFim | date : 'dd/MM/yyyy HH:mm:ss'}}
-                            </td>
-                            <td>
-                                {{agendaServico.profissional.nome}}
-                            </td>
-                            <td>
-                                {{agendaServico.servico.descricao}}
-                            </td>
-                            <td>
-                                {{agendaServico.valorServico | currency}}
-                            </td>
-                        </tr>
-                    </tbody>
-                  <!--   <tfoot class="tfoot">
-                        <tr style="font-weight:bold;">
-                            <td>Total</td>
-                            <td>{{getTotalCost() | currency}}</td>
-                        </tr>
-                    </tfoot> -->
+                <table mat-table [dataSource]="listaAgendaServico" class="mat-elevation-z8" matSort
+                    matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">
+                    <ng-container matColumnDef="codigoAgenda">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>C&oacute;digo</mat-header-cell>
+                        <mat-cell *matCellDef="let info"> {{ info.agenda.codigo }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="dataInicio">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>data-in&iacute;cio</mat-header-cell>
+                        <mat-cell *matCellDef="let info"> {{ info.agenda.dataInicio | date: 'dd/MM/yyyy HH:mm:ss' }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="dataFim">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>data-fim</mat-header-cell>
+                        <mat-cell *matCellDef="let info"> {{ info.agenda.dataFim | date: 'dd/MM/yyyy HH:mm:ss' }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="profissionalNome">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Profissional</mat-header-cell>
+                        <mat-cell *matCellDef="let info"> {{ info.profissional.nome }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="descricaoServico">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Servi&ccedil;o</mat-header-cell>
+                        <mat-cell *matCellDef="let info"> {{ info.servico.descricao }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="valorServico">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Valor-Servi&ccedil;o</mat-header-cell>
+                        <mat-cell *matCellDef="let info"> {{ info.valorServico}} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="acao">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>Pagamento</mat-header-cell>
+                        <mat-cell *matCellDef="let info">
+                            <a mat-mini-fab class="botaoPagamento" aria-label="Pagamento"
+                                [routerLink]="['/agenda/agenda-novo', info.agenda.codigo]">
+                                <mat-icon>payments</mat-icon>
+                            </a>
+                            &nbsp;
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="colunas"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: colunas"></mat-row>
                 </table>
             </div>
             <mat-divider></mat-divider>
+        </mat-card-content>
+        <mat-card-content>
             <div class="container">
-                <button mat-raised-button color="primary">
-                    Salvar &nbsp;<mat-icon>save</mat-icon>
-                </button>
                 <button mat-raised-button color="primary" (click)="retornar()">
                     Retornar<mat-icon>reply</mat-icon>
                 </button>
             </div>
-        </mat-card-content>        
-    </mat-card>    
+        </mat-card-content>
+    </mat-card>
 </div>

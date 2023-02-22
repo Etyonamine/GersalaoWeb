@@ -7,7 +7,6 @@ import { AgendaServicosService } from 'src/app/agenda-servicos/agenda-servicos.s
 import { Cliente } from 'src/app/cliente/cliente';
 import { ClienteService } from 'src/app/cliente/cliente.service';
 import { AlertService } from 'src/app/shared/alert/alert.service';
-import { AgendaServicoPendente } from './agenda-servico-pendente';
 
 @Component({
   selector: 'app-cliente-financeiro-detalhe',
@@ -20,7 +19,11 @@ export class ClienteFinanceiroDetalheComponent implements OnInit, OnDestroy {
   quantidade: number;
   valorTotalPendente: number;
 
-  listaAgendaServico: AgendaServicoPendente[] = [];
+  colunas : string[] =  ["codigoAgenda", "dataInicio", "dataFim","profissionalNome","descricaoServico", "valorServico", "acao"];
+  public defaultSortColumn: string = "codigoAgenda";
+  public defaultSortOrder: string = "asc";
+
+  listaAgendaServico: AgendaServico[] = [];
 
   inscricaoCliente$:Subscription;
   inscricaoAgendaServico$: Subscription;
@@ -33,34 +36,7 @@ export class ClienteFinanceiroDetalheComponent implements OnInit, OnDestroy {
               private agendaServicoService: AgendaServicosService,
               private alertService: AlertService,
               private router: Router) { }
-/** Whether the number of selected elements matches the total number of rows. */
-isAllSelected() {
-  const numSelected = this.selection.selected.length;
-  const numRows = this.listaAgendaServico.length;
-  return numSelected === numRows;
-}
 
-/** Selects all rows if they are not all selected; otherwise clear selection. */
-masterToggle() {
-  if (this.isAllSelected()) {
-    this.selection.clear();
-   // this.habilitarBotoes();
-    return;
-  }
-
-  this.selection.select(...this.listaAgendaServico);
-  
-}
-
-/** The label for the checkbox on the passed row */
-checkboxLabel(row?: AgendaServico): string {
-  if (!row) {
-    return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
-  }
-  //this.habilitarBotoes();
-  return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.codigoServico + 1}`;  
-}
- 
   ngOnInit(): void {
    this.codigoCliente =  this.route.snapshot.data['codigo'];
    this.recuperarInformacaoCliente();   
@@ -91,19 +67,7 @@ checkboxLabel(row?: AgendaServico): string {
 
     this.inscricaoAgendaServico$ = this.agendaServicoService.listarServicosPendentes(this.codigoCliente)
                                                             .subscribe(result=>{
-                                                              result.forEach(servico=>{
-                                                                this.listaAgendaServico.push({
-                                                                  item : itemCorrente + 1,
-                                                                  codigoAgenda: servico.codigoAgenda ,
-                                                                   codigoProfissonal: servico.codigoProfissional, 
-                                                                  codigoServico: servico.codigoServico,
-                                                                  dataInicio: servico.agenda.dataInicio, 
-                                                                  dataFim: servico.agenda.dataFim,                                                                 
-                                                                  valorServico: servico.valorServico,
-                                                                  nomeProfissional: servico.profissional.nome,
-                                                                  descricaoServico: servico.servico.descricao
-                                                                }as AgendaServicoPendente);
-                                                              })
+                                                              this.listaAgendaServico = result;
                                                               
                                                               this. calcularTotal();
                                                             });      
