@@ -5,6 +5,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import jsPDF from "jspdf";
 import 'jspdf-autotable'
 import { EMPTY, of, Subscription } from 'rxjs';
+import { Empresa } from '../empresa/empresa';
+import { EmpresaService } from '../empresa/empresa.service';
 import { Profissional } from '../profissional/professional';
 import { ProfissionalService } from '../profissional/profissional.service';
 import { AlertService } from '../shared/alert/alert.service';
@@ -27,7 +29,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   defaultPageSize: number = 10;
   inscricao$: Subscription;
   dataPesquisa: Date;
- 
+  empresa: Empresa;
   
   public defaultSortColumn: string = "codigo";
   public defaultSortOrder: string = "desc";
@@ -35,6 +37,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
   inscricaoProfissionalApuracaoDetalhe$: Subscription;
   inscricaoAgenda$: Subscription;
   inscricaoProfissional$ :Subscription;
+  inscricaoEmpresa$:Subscription;
 
   optionProfissionais: Profissional[]=[];
   listaProfissionaisCadastro: Profissional[];
@@ -52,12 +55,14 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     private profissionalApuracaoService: ProfissionalApuracaoService,
     private profisionalApuracaoDetalheService: ProfissionalApuracaoDetalheService,
     private alertService : AlertService,
-    private profissionalService: ProfissionalService
+    private profissionalService: ProfissionalService,
+    private empresaService:EmpresaService
     ) { }
 
   ngOnInit(): void {
     this.loadData();
     this.listaProfissionais();
+    this.recuperarInformacaoEmpresa();
   }
   ngOnDestroy(): void {
     if (this.inscricao$) { this.inscricao$.unsubscribe(); }
@@ -69,6 +74,15 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.dataPesquisa = null;
     this.loadData();
+  }
+  recuperarInformacaoEmpresa(){
+    this.inscricaoEmpresa$ = this.empresaService.recuperarDadosEmpresa()
+                                                .subscribe(result=>{
+                                                  this.empresa = result;
+                                                },error=>{
+                                                  console.log(error);
+                                                  this.handleError('Ocorreu um erro ao recuperar dados da empresa');
+                                                })
   }
   listaProfissionais(){
     this.inscricaoProfissional$ = this.profissionalService.listarProfissionaisApurados(undefined)
@@ -160,8 +174,8 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
                                                                             let descricaoOrigemComissao = agendaServico.codigoOrigemComissao == 1 ?  'Profissional': 'Serviço' ;
                                                                 
                                                                             //tratando datas
-                                                                            dataInicioAgenda = dataInicioAgenda.substring(8,10) + dataInicioAgenda.substring(4,7) + '-'+ dataInicioAgenda.substring(0,4) + ' ' + dataInicioAgenda.substring(11,19);
-                                                                            dataTerminoAgenda = dataTerminoAgenda.substring(8,10) + dataTerminoAgenda.substring(4,7) + '-'+ dataTerminoAgenda.substring(0,4) + ' ' + dataTerminoAgenda.substring(11,19);
+                                                                            dataInicioAgenda = dataInicioAgenda.substring(8,10) + '/' + dataInicioAgenda.substring(5,7) + '/'+ dataInicioAgenda.substring(0,4) + ' ' + dataInicioAgenda.substring(11,19);
+                                                                            dataTerminoAgenda = dataTerminoAgenda.substring(8,10) + '/' + dataTerminoAgenda.substring(5,7) + '/'+ dataTerminoAgenda.substring(0,4) + ' ' + dataTerminoAgenda.substring(11,19);
                                                                 
                                                                             //adicionando a linha
                                                                             row.push(nomeCliente);
@@ -191,39 +205,36 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     
    
   }
+ 
   getReport(col: any[], rowD: any[], title: any, profissionalApuracao: ProfissionalApuracao, profissional : Profissional) {
     const totalPagesExp = "{total_pages_count_string}";        
     let pdf = new jsPDF('l', 'pt', 'a4');
     let colResumo = ['Codigo','Profissional','Início','Término','Valor Total (R$)', 'Apurado','Usuario']
     let rowDResumo : any[] = []
     let rowResumo : any[] = []
-    pdf.setTextColor(51, 156, 255);          
-    pdf.text("" + title, 250,20);  //
-    pdf.setLineWidth(1.5);
-    pdf.line(5, 25, 995, 25)
-    var pageContent = function (data) {
-        // HEADER
-       
-        // FOOTER
-        var str = "Page " + data.pageCount;
-        // Total page number plugin only available in jspdf v1.0+
-        if (typeof pdf.putTotalPages === 'function') {
-            str = str + " of " + totalPagesExp;
-        }
-        pdf.setFontSize(10);
-        var pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
-        pdf.text(str, data.settings.margin.left, pageHeight - 10); // showing current page number
-    };
-    pdf.setFontSize(12);    
+   
+
+
+    /* 
+    Preparação das informações  --------------------------------------------------------------------------------------------
+    */
+    let dataImpressao = new Date();
+    let descricaoImpressa = 'gerado em: ' + dataImpressao.toLocaleString();
+
+    let nomeEmpresa = atob(this.empresa.nomeAbreviado);
+    //imagem do logo
+    let imgLogo = new Image()
+    imgLogo.src = '../../assets/images/logo.png'
+
     let dataInicioPeriodo = profissionalApuracao.dataInicio.toLocaleString();
     let dataTerminoPeriodo = profissionalApuracao.dataFim.toLocaleString();   
     let dataApuracao = profissionalApuracao.dataApuracao.toLocaleString();
     let valorTotal = profissionalApuracao.valorTotal.toFixed(2);
 
 
-    dataInicioPeriodo = dataInicioPeriodo.substring(8,10) + dataInicioPeriodo.substring(4,7) + '-'+ dataInicioPeriodo.substring(0,4);
-    dataTerminoPeriodo = dataTerminoPeriodo.substring(8,10) + dataTerminoPeriodo.substring(4,7) + '-'+ dataTerminoPeriodo.substring(0,4);
-    dataApuracao = dataApuracao.substring(8,10) + dataApuracao.substring(4,7) + '-'+ dataApuracao.substring(0,4) + ' ' + dataApuracao.substring(11,19);
+    dataInicioPeriodo = dataInicioPeriodo.substring(8,10) +'/'+ dataInicioPeriodo.substring(5,7) + '/'+ dataInicioPeriodo.substring(0,4);
+    dataTerminoPeriodo = dataTerminoPeriodo.substring(8,10) +'/'+ dataTerminoPeriodo.substring(5,7) + '/'+ dataTerminoPeriodo.substring(0,4);
+    dataApuracao = dataApuracao.substring(8,10) +'/' + dataApuracao.substring(5,7) + '/'+ dataApuracao.substring(0,4) + ' ' + dataApuracao.substring(11,19);
         
     rowResumo.push(profissionalApuracao.codigo.toString());    
     rowResumo.push(profissional.nome);         
@@ -231,16 +242,50 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     rowResumo.push(dataTerminoPeriodo);
     rowResumo.push(valorTotal);
     rowResumo.push(dataApuracao);
-    rowResumo.push(profissionalApuracao.usuario.nome);
+    rowResumo.push(profissionalApuracao.usuarioCadastro.nome);
     rowDResumo.push(rowResumo);
 
-    pdf.autoTable(
+    /* 
+    Configuração do report --------------------------------------------------------------------------------------------
+    */     
+    var pageContent = function (data) {
+      // HEADER       
+      pdf.setFontSize(18);
+      pdf.setTextColor(40);     ''      
+      pdf.text(nomeEmpresa, data.settings.margin.left, 20);//nome da empresa no cabecalho
+      
+      // FOOTER
+      var str = "Página " + data.pageCount;
+      // Total page number plugin only available in jspdf v1.0+
+      if (typeof pdf.putTotalPages === 'function') {
+         
+          str = str + " de " + totalPagesExp;
+      }
+      var pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
+      pdf.setLineWidth(1.5);
+      pdf.line(0, pdf.internal.pageSize.height-20, 995, pdf.internal.pageSize.height-20);
+      pdf.setFontSize(10);            
+      pdf.text(str, data.settings.margin.left, pageHeight - 10); // showing current page number
+      pdf.text(descricaoImpressa,200, pageHeight -10);
+  };
+
+  //pdf.setTextColor(51, 156, 255);  azul claro        
+  pdf.setTextColor(40); 
+  pdf.text("" + title, 350,20);  //
+  pdf.setLineWidth(1.5);
+  pdf.line(5, 25, 995, 25);
+  pdf.page=1; // use this as a counter.
+  pdf.setFontSize(12);  
+    pdf.autoTable(        
         colResumo, 
         rowDResumo,
-        {margin: { top: 30 },
-        styles: {overflow: 'linebreak',
+        {
+          columnStyles: {text: {columnWidth: 'auto'}},        
+          margin: { top: 30 },          
+          styles: {overflow: 'linebreak',
                 fontSize: 9},
         showHeader: 'everyPage',
+       
         });
    
     pdf.autoTable(col, rowD,
@@ -248,8 +293,8 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
             addPageContent: pageContent,
             margin: { top: 80 },                        
             styles: {overflow: 'linebreak',
-                    fontSize: 7},
-            showHeader: 'everyPage',
+                    fontSize: 8},            
+            showHeader: 'everyPage' 
         });
 
     //for adding total number of pages // i.e 10 etc

@@ -15,6 +15,7 @@ export class ProfissionalApuracao{
     codigoSituacao: number;
     listaApuracaoDetalhe : ProfissionalApuracaoDetalhe[];
     profissional : Profissional;
-    usuario: Usuario;
+    usuario:Usuario;
+    usuarioCadastro: Usuario;
     situacao: Situacao;
 }
