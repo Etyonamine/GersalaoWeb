@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AgendaComponent } from './agenda.component';
 import { AgendaFormComponent } from './agenda-form/agenda-form.component';
 import { AgendaResolveGuard } from './guard/agenda-resolver.guard';
+import { AgendaConsultaComponent } from './agenda-consulta/agenda-consulta.component';
 
 const agendaRoutes: Routes = [
   {path:'', component: AgendaComponent},
@@ -12,7 +13,8 @@ const agendaRoutes: Routes = [
     resolve:{
       agenda: AgendaResolveGuard
     }
-  }  
+  },
+  {path: 'agenda-consulta', component: AgendaConsultaComponent}
 ];
 
 @NgModule({
