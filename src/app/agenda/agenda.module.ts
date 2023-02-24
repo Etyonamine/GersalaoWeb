@@ -6,12 +6,13 @@ import { AgendaRoutingModule } from './agenda-routing.module';
 import { AgendaFormComponent } from './agenda-form/agenda-form.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AgendaCancelamentoComponent } from './agenda-cancelamento/agenda-cancelamento.component';
-
+import { AgendaConsultaComponent } from './agenda-consulta/agenda-consulta.component';
 @NgModule({
   declarations: [
     AgendaComponent,
     AgendaFormComponent,    
-    AgendaCancelamentoComponent
+    AgendaCancelamentoComponent,
+    AgendaConsultaComponent
   ],
   imports: [
     CommonModule,

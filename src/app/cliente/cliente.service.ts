@@ -40,5 +40,8 @@ export class ClienteService extends BaseService<Cliente>{
     });
     return listaDescriptografada;
   }
-  
+  getAll(){
+    let urlGetAll = this.url + '/GetAll';
+    return this.http.get<Cliente[]>(urlGetAll).pipe(take(1));
+  }
 }
