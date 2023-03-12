@@ -1,6 +1,8 @@
 <div class="container">
     <mat-card>
-        <mat-card-title>Clientes - Pendentes de Pagamentos de Servi&ccedil;o(s)</mat-card-title>
+        <mat-card-header>
+            <mat-card-title> Clientes - Pendentes de Pagamentos de Servi&ccedil;o(s)</mat-card-title>
+        </mat-card-header>
         <mat-card-content>
             <table mat-table [dataSource]="lista" class="mat-elevation-z8" matSort (matSortChange)="loadData()"
                 matSortActive="{{ defaultSortColumn }}" matSortDirection="{{ defaultSortOrder }}">

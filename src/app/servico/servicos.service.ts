@@ -65,4 +65,8 @@ export class ServicosService extends BaseService<Servico>{
     let urlListaServico = this.url + '/ListaServicoPorTipo?codigoTipo=' + codigoTipoCripto;
     return this.http.post<ServicoGravar[]>(urlListaServico,null).pipe(take(1));
   }
+  getAll(){
+    let urlGetAll = this.url + '/GetAll';
+    return this.http.get<Servico[]>(urlGetAll).pipe(take(1));
+  }
 }

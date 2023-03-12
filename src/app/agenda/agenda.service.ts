@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { Cliente } from '../cliente/cliente';
 import { ApiResult, BaseService } from '../shared/base.service';
 import { Agenda } from './agenda';
 import { AgendaBaixa } from './agenda-baixa';
@@ -124,5 +125,9 @@ export class AgendaService extends BaseService<Agenda>{
 
     }
     return this.http.get<ApiResult>(urlCliPend, { params }).pipe(take(1));
+  }
+  getClientes(periodoInicio: Date, periodoFim: Date){
+    let urlClientes = this.url + '/ListaClienteComAgenda?periodoInicio=' + periodoInicio.toDateString() + '&periodoFim=' + periodoFim.toDateString();
+    return this.http.get<Cliente[]>(urlClientes).pipe(take(1));
   }
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AgendaServicoCancelarGravar } from '../agenda/agenda-cancelamento/agenda-servico-cancelar-gravar';
+import { AgendaConsultaIn } from '../agenda/agenda-consulta/agenda-consulta-in';
 import { BaseService } from '../shared/base.service';
 import { AgendaServico } from './agenda-servico';
 import { AgendaServicoEdit } from './agenda-servico-edit/agenda-servico-edit';
@@ -39,5 +40,13 @@ export class AgendaServicosService extends BaseService<AgendaServico> {
   listarServicosPendentes(codigoCliente:number){
     let urlSrvPend = this.url + '/ListarServicosPendentesPorCliente/' + codigoCliente;
     return this.http.get<AgendaServico[]>(urlSrvPend).pipe(take(1));
+  }
+  consultaAgendas(parametros: AgendaConsultaIn){
+    let urlGetAll = this.url + '/getall?codigoCliente=' + parametros.codigoCliente 
+                             + '&codigoProfissional=' + parametros.codigoProfissional
+                             + '&codigoServico=' + parametros.codigoServico
+                             + '&inicio=' + parametros.inicio.toDateString()
+                             + '&fim=' + parametros.fim.toDateString();                                                          
+    return this.http.get<AgendaServico[]>(urlGetAll).pipe(take(1));
   }
 }
