@@ -160,9 +160,12 @@ export class AgendaConsultaComponent implements OnInit, OnDestroy {
       fim : this.periodoFim
     }as AgendaConsultaIn;
     this.inscricao$ = this.agendaServicoService.consultaAgendas(parametros)
-                                                .subscribe(result=>{
+                                                .subscribe(result=>{                                                   
                                                    this.listaAgendaServicos = result;
                                                    this.lista = new MatTableDataSource<AgendaServico>(result);                                                   
+                                                   if (this.listaAgendaServicos.length === 0){
+                                                    this.handlerInformacao('Não foi encontrado nenhuma agenda!');
+                                                   }
                                                 },error =>{
                                                   console.log(error);
                                                   this.handlerError('Ocorreu um erro ao pesquisar as agendas.');
