@@ -15,7 +15,8 @@
             <button mat-button [matMenuTriggerFor]="Financeiro" > &nbsp; <i class ="material-icons right">monetization_on</i>Finaceiro</button>
             <button mat-button [matMenuTriggerFor]="Agenda" > &nbsp; <i class ="material-icons right">calendar_month</i>Agenda</button>
             <button mat-button [matMenuTriggerFor]="Venda" > &nbsp; <i class ="material-icons right">point_of_sale</i>Vendas</button>
-            <button mat-button [routerLink]="['/reports']" > &nbsp; <i class ="material-icons right">summarize</i>Relatorios</button>      
+            <button mat-button [matMenuTriggerFor]="Relatorio" > &nbsp; <i class ="material-icons right">summarize</i>Relatorios</button>      
+            <!-- <button mat-button [routerLink]="['/reports']" > &nbsp; <i class ="material-icons right">summarize</i>Relatorios</button>       -->
 
             <!-- Sub-Menu -->              
             <mat-menu #Agenda="matMenu">
@@ -75,7 +76,10 @@
               <button mat-menu-item  [routerLink]="['profissional']"><i class ="material-icons right">work</i> Profissional</button>
               <mat-divider></mat-divider>
               <button mat-menu-item [routerLink]="['profissional-apuracao']"><i class ="material-icons right">calculate</i> Apura&ccedil;&aacute;o</button>              
-            </mat-menu>            
+            </mat-menu>    
+            <mat-menu #Relatorio>
+              <button mat-menu-item  [routerLink]="['reports/cliente-report']"><i class ="material-icons right">face</i> Lista de Clientes</button>
+            </mat-menu>        
             <button mat-button [matMenuTriggerFor]="Login" >&nbsp;<i class="material-icons right">account_circle</i>{{loginUsuario}}</button>        
             <mat-menu #Login = "matMenu">
               <button mat-menu-item [routerLink]="['/usuario', loginUsuario]" >&nbsp;<i class="material-icons right">key</i>Alterar Senha</button>

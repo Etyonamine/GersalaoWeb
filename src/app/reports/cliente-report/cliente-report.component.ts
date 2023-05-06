@@ -1,25 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../auth-guard/auth.service';
-import { ClienteReportService } from './cliente-report.service';
+import { AuthService } from 'src/app/auth-guard/auth.service';
+import { ClienteReportService } from '../cliente-report.service';
 
 @Component({
-  selector: 'app-reports',
-  templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.scss']
+  selector: 'app-cliente-report',
+  templateUrl: './cliente-report.component.html',
+  styleUrls: ['./cliente-report.component.scss']
 })
-export class ReportsComponent implements OnInit {
-
+export class ClienteReportComponent implements OnInit {
   nomeUsuario : string ='';
-
-  constructor(private reportClienteService:ClienteReportService,
-              private authService : AuthService) { }
- type = 'application/pdf' ;
+  type = 'application/pdf' ;
   inscricao$:Subscription;
   inscricaoAuth$:Subscription;
+  
+  constructor(private reportClienteService:ClienteReportService,
+              private authService : AuthService) { }
 
   ngOnInit(): void {
-   this.nomeUsuario = this.authService.usuarioLogado.login;
+    this.nomeUsuario = this.authService.usuarioLogado.login;
   }
   ngOnDestroy(): void {
     if (this.inscricao$){
@@ -37,18 +36,17 @@ export class ReportsComponent implements OnInit {
     }
     );
   }
-   /**
-     * Method is use to download file from server.
-     * @param data - Array Buffer data
-     * @param type - type of the document.
-     */
+  /**
+ * Method is use to download file from server.
+ * @param data - Array Buffer data
+ * @param type - type of the document.
+ */
   downLoadFile(data: any, type: string) {
     var blob = new Blob([data], { type: type.toString() });
     var url = window.URL.createObjectURL(blob);
     var pwa = window.open(url);
     if (!pwa || pwa.closed || typeof pwa.closed == 'undefined') {
-        alert('Please disable your Pop-up blocker and try again.');
+        alert('Por favor, desbloquear o pop-up e tentar novamente.');
     }
   }
-
 }
