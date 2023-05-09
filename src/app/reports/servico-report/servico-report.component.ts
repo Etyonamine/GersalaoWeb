@@ -1,26 +1,26 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth-guard/auth.service';
-import { ProfissionalReportService } from '../profissional-report.service';
+import { ServicoReportService } from './servico-report.service';
 
 @Component({
-  selector: 'app-profissional-report',
-  templateUrl: './profissional-report.component.html',
-  styleUrls: ['./profissional-report.component.scss']
+  selector: 'app-servico-report',
+  templateUrl: './servico-report.component.html',
+  styleUrls: ['./servico-report.component.scss']
 })
-export class ProfissionalReportComponent implements OnInit, OnDestroy {
+export class ServicoReportComponent implements OnInit, OnDestroy {
   nomeUsuario : string ='';
   type = 'application/pdf' ;
   inscricao$:Subscription;
   inscricaoAuth$:Subscription;
 
   constructor(private authService : AuthService,
-              private profissionalReportService: ProfissionalReportService) { }
+              private servicoReportService: ServicoReportService) { }
 
   ngOnInit(): void {
     this.nomeUsuario = this.authService.usuarioLogado.login;
   }
-  
+
   ngOnDestroy(): void {
     if (this.inscricao$){
       this.inscricao$.unsubscribe();
@@ -29,9 +29,8 @@ export class ProfissionalReportComponent implements OnInit, OnDestroy {
       this.inscricaoAuth$.unsubscribe();
     }
   }
-
   gerarRelatorio(){
-    this.inscricao$ = this.profissionalReportService.gerarLista(this.nomeUsuario).subscribe(respData => {
+    this.inscricao$ = this.servicoReportService.gerarLista(this.nomeUsuario).subscribe(respData => {
       this.downLoadFile(respData, this.type);
     },error=>{
       console.log(error);
@@ -52,5 +51,4 @@ export class ProfissionalReportComponent implements OnInit, OnDestroy {
           alert('Por favor, desbloquear o pop-up e tentar novamente.');
       }
     }
-
 }
