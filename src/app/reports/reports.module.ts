@@ -4,8 +4,9 @@ import { ReportsComponent } from './reports.component';
 import { ReportsRoutingModule } from './reports-routing.module';
 import { SharedModule } from '../shared/shared.module';
 import { ClienteReportComponent } from './cliente-report/cliente-report.component';
+import { ProfissionalReportComponent } from './profissional-report/profissional-report.component';
 @NgModule({
-  declarations: [ReportsComponent, ClienteReportComponent],
+  declarations: [ReportsComponent, ClienteReportComponent, ProfissionalReportComponent],
   imports: [
     CommonModule,
     ReportsRoutingModule,

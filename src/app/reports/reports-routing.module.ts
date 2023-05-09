@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { ReportsComponent } from './reports.component';
 import { ClienteReportComponent } from './cliente-report/cliente-report.component';
+import { ProfissionalReportComponent } from './profissional-report/profissional-report.component';
 
 
 
 const rotas: Routes = [
   {path:'', component: ReportsComponent}, 
-  {path:'cliente-report', component: ClienteReportComponent} 
+  {path:'cliente-report', component: ClienteReportComponent},
+  {path:'profissional-report', component: ProfissionalReportComponent} 
 ];
 
 @NgModule({
