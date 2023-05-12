@@ -5,6 +5,7 @@ import { ReportsComponent } from './reports.component';
 import { ClienteReportComponent } from './cliente-report/cliente-report.component';
 import { ProfissionalReportComponent } from './profissional-report/profissional-report.component';
 import { ServicoReportComponent } from './servico-report/servico-report.component';
+import { AgendaReportComponent } from './agenda-report/agenda-report.component';
 
 
 
@@ -12,7 +13,8 @@ const rotas: Routes = [
   {path:'', component: ReportsComponent}, 
   {path:'cliente-report', component: ClienteReportComponent},
   {path:'profissional-report', component: ProfissionalReportComponent},
-  {path:'servico-report', component: ServicoReportComponent} 
+  {path:'servico-report', component: ServicoReportComponent} ,
+  {path:'agenda-report', component: AgendaReportComponent} 
 ];
 
 @NgModule({

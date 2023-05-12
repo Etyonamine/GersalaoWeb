@@ -6,8 +6,9 @@ import { SharedModule } from '../shared/shared.module';
 import { ClienteReportComponent } from './cliente-report/cliente-report.component';
 import { ProfissionalReportComponent } from './profissional-report/profissional-report.component';
 import { ServicoReportComponent } from './servico-report/servico-report.component';
+import { AgendaReportComponent } from './agenda-report/agenda-report.component';
 @NgModule({
-  declarations: [ReportsComponent, ClienteReportComponent, ProfissionalReportComponent, ServicoReportComponent],
+  declarations: [ReportsComponent, ClienteReportComponent, ProfissionalReportComponent, ServicoReportComponent, AgendaReportComponent],
   imports: [
     CommonModule,
     ReportsRoutingModule,

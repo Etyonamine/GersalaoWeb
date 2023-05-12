@@ -78,9 +78,11 @@
               <button mat-menu-item [routerLink]="['profissional-apuracao']"><i class ="material-icons right">calculate</i> Apura&ccedil;&aacute;o</button>              
             </mat-menu>    
             <mat-menu #Relatorio>
+              <button mat-menu-item  [routerLink]="['reports/agenda-report']"><i class ="material-icons right">event_note</i> Agendas</button>              
               <button mat-menu-item  [routerLink]="['reports/cliente-report']"><i class ="material-icons right">face</i> Clientes</button>
               <button mat-menu-item  [routerLink]="['reports/profissional-report']"><i class ="material-icons right">work</i> Profissional</button>
               <button mat-menu-item  [routerLink]="['reports/servico-report']"><i class ="material-icons right">design_services</i> Servi&ccedil;os</button>
+              
             </mat-menu>        
             <button mat-button [matMenuTriggerFor]="Login" >&nbsp;<i class="material-icons right">account_circle</i>{{loginUsuario}}</button>        
             <mat-menu #Login = "matMenu">
