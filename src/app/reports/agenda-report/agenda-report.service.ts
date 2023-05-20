@@ -10,9 +10,14 @@ export class AgendaReportService {
 
   url : string = `${environment.ApiReport}Agendas`;
   constructor(protected http: HttpClient) { }
+  
+  gerarLista(usuarioImpressao : string, inicio: string, fim: string, codigoSituacao: number){        
+    let urlLista = this.url + '?usuarioImpressao=' + btoa(usuarioImpressao) + '&dataInicio=' + new Date(inicio).toLocaleDateString() + '&DataFim=' + new Date(fim).toLocaleDateString();
+    
+    if (codigoSituacao !== undefined && codigoSituacao > 0 ){
+      urlLista += '&codigoSituacao=' + codigoSituacao
+    }
 
-  gerarLista(usuarioImpressao : string){
-    let urlListaCliente = this.url + '?usuarioImpressao=' + btoa(usuarioImpressao);
-    return this.http.get(urlListaCliente,{responseType: 'arraybuffer'}).pipe(take(1));
+    return this.http.get(urlLista,{responseType: 'arraybuffer'}).pipe(take(1));
   }   
 }

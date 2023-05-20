@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReportsComponent } from './reports.component';
 import { ReportsRoutingModule } from './reports-routing.module';
@@ -10,6 +11,8 @@ import { AgendaReportComponent } from './agenda-report/agenda-report.component';
 @NgModule({
   declarations: [ReportsComponent, ClienteReportComponent, ProfissionalReportComponent, ServicoReportComponent, AgendaReportComponent],
   imports: [
+    FormsModule,
+    ReactiveFormsModule,
     CommonModule,
     ReportsRoutingModule,
     SharedModule

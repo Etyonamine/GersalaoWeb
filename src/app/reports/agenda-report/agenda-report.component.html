@@ -1,18 +1,55 @@
-<mat-card>    
+<mat-card>
     <mat-card-header>
         <mat-label>Relatório de Agendamentos</mat-label>
     </mat-card-header>
-    
+
     <mat-card-content>
         <div class="container">
-            <table>
-                <tr>                    
-                    <td style="text-align: center;">
-                        <button type="submit" mat-raised-button color="primary" (click)="gerarRelatorio()">
-                            Gerar &nbsp;<i class="material-icons right">summarize</i>
-                    </button></td>
-                </tr>
-            </table>
-        </div>        
+            <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
+                <table>
+                    <tr>
+                        <td>
+                            <!--periodo-->
+                            <mat-form-field appearance="fill">
+                                <mat-label>Selecione um per&iacute;odo</mat-label>
+                                <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                                    <input matStartDate formControlName="start" placeholder="Data início">
+                                    <input matEndDate formControlName="end" placeholder="Data fim">
+                                </mat-date-range-input>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-picker #picker>
+                                    <mat-date-range-picker-actions>
+                                        <button mat-button matDateRangePickerCancel>Cancelar</button>
+                                        <button mat-raised-button color="primary" matDateRangePickerApply>Aplicar</button>
+                                    </mat-date-range-picker-actions>
+                                </mat-date-range-picker>
+
+                                <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Início invalido
+                                    date</mat-error>
+                                <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Fim inválido
+                                </mat-error>
+                            </mat-form-field>
+                            <!-- Situacao do agendamento-->
+                            <mat-form-field *ngIf="optionSituacao" appearance="fill" style="width: 150px">
+                                <mat-label>Selecione da lista</mat-label>
+                                <mat-select formControlName="codigoSituacao" matTooltip="Situação do cliente" required>
+                                    <mat-option [value]="0">TODOS</mat-option>
+                                    <mat-option *ngFor="let option of optionSituacao" [value]="option.codigo">
+                                        {{ option.descricao }}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;" colspan="3">
+                            <button type="submit" mat-raised-button color="primary" >
+                                Gerar &nbsp;<i class="material-icons right">summarize</i>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
     </mat-card-content>
 </mat-card>
