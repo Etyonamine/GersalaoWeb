@@ -10,7 +10,7 @@ import { AuthService } from './auth-guard/auth.service';
 export class AppComponent {
 
 
-  title = 'Portal Gersalão';
+  title = 'Portal YTS-Hair';
   ano: Date;
 
 

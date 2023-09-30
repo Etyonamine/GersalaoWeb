@@ -1,12 +1,8 @@
-import { Usuario } from './../usuario/usuario';
 import { AlertService } from './../shared/alert/alert.service';
 import { LoginService } from './../login/login.service';
 import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from './../login/login';
-import { concatMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { UsuarioService } from '../usuario/usuario.service';
 import { Logged } from '../login/logged.component';
 
 
@@ -17,7 +13,8 @@ export class AuthService {
   usuarioPesquisado: Login;
   usuarioLogado: Logged = {
     codigo : "0",
-    login: ''
+    login: '',
+    codigoUsuarioPerfil:"0"
   };
 
   tokenStorage: string ='tokenAuthentic';
@@ -41,7 +38,6 @@ export class AuthService {
   fazerLogin(usuario: Login) {
 
     const login =  { login: usuario.login, senha: usuario.senha , Autenticado : usuario.Autenticado} as Login;
-    let usuarioEncontrado = {} as Usuario;
     this.mostrarMenuEmitter.emit(false);
     // pesquisando na base de dados
     this.loginService.validarLogin(login)
@@ -50,11 +46,13 @@ export class AuthService {
                                   {   
                                       let usuarioStorage = {
                                                             codigo : resposta.codigo,
-                                                            login : resposta.login
+                                                            login : resposta.login,
+                                                            codigoUsuarioPerfil : resposta.codigoUsuarioPerfil
                                                           } as Logged;
 
                                       localStorage.setItem(this.tokenStorage, JSON.stringify(resposta.tokenAutorizacao));                                      
                                       localStorage.setItem(this.loginStorage, JSON.stringify(usuarioStorage));          
+                                               
                                        
                                       this.mostrarMenuEmitter.emit(true);
                                       this.usuarioAutenticado = true;
@@ -64,13 +62,12 @@ export class AuthService {
                                   }     
                                 }, error => {
                                     console.error(error.error);
-                                    if (error.status = "404"){
+                                    if (error.status == "404"){
                                       this.alertService.mensagemExclamation('Usuario ou senha inválido!');
                                     }else{
                                       this.alertService.mensagemErro('Ocorreu um erro ao tentar validar o seu acesso!');
-                                    }
+                                    }                                
                                     
-                                    return;
                                   }
                                 );
   }
@@ -98,6 +95,7 @@ export class AuthService {
       this.usuarioAutenticado = this.getObterTokenUsuario() ;      
       this.usuarioLogado.login = atob(loginStorage.login);      
       this.usuarioLogado.codigo = atob(loginStorage.codigo);
+      this.usuarioLogado.codigoUsuarioPerfil =atob(loginStorage.codigoUsuarioPerfil);
     }    
  }
  getObterTokenUsuario()
