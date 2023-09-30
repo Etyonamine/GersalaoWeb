@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { timeStamp } from 'console';
 import { Subscription } from 'rxjs';
 import { AlertService } from '../shared/alert/alert.service';
 import { BaseFormComponent } from '../shared/base-form/base-form.component';
+import { UsuarioService } from '../usuario/usuario.service';
 import { ResetSenhaService } from './reset-senha.service';
 
 @Component({
@@ -16,33 +18,28 @@ export class ResetSenhaComponent extends BaseFormComponent  implements OnInit, O
 
   submit() {
     let email = this.formulario.get("email").value;
-
-     
-      this.inscricao$ = this.resetSenhaService.solicitarReset(email).subscribe(result=>{
-        if(result){
-          this.handlerSucesso("Sua solicitação foi efetuado com sucesso!");   
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 3000);     
-        }else{
-          this.handleError("Ocorreu algum problema no envio da sua solicitação.");
-        }
-      },error=>{
-        if (error.status === "400"){
-          this.handlerSucesso("Sua mensagem foi efetuado com sucesso!")
-          
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 3000);
-        }else{
-          console.log(error);
-          this.handleError("O serviço está fora");
-         
-        }      
+    this.inscricao$ = this.resetSenhaService.solicitarReset(email).subscribe(result=>{
+      if(result){
+        this.handlerSucesso("Sua solicitação foi efetuado com sucesso!");   
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 3000);     
+      }else{
+        this.handleError("Ocorreu algum problema no envio da sua solicitação.");
+      }
+    },error=>{
+      if (error.status = "400"){
+        this.handlerSucesso("Sua mensagem foi efetuado com sucesso!")
         
-      });
-     
-    
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 3000);
+      }else{
+        console.log(error);
+        this.handleError("Ocorreu algum erro sistêmico!");
+      }      
+      
+    });
   }
   
   formulario:FormGroup;
