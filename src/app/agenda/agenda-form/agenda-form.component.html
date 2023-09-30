@@ -7,7 +7,7 @@
 
             <form [formGroup]="formulario" (ngSubmit)="submit()">
                 <div>
-                    <input readonly class="mensagemFuncionamento" value="O horário de funcionamento do estabelecimento : {{horaInicioDefault}} &agrave; {{ horaFimDefault}}">
+                    <input id="mensagemFuncionamento" name = "mensagemFuncionamento" readonly class="mensagemFuncionamento" value="O horário de funcionamento do estabelecimento : {{horaInicioDefault}} &agrave; {{ horaFimDefault}}">
                 </div>
                 <div>
                     <!--Data-->
@@ -32,26 +32,21 @@
                               
                               required               
                              >
-                    </mat-form-field>    
-                    <!-- situacao -->                
-                    <!-- <mat-form-field appearance="fill">
-                        <mat-label>Situa&ccedil;&atilde;o</mat-label>
-                        <input matInput 
-                              formControlName="descricaoSituacao"               
-                              readonly
-                             >
-                    </mat-form-field>  -->   
+                    </mat-form-field>                      
                 </div>
                 <div>    
                     <div *ngIf="agenda == undefined">
                         <!--Cliente-->
-                        <mat-form-field  appearance="fill" class="comboCliente" >
-                            <mat-label>Selecione o Cliente</mat-label>
-                            <mat-select formControlName="codigoCliente" matTooltip="Selecione um cliente" required>
+                        <mat-form-field  appearance="fill" class="comboCliente" >                            
+                            <mat-select 
+                                formControlName="codigoCliente"
+                                matTooltip="Selecione um cliente"                                                                        
+                                required>
                                 <mat-option *ngFor="let cliente of optionClientes" [value]="cliente.codigo">
                                     {{ cliente.nome }}
                                 </mat-option>
                             </mat-select>
+                            <mat-label>Selecione o Cliente</mat-label>
                         </mat-form-field>
                     </div>               
                     <div *ngIf="agenda != undefined">
@@ -77,16 +72,17 @@
                 </div>
                 <mat-divider></mat-divider>
                 <div>                    
-                    <input readonly class="tituloListaServicos" value="Servi&ccedil;o(s)"/>
+                    <input id="tituloListaServico" name = "tituloListaServico" readonly class="tituloListaServicos" value="Servi&ccedil;o(s)"/>
                 </div>
                 <mat-divider></mat-divider>
                 <div>
                     <!--Profissional-->
                     <mat-form-field *ngIf="optionProfissional" appearance="fill" class="comboProfissional">
-                        <mat-label>Selecione o profissional</mat-label>
+                        <mat-label for="cboProfissional">Selecione o profissional</mat-label>
                         <mat-select formControlName="codigoProfissional" matTooltip="Profissional" 
                             (selectionChange)="listaServicos($event)"
-                            [disabled]="permitidoGravarOuEditar === false">
+                            [disabled]="permitidoGravarOuEditar === false"
+                            name = "cboProfissional">
                             <mat-option *ngFor="let option of optionProfissional" [value]="option.codigo">
                                 {{ option.nome }}
                             </mat-option>
@@ -133,11 +129,9 @@
                     </mat-form-field>
                 </div>
                 <div style="width: 100%;" *ngIf="this.formulario.get('codigoProfissional').value == undefined || this.formulario.get('codigoServico').value==undefined">
-                    <!-- <input value="Atenção!O campo observação do serviço está editável somente quando for selecionado um profissional e serviço."  class="observacao"> -->
-
                     <mat-form-field class="mensagemObservacaoServico" appearance="fill">
                         <mat-label>Mensagem</mat-label>
-                        <input matInput disabled value="Atenção!O campo observação do serviço está editável somente quando for selecionado um profissional e serviço." class="observacao">
+                        <input matInput id="mensagemDigitacaoObservacao" disabled value="Atenção!O campo observação do serviço está editável somente quando for selecionado um profissional e serviço." class="observacao">
                       </mat-form-field>
                 </div>
                 <mat-divider>
@@ -162,7 +156,7 @@
                 <mat-divider></mat-divider>
                 <div>                    
                      
-                    <input  class="tituloListaServicos" value="Lista de servi&ccedil;o(s) - adicionado(s) - Valor Total = {{ valorTotalServico |  number : '1.2-2':'pt' }}"/></div>
+                    <input id="listaServAdd" class="tituloListaServicos" value="Lista de servi&ccedil;o(s) - adicionado(s) - Valor Total = {{ valorTotalServico |  number : '1.2-2':'pt' }}"/></div>
                      
                 <mat-divider></mat-divider>
 
@@ -172,7 +166,9 @@
                     <table mat-table [dataSource]="dataSource" 
                     class="mat-elevation-z8" 
                         [hidden]="listaServicosTabela.length == 0" 
-                        style="text-align:left;">
+                        style="text-align:left;"
+                        aria-describedby="mydesc"
+                        >
 
                         <!-- Checkbox Column -->
                         <ng-container matColumnDef="select">
