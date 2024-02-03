@@ -1,4 +1,4 @@
-import { Byte } from "@angular/compiler/src/util";
+
 import { EmpresaContato } from "./empresa-contato";
 import { EmpresaEndereco } from "./empresa-endereco";
 
@@ -8,7 +8,7 @@ export interface Empresa{
     nomeAbreviado : string;
     horaInicial: string;
     horaFim: string;
-    logo : Array<Byte>;
+    logo : Array<any>;
     quantidadeMinutosServico: string;
     empresaContato:EmpresaContato;
     empresaEndereco:EmpresaEndereco;
