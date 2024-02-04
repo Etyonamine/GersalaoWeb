@@ -3,8 +3,7 @@ import { SituacaoModule } from './situacao/situacao/situacao.module';
 import { SharedModule } from './shared/shared.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
-import { LOCALE_ID } from '@angular/core';
+import { LOCALE_ID, DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
 import { ClienteModule } from './cliente/cliente.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -95,8 +94,7 @@ registerLocaleData(localePt,'pt');
     EmpresaModule
   ],
   providers: [
-    {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
-    ,
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},    
     { provide: LOCALE_ID, useValue: 'pt' },
     { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },      
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }

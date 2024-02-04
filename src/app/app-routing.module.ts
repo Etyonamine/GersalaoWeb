@@ -1,6 +1,5 @@
-import { ProfissionalComponent } from './profissional/profissional.component';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule, CanActivate } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './auth-guard/auth-guard';
 import { HomeComponent } from './home/home.component';

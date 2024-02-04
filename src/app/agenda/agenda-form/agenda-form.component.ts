@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { of, Subscription } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth-guard/auth.service';
@@ -51,18 +50,15 @@ export class AgendaFormComponent extends BaseFormComponent implements OnInit, On
     private clienteService: ClienteService,
     private empresaService: EmpresaService,
     private authService : AuthService,
-    private agendaService: AgendaService,
-    private route: ActivatedRoute) {
+    private agendaService: AgendaService) {
 super();
 }
 
 
   submit() {
-    if (this.validadorHoraInformado()== false){
+    if (!this.validadorHoraInformado()){
       return ;
     }
-    let dataForm = new Date(this.formulario.get("dataAgenda").value);
-    let horaForm = this.formulario.get("horaAgenda").value;
 
     let dataHoraSelecionada = new Date(this.formulario.get("dataAgenda").value + ' ' + this.formulario.get('horaAgenda').value) ;
 
@@ -110,8 +106,7 @@ super();
             }
           },error=>{
             console.log (error);
-            this.handleError('Ocorreu um erro ao validar a existência da agenda.');
-            return;
+            this.handleError('Ocorreu um erro ao validar a existência da agenda.');           
           });
       }}, 'Sim', 'Não'
     );
@@ -188,7 +183,7 @@ super();
                                                           })
   }
 
-  listaServicos(event){
+  listaServicos(){
     let objProfissional= this.optionProfissional.find(x=>x.codigo === this.formulario.get('codigoProfissional').value) ;
     
     if (this.optionServicos.length>0){
