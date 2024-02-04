@@ -5,7 +5,6 @@ import { take } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { BaseService } from '../shared/base.service';
 import { Agenda } from './agenda';
-import { AgendaApurar } from './agenda-apurar';
 import { AgendaBaixa } from './agenda-baixa';
 import { AgendaCancelar } from './agenda-cancelar';
 
@@ -48,7 +47,7 @@ export class AgendaService extends BaseService<Agenda>{
     filterQuery: string): Observable<ApiResult> {
       let urlpendentesApuraProfi = this.url +'/ListaAgendasApurarPorProfissional';
 
-        var params = new HttpParams()
+        let params = new HttpParams()
           .set("codigoProfissionalPar", codigoProfissional.toString())
           .set("inicioPeriodoPar", inicioPeriodo.toDateString())
           .set("fimPeriodoPar", fimPeriodo.toDateString())

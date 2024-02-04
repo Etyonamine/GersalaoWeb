@@ -42,7 +42,7 @@
                     <mat-form-field *ngIf="optionProfissional" appearance="fill" class="comboProfissional">
                         <mat-label>Selecione o profissional</mat-label>
                         <mat-select formControlName="codigoProfissional" matTooltip="Profissional" required
-                            (selectionChange)="listaServicos($event)">
+                            (selectionChange)="listaServicos()">
                             <mat-option *ngFor="let option of optionProfissional" [value]="option.codigo">
                                 {{ option.nome }}
                             </mat-option>
@@ -51,7 +51,7 @@
                     <mat-form-field *ngIf="optionServicos" appearance="fill" class="comboServico">
                         <mat-label>Selecione o Servi&ccedil;o</mat-label>
                         <mat-select formControlName="codigoServico" matTooltip="Serviço" required
-                            (selectionChange)="listaServicos($event)">
+                            (selectionChange)="listaServicos()">
                             <mat-option *ngFor="let servico of optionServicos" [value]="servico.codigo">
                                 {{ servico.descricao }}
                             </mat-option>
@@ -69,13 +69,7 @@
                         </mat-hint>
                         <mat-hint align="end">{{message.value.length}} / 300</mat-hint>
                     </mat-form-field>
-                </div>
-               <!--  <mat-card-actions align="end">
-                    <button mat-button color="primary" class="full" align="end" [disabled]="!formulario.valid">Alterar
-                        &nbsp;<i class="material-icons right">save</i></button>
-                    <button mat-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar
-                        &nbsp;<i class="material-icons right">cancel</i></button>
-                </mat-card-actions> -->
+                </div>               
                 <button mat-button color="primary" class="full" align="end" [disabled]="!formulario.valid">Salvar
                     &nbsp;<i class="material-icons right">save</i></button>
                 <button mat-button color="primary" class="full" align="end" [routerLink]="['/agenda']">Retornar

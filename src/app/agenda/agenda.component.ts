@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { dateInputsHaveChanged } from '@angular/material/datepicker/datepicker-input-base';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
@@ -72,8 +71,7 @@ export class AgendaComponent implements OnInit {
     this.qtdeColunasProfissionais = 1;
     this.qtdeAgendas = 0;
     this.obterAgendas();
-    this.codigoUsuario = Number.parseInt(this.authService.usuarioLogado.codigo);
-    //this.listarUsuarios();
+    this.codigoUsuario = Number.parseInt(this.authService.usuarioLogado.codigo);    
   }
   ngOnDestroy(): void {
     if (this.inscricaoEmpresa$) {
@@ -158,12 +156,9 @@ export class AgendaComponent implements OnInit {
     //limpando a lista
     this.listaAgendasDia.splice(0,this.qtdeColunasProfissionais); 
 
-    let cssHora : Array<String> = ["hora_agendada_pendente", "hora_agendada_concluido", "hora_agendada_cancelado"];
-
-    /* this.listaLinksAgenda = ['Nenhum agendamento','Nenhum agendamento', 'Nenhum agendamento'];  */    
-
-     let strLinks : string;          
-     let contadorAgenda: number;
+    let cssHora : Array<string> = ["hora_agendada_pendente", "hora_agendada_concluido", "hora_agendada_cancelado"];
+    let strLinks : string;          
+    let contadorAgenda: number;
      
      //montando
      if (this.qtdeAgendas > 0 && this.listaAgenda.data.length > 0  ){
@@ -237,8 +232,7 @@ export class AgendaComponent implements OnInit {
                                                   });
                                                  
                                                 }else{
-                                                  this.handleError('Não foi encontrado este agendamento!');
-                                                  return ;
+                                                  this.handleError('Não foi encontrado este agendamento!');                                                
                                                 }
                                                }, error=>{
                                                 console.log(error);
@@ -318,8 +312,7 @@ export class AgendaComponent implements OnInit {
        });
       
      }else{
-       this.handleError('Não foi encontrado este agendamento!');
-       return ;
+       this.handleError('Não foi encontrado este agendamento!');       
      }
     }, error=>{
      console.log(error);
