@@ -112,12 +112,12 @@ export class AgendaComponent implements OnInit {
         }
       });
   }
-  obterAgendas(){
+  obterAgendas(): void{
     let pageIndex: number = 0;
     let pageSize: number = 100;
     let sortColumn: string = 'nomeProfissional';
     let sortOrder : string = 'ASC';
-    let filterColumn: string  = 'dataAgendaString';
+    let filterColumn: string  = 'DataInicio';
     let filterQuery: string  = this.selected.toJSON().substring(0,10);
     
     this.inscricaoAngenda$ = this.agendaService.getData<ApiResult<any>>(pageIndex,pageSize,sortColumn,sortOrder, filterColumn, filterQuery)
@@ -157,8 +157,6 @@ export class AgendaComponent implements OnInit {
     this.listaAgendasDia.splice(0,this.qtdeColunasProfissionais); 
 
     let cssHora : Array<string> = ["hora_agendada_pendente", "hora_agendada_concluido", "hora_agendada_cancelado"];
-    let strLinks : string;          
-    let contadorAgenda: number;
      
      //montando
      if (this.qtdeAgendas > 0 && this.listaAgenda.data.length > 0  ){

@@ -10,6 +10,7 @@ export interface Empresa{
     horaFim: string;
     logo : Array<any>;
     quantidadeMinutosServico: string;
+    quantidadeMinutosAgenda: string;
     empresaContato:EmpresaContato;
     empresaEndereco:EmpresaEndereco;
 }

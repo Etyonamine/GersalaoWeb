@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EMPTY, Subscription } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Endereco } from '../endereco/endereco';
@@ -23,13 +23,13 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
   constructor(private empresaService:EmpresaService,
               private municipioService: MunicipioService,
               private unidadeFederativaService: UnidadeFederativaService,
-              private formBuilder: UntypedFormBuilder,
+              private formBuilder: FormBuilder,
               private alertService: AlertService
               ) {
     super();
   }
 
-  formulario: UntypedFormGroup;
+  formulario: FormGroup;
   empresa : Empresa;
   endereco : Endereco;
   inscricaoMunicipio$:Subscription;
@@ -41,6 +41,7 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
   municipios: Array<Municipio> = [];
   codigoUnidadeFederativa : number;
   codigoMunicipio : number;
+  
 
   ngOnInit(): void {    
    this.codigoMunicipio =0;
@@ -129,7 +130,8 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       bairro: [this.endereco === undefined? '':this.endereco.bairro, [Validators.required]],      
       cep:  [this.endereco === undefined? '':this.endereco.cep, [Validators.required,Validators.minLength(8),  Validators.pattern("[0-9]+")]],
       municipio : [this.codigoMunicipio , [Validators.required]],
-      estado:  [this.codigoUnidadeFederativa, [Validators.required]]
+      estado:  [this.codigoUnidadeFederativa, [Validators.required]],
+      intervaloAgenda: [this.empresa == undefined? null : this.empresa.quantidadeMinutosAgenda, [Validators.required, Validators.min(1), Validators.max(180)]]
     });
   }
 
@@ -166,6 +168,7 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       this.empresa.nome= atob(result.nome);
       this.empresa.horaInicial= atob(result.horaInicial);
       this.empresa.horaFim= atob(result.horaFim);
+      this.empresa.quantidadeMinutosAgenda = atob(result.quantidadeMinutosAgenda);
       this.carregarFormulario();
      
     },error=>{
@@ -197,10 +200,7 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       return false;
     }
     //horario de funcionamento
-    /* if ((valueSubmit.horaInicial < valueSubmit.horaFinal)||(valueSubmit.horaInicial === valueSubmit.horaFinal)){
-      this.handlerError('Atenção!O período de funcionamento do estabelecimento está incorreto!');
-      return false;
-    } */
+  
     return true;
   }  
   handlerError(message:string)

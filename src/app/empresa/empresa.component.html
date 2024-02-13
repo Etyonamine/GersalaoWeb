@@ -39,6 +39,14 @@
             mensagemErro="Por favor, digitar a hora de término do funcionamento do estabeleciomento."
           ></app-msg-error>
           <app-msg-error
+            [mostrarErro]="
+              formulario.get('intervaloAgenda').hasError('required')
+            "
+            mensagemErro = "Por favor, informe o intervalo (minutos) de uma agenda"
+            >
+            
+          </app-msg-error>
+          <app-msg-error
           [mostrarErro]="
 
               formulario.get('horaFinal').value==formulario.get('horaInicial').value
@@ -47,19 +55,25 @@
           ></app-msg-error>
             </div>
              <form [formGroup]="formulario" (ngSubmit)="onSubmit()" autocomplete="off">
+              <!-- Nome -->
               <div class="form-group mat-container">                
                 <mat-form-field appearance="fill" style="width: 1018px">
                   <mat-label>Nome</mat-label>
                   <input matInput formControlName="nome"  required/>
                 </mat-form-field>
               </div>
+
               <mat-divider></mat-divider>
+
+              <!-- Informações de endereço -->
               <mat-label>Informações - Endereço</mat-label>
               <div class="form-group mat-container">                
+                  <!-- Endereço -->
                   <mat-form-field appearance="fill" style="width: 350px">
                     <mat-label>Endere&ccedil;o</mat-label>
                     <input matInput formControlName="endereco" required />
                   </mat-form-field>
+                  <!-- Numero -->
                   <mat-form-field appearance="fill" style="width: 100px">
                     <mat-label>Número</mat-label>
                     <input
@@ -70,6 +84,7 @@
                       required
                     />
                   </mat-form-field>
+                  <!-- Complemento -->
                   <mat-form-field appearance="fill" style="width: 558px">
                     <mat-label>Complemento</mat-label>
                     <input
@@ -82,6 +97,7 @@
               </div>
               
               <div class="form-group mat-container">
+                <!-- Bairro -->
                 <mat-form-field appearance="fill" style="width: 440px">
                   <mat-label>Bairro</mat-label>
                   <input
@@ -92,6 +108,7 @@
                     required
                   />
                 </mat-form-field>
+                <!-- CEP -->
                 <mat-form-field appearance="fill" style="width: 100px">
                   <mat-label>CEP</mat-label>
                   <input
@@ -103,8 +120,7 @@
                     required
                   />
                 </mat-form-field>
-              
-              
+                <!-- Estado -->              
                 <mat-form-field appearance="fill" style="width: 150px">
                     <mat-label>Estado</mat-label>
                     <mat-select
@@ -122,6 +138,7 @@
                       </mat-option>
                     </mat-select>
                 </mat-form-field>
+                <!-- Municipio -->
                 <mat-form-field appearance="fill" style="width: 315px">
                   <mat-label>Município</mat-label>
                   <mat-select
@@ -139,9 +156,12 @@
                   </mat-select>
                 </mat-form-field>
               </div>
+
               <mat-divider></mat-divider>
+              <!-- Informações do estabelecimento -->
               <mat-label>Informações - Estabelecimento</mat-label>
               <div class="form-group mat-container">
+                <!-- Hora de inicio de funcionamento -->
                 <mat-form-field appearance="fill"  class="campoHora" >
                   <mat-label>Hora-In&iacute;cio</mat-label>
                   <input matInput type="time" 
@@ -149,6 +169,7 @@
                         required               
                        >
                 </mat-form-field>
+                <!-- Hora de término do funcionamento -->
                 <mat-form-field appearance="fill"  class="campoHora" >
                   <mat-label>Hora-T&eacute;rmino</mat-label>
                   <input matInput type="time" 
@@ -157,8 +178,16 @@
                        >
                 </mat-form-field>
               </div>
+              <mat-form-field appearance="fill">
               <mat-divider></mat-divider>
-
+                <mat-label>Intervalo(minutos) da agenda</mat-label>
+                <input matInput type="number" 
+                      formControlName="intervaloAgenda"               
+                      required               
+                    >
+              </mat-form-field>
+              <mat-divider></mat-divider>
+              <!-- Botóes de comando -->
               <div class="container">
                
                       <button

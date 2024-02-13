@@ -43,7 +43,7 @@ export class BaseService<T> {
     filterColumnType: string): Observable<ApiResult> {
 
 
-        var params = new HttpParams()
+        let params = new HttpParams()
           .set("pageIndex", pageIndex.toString())
           .set("pageSize", pageSize.toString())
           .set("sortColumn", sortColumn)
@@ -77,19 +77,8 @@ export class BaseService<T> {
   private updatePkDuplo(record: T, codigo1:string , codigo2: string)
   {
     return this.http.put<T>(`${ this.API_URL + '/'+ codigo1 + '/' + codigo2 }`, record).pipe(take(1));
-  }
-  // put<T>(recurso:T): Observable<T> {
-  //   return this.http.put<T>(`${ this.API_URL + '/'+ recurso['codigo'] }`, recurso).pipe(take(1));
-  // }
-
-  // post<T>(recurso:T): Observable<T> {
-  //   return this.http.post<T>(this.API_URL, recurso).pipe(take(1));
-  // }
-
-  // private delete<T>(codigo): Observable<T> {
-  //   return this.http.delete<T>(`${ this.API_URL + '/' + codigo}`).pipe(take(1));
-  // }
-  save(recurso: T){
+  } 
+  save(recurso: T): Observable<T>{
     if(recurso['codigo']){
       return this.update(recurso);
     }
