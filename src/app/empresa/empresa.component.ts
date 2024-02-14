@@ -11,6 +11,7 @@ import { MunicipioService } from '../shared/service/municipio.service';
 import { UnidadeFederativaService } from '../shared/service/unidade-federativa.service';
 import { UnidadeFederativa } from '../shared/UnidadeFederativa/unidadeFederativa';
 import { Empresa } from './empresa';
+import { EmpresaDocumento } from './empresa-documento';
 import { EmpresaService } from './empresa.service';
 
 @Component({
@@ -117,7 +118,7 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
     
     this.formulario.controls["estado"].setValue(this.codigoUnidadeFederativa);
     this.formulario.controls["municipio"].setValue(this.codigoMunicipio);
-
+    this.formulario.controls["intervaloAgenda"].setValue(this.empresa.quantidadeMinutosAgenda)
   }
   criarFormulario() {
     this.formulario = this.formBuilder.group({      
@@ -161,14 +162,18 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
     this.inscricao$ = this.empresaService.recuperarDadosEmpresa()
     .subscribe(result=>{
       this.empresa =result;
-      if (result.empresaEndereco !== undefined){
+      if (result.empresaEndereco !== undefined){        
         this.endereco = result.empresaEndereco[0].endereco;
       }
+      this.empresa.empresaDocumentos = [];
+
       this.empresa.codigo= atob(result.codigo);
       this.empresa.nome= atob(result.nome);
+      this.empresa.nomeAbreviado = atob(result.nomeAbreviado);
       this.empresa.horaInicial= atob(result.horaInicial);
       this.empresa.horaFim= atob(result.horaFim);
       this.empresa.quantidadeMinutosAgenda = atob(result.quantidadeMinutosAgenda);
+      
       this.carregarFormulario();
      
     },error=>{
@@ -200,7 +205,8 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       return false;
     }
     //horario de funcionamento
-  
+    this.empresa.empresaEndereco = endereco;
+
     return true;
   }  
   handlerError(message:string)
@@ -218,17 +224,19 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
     if (!this.validacaoFormulario()){
       return ;
     }
+    
 
-    this.empresa.empresaEndereco.endereco = this.endereco;
-
+     
+    this.empresa.quantidadeMinutosAgenda = this.formulario.get("intervaloAgenda").value;
     this.empresaService.atualizar(this.empresa)
                        .subscribe(result=>{
                         this.handlerSucesso('Salvado com sucesso!');
+                        this.recuperarInformacoes();
                        },error=>{
                         console.log(error);
                         this.handlerError('Ocorreu um erro!');
                        });
-    
+     
   }
   montaMunicipios(codigoUF : number){
     this.inscricaoMunicipio$ = this.municipioService.getMunicipioPorUF<ApiResult<Municipio>>(codigoUF,

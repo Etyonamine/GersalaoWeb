@@ -1,5 +1,6 @@
 
 import { EmpresaContato } from "./empresa-contato";
+import { EmpresaDocumento } from "./empresa-documento";
 import { EmpresaEndereco } from "./empresa-endereco";
 
 export interface Empresa{
@@ -13,4 +14,5 @@ export interface Empresa{
     quantidadeMinutosAgenda: string;
     empresaContato:EmpresaContato;
     empresaEndereco:EmpresaEndereco;
+    empresaDocumentos: EmpresaDocumento[];
 }

@@ -23,7 +23,8 @@ export class EmpresaService extends BaseService<Empresa> {
     empresa.horaInicial =  btoa(empresa.horaInicial);
     empresa.horaFim =  btoa(empresa.horaFim);
     empresa.nome =  btoa(empresa.nome);
-    empresa.nomeAbreviado =  btoa(empresa.nomeAbreviado);    
+    empresa.nomeAbreviado =  btoa(empresa.nomeAbreviado);  
+    empresa.quantidadeMinutosAgenda = btoa(empresa.quantidadeMinutosAgenda)  ;
     return this.http.put<Empresa>(this.url,empresa).pipe(take(1));
   }
 }
