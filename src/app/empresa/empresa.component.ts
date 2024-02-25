@@ -11,7 +11,6 @@ import { MunicipioService } from '../shared/service/municipio.service';
 import { UnidadeFederativaService } from '../shared/service/unidade-federativa.service';
 import { UnidadeFederativa } from '../shared/UnidadeFederativa/unidadeFederativa';
 import { Empresa } from './empresa';
-import { EmpresaDocumento } from './empresa-documento';
 import { EmpresaService } from './empresa.service';
 
 @Component({

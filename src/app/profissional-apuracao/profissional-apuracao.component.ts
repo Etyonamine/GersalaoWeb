@@ -63,7 +63,7 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     this.loadData();
   }
   loadData(query: string = null) {
-    var pageEvent = new PageEvent();
+    let pageEvent = new PageEvent();
     pageEvent.pageIndex = this.defaultPageIndex;
     pageEvent.pageSize = this.defaultPageSize;
     this.filterQuery = null;
@@ -80,10 +80,10 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
 
   }
   getData(event: PageEvent) {
-    var sortColumn = (this.sort) ? this.sort.active : this.defaultSortColumn;
-    var sortOrder = (this.sort) ? this.sort.direction : this.defaultSortOrder;
-    var filterColumn = (this.filterQuery) ? this.defaultFilterColumn : null;
-    var filterQuery = (this.filterQuery) ? this.filterQuery : null;
+    let sortColumn = (this.sort) ? this.sort.active : this.defaultSortColumn;
+    let sortOrder = (this.sort) ? this.sort.direction : this.defaultSortOrder;
+    let filterColumn = (this.filterQuery) ? this.defaultFilterColumn : null;
+    let filterQuery = (this.filterQuery) ? this.filterQuery : null;
 
     this.inscricao$ = this.profissionalApuracaoService.getData<ApiResult<any>>(
       event.pageIndex,
@@ -187,16 +187,16 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     this.profisionalApuracaoDetalheService.get<Array<ProfissionalApuracaoDetalhe>>(codigoApuracao)
                                           .subscribe(agendas=>{
         //linhas da tabela
-        for(let a=0; a < agendas.length;a++){
-          let valorComissao = (agendas[a].agenda.valorComissaoPercentual/100) * agendas[a].agenda.valorServico;
-          let dataApuracao = agendas[a].agenda.data.toLocaleString('BRL');
+        for(let agendaCorrente of agendas){
+          let valorComissao = (agendaCorrente.agenda.valorComissaoPercentual/100) * agendaCorrente.agenda.valorServico;
+          let dataApuracao = agendaCorrente.agenda.data.toLocaleString('BRL');
           dataApuracao = dataApuracao.substring(8,10) + dataApuracao.substring(4,8) + dataApuracao.substring(0,4)  + ' ' +  dataApuracao.substring(11,19) ;
-          row.push(agendas[a].profissionalApuracao.profissional.nome)
+          row.push(agendaCorrente.profissionalApuracao.profissional.nome)
           row.push(dataApuracao)
-          row.push(agendas[a].agenda.valorServico.toFixed(2))      
-          row.push(agendas[a].agenda.valorComissaoPercentual.toFixed(2))      
+          row.push(agendaCorrente.agenda.valorServico.toFixed(2))      
+          row.push(agendaCorrente.agenda.valorComissaoPercentual.toFixed(2))      
           row.push(valorComissao.toFixed(2))
-          row.push(agendas[a].agenda.codigoComissaoOrigem == 1 ? "Profissional": "Serviço")      
+          row.push(agendaCorrente.agenda.codigoComissaoOrigem == 1 ? "Profissional": "Serviço")      
           rowD.push(row);
           row =[];
         }
@@ -217,17 +217,17 @@ export class ProfissionalApuracaoComponent implements OnInit, OnDestroy {
     pdf.text("" + title, 250,20);  //
     pdf.setLineWidth(1.5);
     pdf.line(5, 25, 995, 25)
-    var pageContent = function (data) {
+    let pageContent = function (data) {
         // HEADER
        
         // FOOTER
-        var str = "Page " + data.pageCount;
+        let str = "Page " + data.pageCount;
         // Total page number plugin only available in jspdf v1.0+
         if (typeof pdf.putTotalPages === 'function') {
             str = str + " of " + totalPagesExp;
         }
         pdf.setFontSize(10);
-        var pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
+        let pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
         pdf.text(str, data.settings.margin.left, pageHeight - 10); // showing current page number
     };
     pdf.setFontSize(12);    
