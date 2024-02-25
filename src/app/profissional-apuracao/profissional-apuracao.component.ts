@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import jsPDF from "jspdf";
 import 'jspdf-autotable'
 import { EMPTY, of, Subscription } from 'rxjs';
 import { AgendaService } from '../agenda/agenda.service';
@@ -12,7 +11,7 @@ import { ProfissionalApuracao } from './profissional-apuracao';
 import { ProfissionalApuracaoDetalhe } from './profissional-apuracao-detalhe/profissional-apuracao-detalhe';
 import { ProfissionalApuracaoDetalheService } from './profissional-apuracao-detalhe/profissional-apuracao-detalhe.service';
 import { ProfissionalApuracaoService } from './profissional-apuracao.service';
-
+declare let jsPDF;
 
 @Component({
   selector: 'app-profissional-apuracao',
