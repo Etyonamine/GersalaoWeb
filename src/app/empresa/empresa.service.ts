@@ -18,13 +18,21 @@ export class EmpresaService extends BaseService<Empresa> {
     return this.http.get<Empresa>(this.url).pipe(take(1));
   }
   atualizar(empresa:Empresa){
-    //criptografar dados da empresa
-    empresa.codigo = btoa(empresa.codigo);
-    empresa.horaInicial =  btoa(empresa.horaInicial);
-    empresa.horaFim =  btoa(empresa.horaFim);
-    empresa.nome =  btoa(empresa.nome);
-    empresa.nomeAbreviado =  btoa(empresa.nomeAbreviado);  
-    empresa.quantidadeMinutosAgenda = btoa(empresa.quantidadeMinutosAgenda)  ;
+    //criptografar dados da empresa   
+    empresa.codigo = window.btoa(empresa.codigo) ;
+    empresa.horaInicial =  window.btoa(empresa.horaInicial);
+    empresa.horaFim =  window.btoa(empresa.horaFim);
+    empresa.nome =  window.btoa(empresa.nome);
+    empresa.nomeAbreviado =  window.btoa(empresa.nomeAbreviado);  
+    empresa.quantidadeMinutosAgenda = window.btoa(empresa.quantidadeMinutosAgenda)  ;
+    empresa.empresaEndereco.endereco.descricao = window.btoa(empresa.empresaEndereco.endereco.descricao);
+    empresa.empresaEndereco.endereco.bairro = window.btoa(empresa.empresaEndereco.endereco.bairro);
+    if (empresa.empresaEndereco.endereco.complemento !== null )
+    {
+      empresa.empresaEndereco.endereco.complemento = window.btoa(empresa.empresaEndereco.endereco.complemento);    
+    }    
+    empresa.empresaEndereco.endereco.numero = window.btoa(empresa.empresaEndereco.endereco.numero);
+    
     return this.http.put<Empresa>(this.url,empresa).pipe(take(1));
   }
 }

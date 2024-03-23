@@ -126,7 +126,7 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       horaFinal: [this.empresa=== undefined? '':this.empresa.horaFim, [Validators.required]],
       endereco: [this.endereco === undefined? '':this.endereco.descricao, [Validators.required]],
       numero: [this.endereco === undefined? '':this.endereco.numero, [Validators.required]],
-      complemento:[this.endereco === undefined? '':this.endereco.complemento],
+      complemento:[this.endereco === undefined? null :this.endereco.complemento],
       bairro: [this.endereco === undefined? '':this.endereco.bairro, [Validators.required]],      
       cep:  [this.endereco === undefined? '':this.endereco.cep, [Validators.required,Validators.minLength(8),  Validators.pattern("[0-9]+")]],
       municipio : [this.codigoMunicipio , [Validators.required]],
@@ -134,7 +134,6 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       intervaloAgenda: [this.empresa == undefined? null : this.empresa.quantidadeMinutosAgenda, [Validators.required, Validators.min(1), Validators.max(180)]]
     });
   }
-
   carregarEstados() {
     this.inscricaoEstado$ = this.unidadeFederativaService
       .getData<ApiResult<UnidadeFederativa>>(
@@ -155,8 +154,7 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
         console.error(error);
         this.handlerError('Erro ao carregar a lista de estados. Tente novamente mais tarde.');
       });
-  }
-  
+  }  
   recuperarInformacoes(){
     this.inscricao$ = this.empresaService.recuperarDadosEmpresa()
     .subscribe(result=>{
@@ -166,12 +164,12 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       }
       this.empresa.empresaDocumentos = [];
 
-      this.empresa.codigo= atob(result.codigo);
-      this.empresa.nome= atob(result.nome);
-      this.empresa.nomeAbreviado = atob(result.nomeAbreviado);
-      this.empresa.horaInicial= atob(result.horaInicial);
-      this.empresa.horaFim= atob(result.horaFim);
-      this.empresa.quantidadeMinutosAgenda = atob(result.quantidadeMinutosAgenda);
+      this.empresa.codigo= window.atob(result.codigo);
+      this.empresa.nome= window.atob(result.nome);
+      this.empresa.nomeAbreviado = window.atob(result.nomeAbreviado);
+      this.empresa.horaInicial= window.atob(result.horaInicial);
+      this.empresa.horaFim= window.atob(result.horaFim);
+      this.empresa.quantidadeMinutosAgenda = window.atob(result.quantidadeMinutosAgenda);
       
       this.carregarFormulario();
      
@@ -204,7 +202,13 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
       return false;
     }
     //horario de funcionamento
-    this.empresa.empresaEndereco = endereco;
+    this.endereco.bairro = valueSubmit.bairro;
+    this.endereco.cep= valueSubmit.cep;
+    this.endereco.numero = valueSubmit.numero;
+    this.endereco.descricao = valueSubmit.endereco;
+    this.endereco.codigoMunicipio = valueSubmit.municipio;
+    this.endereco.codigoUnidadeFederativa= valueSubmit.estado;
+
 
     return true;
   }  
@@ -223,9 +227,8 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
     if (!this.validacaoFormulario()){
       return ;
     }
-    
+    this.empresa.empresaEndereco.endereco =this.endereco;
 
-     
     this.empresa.quantidadeMinutosAgenda = this.formulario.get("intervaloAgenda").value;
     this.empresaService.atualizar(this.empresa)
                        .subscribe(result=>{
