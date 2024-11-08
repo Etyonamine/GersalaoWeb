@@ -1,12 +1,8 @@
-import { Usuario } from './../usuario/usuario';
 import { AlertService } from './../shared/alert/alert.service';
 import { LoginService } from './../login/login.service';
 import { EventEmitter, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Login } from './../login/login';
-import { concatMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { UsuarioService } from '../usuario/usuario.service';
 import { Logged } from '../login/logged.component';
 
 
@@ -31,7 +27,6 @@ export class AuthService {
   constructor(
     private router: Router,
     private loginService: LoginService,
-    private usuarioService: UsuarioService,
     private alertService: AlertService
   ) {}
 
@@ -39,7 +34,6 @@ export class AuthService {
   fazerLogin(usuario: Login) {
 
     const login =  { login: usuario.login, senha: usuario.senha , Autenticado : usuario.Autenticado} as Login;
-    let usuarioEncontrado = {} as Usuario;
     this.mostrarMenuEmitter.emit(false);
     // pesquisando na base de dados
     this.loginService.validarLogin(login)
@@ -62,13 +56,11 @@ export class AuthService {
                                   }     
                                 }, error => {
                                     console.error(error.error);
-                                    if (error.status = "404"){
+                                    if (error.status === "404"){
                                       this.alertService.mensagemExclamation('Usuario ou senha inválido!');
                                     }else{
                                       this.alertService.mensagemErro('Ocorreu um erro ao tentar validar o seu acesso!');
                                     }
-                                    
-                                    return;
                                   }
                                 );
   }

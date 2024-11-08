@@ -11,6 +11,7 @@ import { MunicipioService } from '../shared/service/municipio.service';
 import { UnidadeFederativaService } from '../shared/service/unidade-federativa.service';
 import { UnidadeFederativa } from '../shared/UnidadeFederativa/unidadeFederativa';
 import { Empresa } from './empresa';
+import { EmpresaEndereco } from './empresa-endereco';
 import { EmpresaService } from './empresa.service';
 
 @Component({
@@ -159,7 +160,8 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
     this.inscricao$ = this.empresaService.recuperarDadosEmpresa()
     .subscribe(result=>{
       this.empresa =result;
-      if (result.empresaEndereco !== undefined){        
+
+      if (enderecos.length == 0){        
         this.endereco = result.empresaEndereco[0].endereco;
       }
       this.empresa.empresaDocumentos = [];
