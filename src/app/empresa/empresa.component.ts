@@ -162,13 +162,14 @@ export class EmpresaComponent extends BaseFormComponent implements OnInit, OnDes
      
       this.empresa.empresaDocumentos = [];
 
-      this.empresa.codigo= window.atob(result.codigo);
+      /* this.empresa.codigo= window.atob(result.codigo);
       this.empresa.nome= window.atob(result.nome);
       this.empresa.nomeAbreviado = window.atob(result.nomeAbreviado);
       this.empresa.horaInicial= window.atob(result.horaInicial);
       this.empresa.horaFim= window.atob(result.horaFim);
-      this.empresa.quantidadeMinutosAgenda = window.atob(result.quantidadeMinutosAgenda);
+      this.empresa.quantidadeMinutosAgenda = window.atob(result.quantidadeMinutosAgenda); */     
       
+
       this.carregarFormulario();
      
     },error=>{
