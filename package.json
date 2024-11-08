@@ -13,12 +13,12 @@
   "dependencies": {
     "@angular-material-components/datetime-picker": "^8.0.0",
     "@angular/animations": "^14.3.0",
-    "@angular/cdk": "^13.3.9",
+    "@angular/cdk": "^14.2.7",
     "@angular/common": "^14.3.0",
     "@angular/compiler": "^14.3.0",
     "@angular/core": "^14.3.0",
     "@angular/forms": "^14.3.0",
-    "@angular/material": "^12.2.13",
+    "@angular/material": "^13.3.9",
     "@angular/material-moment-adapter": "^12.2.13",
     "@angular/platform-browser": "^14.3.0",
     "@angular/platform-browser-dynamic": "^14.3.0",
@@ -54,7 +54,7 @@
     "protractor": "^3.3.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.8.4"
+    "typescript": "4.9"
   },
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
