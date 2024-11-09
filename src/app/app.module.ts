@@ -1,7 +1,7 @@
 import { MaterialModule } from './material/material.module';
 import { SituacaoModule } from './situacao/situacao/situacao.module';
 import { SharedModule } from './shared/shared.module';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { LOCALE_ID, DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
 import { ClienteModule } from './cliente/cliente.module';
@@ -49,56 +49,50 @@ import { ReportsModule } from './reports/reports.module';
 
 registerLocaleData(localePt,'pt');
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    NavegacaoComponent,
-    LoginComponent,
-    HomeComponent,
-    PaginaNaoEncontradaComponent,
-    TwoDecimalNumberDirective,        
-    FornecedorComponent, ProfissionalApuracaoComponent
-   ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    ClienteModule,
-    MaterialModule,
-    SharedModule,
-    TipoServicoModule,
-    ServicoModule,
-    SituacaoModule,
-    ProfissionalModule,
-    EnderecoModule,
-    UsuarioModule,
-    ContatoModule,
-    TipoContatoModule, 
-    TipoProdutoModule,
-    ProdutoModule,
-    DocumentoModule, 
-    FormaPagamentoModule, 
-    ProdutoLinhaModule,
-    CompraModule,
-    CompraDetalheModule,
-    EstoqueModule,
-    PedidoModule,
-    AgendaModule,
-    ProfissionalApuracaoModule,
-    ResetSenhaModule    ,
-    ReportsModule ,
-    EmpresaModule
-  ],
-  providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},    
-    { provide: LOCALE_ID, useValue: 'pt' },
-    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },      
-    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        NavegacaoComponent,
+        LoginComponent,
+        HomeComponent,
+        PaginaNaoEncontradaComponent,
+        TwoDecimalNumberDirective,
+        FornecedorComponent, ProfissionalApuracaoComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        RouterModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        ClienteModule,
+        MaterialModule,
+        SharedModule,
+        TipoServicoModule,
+        ServicoModule,
+        SituacaoModule,
+        ProfissionalModule,
+        EnderecoModule,
+        UsuarioModule,
+        ContatoModule,
+        TipoContatoModule,
+        TipoProdutoModule,
+        ProdutoModule,
+        DocumentoModule,
+        FormaPagamentoModule,
+        ProdutoLinhaModule,
+        CompraModule,
+        CompraDetalheModule,
+        EstoqueModule,
+        PedidoModule,
+        AgendaModule,
+        ProfissionalApuracaoModule,
+        ResetSenhaModule,
+        ReportsModule,
+        EmpresaModule], providers: [
+        { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+        { provide: LOCALE_ID, useValue: 'pt' },
+        { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
+        { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }
