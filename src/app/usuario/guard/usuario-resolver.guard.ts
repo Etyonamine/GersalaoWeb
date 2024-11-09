@@ -1,7 +1,7 @@
 
 
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Usuario } from '../usuario';
 import { UsuarioService } from '../usuario.service';
@@ -9,7 +9,7 @@ import { UsuarioService } from '../usuario.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UsuarioResolveGuard implements Resolve<Usuario>{
+export class UsuarioResolveGuard {
   usuario:Usuario;
 
   constructor(

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { Observable, of } from 'rxjs';
 import { Profissional } from 'src/app/profissional/professional';
@@ -10,7 +10,7 @@ import { ProfissionalApuracaoDetalhe } from '../profissional-apuracao-detalhe/pr
     providedIn: 'root'
   })
 
-  export class ProfissionalApuracaoDetalheResolveGuard implements Resolve<number>{
+  export class ProfissionalApuracaoDetalheResolveGuard {
     
     codigoRetorno : number;
     constructor(      

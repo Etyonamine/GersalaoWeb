@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Pedido } from '../pedido';
 import { PedidoService } from '../pedido.service';
@@ -9,7 +9,7 @@ import { PedidoService } from '../pedido.service';
 @Injectable({
   providedIn: 'root'
 })
-export class PedidoResolveGuard implements Resolve<Pedido>{
+export class PedidoResolveGuard {
   pedido:Pedido;  
 
   constructor(

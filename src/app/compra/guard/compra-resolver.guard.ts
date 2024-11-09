@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Compra } from '../compra';
 import { CompraServiceService } from '../compra-service.service';
@@ -7,7 +7,7 @@ import { CompraServiceService } from '../compra-service.service';
 @Injectable({
   providedIn: 'root'
 })
-export class CompraResolveGuard implements Resolve<Compra>{
+export class CompraResolveGuard {
   compra:Compra;  
 
   constructor(

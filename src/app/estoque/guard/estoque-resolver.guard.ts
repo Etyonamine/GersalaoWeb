@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { Estoque } from '../Estoque';
 import { EstoqueService } from '../estoque.service';
@@ -8,7 +8,7 @@ import { EstoqueService } from '../estoque.service';
 @Injectable({
   providedIn: 'root'
 })
-export class EstoqueResolveGuard implements Resolve<Estoque[]>{
+export class EstoqueResolveGuard {
   estoque:Estoque[];  
 
   constructor(

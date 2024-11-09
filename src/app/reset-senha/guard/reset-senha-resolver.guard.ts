@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 
 import { Observable, of, Subscription } from 'rxjs';
 import { ResetSenha } from '../reset-senha';
@@ -11,7 +11,7 @@ import { ResetSenhaService } from '../reset-senha.service';
     providedIn: 'root'
   })
 
-  export class ResetSenhaResolveGuard implements Resolve<string>{    
+  export class ResetSenhaResolveGuard {    
 
     resetSenha : ResetSenha;
     inscricao$ : Subscription;

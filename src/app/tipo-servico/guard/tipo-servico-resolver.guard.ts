@@ -1,7 +1,7 @@
 import { TipoServicoService } from './../tipo-servico.service';
 
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
 import { Observable, of } from 'rxjs';
 import { TipoServico } from '../tipo-servico';
@@ -9,7 +9,7 @@ import { TipoServico } from '../tipo-servico';
 @Injectable({
   providedIn: 'root'
 })
-export class TipoServicoResolveGuard implements Resolve<TipoServico>{
+export class TipoServicoResolveGuard {
   tipoServico:TipoServico;
 
   constructor(

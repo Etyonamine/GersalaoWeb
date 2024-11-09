@@ -1,13 +1,13 @@
 import { ClienteService } from './../cliente.service';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Cliente } from '../cliente';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClienteResolveGuard implements Resolve<Cliente>{
+export class ClienteResolveGuard {
   cliente:Cliente;
 
   constructor(
