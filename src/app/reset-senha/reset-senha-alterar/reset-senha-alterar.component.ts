@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AlertService } from 'src/app/shared/alert/alert.service';
@@ -22,7 +22,7 @@ export class ResetSenhaAlterarComponent extends BaseFormComponent implements OnI
   inscricao$:Subscription;
   inscricaoReset$:Subscription;
 
-  formulario:UntypedFormGroup;
+  formulario:FormGroup;
   hide = true;
   hideRepetir = true;
 

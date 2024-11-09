@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of, Subscription } from 'rxjs';
-import { concatMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth-guard/auth.service';
-import { Login } from 'src/app/login/login';
 import { AlertService } from 'src/app/shared/alert/alert.service';
 import { BaseFormComponent } from 'src/app/shared/base-form/base-form.component';
 import { Usuario } from '../usuario';
@@ -18,7 +16,7 @@ import { UsuarioService } from '../usuario.service';
 export class UsuarioAlterarSenhaComponent extends BaseFormComponent implements OnInit {
   
   usuario : Usuario ;
-  formulario:UntypedFormGroup;
+  formulario:FormGroup;
   hide = true;
   hideRepetir = true;
 
@@ -26,7 +24,7 @@ export class UsuarioAlterarSenhaComponent extends BaseFormComponent implements O
   inscricaoAuthService: Subscription;
   
   constructor(private route: ActivatedRoute,
-              private formBuilder: UntypedFormBuilder,
+              private formBuilder: FormBuilder,              
               private serviceAlert: AlertService,
               private authService: AuthService,
               private usuarioService:UsuarioService,

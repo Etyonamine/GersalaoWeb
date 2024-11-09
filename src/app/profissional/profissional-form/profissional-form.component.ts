@@ -243,7 +243,8 @@ export class ProfissionalFormComponent extends BaseFormComponent implements OnIn
     //validar se o profissional possui agendamentos associados
     this.inscricaoAgendaServicosService$ = this.agendaServicoService.quantidadePorProfissional(this.profissional.codigo).subscribe(
         result=>{
-          if (result > 0 ){
+           
+          if (result[0] > 0 ){
             this.handleError('Atenção!Existem agendamentos com este profissional!Não será possível excluir');
             return ;
           }

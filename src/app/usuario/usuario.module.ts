@@ -4,7 +4,7 @@ import { UsuarioComponent } from './usuario.component';
 import { UsuarioAlterarSenhaComponent } from './usuario-alterar-senha/usuario-alterar-senha.component';
 import { UsuarioRoutingModule }  from './usuario-routing.module';
 import { MaterialModule } from '../material/material.module';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule , FormBuilder, FormControl} from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
@@ -13,7 +13,7 @@ import { SharedModule } from '../shared/shared.module';
     CommonModule,
     MaterialModule,    
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule,    
     SharedModule,
     UsuarioRoutingModule
   ]

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { Estoque } from '../Estoque';
+import { Estoque } from '../estoque';
 import { EstoqueService } from '../estoque.service';
 
 

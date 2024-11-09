@@ -3,7 +3,7 @@
       <mat-card-title> &nbsp; Alterar a senha </mat-card-title>
       
       
-          <form [formGroup]="formulario" (ngSubmit)="onSubmit()" class="form-container">   
+          <form [formGroup] = "formulario" (ngSubmit)="onSubmit()" class="form-container">   
             <div style="text-align:center">                 
               <mat-form-field appearance="fill" style="width: 300px;">
                 <mat-label>Nova Senha </mat-label>
@@ -37,7 +37,7 @@
                 <li>Deve conter ao menos um n&uacute;mero.</li>
                 <li>Deve conter ao menos uma letra min&uacute;scula</li>
                 <li>Deve conter ao menos uma letra mai&uacute;scula</li>
-                <li>Deve conter ao menos um destes simbolos = $*&@#</li>                
+                <li>Deve conter ao menos um destes simbolos </li>                
               </ul>              
             </div>
             <div>
@@ -46,7 +46,7 @@
           
             <mat-card-actions align="end">
               <button mat-button color="primary" class="full" align="end"   [disabled]="!formulario.valid">Alterar &nbsp;<i class="material-icons right">save</i></button>
-              <button mat-button color="primary" class="full" align="end"   [routerLink]="['/home']">Cancelar &nbsp;<i class="material-icons right">cancel</i></button>
+             <!--  <button mat-button color="primary" class="full" align="end"   [routerLink]="['/home']">Cancelar &nbsp;<i class="material-icons right">cancel</i></button> -->
             </mat-card-actions>
         </form>  
      

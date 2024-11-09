@@ -280,14 +280,12 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     this.serviceAlert.mensagemErro(message);
   }
   adicionarListaItem(){
-
-  
     
     if (this.codigoProdutoSelecionado == 0 || this.codigoProdutoSelecionado == undefined){
       this.handleError('Por favor, selecionar um produto válido!');
       return false;
     } 
-    if (Number(this.valorProdutoSel) == NaN ||this.valorProdutoSel == undefined){
+    if (isNaN(Number(this.valorProdutoSel)) ||this.valorProdutoSel == undefined){
       this.handleError('Por favor, informar um valor de venda válido!');
       return false;
     } 
@@ -300,14 +298,7 @@ export class PedidoFormComponent extends BaseFormComponent implements OnInit, On
     if (this.itensPedidos2.find(x=>x.codigoProduto == this.codigoProdutoSelecionado)){
       this.handlerExclamation("Este produto já está na lista!Por favor, remover primeiro e tentar novamente.");
       return false;
-    }
-    //this.produtos.find(x=>x.codigo==this.codigoProdutoSelecionado);
-    /* let pedidoItemAdd = {
-                          codigoProduto : this.codigoProdutoSelecionado,
-                          quantidade : this.quantidadeProdutoSel,
-                          valorVenda : this.valorProdutoSel, 
-                          produto: this.produtos.find(x=>x.codigo==this.codigoProdutoSelecionado)
-                        } as PedidoItem; */
+    }   
     
     let codigoItem : number ;
     let valorUnitarioParam = parseFloat(this.valorProdutoSel.toString().replace('.','').replace(',','.'));
